@@ -1,3 +1,7 @@
+# Upstream provenance — keep only the architecture PDF, ignore the rest
+power-bi/_examples/*
+!power-bi/_examples/AI_Folder_Architecture.pdf
+
 # Power BI Desktop local cache / settings (often holds personal paths or local-only state)
 **/.pbi/
 **/localSettings.json
