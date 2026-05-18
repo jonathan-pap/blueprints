@@ -1,6 +1,3 @@
-# Upstream provenance snapshot — large reference, not part of the blueprint itself
-power-bi/_examples/
-
 # Power BI Desktop local cache / settings (often holds personal paths or local-only state)
 **/.pbi/
 **/localSettings.json
