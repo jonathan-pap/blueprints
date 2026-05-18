@@ -65,8 +65,8 @@ Tools install on first use (`03-bind/` quickstart triggers the NuGet packages). 
 
 ## What's in `_examples/`
 
-Upstream provenance snapshot of three plugins from data-goblins (v26.20). **Do not load unless explicitly asked.** The rooms here were refactored from those plugins to fit the 3-Layer architecture (PDF: `_examples/AI_Folder_Architecture.pdf`).
+Upstream reference snapshot used to derive the atomic files. **Do not load unless explicitly asked.** The rooms here were atomized from those references to fit the 3-Layer architecture (PDF: `_examples/AI_Folder_Architecture.pdf`).
 
 ## License
 
-Reference content derives from data-goblins / Kurt Buhler (GPL-3.0). Routing and structure (this blueprint) is yours to adapt.
+Reference content derives from upstream community plugins (GPL-3.0). Routing and structure (this blueprint) is yours to adapt.

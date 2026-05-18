@@ -371,7 +371,8 @@ $model.Tables["Sales"].Annotations.Add(
 ```
 
 Naming conventions:
-- Prefix with an org/tool namespace to avoid collisions (`MyOrg_`, `DataGoblins_`)
+
+- Prefix with an org/tool namespace to avoid collisions (`MyOrg_`, `Acme_`)
 - PBI reserves annotations starting with `PBI_` or `__PBI_`
 - Tabular Editor uses `TabularEditor_`
 - Do not overwrite annotations with unknown prefixes; they may be consumed by other tools

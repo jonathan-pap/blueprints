@@ -4,17 +4,15 @@
 
 ## Three valid starting points
 
-### 1. SQLBI / Data Goblins theme (best for new authors)
+### 1. SQLBI bundled template (best for new authors)
 
-Validated, complete, follows best practices. Lives at:
-
-`../../report/examples/K201-MonthSlicer.Report/StaticResources/RegisteredResources/SqlbiDataGoblinTheme.json`
-
-Or apply it directly with:
+Validated, complete, follows best practices. Apply it directly with:
 
 ```bash
 pbir theme apply-template "<project>.Report" sqlbi
 ```
+
+Additional reference theme JSONs live under `../../theme/examples/` and `../../report/examples/` for inspection.
 
 ### 2. Community templates (deldersveld / PowerBI-ThemeTemplates)
 

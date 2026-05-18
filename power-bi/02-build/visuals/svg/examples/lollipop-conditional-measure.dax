@@ -1,5 +1,4 @@
 -- SVG Lollipop Chart with Conditional Formatting
--- Author: Kurt Buhler / Data Goblins (PowerBI MacGuyver Toolbox)
 -- Target: Table / Matrix (Image size: H25 x W100)
 -- Placeholders: Replace __ACTUAL_MEASURE, __TARGET_MEASURE, __GROUPBY_COLUMN with your fields
 

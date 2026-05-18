@@ -87,7 +87,7 @@ power-bi/
 │   │   ├── audit/          (3  md)          compliance, find overrides, find hardcoded hex
 │   │   ├── serialize/      (3  md)          split monolith ↔ build
 │   │   ├── _deep-reference/ (1 md)          theme-json-spec (25 KB; load on explicit ask only)
-│   │   └── examples/                        DataGoblins, Fluent2 + 49 per-visual-type override examples
+│   │   └── examples/                        community theme JSONs + 49 per-visual-type override examples
 │   │
 │   └── visuals/            (1 md, 91 total)    custom visual engines
 │       ├── deneb/          (8 md, 25 total) Vega / Vega-Lite — interactive
@@ -120,7 +120,7 @@ power-bi/
 
 - **`projects/`** — raw layer. One folder per Power BI project (`<name>.Report/`, `<name>.SemanticModel/`, `<name>.pbip`). See `projects/README.md`.
 - **`outputs/`** — output layer. Dated generated artifacts (`YYYY-MM-DD-<project>-<type>.<ext>`). See `outputs/README.md`.
-- **`_examples/`** — provenance snapshot of upstream data-goblins plugins (v26.20). **Do not load unless explicitly asked.**
+- **`_examples/`** — upstream reference snapshot used to derive the atomic files. **Do not load unless explicitly asked.**
 
 ## Live-model preference (when you do need a live connection)
 
@@ -179,4 +179,4 @@ Match the user's intent. Load only what's listed.
 
 ## Provenance
 
-This blueprint refactors three upstream plugins from data-goblins (v26.20) into the 3-layer folder architecture. Upstream snapshot kept at `_examples/` — do not load unless explicitly asked.
+This blueprint atomizes upstream community Power BI plugins into the 3-layer folder architecture. Upstream snapshot kept at `_examples/` — do not load unless explicitly asked.

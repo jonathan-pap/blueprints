@@ -537,7 +537,7 @@ Target specific filter types using `$id`:
 - `"$id": "Applied"` - Style actively applied filters
 - `"$id": "GUID"` - Style specific filter by its ID from filterConfig
 
-**Note on filter card locations:** The `$id`-targeted card states (`Available`, `Applied`) belong at `visualStyles["*"]["*"].filterCard`. Basic filter card styling (background, border without `$id` state selectors) can also appear at `visualStyles["page"]["*"].filterCard` — this is confirmed in `SqlbiDataGoblinTheme.json` and serves as a simpler base style fallback.
+**Note on filter card locations:** The `$id`-targeted card states (`Available`, `Applied`) belong at `visualStyles["*"]["*"].filterCard`. Basic filter card styling (background, border without `$id` state selectors) can also appear at `visualStyles["page"]["*"].filterCard` — confirmed across community theme references and serves as a simpler base style fallback.
 
 ### ThemeDataColor with Percent
 

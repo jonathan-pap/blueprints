@@ -8,7 +8,7 @@ Point the report at a theme JSON. The theme file goes into `<project>.Report/Sta
 pbir theme apply-template "<project>.Report" sqlbi
 ```
 
-Templates available: `sqlbi`, `fluent2`, `datagoblins2021` (see `../../theme/examples/`).
+Templates available: `sqlbi`, `fluent2` (see `../../theme/examples/`). Run `pbir theme list-templates` for the full list bundled with your CLI version.
 
 ## Apply your own theme file
 

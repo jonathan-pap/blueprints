@@ -36,8 +36,8 @@
 
 ## Examples
 
-- `examples/DataGoblins2021.json` — community theme reference
 - `examples/Fluent2-CY26SU03.json` — Microsoft Fluent 2
+- `examples/` — additional community theme references on disk
 
 ## Deep reference (load only on explicit request)
 

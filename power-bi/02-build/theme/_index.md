@@ -17,7 +17,7 @@
 
 ## apply/
 
-- `template.md` — bundled template (`sqlbi`, `fluent2`, `datagoblins2021`)
+- `template.md` — bundled template (`sqlbi`, `fluent2`)
 - `file.md` — your own theme JSON
 - `copy-from-other.md` — lift a theme from another report
 - `share-as-template.md` — extract a theme as a reusable template; download from Service / Fabric / community; diff themes

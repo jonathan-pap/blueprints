@@ -6,7 +6,8 @@ Templates are bundled themes the `pbir` CLI installs. New reports already includ
 
 - `sqlbi` — default for new reports. Clean, professional. Muted palette.
 - `fluent2` — Microsoft Fluent 2 design system colors and typography.
-- `datagoblins2021` — Kurt Buhler's community theme.
+
+Run `pbir theme list-templates` to see any additional templates bundled with your CLI version.
 
 ## CLI
 

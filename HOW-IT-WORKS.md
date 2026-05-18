@@ -74,11 +74,11 @@ How a user request becomes the right files loaded.
 
 ```mermaid
 flowchart TD
-    U[User: "create a theme"] --> L0[Workspace CLAUDE.md<br/>routes to blueprint]
-    L0 --> L1[power-bi/CLAUDE.md<br/>matches intent → room]
-    L1 --> L2[02-build/theme/context.md<br/>room scope + workflow]
-    L2 --> ATOM[Atoms loaded:<br/>cascade.md, create/_index.md,<br/>color-system.md, etc.]
-    ATOM --> ACT[Claude executes:<br/>edit theme JSON via pbir CLI]
+    U["User: 'create a theme'"] --> L0["Workspace CLAUDE.md<br/>routes to blueprint"]
+    L0 --> L1["power-bi/CLAUDE.md<br/>matches intent → room"]
+    L1 --> L2["02-build/theme/context.md<br/>room scope + workflow"]
+    L2 --> ATOM["Atoms loaded:<br/>cascade.md, create/_index.md,<br/>color-system.md, etc."]
+    ATOM --> ACT["Claude executes:<br/>edit theme JSON via pbir CLI"]
 ```
 
 The L1 router holds the **routing table** (intent → atom path). Claude follows that table; it does not browse the filesystem looking for relevant files.
@@ -89,16 +89,16 @@ The blueprint reads project briefs from disk BEFORE asking discovery questions. 
 
 ```mermaid
 flowchart TD
-    U[User: "build the sales report"] --> CHK{brief.md exists at<br/>projects/&lt;name&gt;/?}
-    CHK -- yes --> READ[Read brief.md]
-    READ --> GAP{Sections marked<br/>[fill in] or<br/>Open questions?}
-    GAP -- yes --> ASK[Ask only those<br/>via AskUserQuestion]
-    GAP -- no --> PLAN[Propose plan based<br/>on brief]
-    CHK -- no --> OFFER[Offer to scaffold<br/>from brief-template.md]
+    U["User: 'build the sales report'"] --> CHK{"brief.md exists at<br/>projects/&lt;name&gt;/?"}
+    CHK -- yes --> READ["Read brief.md"]
+    READ --> GAP{"Sections marked<br/>[fill in] or<br/>Open questions?"}
+    GAP -- yes --> ASK["Ask only those<br/>via AskUserQuestion"]
+    GAP -- no --> PLAN["Propose plan based<br/>on brief"]
+    CHK -- no --> OFFER["Offer to scaffold<br/>from brief-template.md"]
     ASK --> PLAN
-    OFFER --> CREATE[User fills template]
+    OFFER --> CREATE["User fills template"]
     CREATE --> PLAN
-    PLAN --> EXEC[Execute]
+    PLAN --> EXEC["Execute"]
 ```
 
 The brief acts as the **contract**: comprehensive brief = zero discovery questions. Same pattern applies to themes (`projects/themes/<slug>/brief.md`).
@@ -109,11 +109,11 @@ A small hook script makes Claude notice when you create or edit a brief in your 
 
 ```mermaid
 flowchart LR
-    USER[User submits<br/>any prompt] --> HOOK[UserPromptSubmit hook<br/>discover-briefs.sh]
-    HOOK --> SCAN[Scan projects/**/brief.md<br/>for mtime < 60min]
-    SCAN -- found --> EMIT[Emit &lt;recent-briefs&gt;<br/>block to Claude]
-    SCAN -- none --> SILENT[Exit 0, no output]
-    EMIT --> CLAUDE[Claude sees flagged briefs<br/>and reads them before<br/>proposing a plan]
+    USER["User submits<br/>any prompt"] --> HOOK["UserPromptSubmit hook<br/>discover-briefs.sh"]
+    HOOK --> SCAN["Scan projects/**/brief.md<br/>for mtime &lt; 60min"]
+    SCAN -- found --> EMIT["Emit &lt;recent-briefs&gt;<br/>block to Claude"]
+    SCAN -- none --> SILENT["Exit 0, no output"]
+    EMIT --> CLAUDE["Claude sees flagged briefs<br/>and reads them before<br/>proposing a plan"]
 ```
 
 Toggle via `power-bi/hooks.yaml` → `briefs: false`. Registered in `.claude/settings.json`.
@@ -124,12 +124,12 @@ When Claude needs to read or change the actual model (not the on-disk TMDL), it 
 
 ```mermaid
 flowchart TD
-    NEED[Task needs live<br/>model interaction] --> T1{On-disk TMDL<br/>sufficient?}
-    T1 -- yes --> CLI[pbir model -d<br/>no connection needed]
-    T1 -- no --> T2{Power BI MCP<br/>available?}
-    T2 -- yes --> MCP[Use MCP tool calls<br/>via-mcp/]
-    T2 -- no --> T3[Fall back to PowerShell<br/>TOM/ADOMD]
-    T3 --> PS[via-powershell/quickstart.md<br/>+ scripts/]
+    NEED["Task needs live<br/>model interaction"] --> T1{"On-disk TMDL<br/>sufficient?"}
+    T1 -- yes --> CLI["pbir model -d<br/>no connection needed"]
+    T1 -- no --> T2{"Power BI MCP<br/>available?"}
+    T2 -- yes --> MCP["Use MCP tool calls<br/>via-mcp/"]
+    T2 -- no --> T3["Fall back to PowerShell<br/>TOM/ADOMD"]
+    T3 --> PS["via-powershell/quickstart.md<br/>+ scripts/"]
 ```
 
 - **Tier 1** wins for "what measures exist?" on a thick PBIP — no connection, no cost.
@@ -142,14 +142,14 @@ The atomic 7-step workflow for authoring a theme from scratch.
 
 ```mermaid
 flowchart LR
-    BRIEF[brief.md exists?<br/>read first] --> S1[1. starting-point]
-    S1 --> S2[2. schema-integration]
-    S2 --> S3[3. color-system<br/>4 layers]
-    S3 --> S4[4. typography-roles]
-    S4 --> S5[5. wildcard-defaults]
-    S5 --> S6[6. visual-type-priorities]
-    S6 --> S7[7. checklist]
-    S7 --> SAVE[Save to<br/>projects/themes/&lt;slug&gt;/<br/>&lt;slug&gt;-v1.0.json]
+    BRIEF["brief.md exists?<br/>read first"] --> S1["1. starting-point"]
+    S1 --> S2["2. schema-integration"]
+    S2 --> S3["3. color-system<br/>4 layers"]
+    S3 --> S4["4. typography-roles"]
+    S4 --> S5["5. wildcard-defaults"]
+    S5 --> S6["6. visual-type-priorities"]
+    S6 --> S7["7. checklist"]
+    S7 --> SAVE["Save to<br/>projects/themes/&lt;slug&gt;/<br/>&lt;slug&gt;-v1.0.json"]
 ```
 
 Each step is one atomic file under `power-bi/02-build/theme/create/`. Claude reads them in order — only loading the ones for steps actually in progress.
@@ -160,18 +160,18 @@ Hooks are optional accelerators. Each subsystem has its own toggle in `power-bi/
 
 ```mermaid
 flowchart TD
-    PARENT[power-bi/hooks.yaml<br/>master toggles] --> R{review: true?}
-    PARENT --> B{bind: true?}
-    PARENT --> BR{briefs: true?}
+    PARENT["power-bi/hooks.yaml<br/>master toggles"] --> R{"review: true?"}
+    PARENT --> B{"bind: true?"}
+    PARENT --> BR{"briefs: true?"}
 
-    R -- on --> RH[04-review/hooks/<br/>PostToolUse on Write/Edit<br/>validates PBIR/TMDL files]
-    R -- off --> X1[skip]
+    R -- on --> RH["04-review/hooks/<br/>PostToolUse on Write/Edit<br/>validates PBIR/TMDL files"]
+    R -- off --> X1["skip"]
 
-    B -- on --> BH[03-bind/via-powershell/hooks/<br/>Pre/PostToolUse on Bash<br/>validates live TOM/ADOMD ops]
-    B -- off --> X2[skip]
+    B -- on --> BH["03-bind/via-powershell/hooks/<br/>Pre/PostToolUse on Bash<br/>validates live TOM/ADOMD ops"]
+    B -- off --> X2["skip"]
 
-    BR -- on --> BRH[01-brief/hooks/<br/>UserPromptSubmit<br/>discovers brief changes]
-    BR -- off --> X3[skip]
+    BR -- on --> BRH["01-brief/hooks/<br/>UserPromptSubmit<br/>discovers brief changes"]
+    BR -- off --> X3["skip"]
 ```
 
 Flip any to `false` for fast iteration; the blueprint's CLAUDE.md routing alone still works without them.

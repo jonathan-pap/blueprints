@@ -20,7 +20,7 @@ Last updated: YYYY-MM-DD
 
 Per `starting-point.md`: never author from `{}`.
 
-- **Base:** [sqlbi (bundled) / fluent2 / DataGoblins2021 / existing theme JSON path / extract from report <path>]
+- **Base:** [sqlbi (bundled) / fluent2 / community JSON / existing theme JSON path / extract from report <path>]
 - **What to keep:** [palette only / typography only / wildcard only / everything as-is]
 - **What to override:** [list sections you intend to change]
 
