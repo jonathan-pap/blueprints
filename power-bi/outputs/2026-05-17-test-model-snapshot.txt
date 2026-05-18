@@ -1,0 +1,38 @@
+Local Model Schema (from TMDL)
+
+_Measures
+  1 columns, 9 measures, 0 hierarchies
+  Columns:
+    • _ (string)
+  Measures:
+    • Avg Sale Price ($#,##0.00)
+    • Discount % (0.0%)
+    • Profit % (0.0%)
+    • Sales PY ($#,##0)
+    • Sales YTD ($#,##0)
+    • Total COGS ($#,##0)
+    • Total Profit ($#,##0)
+    • Total Sales ($#,##0)
+    • Total Units (#,##0)
+
+financials
+  16 columns, 0 measures, 0 hierarchies
+  Columns:
+    • COGS (double)
+    • Country (string)
+    • Date (dateTime)
+    • Discount Band (string)
+    • Discounts (double)
+    • Gross Sales (double)
+    • Manufacturing Price (int64)
+    • Month Name (string)
+    • Month Number (int64)
+    • Product (string)
+    • Profit (double)
+    • Sale Price (int64)
+    • Sales (double)
+    • Segment (string)
+    • Units Sold (double)
+    • Year (int64)
+
+Total: 2 tables, 17 columns, 9 measures

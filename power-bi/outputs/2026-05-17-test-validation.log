@@ -1,0 +1,30 @@
+Validating test
+
+
+✓ test validation passed
+
+Pages: 4, Visuals: 26
+Fields: 44 (model loaded)
+
+                                 Warnings (7)                                  
+┌─────────────────────┬───────────────────┬───────────────────────────────────┐
+│ Location            │ Code              │ Message                           │
+├─────────────────────┼───────────────────┼───────────────────────────────────┤
+│ Overview > customer │ VISUAL_UNDERSIZED │ kpi is undersized (296x140px,     │
+│                     │                   │ recommend >= 290x200px)           │
+│ Overview > margin-k │ VISUAL_UNDERSIZED │ kpi is undersized (296x140px,     │
+│                     │                   │ recommend >= 290x200px)           │
+│ Overview > order-de │ TOO_MANY_FIELDS   │ Visual has 5 fields (recommend    │
+│                     │                   │ <=4)                              │
+│ Overview > order-de │ VISUAL_UNDERSIZED │ tableEx is undersized             │
+│                     │                   │ (1232x184px, recommend >=         │
+│                     │                   │ 300x200px)                        │
+│ Overview > orders-k │ VISUAL_UNDERSIZED │ kpi is undersized (296x140px,     │
+│                     │                   │ recommend >= 290x200px)           │
+│ Overview > revenue- │ VISUAL_UNDERSIZED │ kpi is undersized (296x140px,     │
+│                     │                   │ recommend >= 290x200px)           │
+│ Showcase > utilizat │ VISUAL_UNDERSIZED │ gauge is undersized (296x160px,   │
+│                     │                   │ recommend >= 260x180px)           │
+└─────────────────────┴───────────────────┴───────────────────────────────────┘
+
+Valid (7 warnings, 1 info)

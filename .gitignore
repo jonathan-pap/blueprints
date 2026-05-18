@@ -1,0 +1,33 @@
+# Upstream provenance snapshot — large reference, not part of the blueprint itself
+power-bi/_examples/
+
+# Power BI Desktop local cache / settings (often holds personal paths or local-only state)
+**/.pbi/
+**/localSettings.json
+**/*.SecurityBindings.json
+
+# Hook cache + tmp working dirs
+**/tmp/
+**/model-metadata.json
+**/.compat-warned
+
+# PBI binary outputs (PBIP is the source of truth; .pbix would be regenerated)
+**/*.pbix
+
+# Claude Code local overrides (per-user, not team)
+.claude/settings.local.json
+.claude/*.local.json
+
+# Editor / OS junk
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Python / Node accidental drops
+__pycache__/
+*.pyc
+node_modules/

@@ -1,0 +1,228 @@
+table _Measures
+	lineageTag: cfff4bff-9707-4543-823b-798f2f9200bb
+	isHidden
+
+	/// Sum of Sales across the financials table.
+	measure 'Total Sales' = SUM(financials[Sales])
+		formatString: $#,##0
+		displayFolder: 1. Headline
+		lineageTag: 329a1c8c-d06a-4161-8694-588fffbc8a84
+
+	/// Sum of Units Sold across the financials table.
+	measure 'Total Units' = SUM(financials[Units Sold])
+		formatString: #,##0
+		displayFolder: 1. Headline
+		lineageTag: 2763e46d-4048-4c8f-aa88-730f6e22faaa
+
+	/// Sum of Profit across the financials table.
+	measure 'Total Profit' = SUM(financials[Profit])
+		formatString: $#,##0
+		displayFolder: 1. Headline
+		lineageTag: 4383d50c-6c0b-474b-bffd-337e61a47d52
+
+	/// Sum of COGS across the financials table.
+	measure 'Total COGS' = SUM(financials[COGS])
+		formatString: $#,##0
+		displayFolder: 1. Headline
+		lineageTag: 29be152a-5bd6-427a-ac18-d6b0952d5b85
+
+	/// Profit as a percentage of Sales.
+	measure 'Profit %' = DIVIDE([Total Profit], [Total Sales])
+		formatString: 0.0%
+		displayFolder: 2. Ratios
+		lineageTag: b00e078f-3337-4a76-8eac-9d2350a4624f
+
+	/// Discounts as a percentage of Gross Sales.
+	measure 'Discount %' = DIVIDE(SUM(financials[Discounts]), SUM(financials[Gross Sales]))
+		formatString: 0.0%
+		displayFolder: 2. Ratios
+		lineageTag: 49a8d1c0-47cb-4428-80d7-67beae925367
+
+	/// Total Sales in the same period one year ago.
+	measure 'Sales PY' =
+			CALCULATE(
+				[Total Sales],
+				SAMEPERIODLASTYEAR(financials[Date])
+			)
+		formatString: $#,##0
+		displayFolder: 3. Time Intelligence
+		lineageTag: 5ba9147d-9e4d-4545-97d7-a18545d63056
+
+	/// Year-to-date Total Sales.
+	measure 'Sales YTD' =
+			CALCULATE(
+				[Total Sales],
+				DATESYTD(financials[Date])
+			)
+		formatString: $#,##0
+		displayFolder: 3. Time Intelligence
+		lineageTag: 9f89cf28-134e-4c1b-bc75-f16c22b0e8d4
+
+	/// Average sale price across the financials table.
+	measure 'Avg Sale Price' = AVERAGE(financials[Sale Price])
+		formatString: $#,##0.00
+		displayFolder: 4. Averages
+		lineageTag: 18569ed5-6bb0-4626-976f-4c8b94f7ef36
+
+	/// SVG progress bar visualizing Profit % (0-100%). Red < 10%, amber 10-20%, green >= 20%.
+	measure 'Profit % SVG' =
+			VAR _Pct = MIN( COALESCE( [Profit %], 0 ), 1 )
+			VAR _W = 120
+			VAR _H = 18
+			VAR _FillW = _Pct * _W
+			VAR _Color =
+				SWITCH(
+					TRUE(),
+					_Pct < 0.10, "#E03131",
+					_Pct < 0.20, "#F08C00",
+					"#2F9E44"
+				)
+			VAR _Label = FORMAT( _Pct, "0.0%" )
+			RETURN
+				"data:image/svg+xml;utf8," &
+				"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 " & _W & " " & _H & "'>" &
+				"<rect width='" & _W & "' height='" & _H & "' fill='#E9ECEF' rx='" & (_H / 2) & "'/>" &
+				"<rect width='" & _FillW & "' height='" & _H & "' fill='" & _Color & "' rx='" & (_H / 2) & "'/>" &
+				"<text x='" & (_W / 2) & "' y='" & (_H / 2 + 4) & "' font-size='11' text-anchor='middle' fill='#212529' font-family='Segoe UI'>" & _Label & "</text>" &
+				"</svg>"
+		dataCategory: ImageUrl
+		displayFolder: 5. SVG
+		lineageTag: a1f1c3e4-1111-4aaa-9bbb-111111111111
+
+	/// SVG status pill: green for Profit > 0, red for loss, gray for zero.
+	measure 'Profit Pill SVG' =
+			VAR _Profit = [Total Profit]
+			VAR _State =
+				SWITCH(
+					TRUE(),
+					ISBLANK( _Profit ) || _Profit = 0, "#868E96",
+					_Profit < 0, "#E03131",
+					"#2F9E44"
+				)
+			VAR _Label =
+				SWITCH(
+					TRUE(),
+					ISBLANK( _Profit ) || _Profit = 0, "—",
+					_Profit < 0, "LOSS",
+					"PROFIT"
+				)
+			VAR _W = 70
+			VAR _H = 18
+			RETURN
+				"data:image/svg+xml;utf8," &
+				"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 " & _W & " " & _H & "'>" &
+				"<rect width='" & _W & "' height='" & _H & "' fill='" & _State & "' rx='" & (_H / 2) & "'/>" &
+				"<text x='" & (_W / 2) & "' y='" & (_H / 2 + 4) & "' font-size='10' text-anchor='middle' fill='#FFFFFF' font-family='Segoe UI' font-weight='bold'>" & _Label & "</text>" &
+				"</svg>"
+		dataCategory: ImageUrl
+		displayFolder: 5. SVG
+		lineageTag: a2f2c4e5-2222-4aaa-9bbb-222222222222
+
+	/// GitHub-style SVG heatmap: small cells per year-month, colored by sales intensity (current row's product). Color scale is global across all product/month combos so cells are comparable across rows.
+	measure 'Heatmap SVG' =
+			VAR _CW = 14
+			VAR _CH = 14
+			VAR _G = 2
+			VAR _DistinctYMs =
+				DISTINCT(
+					SELECTCOLUMNS(
+						ALL( financials ),
+						"YM", YEAR( financials[Date] ) * 100 + MONTH( financials[Date] )
+					)
+				)
+			VAR _RankedMonths =
+				ADDCOLUMNS(
+					_DistinctYMs,
+					"Idx",
+						VAR _Cur = [YM]
+						RETURN COUNTROWS( FILTER( _DistinctYMs, [YM] < _Cur ) )
+				)
+			VAR _AllProductMonths =
+				ADDCOLUMNS(
+					CROSSJOIN(
+						DISTINCT( SELECTCOLUMNS( ALL( financials ), "P", financials[Product] ) ),
+						_DistinctYMs
+					),
+					"S",
+						CALCULATE(
+							SUM( financials[Sales] ),
+							FILTER( ALL( financials ),
+								financials[Product] = [P] &&
+								YEAR( financials[Date] ) * 100 + MONTH( financials[Date] ) = [YM]
+							)
+						)
+				)
+			VAR _MaxS = MAXX( _AllProductMonths, [S] )
+			VAR _Cells =
+				CONCATENATEX(
+					_RankedMonths,
+					VAR _ThisYM = [YM]
+					VAR _ThisIdx = [Idx]
+					VAR _Sales =
+						CALCULATE(
+							SUM( financials[Sales] ),
+							FILTER( ALL( financials[Date] ),
+								YEAR( financials[Date] ) * 100 + MONTH( financials[Date] ) = _ThisYM
+							)
+						)
+					VAR _I = DIVIDE( _Sales, _MaxS )
+					VAR _X = _ThisIdx * (_CW + _G)
+					VAR _C =
+						SWITCH( TRUE(),
+							ISBLANK( _Sales ) || _Sales <= 0, "#EBEDF0",
+							_I < 0.25, "#9BE9A8",
+							_I < 0.50, "#40C463",
+							_I < 0.75, "#30A14E",
+							"#216E39"
+						)
+					RETURN
+						"<rect x='" & _X & "' y='0' width='" & _CW & "' height='" & _CH & "' fill='" & _C & "' rx='2'/>",
+					"",
+					[YM], ASC
+				)
+			VAR _N = COUNTROWS( _RankedMonths )
+			VAR _W = _N * (_CW + _G)
+			RETURN
+				"data:image/svg+xml;utf8," &
+				"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 " & _W & " " & _CH & "'>" &
+				_Cells &
+				"</svg>"
+		dataCategory: ImageUrl
+		displayFolder: 5. SVG
+		lineageTag: a4f4c6e7-4444-4aaa-9bbb-444444444444
+
+	/// SVG discount intensity bar (0-50%). Color ramps from teal (low) to red (high).
+	measure 'Discount % SVG' =
+			VAR _Pct = MIN( COALESCE( [Discount %], 0 ) / 0.5, 1 )
+			VAR _W = 100
+			VAR _H = 14
+			VAR _FillW = _Pct * _W
+			VAR _Color =
+				SWITCH(
+					TRUE(),
+					_Pct < 0.33, "#0C8599",
+					_Pct < 0.66, "#F08C00",
+					"#E03131"
+				)
+			RETURN
+				"data:image/svg+xml;utf8," &
+				"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 " & _W & " " & _H & "'>" &
+				"<rect width='" & _W & "' height='" & _H & "' fill='#E9ECEF' rx='2'/>" &
+				"<rect width='" & _FillW & "' height='" & _H & "' fill='" & _Color & "' rx='2'/>" &
+				"</svg>"
+		dataCategory: ImageUrl
+		displayFolder: 5. SVG
+		lineageTag: a3f3c5e6-3333-4aaa-9bbb-333333333333
+
+	column _
+		dataType: string
+		isHidden
+		lineageTag: c2726087-25ee-40fe-96af-9a5c551d9484
+		summarizeBy: none
+		sourceColumn: _
+
+	partition _Measures = calculated
+		mode: import
+		source = ROW("_", "")
+
+	annotation PBI_ResultType = Table

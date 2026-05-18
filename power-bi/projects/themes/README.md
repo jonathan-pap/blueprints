@@ -1,0 +1,79 @@
+# projects/themes/ — Theme library
+
+> Standalone theme JSONs and their serialized `.Theme/` working folders. Themes have their own lifecycle: authored here, then distributed to PBIP reports.
+
+## Convention
+
+```text
+projects/themes/
+├── README.md
+└── <theme-slug>/                   ← one folder per theme family
+    ├── brief.md                    ← OPTIONAL — design intake (read FIRST by the agent)
+    ├── <theme-slug>-v1.0.json      ← built monolith — source of truth, distribute this
+    ├── <theme-slug>-v1.0.Theme/    ← OPTIONAL — serialized fragments for editing
+    │   ├── _config.json
+    │   ├── _wildcards.json
+    │   ├── textbox.json
+    │   └── …
+    ├── notes.md                    ← OPTIONAL — design rationale, change log
+    └── preview.png                 ← OPTIONAL — screenshot of the theme on a report
+```
+
+`brief.md` is the **intake** (decisions to drive authoring); `notes.md` is the **rationale** (why we ended up here). Both optional; either or both is fine.
+
+`<theme-slug>` is kebab-case. Version goes in the **filename**, not in folder names — keeps the folder stable while versions iterate.
+
+## Why themes get their own home
+
+A theme is a self-contained artifact that may apply to many reports. Storing it inside a single `.Report/StaticResources/RegisteredResources/` couples it to that one report. Storing it here means:
+
+- One source of truth, distributed via `pbir theme apply-template` or `apply/file.md`
+- Iterate the theme without touching consumer reports
+- Diff between versions with `pbir theme diff`
+- Register as a CLI template for the whole machine (`~/.pbir/templates/themes/`)
+
+## Workflow
+
+### Authoring a new theme
+
+See [`../../02-build/theme/create/_index.md`](../../02-build/theme/create/_index.md) for the 7-step authoring workflow. Drop a `brief.md` at `projects/themes/<slug>/brief.md` first if you have specific decisions to capture (template: [`../../02-build/theme/create/brief-template.md`](../../02-build/theme/create/brief-template.md)).
+
+Land the result here:
+
+```bash
+mkdir projects/themes/<slug>
+pbir theme serialize <base>.json -o projects/themes/<slug>/<slug>-v1.0.Theme
+# edit fragments
+pbir theme build projects/themes/<slug>/<slug>-v1.0.Theme -o projects/themes/<slug>/<slug>-v1.0.json
+```
+
+### Applying to a report
+
+```bash
+pbir theme apply-template "<report>.Report" --from-file projects/themes/<slug>/<slug>-v1.0.json
+```
+
+Or register once, apply many times: [`../../02-build/theme/apply/share-as-template.md`](../../02-build/theme/apply/share-as-template.md).
+
+### Versioning
+
+Bump the version in the **filename** when you change anything that consumer reports would see:
+
+- `<slug>-v1.0.json` → `<slug>-v1.1.json` for tweaks (color shift, font size)
+- `<slug>-v1.x` → `<slug>-v2.0.json` for breaking changes (palette rework, structural overhaul)
+
+Keep old versions in the folder so consumer reports pinned to an old version still work.
+
+## Rules
+
+- **Distribute the built monolith**, not the `.Theme/` folder. Consumers apply `<slug>-vX.Y.json`.
+- **Do not put a `.Theme/` folder inside a `.Report/`** — PBIR hooks reject fragments. See [`../../02-build/theme/where-themes-live.md`](../../02-build/theme/where-themes-live.md).
+- **Validate before committing**: `pbir theme validate projects/themes/<slug>/<slug>-vX.Y.json`.
+- **UTF-8 without BOM** for every JSON file.
+
+## See also
+
+- [`../../02-build/theme/create/`](../../02-build/theme/create/) — authoring workflow
+- [`../../02-build/theme/where-themes-live.md`](../../02-build/theme/where-themes-live.md) — storage convention inside reports
+- [`../../02-build/theme/apply/share-as-template.md`](../../02-build/theme/apply/share-as-template.md) — distribute as CLI template
+- [`../../02-build/theme/serialize/`](../../02-build/theme/serialize/) — split / build mechanics

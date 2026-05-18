@@ -1,0 +1,33 @@
+# Blueprint-wide hook toggles
+#
+# Master switches that override the per-subsystem config.yaml files.
+# Everything still works with these off — you just lose the safety net.
+#
+# Precedence: this file (parent) wins over subsystem config.yaml.
+# If a switch here is `false`, the subsystem is disabled regardless of its own config.
+# If a switch here is `true` (or absent), the subsystem falls through to its own config.yaml.
+
+# Review hooks — file validation on Write/Edit/Bash (04-review/hooks/)
+# Validates: JSON syntax, required fields, $schema URL, folder spaces, name format,
+# byPath target exists, fab byConnection exists, TMDL syntax.
+# Flip OFF when you want fast iteration without per-write validation noise.
+review: true
+
+# Bind hooks — live-model validation on TOM/ADOMD operations (03-bind/via-powershell/hooks/)
+# Validates: DAX refs against model, measure metadata, referential integrity after SaveChanges,
+# compatibility-level upgrade nudge, metadata cache refresh.
+# Flip OFF when you don't want any live-model validation.
+bind: true
+
+# Outputs — whether audit/validation tooling writes artifacts to outputs/
+# Flip OFF for fast iteration when you don't want dated audit files accumulating.
+# Pure runtime checks (in-line validation) still fire; only the disk artifacts are suppressed.
+outputs: true
+
+# Brief discovery — UserPromptSubmit hook (01-brief/hooks/discover-briefs.sh)
+# Scans power-bi/projects/**/brief.md (and brief/ folder form) on every prompt
+# and surfaces ones modified within BRIEF_DISCOVERY_MINUTES (default 60).
+# Flip OFF if the surface-on-every-prompt noise is unwanted.
+# NOTE: Requires the script to be registered as a UserPromptSubmit hook in your
+# Claude Code settings.json — see 01-brief/hooks/README.md for the snippet.
+briefs: true
