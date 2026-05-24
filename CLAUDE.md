@@ -8,6 +8,9 @@
 Workspace-Blueprint/
 ├── CLAUDE.md                this file (workspace directory)
 ├── README.md
+├── briefs/                  ── HUB — brief templates (linked) + filled examples (NOT a blueprint)
+│   ├── README.md            how to use; links to each blueprint's canonical template
+│   └── examples/            filled example briefs (power-bi + synthetic-data, a paired set)
 ├── power-bi/                ── BLUEPRINT — Power BI Desktop projects (PBIP)
 │   ├── CLAUDE.md            entry point for this blueprint (L1 router + folder map)
 │   ├── README.md
@@ -48,6 +51,13 @@ Each blueprint is a top-level kebab-case folder containing:
 
 Blueprints are self-contained — zip a blueprint folder, drop it on another machine, it still works.
 
+## Brief intake hub
+
+[`briefs/`](briefs/) is a shared, non-blueprint hub: it links to each blueprint's canonical brief
+template and holds **filled example briefs** to learn from. Start there to pick a template, then
+save the filled brief to the target blueprint's `projects/<name>/brief.md` — where that blueprint's
+discovery hook picks it up. See [briefs/README.md](briefs/README.md).
+
 ## Routing rule
 
-Match the user's intent to a blueprint. Load only that blueprint's `CLAUDE.md`. Do not browse other blueprints.
+Match the user's intent to a blueprint. Load only that blueprint's `CLAUDE.md`. Do not browse other blueprints. `briefs/` is a hub, not a blueprint — the filled brief always lands under a blueprint's `projects/`.

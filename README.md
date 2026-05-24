@@ -8,6 +8,8 @@ A collection of self-contained **folder-as-app blueprints** for working with var
 2. Tell it to read [CLAUDE.md](CLAUDE.md) — the blueprint directory.
 3. Pick the blueprint that matches your task. Claude follows that blueprint's own `CLAUDE.md` from there.
 
+Starting a new piece of work? See [briefs/](briefs/) — a shared hub with brief templates (linked to each blueprint) and **filled example briefs** to learn from.
+
 ## Current blueprints
 
 | Blueprint | Tool | Status |
