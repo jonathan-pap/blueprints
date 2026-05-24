@@ -8,6 +8,11 @@
             "type": "command",
             "command": "bash \"${CLAUDE_PROJECT_DIR}/power-bi/01-brief/hooks/discover-briefs.sh\"",
             "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/synthetic-data/01-brief/hooks/discover-briefs.sh\"",
+            "timeout": 5
           }
         ]
       }

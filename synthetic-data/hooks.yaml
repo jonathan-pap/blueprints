@@ -1,0 +1,19 @@
+# Blueprint-wide hook toggles (synthetic-data)
+#
+# Master switches for this blueprint's hook subsystems. Everything still works
+# with these off — you just lose the convenience.
+#
+# Precedence: this file (parent) wins over any per-subsystem config.yaml.
+# `false` disables the subsystem; `true` (or absent) lets it run.
+
+# Brief discovery — UserPromptSubmit hook (01-brief/hooks/discover-briefs.sh)
+# Scans synthetic-data/projects/**/brief.md (and brief/ folder form) on every prompt
+# and surfaces ones modified within BRIEF_DISCOVERY_MINUTES (default 60), so Claude
+# reads a recently-touched job brief before proposing a plan.
+# Flip OFF if the surface-on-every-prompt noise is unwanted.
+# NOTE: Requires the script to be registered as a UserPromptSubmit hook in
+# .claude/settings.json — see 01-brief/hooks/README.md for the snippet.
+briefs: true
+
+# (Future) review / output validation hooks will gain toggles here as the
+# blueprint grows past skeleton stage. None exist yet.

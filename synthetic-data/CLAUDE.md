@@ -50,7 +50,8 @@ Example: `outputs/2026-05-24-demo-financials.csv`. Dates are absolute, never rel
 synthetic-data/
 ├── CLAUDE.md                 this file (L1 router)
 ├── README.md
-├── 01-brief/      (context.md)   discovery / requirements
+├── hooks.yaml                master toggle (briefs: brief auto-discovery)
+├── 01-brief/      (context.md)   discovery / requirements (+ brief-template.md, hooks/)
 ├── 02-schema/     (context.md)   define the data shape
 ├── 03-generate/   (context.md)   generation engines + execution
 ├── 04-output/     (context.md)   serialize & deliver (+ handoff-to-power-bi.md)
@@ -96,4 +97,5 @@ Match the user's intent. Load only what's listed.
 - **Referential integrity.** Generate parent tables before children; every foreign key must resolve.
 - **Validate before delivery.** Run `05-review/` against the schema before handing data off.
 - **Volume-aware.** Batch / stream large volumes; don't hold millions of rows in memory.
+- **Brief auto-discovery:** if the `UserPromptSubmit` hook is registered (see `01-brief/hooks/README.md`), recently-modified `projects/**/brief.md` files arrive each turn in a `<recent-briefs>` block — read any flagged brief before asking discovery questions. Toggle via `hooks.yaml` (`briefs:`).
 - **Power BI hand-off writes into a Power BI project folder** — by default the sibling `../power-bi/projects/<name>/<name>.SemanticModel/`, or any path you supply. Confirm the destination before writing.

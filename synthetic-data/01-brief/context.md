@@ -19,9 +19,13 @@
 A `projects/<job>/brief.md`: purpose, entity list + row counts, realism level, locale, seed,
 PII note, output target. Hand off to `../02-schema/context.md`.
 
-## Planned atomic files (grow as needed)
+## Here now
 
 - `brief-template.md` — copy-paste template for `projects/<job>/brief.md`
+- `hooks/discover-briefs.sh` — UserPromptSubmit hook that surfaces recently-edited briefs each turn (toggle in `../hooks.yaml`; register per `hooks/README.md`)
+
+## Planned atomic files (grow as needed)
+
 - `references/use-cases.md` — demo vs test vs load vs ML, and how each shifts realism/volume
 - `references/volume-and-seeding.md` — sizing guidance + why/how to fix a seed
 - `references/pii-policy.md` — the synthetic-only rule, mimicking real data safely
