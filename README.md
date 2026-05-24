@@ -13,6 +13,7 @@ A collection of self-contained **folder-as-app blueprints** for working with var
 | Blueprint | Tool | Status |
 | --- | --- | --- |
 | [power-bi/](power-bi/) | Power BI Desktop (PBIP format) | Complete — 265 atomic files across 11 rooms |
+| [synthetic-data/](synthetic-data/) | Synthetic / dummy data creation (Python-first) | Skeleton — 5 rooms + Power BI hand-off; rooms grow per job |
 
 ## Why folder-as-app
 

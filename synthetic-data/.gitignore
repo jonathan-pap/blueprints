@@ -1,0 +1,25 @@
+# Scoped to the synthetic-data blueprint.
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+
+# Large generated datasets — keep the outputs/ folder + its README, ignore bulky artifacts.
+# Commit small sample outputs deliberately with `git add -f` if you want them tracked.
+outputs/*.csv
+outputs/*.tsv
+outputs/*.parquet
+outputs/*.json
+outputs/*.ndjson
+outputs/*.xlsx
+outputs/*.sql
+!outputs/README.md

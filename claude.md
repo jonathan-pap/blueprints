@@ -8,21 +8,32 @@
 Workspace-Blueprint/
 ├── claude.md                this file (workspace directory)
 ├── README.md
-└── power-bi/                ── BLUEPRINT — Power BI Desktop projects (PBIP)
+├── power-bi/                ── BLUEPRINT — Power BI Desktop projects (PBIP)
+│   ├── claude.md            entry point for this blueprint (L1 router + folder map)
+│   ├── README.md
+│   ├── 01-brief/            discovery / requirements (5 atomic files)
+│   ├── 02-build/            edit room — report, model (+DAX, Power Query, naming), theme, visuals (~490 atomic files)
+│   ├── 03-bind/             live model — Power BI MCP or PowerShell TOM + Enhanced Refresh (~50 atomic files)
+│   ├── 04-review/           validate, audit, model-audit, usage, lineage, reviewers (~45 atomic files + hooks + scripts)
+│   ├── projects/            raw layer — actual <name>.Report / <name>.SemanticModel projects
+│   ├── outputs/             output layer — dated artifacts YYYY-MM-DD-<project>-<type>.<ext>
+│   └── _examples/           provenance snapshot (do not load unless asked)
+└── synthetic-data/         ── BLUEPRINT — synthetic / dummy data creation (Python-first)
     ├── claude.md            entry point for this blueprint (L1 router + folder map)
     ├── README.md
-    ├── 01-brief/            discovery / requirements (5 atomic files)
-    ├── 02-build/            edit room — report, model (+DAX, Power Query, naming), theme, visuals (~490 atomic files)
-    ├── 03-bind/             live model — Power BI MCP or PowerShell TOM + Enhanced Refresh (~50 atomic files)
-    ├── 04-review/           validate, audit, model-audit, usage, lineage, reviewers (~45 atomic files + hooks + scripts)
-    ├── projects/            raw layer — actual <name>.Report / <name>.SemanticModel projects
-    ├── outputs/             output layer — dated artifacts YYYY-MM-DD-<project>-<type>.<ext>
-    └── _examples/           provenance snapshot (do not load unless asked)
+    ├── 01-brief/            requirements — what data, volume, seed, PII policy
+    ├── 02-schema/           define the data shape — entities, types, distributions, rules
+    ├── 03-generate/         generation engines — faker / distribution / relational / statistical / LLM
+    ├── 04-output/           serialize & deliver (CSV/JSON/Parquet/SQL/DB + Power BI hand-off)
+    ├── 05-review/           validate, profile, key integrity, PII-leakage audit
+    ├── projects/            raw layer — one folder per generation job
+    └── outputs/             output layer — dated datasets YYYY-MM-DD-<job>-<dataset>.<ext>
 ```
 
 ## Available blueprints
 
 - **[power-bi/](power-bi/)** — Power BI Desktop projects (PBIP format). Reports, semantic models, themes, custom visuals, live-model bridge (MCP-first, PowerShell alternative), audit + validation hooks. Entry point: [power-bi/claude.md](power-bi/claude.md) (has its own detailed folder map).
+- **[synthetic-data/](synthetic-data/)** — synthetic / dummy data creation (Python-first: Faker, numpy/scipy, SDV). Schema-faithful, privacy-safe fake datasets for demos, testing, ML fixtures, or to populate a BI model. Includes a Power BI hand-off that writes generated data into a `power-bi/` semantic model. Entry point: [synthetic-data/claude.md](synthetic-data/claude.md). *(Skeleton — rooms grow per job.)*
 
 ## Convention for adding a blueprint
 
