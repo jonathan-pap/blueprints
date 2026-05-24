@@ -10,13 +10,78 @@
       "nodes": [
         {
           "location": {
-            "x": 0,
+            "x": 1420,
             "y": 0
           },
           "nodeIndex": "financials",
           "nodeLineageTag": "d222d7f5-e4c8-4825-8a96-cc5f71410068",
           "size": {
             "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "nodeIndex": "_Measures",
+          "nodeLineageTag": "cfff4bff-9707-4543-823b-798f2f9200bb",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 284,
+            "y": 50
+          },
+          "nodeIndex": "financials Date Slicer",
+          "nodeLineageTag": "e68516bd-4b8b-4f63-bcef-7b76754685b2",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 568,
+            "y": 50
+          },
+          "nodeIndex": "Price Slicer",
+          "nodeLineageTag": "3868f620-8987-43a7-97d5-dce69760e6a8",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 852,
+            "y": 50
+          },
+          "nodeIndex": "Product Slicer",
+          "nodeLineageTag": "2871d590-2cdd-4fc0-94a3-4bbfc0c0dbea",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1136,
+            "y": 50
+          },
+          "nodeIndex": "Year Slicer",
+          "nodeLineageTag": "46751f41-0225-4968-8fce-415387e15b1c",
+          "size": {
+            "height": 200,
             "width": 234
           },
           "zIndex": 0

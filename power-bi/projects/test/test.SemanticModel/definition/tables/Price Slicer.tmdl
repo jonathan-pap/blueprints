@@ -1,0 +1,19 @@
+/// Disconnected selection table (recipe: numeric-threshold-band). VALUES of financials[Sale Price], NO relationships.
+table 'Price Slicer'
+	lineageTag: 3868f620-8987-43a7-97d5-dce69760e6a8
+
+	column 'Sale Price'
+		formatString: 0
+		lineageTag: 6de0a144-d88e-4b9e-8e4f-150ef9d44e43
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: financials[Sale Price]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Price Slicer' = calculated
+		mode: import
+		source = VALUES( financials[Sale Price] )
+
+	annotation PBI_Id = 7940a103fb4f4d4a9b537cfa5d3a3aef
+

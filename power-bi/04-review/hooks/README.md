@@ -1,14 +1,15 @@
 # PBIP Validation Hooks
 
-PostToolUse hooks that validate PBIR and TMDL files after Write, Edit, and Bash tool use.
+PreToolUse + PostToolUse hooks that validate PBIR/TMDL files and visual bindings around Write, Edit, and Bash tool use.
 
 ## Hook files
 
-| Hook | Trigger | Scope |
-|---|---|---|
-| `validate-pbir.sh` | Write, Edit, Bash | .json/.pbir files in .Report/ |
-| `validate-report-binding.sh` | Write, Edit, Bash | definition.pbir binding validation (byPath/byConnection) |
-| `validate-tmdl.sh` | Write, Edit, Bash | .tmdl files in .SemanticModel/ or .Dataset/ |
+| Hook | Event | Trigger | Scope |
+| --- | --- | --- | --- |
+| `validate-visual-binding.sh` | PreToolUse | `Bash(*pbir add visual*)` / `Bash(*pbir visuals bind*)` | Catches hallucinated field names BEFORE pbir writes broken JSON. See `validate-visual-binding.md` |
+| `validate-pbir.sh` | PostToolUse | Write, Edit, Bash | .json/.pbir files in .Report/ |
+| `validate-report-binding.sh` | PostToolUse | Write, Edit, Bash | definition.pbir binding validation (byPath/byConnection) |
+| `validate-tmdl.sh` | PostToolUse | Write, Edit, Bash | .tmdl files in .SemanticModel/ or .Dataset/ |
 
 ## Checks
 

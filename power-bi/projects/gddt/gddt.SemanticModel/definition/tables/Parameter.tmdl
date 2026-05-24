@@ -1,0 +1,50 @@
+table Parameter
+	lineageTag: dd1944bc-b3b7-4bb2-865b-1d187e2770b4
+
+	column Parameter
+		lineageTag: 4ea8a8a0-23ad-4be8-8cc3-9be3fc67ff3b
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Parameter Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Parameter Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parameter Fields'
+		isHidden
+		lineageTag: 66b49ddc-ad5e-4076-affd-e48492d6bd92
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Parameter Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parameter Order'
+		isHidden
+		formatString: 0
+		lineageTag: b6ca6c5c-570c-4b32-8a1f-d5782a195e6d
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Parameter = calculated
+		mode: import
+		source =
+				{
+				    ("# Due By Today", NAMEOF('_Measures'[# Due By Today]), 0),
+				    ("# Delivered", NAMEOF('_Measures'[# Delivered]), 1),
+				    ("# On Time", NAMEOF('_Measures'[# On Time]), 2),
+				    ("# Reached Gold", NAMEOF('_Measures'[# Reached Gold]), 3)
+				}
+
+	annotation PBI_Id = f9aff98a4457470d844b538be6e0b1b1
+

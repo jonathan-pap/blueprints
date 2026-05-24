@@ -1,0 +1,160 @@
+table fct_delivery
+	lineageTag: ad02b59b-6035-431a-b9c8-4d5c2cc1ecb3
+
+	column sdp_group_filename
+		dataType: string
+		lineageTag: 88082ffb-6973-4f9c-ab7e-a70809e23340
+		summarizeBy: none
+		sourceColumn: sdp_group_filename
+
+		annotation SummarizationSetBy = Automatic
+
+	column hash_id
+		dataType: string
+		lineageTag: a9c9b436-eb95-43e2-a72c-9e7dfc433b84
+		summarizeBy: none
+		sourceColumn: hash_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column dc_name
+		dataType: string
+		lineageTag: f8f7d57e-7d08-4067-ba9c-23de01010276
+		summarizeBy: none
+		sourceColumn: dc_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: 615d6822-d76d-40ba-ad6e-c8aaea02e3a1
+		summarizeBy: sum
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column month
+		dataType: int64
+		formatString: 0
+		lineageTag: 00f5352f-c764-42a4-a1bc-1e8443ba82ab
+		summarizeBy: sum
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+	column received_ts_rai
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 243eef8a-5eda-4e68-b212-a18a38404971
+		summarizeBy: none
+		sourceColumn: received_ts_rai
+
+		annotation SummarizationSetBy = Automatic
+
+	column received_ts_quar
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 6eb686f0-5e14-46da-b68a-66fd14075d47
+		summarizeBy: none
+		sourceColumn: received_ts_quar
+
+		annotation SummarizationSetBy = Automatic
+
+	column status_3_on_time
+		dataType: int64
+		formatString: 0
+		lineageTag: aced5492-bebc-4f1f-ab09-b93e6d3ec4ac
+		summarizeBy: sum
+		sourceColumn: status_3_on_time
+
+		annotation SummarizationSetBy = Automatic
+
+	column status_4_schema_failed
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 0d97a1c8-a24f-4082-8858-2c04509d8ffc
+		summarizeBy: none
+		sourceColumn: status_4_schema_failed
+
+		annotation SummarizationSetBy = Automatic
+
+	column status_5_quar_scope
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 0be6de53-3ae2-4e0c-bac1-d0412e091bfb
+		summarizeBy: none
+		sourceColumn: status_5_quar_scope
+
+		annotation SummarizationSetBy = Automatic
+
+	column status_6_quar_time
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 2e646d1c-19df-4850-9738-6841e67aeb68
+		summarizeBy: none
+		sourceColumn: status_6_quar_time
+
+		annotation SummarizationSetBy = Automatic
+
+	column status_7_dq_records
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: b8e3ae58-8943-47ad-a5e1-dbf9bf82c766
+		summarizeBy: none
+		sourceColumn: status_7_dq_records
+
+		annotation SummarizationSetBy = Automatic
+
+	column status_8_bus_approved
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 194e0f0c-b39f-4991-b833-fcc45dc5256a
+		summarizeBy: none
+		sourceColumn: status_8_bus_approved
+
+		annotation SummarizationSetBy = Automatic
+
+	column status_9_reached_gold
+		dataType: int64
+		formatString: 0
+		lineageTag: 1771e303-4a5b-4ce3-9faf-1fb3c3d784ec
+		summarizeBy: sum
+		sourceColumn: status_9_reached_gold
+
+		annotation SummarizationSetBy = Automatic
+
+	column insp_record_count
+		dataType: int64
+		formatString: 0
+		lineageTag: ff6168df-b9c4-449c-b67d-0b1918028505
+		summarizeBy: sum
+		sourceColumn: insp_record_count
+
+		annotation SummarizationSetBy = Automatic
+
+	/// TRUE for the latest delivery row per hash_id (ordered by sdp_group_filename, which begins with YYYYMMDDHHMMSS). FALSE for superseded earlier attempts.
+	column is_active = VAR CurrentFilename = fct_delivery[sdp_group_filename] VAR MaxFilenameForHash = CALCULATE ( MAX ( fct_delivery[sdp_group_filename] ), ALLEXCEPT ( fct_delivery, fct_delivery[hash_id] ) ) RETURN CurrentFilename = MaxFilenameForHash
+		dataType: boolean
+		displayFolder: Flags
+		lineageTag: c0a1ddd0-9002-4002-aaaa-000000000001
+		summarizeBy: none
+
+	/// Date the delivery was received (date-only of received_ts_rai). Inactive relationship key to dim_calendar for daily-flow measures.
+	column received_date = DATE ( YEAR ( fct_delivery[received_ts_rai] ), MONTH ( fct_delivery[received_ts_rai] ), DAY ( fct_delivery[received_ts_rai] ) )
+		dataType: dateTime
+		formatString: Short Date
+		displayFolder: Dates
+		lineageTag: c0a1ddd0-9002-4002-aaaa-000000000002
+		summarizeBy: none
+
+	partition fct_delivery = m
+		mode: import
+		source =
+				let
+				  Source = Csv.Document(File.Contents("E:\Workspace-Blueprint\power-bi\projects\gddt\fct_delivery.csv"), [Delimiter = ",", Columns = 15, QuoteStyle = QuoteStyle.None]),
+				  #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				  #"Changed column type" = Table.TransformColumnTypes(#"Promoted headers", {{"sdp_group_filename", type text}, {"hash_id", type text}, {"dc_name", type text}, {"year", Int64.Type}, {"month", Int64.Type}, {"received_ts_rai", type datetime}, {"received_ts_quar", type datetime}, {"status_3_on_time", Int64.Type}, {"status_4_schema_failed", type logical}, {"status_5_quar_scope", type logical}, {"status_6_quar_time", type logical}, {"status_7_dq_records", type logical}, {"status_8_bus_approved", type logical}, {"status_9_reached_gold", Int64.Type}, {"insp_record_count", Int64.Type}})
+				in
+				  #"Changed column type"
+

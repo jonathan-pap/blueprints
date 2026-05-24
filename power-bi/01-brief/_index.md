@@ -8,6 +8,7 @@
 
 ## Chat-fallback intake (when no brief exists)
 
+- `references/report-dev-mindset.md` — stance before building: problem-first, model-first, iterate, format with intent
 - `references/vague-prompts.md` — full intake script with anti-patterns
 - `references/kpi-selection.md` — 20% change test, picking actionable measures
 - `references/layout-patterns.md` — executive / operational / detail layouts with measurements

@@ -1,0 +1,21 @@
+table '<SELECTION_TABLE_NAME>'
+	lineageTag: <SELECTION_TABLE_LINEAGE_TAG>
+
+	column <SOURCE_COLUMN>
+		formatString: Short Date
+		lineageTag: <SELECTION_COLUMN_LINEAGE_TAG>
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: <SOURCE_TABLE>[<SOURCE_COLUMN>]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition '<SELECTION_TABLE_NAME>' = calculated
+		mode: import
+		source = ```
+
+				VALUES( <SOURCE_TABLE>[<SOURCE_COLUMN>] )
+
+				```
+
+	annotation PBI_Id = <SELECTION_TABLE_PBI_ID>

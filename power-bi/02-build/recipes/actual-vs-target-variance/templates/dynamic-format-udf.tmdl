@@ -1,0 +1,20 @@
+// OPTIONAL — dynamic K/M/B number formatting for the actual/target measures.
+// Create or append in: SemanticModel/definition/functions.tmdl
+// Then on each value measure (NET SALES / TARGET SALES) add:
+//     formatStringDefinition = DYNAMIC_FORMATING_INDICATORS()
+// Requires compatibilityLevel >= 1601. Swap the € prefix / "Md" suffix for your locale.
+
+/// Dynamic formatting for indicators — scales the unit (raw / K / M / Md) by magnitude.
+function DYNAMIC_FORMATING_INDICATORS =
+		() =>
+		VAR _Valeur = ABS ( SELECTEDMEASURE () )
+		RETURN
+			SWITCH (
+				TRUE (),
+				ISBLANK ( _Valeur ), BLANK (),
+				_Valeur < 10000,      "€ #,0;€ -#,0;€ 0",
+				_Valeur < 1000000,    "€ #,0,.0""K"";€ -#,0,.0""K"";€ 0",
+				_Valeur < 1000000000, "€ #,0,,.0""M"";€ -#,0,,.0""M"";€ 0",
+				                      "€ #,0,,,.0""Md"";€ -#,0,,,.0""Md"";€ 0"
+			)
+	lineageTag: 22222222-0000-0000-0000-000000000001

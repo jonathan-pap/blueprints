@@ -32,6 +32,17 @@ Time series → ascending by date:
 pbir visuals sort "<...>/Monthly Trend.Visual" -f "Date.Date" -d Ascending
 ```
 
+## Design rules
+
+Propagate formatting to the theme where possible; these are the per-visual exceptions.
+
+- **Markers:** off for dense series (daily-over-a-year), on for sparse (4 quarters). `lineStyles.showMarker`.
+- **Data labels off** — lines show trend; precise values belong in tables/tooltips.
+- **≤ 3–4 series.** Differentiate by stroke weight + color (primary thick/blue, secondary thin/grey/dashed); beyond that use SmallMultiples.
+- **Series labels over a legend** for 2–3 series (`seriesLabels.show` + leader lines) so the reader doesn't cross-reference.
+- **Area shading** optional at 85–90% transparency to hint magnitude without overpowering the line.
+- **Spotlight the latest point:** add a blank-gated extension measure as a second Y series, show marker+label only on it via the `metadata:"select"` / per-series selector → [../schema-patterns/selectors.md](../schema-patterns/selectors.md).
+
 ## Templates
 
 - `../examples/visuals/default/lineChart.json`

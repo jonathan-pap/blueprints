@@ -1,0 +1,8 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "dd17952c1a9747e0a957",
+  "displayName": "Pareto-Test",
+  "width": 1280,
+  "height": 720,
+  "displayOption": "FitToPage"
+}

@@ -1,0 +1,185 @@
+table expected
+	lineageTag: 958708d5-521c-425f-bba2-94ca1bd4cfcd
+
+	column hash_id
+		dataType: string
+		lineageTag: 0df97f71-245e-42a0-82fe-a8ec577a4cc6
+		summarizeBy: none
+		sourceColumn: hash_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column dc_name
+		dataType: string
+		lineageTag: 63e2d40e-2443-4540-bfd6-0cbbe7f01a68
+		summarizeBy: none
+		sourceColumn: dc_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: f1a9f7cb-abbc-4454-b1ae-76f972cffcd6
+		summarizeBy: sum
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column month
+		dataType: int64
+		formatString: 0
+		lineageTag: 09376724-4a11-4ff5-8292-80071868290d
+		summarizeBy: sum
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+	column last_expected_date
+		dataType: string
+		lineageTag: 6636e139-05d2-46e1-90b1-a3c45a091c53
+		summarizeBy: none
+		sourceColumn: last_expected_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column frequency
+		dataType: string
+		lineageTag: ef92d600-3cae-4324-b595-69b9963d1b39
+		summarizeBy: none
+		sourceColumn: frequency
+
+		annotation SummarizationSetBy = Automatic
+
+	column entity
+		dataType: string
+		lineageTag: 4e2eca8b-2503-418b-bbef-e7f8a3417121
+		summarizeBy: none
+		sourceColumn: entity
+
+		annotation SummarizationSetBy = Automatic
+
+	column domain
+		dataType: string
+		lineageTag: 677dbafc-e8c0-4ff6-8efb-3c75f94c0b9f
+		summarizeBy: none
+		sourceColumn: domain
+
+		annotation SummarizationSetBy = Automatic
+
+	column dataset_name
+		dataType: string
+		lineageTag: 6e40e0fe-4879-4db6-86f4-17a492a2fdfe
+		summarizeBy: none
+		sourceColumn: dataset_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column group
+		dataType: string
+		lineageTag: 1724e568-ad60-4769-a58e-16418d2d8361
+		summarizeBy: none
+		sourceColumn: group
+
+		annotation SummarizationSetBy = Automatic
+
+	column cleansed_table
+		dataType: string
+		lineageTag: 9ca7cfdb-d523-4844-ac35-be202ed7450c
+		summarizeBy: none
+		sourceColumn: cleansed_table
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Reporting period as a date — DATE(year, month, 1). Active relationship key to dim_calendar.
+	column period_date = DATE ( expected[year], expected[month], 1 )
+		dataType: dateTime
+		isHidden
+		formatString: Short Date
+		displayFolder: Dates
+		lineageTag: c0a1ddd0-9001-4001-aaaa-000000000001
+		summarizeBy: none
+
+	/// Deadline = 15th of the reporting period's own month. Files not received by this date are late/overdue.
+	column deadline_date = DATE ( expected[year], expected[month], 15 )
+		dataType: dateTime
+		formatString: yyyy-mm
+		displayFolder: Dates
+		lineageTag: c0a1ddd0-9001-4001-aaaa-000000000002
+		summarizeBy: none
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	/// Canonical single state per expected file (best-state-wins priority). Looks up this file's ACTIVE delivery via the relationship, applies the governance priority, falls back to Overdue/Pending when undelivered. Drives the L0 stacked bar so states partition cleanly to Expected (no double counting).
+	column CurrentState =
+			VAR _active = FILTER ( RELATEDTABLE ( fct_delivery ), fct_delivery[is_active] = TRUE () )
+			VAR _has = COUNTROWS ( _active ) > 0
+			VAR _gold = MAXX ( _active, fct_delivery[status_9_reached_gold] )
+			VAR _approved = COUNTROWS ( FILTER ( _active, fct_delivery[status_8_bus_approved] = TRUE () ) )
+			VAR _dq = COUNTROWS ( FILTER ( _active, fct_delivery[status_7_dq_records] = TRUE () ) )
+			VAR _qscope = COUNTROWS ( FILTER ( _active, fct_delivery[status_5_quar_scope] = TRUE () ) )
+			VAR _qtime = COUNTROWS ( FILTER ( _active, fct_delivery[status_6_quar_time] = TRUE () ) )
+			VAR _schema = COUNTROWS ( FILTER ( _active, fct_delivery[status_4_schema_failed] = TRUE () ) )
+			VAR _ontime = MAXX ( _active, fct_delivery[status_3_on_time] )
+			VAR _overdue = expected[deadline_date] < TODAY ()
+			RETURN
+				SWITCH ( TRUE (),
+					_gold > 0, "Reached Gold",
+					_approved > 0, "Business Approved",
+					_dq > 0, "DQ Records Found",
+					_qscope > 0, "Quarantine - Scope",
+					_qtime > 0, "Quarantine - Time",
+					_schema > 0, "Schema Failed",
+					_has && _ontime > 0, "On Time",
+					_has, "Delivered (late)",
+					_overdue, "Overdue",
+					"Pending"
+				)
+		dataType: string
+		displayFolder: State
+		lineageTag: c0a1ddd0-9001-4001-aaaa-000000000003
+		summarizeBy: none
+		sortByColumn: CurrentStateSort
+
+	/// Sort key for CurrentState (healthy → problem). Computed independently from the same active-delivery lookup (NOT referencing CurrentState) to avoid a circular dependency with CurrentState's sortByColumn.
+	column CurrentStateSort =
+			VAR _active = FILTER ( RELATEDTABLE ( fct_delivery ), fct_delivery[is_active] = TRUE () )
+			VAR _has = COUNTROWS ( _active ) > 0
+			VAR _gold = MAXX ( _active, fct_delivery[status_9_reached_gold] )
+			VAR _approved = COUNTROWS ( FILTER ( _active, fct_delivery[status_8_bus_approved] = TRUE () ) )
+			VAR _dq = COUNTROWS ( FILTER ( _active, fct_delivery[status_7_dq_records] = TRUE () ) )
+			VAR _qscope = COUNTROWS ( FILTER ( _active, fct_delivery[status_5_quar_scope] = TRUE () ) )
+			VAR _qtime = COUNTROWS ( FILTER ( _active, fct_delivery[status_6_quar_time] = TRUE () ) )
+			VAR _schema = COUNTROWS ( FILTER ( _active, fct_delivery[status_4_schema_failed] = TRUE () ) )
+			VAR _ontime = MAXX ( _active, fct_delivery[status_3_on_time] )
+			VAR _overdue = expected[deadline_date] < TODAY ()
+			RETURN
+				SWITCH ( TRUE (),
+					_gold > 0, 1,
+					_approved > 0, 2,
+					_dq > 0, 5,
+					_qscope > 0, 6,
+					_qtime > 0, 7,
+					_schema > 0, 8,
+					_has && _ontime > 0, 3,
+					_has, 4,
+					_overdue, 9,
+					10
+				)
+		dataType: int64
+		isHidden
+		formatString: 0
+		displayFolder: State
+		lineageTag: c0a1ddd0-9001-4001-aaaa-000000000004
+		summarizeBy: none
+
+	partition expected = m
+		mode: import
+		source =
+				let
+				  Source = Csv.Document(File.Contents("E:\Workspace-Blueprint\power-bi\projects\gddt\expected.csv"), [Delimiter = ",", Columns = 11, QuoteStyle = QuoteStyle.None]),
+				  #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				  #"Changed column type" = Table.TransformColumnTypes(#"Promoted headers", {{"hash_id", type text}, {"dc_name", type text}, {"year", Int64.Type}, {"month", Int64.Type}, {"last_expected_date", type text}, {"frequency", type text}, {"entity", type text}, {"domain", type text}, {"dataset_name", type text}, {"group", type text}, {"cleansed_table", type text}})
+				in
+				  #"Changed column type"
+

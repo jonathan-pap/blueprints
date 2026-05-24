@@ -1,8 +1,0 @@
-{
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
-  "name": "7090dba2c5d7f366",
-  "displayName": "Demo-ColumnCharts",
-  "width": 1280,
-  "height": 720,
-  "displayOption": "FitToPage"
-}

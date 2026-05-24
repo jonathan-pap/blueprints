@@ -1,0 +1,42 @@
+/// Dataset dimension — one row per dataset_name, with frequency, domain, and cleansed_table. Derived from expected. Slicer surface for frequency/domain.
+table dim_dataset
+	lineageTag: 460a309c-1d9b-4322-aa1c-8894cc4d00b7
+
+	column dataset_name
+		lineageTag: 3199ba69-976d-4650-83b5-eee77cf0b6c4
+		isNameInferred
+		sourceColumn: expected[dataset_name]
+
+	column domain
+		lineageTag: c663850c-03db-49d7-a235-240bec44eaa7
+		isNameInferred
+		sourceColumn: expected[domain]
+
+	column frequency
+		lineageTag: 4df176eb-822d-4f3b-b821-beca8027bf02
+		isNameInferred
+		sourceColumn: expected[frequency]
+
+	column cleansed_table
+		lineageTag: 9eb54a64-0f81-4783-b59f-556e02a29423
+		isNameInferred
+		sourceColumn: expected[cleansed_table]
+
+	/// Single-letter frequency code: M=monthly, Q=quarterly, H=half_yearly, Y=yearly. Sorted by freq_sort (Y, H, Q, M — longest period first).
+	column freq_code = SWITCH ( dim_dataset[frequency], "monthly", "M", "quarterly", "Q", "half_yearly", "H", "yearly", "Y", "?" )
+		dataType: string
+		lineageTag: 6cc663f4-f62e-4b3d-a55c-2edb795426b6
+		summarizeBy: none
+		sortByColumn: freq_sort
+
+	/// Sort order for freq_code, longest period first: Y=1, H=2, Q=3, M=4.
+	column freq_sort = SWITCH ( dim_dataset[frequency], "yearly", 1, "half_yearly", 2, "quarterly", 3, "monthly", 4, 99 )
+		dataType: int64
+		isHidden
+		lineageTag: 4db72f81-0459-441c-9978-e5736ca0931e
+		summarizeBy: none
+
+	partition dim_dataset = calculated
+		mode: import
+		source = SUMMARIZE ( expected, expected[dataset_name], expected[domain], expected[frequency], expected[cleansed_table] )
+

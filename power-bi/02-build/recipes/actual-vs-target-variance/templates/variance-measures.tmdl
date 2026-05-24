@@ -1,0 +1,99 @@
+// Actual-vs-Target variance recipe — measures. APPEND inside '<MEASURE_TABLE>'.tmdl
+// (before its `partition` line). Substitute <ACTUAL_MEASURE>, <TARGET_MEASURE>, colors, and
+// (for the narrative block) <AXIS_TABLE>/<MONTH_KEY_COLUMN>/<YEAR_COLUMN>.
+// Requires compatibilityLevel >= 1601 for the `formatStringDefinition` lines.
+
+// ── P1 · core variance measures (required) ────────────────────────────────────
+	measure Delta = [<ACTUAL_MEASURE>] - [<TARGET_MEASURE>]
+		displayFolder: Variance
+		lineageTag: 11111111-0000-0000-0000-000000000001
+
+	measure '% Delta' = DIVIDE ( [Delta], [<TARGET_MEASURE>] )
+		displayFolder: Variance
+		lineageTag: 11111111-0000-0000-0000-000000000002
+
+		formatStringDefinition = "▲0%;▼0%;0%"
+
+	measure 'MAX VALUE' =
+			IF ( [<ACTUAL_MEASURE>] > [<TARGET_MEASURE>], [<ACTUAL_MEASURE>], [<TARGET_MEASURE>] )
+		displayFolder: Variance
+		lineageTag: 11111111-0000-0000-0000-000000000003
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'GREEN MAX' = IF ( [Delta] > 0, [MAX VALUE] )   // beat → error-bar bound (green)
+		displayFolder: Variance
+		lineageTag: 11111111-0000-0000-0000-000000000004
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'RED MAX' = IF ( [Delta] < 0, [MAX VALUE] )     // miss → error-bar bound (red)
+		displayFolder: Variance
+		lineageTag: 11111111-0000-0000-0000-000000000005
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Delta Color' =
+			SWITCH ( TRUE (), [Delta] > 0, "<POS_COLOR>", [Delta] < 0, "<NEG_COLOR>", BLANK () )
+		displayFolder: Variance
+		lineageTag: 11111111-0000-0000-0000-000000000006
+
+// ── P5 · narrative measures (optional — skip for the minimal variant) ─────────
+// <MONTH_KEY_COLUMN> is assumed sortable as "MMYYYY" (e.g. "012024"); adjust LEFT/RIGHT
+// parsing if your key differs.
+
+	measure 'Number Successful Months' =
+			COUNTROWS ( FILTER ( VALUES ( <AXIS_TABLE>[<MONTH_KEY_COLUMN>] ), CALCULATE ( [Delta] ) > 0 ) )
+		formatString: 0
+		displayFolder: Narrative
+		lineageTag: 11111111-0000-0000-0000-000000000007
+
+	measure 'Best Month' =
+			VAR _Months =
+				ADDCOLUMNS (
+					VALUES ( <AXIS_TABLE>[<MONTH_KEY_COLUMN>] ),
+					"DeltaMonth", CALCULATE ( [Delta] ),
+					"MonthKey",
+						VAR _m = VALUE ( LEFT ( <AXIS_TABLE>[<MONTH_KEY_COLUMN>], 2 ) )
+						VAR _y = VALUE ( RIGHT ( <AXIS_TABLE>[<MONTH_KEY_COLUMN>], 4 ) )
+						RETURN _y * 12 + _m
+				)
+			VAR _Top1 = TOPN ( 1, FILTER ( _Months, [DeltaMonth] > 0 ), [DeltaMonth], DESC, [MonthKey], ASC )
+			VAR _BestMY = MAXX ( _Top1, <AXIS_TABLE>[<MONTH_KEY_COLUMN>] )
+			RETURN
+				IF ( ISBLANK ( _BestMY ), BLANK (),
+					VAR _m = VALUE ( LEFT ( _BestMY, 2 ) )
+					VAR _y = VALUE ( RIGHT ( _BestMY, 4 ) )
+					RETURN FORMAT ( DATE ( _y, _m, 1 ), "mmmm" ) )
+		displayFolder: Narrative
+		lineageTag: 11111111-0000-0000-0000-000000000008
+
+	measure 'Longest Winning Streak' =
+			VAR _Months =
+				ADDCOLUMNS (
+					VALUES ( <AXIS_TABLE>[<MONTH_KEY_COLUMN>] ),
+					"MonthKey",
+						VAR _m = VALUE ( LEFT ( <AXIS_TABLE>[<MONTH_KEY_COLUMN>], 2 ) )
+						VAR _y = VALUE ( RIGHT ( <AXIS_TABLE>[<MONTH_KEY_COLUMN>], 4 ) )
+						RETURN _y * 12 + _m,
+					"IsWin", IF ( CALCULATE ( [Delta] ) > 0, 1, 0 )
+				)
+			VAR _Wins = FILTER ( _Months, [IsWin] = 1 )
+			VAR _Grouped = ADDCOLUMNS ( _Wins, "Grp", [MonthKey] - RANKX ( _Wins, [MonthKey], , ASC, DENSE ) )
+			VAR _Streaks = GROUPBY ( _Grouped, [Grp], "StreakLen", COUNTX ( CURRENTGROUP (), 1 ) )
+			RETURN COALESCE ( MAXX ( _Streaks, [StreakLen] ), 0 )
+		formatString: 0
+		displayFolder: Narrative
+		lineageTag: 11111111-0000-0000-0000-000000000009
+
+	measure TAKEAWAY =
+			VAR _Year   = SELECTEDVALUE ( <AXIS_TABLE>[<YEAR_COLUMN>] )
+			VAR _Wins   = [Number Successful Months]
+			VAR _Best   = [Best Month]
+			VAR _Streak = [Longest Winning Streak]
+			RETURN
+				"In " & _Year & ", we beat the target in " & _Wins &
+				" months, with the strongest overperformance in " & _Best &
+				" and the longest winning streak of " & _Streak & " months."
+		displayFolder: Narrative
+		lineageTag: 11111111-0000-0000-0000-00000000000a

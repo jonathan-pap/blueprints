@@ -7,6 +7,7 @@
 - `what-is-pbip.md` — one-paragraph definition + folder shape
 - `thick-vs-thin.md` — which kind do I have, how to tell
 - `what-is-platform-file.md` — `.platform` file role and rules
+- `copilot-folder.md` — the `.SemanticModel/Copilot/` folder (Prep data for AI; archival)
 
 ## Convert
 

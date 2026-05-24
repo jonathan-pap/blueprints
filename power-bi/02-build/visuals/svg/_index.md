@@ -5,6 +5,7 @@
 ## Foundations
 
 - `data-uri-format.md` — the `data:image/svg+xml;utf8,...` string + escaping
+- `svg-elements.md` — element cheat-sheet (rect / line / circle / text / polyline / path / gradient)
 - `image-url-data-category.md` — the `dataCategory = ImageUrl` requirement
 - `theme-color-references.md` — pull colors from theme rather than hardcoding
 
@@ -13,6 +14,7 @@
 - `wiring/in-table-matrix.md` — most common; column in `tableEx` / `pivotTable`
 - `wiring/in-card.md` — full-card SVG (`cardVisual` with image binding)
 - `wiring/in-slicer.md` — SVG inside a slicer button
+- `wiring/in-image.md` — standalone canvas graphic (`image` visual; `sourceType='imageData'`)
 
 ## Per chart type (each maps to an `examples/*.dax` file)
 
@@ -28,6 +30,7 @@
 - `per-chart/waterfall.md`
 - `per-chart/boxplot.md`
 - `per-chart/jitter-plot.md`
+- `per-chart/target-bar.md`
 
 ## Reference
 

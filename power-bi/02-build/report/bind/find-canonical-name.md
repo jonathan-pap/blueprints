@@ -1,5 +1,7 @@
 # Find a field's canonical name
 
+> **MANDATORY before any `pbir add visual` / `pbir visuals bind` call.** Field names you remember or infer from English are NOT canonical — always verify against the live model first. The `validate-visual-binding` hook (`../../../04-review/hooks/validate-visual-binding.sh`) blocks binding commands with unknown fields, but the goal is to never trigger it.
+
 Run before any binding. Returns the exact table and field names the model uses.
 
 ## All fields

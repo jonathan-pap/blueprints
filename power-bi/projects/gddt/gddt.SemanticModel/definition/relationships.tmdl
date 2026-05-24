@@ -1,0 +1,21 @@
+relationship fct_delivery_hash_id_expected_hash_id
+	fromColumn: fct_delivery.hash_id
+	toColumn: expected.hash_id
+
+relationship expected_period_date_dim_calendar_Date
+	fromColumn: expected.period_date
+	toColumn: dim_calendar.Date
+
+relationship fct_delivery_received_date_dim_calendar_Date
+	isActive: false
+	fromColumn: fct_delivery.received_date
+	toColumn: dim_calendar.Date
+
+relationship expected_group_dim_group
+	fromColumn: expected.group
+	toColumn: dim_group.group_name
+
+relationship expected_dataset_dim_dataset
+	fromColumn: expected.dataset_name
+	toColumn: dim_dataset.dataset_name
+

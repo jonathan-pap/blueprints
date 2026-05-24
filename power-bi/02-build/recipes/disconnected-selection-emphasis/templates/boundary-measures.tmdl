@@ -1,0 +1,7 @@
+	measure '<WINDOW_START_MEASURE>' = MIN( '<SELECTION_TABLE_NAME>'[<SOURCE_COLUMN>] )
+		formatString: General Date
+		lineageTag: <WINDOW_START_LINEAGE_TAG>
+
+	measure '<WINDOW_END_MEASURE>' = MAX( '<SELECTION_TABLE_NAME>'[<SOURCE_COLUMN>] )
+		formatString: General Date
+		lineageTag: <WINDOW_END_LINEAGE_TAG>

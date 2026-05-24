@@ -1,0 +1,8 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "fea6e3a03bd644b3bd68",
+  "displayName": "Native · Report Elements",
+  "width": 1280,
+  "height": 720,
+  "displayOption": "FitToPage"
+}

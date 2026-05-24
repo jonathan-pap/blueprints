@@ -1,8 +1,0 @@
-{
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
-  "name": "7c2efb6a2cbe1ca5",
-  "displayName": "Demo-BarCharts",
-  "width": 1280,
-  "height": 720,
-  "displayOption": "FitToPage"
-}

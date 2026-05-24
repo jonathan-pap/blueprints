@@ -26,12 +26,14 @@ Power BI renders the returned string as an inline SVG. No CSS, no JS, no animati
 ## Workflow router
 
 - **Data URI shape + escaping** → `data-uri-format.md`
+- **SVG element cheat-sheet** → `svg-elements.md`
 - **The `dataCategory = ImageUrl` requirement** → `image-url-data-category.md`
 - **Theme-color integration** → `theme-color-references.md`
 - **Wire into a table / matrix** → `wiring/in-table-matrix.md`
 - **Wire as a full card** → `wiring/in-card.md`
 - **Wire into a slicer button** → `wiring/in-slicer.md`
-- **Per chart type** → `per-chart/_index.md` for sparkline / progress-bar / bullet / status-pill / lollipop / ibcs-bar / overlapping-bars / dumbbell / waterfall / boxplot / jitter-plot
+- **Wire as a standalone image visual** → `wiring/in-image.md` (KPI header, dashboard tile, wide gauge)
+- **Per chart type** → `per-chart/_index.md` for sparkline / progress-bar / bullet / status-pill / lollipop / ibcs-bar / overlapping-bars / dumbbell / waterfall / boxplot / jitter-plot / target-bar
 - **Inspiration** → `community-examples.md`
 
 ## Example DAX measures (ready to copy)
@@ -50,6 +52,7 @@ Each `.dax` file in `examples/` is a complete measure — copy, rename, adjust f
 - `examples/boxplot-measure.dax` — mini boxplot per row
 - `examples/jitter-plot-measure.dax` — mini jittered distribution
 - `examples/waterfall-measure.dax` — waterfall steps per row
+- `examples/target-bar-svg.dax` — linear gauge: red/amber/green zones + needle (card / image)
 
 ## Rules
 

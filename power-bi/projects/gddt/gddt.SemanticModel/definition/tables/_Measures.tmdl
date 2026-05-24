@@ -1,0 +1,286 @@
+/// Container table for all measures. The single blank row only hosts the table.
+table _Measures
+	lineageTag: c0a1ddd0-9004-4004-aaaa-000000000000
+
+	/// Inventory — distinct contracts (dc_name) in filter context.
+	measure '# Contracts' = DISTINCTCOUNT ( expected[dc_name] )
+		formatString: #,0
+		displayFolder: 00 Inventory
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000001
+
+	/// Inventory — distinct datasets (dataset_name) in filter context.
+	measure '# Datasets' = DISTINCTCOUNT ( expected[dataset_name] )
+		formatString: #,0
+		displayFolder: 00 Inventory
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000002
+
+	/// Inventory — distinct groups in filter context.
+	measure '# Groups' = DISTINCTCOUNT ( expected[group] )
+		formatString: #,0
+		displayFolder: 00 Inventory
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000003
+
+	/// 1. EXPECTED — distinct expected files (hash_id) in filter context. DISTINCTCOUNT guards against duplicate rows per hash.
+	measure '# Expected' = DISTINCTCOUNT ( expected[hash_id] )
+		formatString: #,0
+		displayFolder: 01 Status counts
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000010
+
+	/// Intermediate — expected files with at least one active delivery (any state).
+	measure '# Delivered' =
+			VAR DeliveredHashes = CALCULATETABLE ( VALUES ( fct_delivery[hash_id] ), REMOVEFILTERS ( fct_delivery[is_active] ) )
+			RETURN CALCULATE ( DISTINCTCOUNT ( expected[hash_id] ), FILTER ( expected, expected[hash_id] IN DeliveredHashes ) )
+		formatString: #,0
+		displayFolder: 01 Status counts
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000011
+
+	/// 2. MISSING — expected files with no delivery at all.
+	measure '# Missing' =
+			VAR DeliveredHashes = CALCULATETABLE ( VALUES ( fct_delivery[hash_id] ), REMOVEFILTERS ( fct_delivery[is_active] ) )
+			RETURN CALCULATE ( DISTINCTCOUNT ( expected[hash_id] ), FILTER ( expected, NOT ( expected[hash_id] IN DeliveredHashes ) ) )
+		formatString: #,0
+		displayFolder: 01 Status counts
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000012
+
+	/// ON TIME — expected files whose active delivery passed the delivery-window check (status_3_on_time > 0).
+	measure '# On Time' =
+			VAR Hashes = CALCULATETABLE ( VALUES ( fct_delivery[hash_id] ), fct_delivery[is_active] = TRUE (), fct_delivery[status_3_on_time] > 0 )
+			RETURN CALCULATE ( DISTINCTCOUNT ( expected[hash_id] ), FILTER ( expected, expected[hash_id] IN Hashes ) )
+		formatString: #,0
+		displayFolder: 01 Status counts
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000013
+
+	/// 3. SCHEMA FAILED – QUARANTINE.
+	measure '# Schema Failed - Quarantine' =
+			VAR Hashes = CALCULATETABLE ( VALUES ( fct_delivery[hash_id] ), fct_delivery[is_active] = TRUE (), fct_delivery[status_4_schema_failed] = TRUE () )
+			RETURN CALCULATE ( DISTINCTCOUNT ( expected[hash_id] ), FILTER ( expected, expected[hash_id] IN Hashes ) )
+		formatString: #,0
+		displayFolder: 01 Status counts
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000014
+
+	/// 4. QUARANTINE – Scope & Delivery Time.
+	measure '# Quarantine - Scope & Delivery Time' =
+			VAR Hashes = CALCULATETABLE ( VALUES ( fct_delivery[hash_id] ), fct_delivery[is_active] = TRUE (), fct_delivery[status_5_quar_scope] = TRUE () )
+			RETURN CALCULATE ( DISTINCTCOUNT ( expected[hash_id] ), FILTER ( expected, expected[hash_id] IN Hashes ) )
+		formatString: #,0
+		displayFolder: 01 Status counts
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000015
+
+	/// 5. QUARANTINE – Delivery Time.
+	measure '# Quarantine - Delivery Time' =
+			VAR Hashes = CALCULATETABLE ( VALUES ( fct_delivery[hash_id] ), fct_delivery[is_active] = TRUE (), fct_delivery[status_6_quar_time] = TRUE () )
+			RETURN CALCULATE ( DISTINCTCOUNT ( expected[hash_id] ), FILTER ( expected, expected[hash_id] IN Hashes ) )
+		formatString: #,0
+		displayFolder: 01 Status counts
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000016
+
+	/// 6. RECORDS FOUND IN INSPECTION – FAILED DQ.
+	measure '# Records Found in Inspection - Failed DQ' =
+			VAR Hashes = CALCULATETABLE ( VALUES ( fct_delivery[hash_id] ), fct_delivery[is_active] = TRUE (), fct_delivery[status_7_dq_records] = TRUE () )
+			RETURN CALCULATE ( DISTINCTCOUNT ( expected[hash_id] ), FILTER ( expected, expected[hash_id] IN Hashes ) )
+		formatString: #,0
+		displayFolder: 01 Status counts
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000017
+
+	/// 7. BUSINESS APPROVED.
+	measure '# Business Approved' =
+			VAR Hashes = CALCULATETABLE ( VALUES ( fct_delivery[hash_id] ), fct_delivery[is_active] = TRUE (), fct_delivery[status_8_bus_approved] = TRUE () )
+			RETURN CALCULATE ( DISTINCTCOUNT ( expected[hash_id] ), FILTER ( expected, expected[hash_id] IN Hashes ) )
+		formatString: #,0
+		displayFolder: 01 Status counts
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000018
+
+	/// 8. REACHED GOLD — promoted to the Gold layer.
+	measure '# Reached Gold' =
+			VAR Hashes = CALCULATETABLE ( VALUES ( fct_delivery[hash_id] ), fct_delivery[is_active] = TRUE (), fct_delivery[status_9_reached_gold] > 0 )
+			RETURN CALCULATE ( DISTINCTCOUNT ( expected[hash_id] ), FILTER ( expected, expected[hash_id] IN Hashes ) )
+		formatString: #,0
+		displayFolder: 01 Status counts
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000019
+
+	/// Expected files due on or before today (deadline_date <= today), regardless of delivery.
+	measure '# Due By Today' = CALCULATE ( DISTINCTCOUNT ( expected[hash_id] ), expected[deadline_date] <= TODAY () )
+		formatString: #,0
+		displayFolder: 02 Derived late
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000020
+
+	/// Expected files with no delivery AND past deadline. The actionable overdue count.
+	measure '# Files Overdue' =
+			VAR DeliveredHashes = CALCULATETABLE ( VALUES ( fct_delivery[hash_id] ), REMOVEFILTERS ( fct_delivery[is_active] ) )
+			RETURN CALCULATE ( DISTINCTCOUNT ( expected[hash_id] ), FILTER ( expected, NOT ( expected[hash_id] IN DeliveredHashes ) && expected[deadline_date] < TODAY () ) )
+		formatString: #,0
+		displayFolder: 02 Derived late
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000021
+
+	/// Expected files with no delivery whose deadline has not yet passed. Future work, not yet a concern.
+	measure '# Files Pending' =
+			VAR DeliveredHashes = CALCULATETABLE ( VALUES ( fct_delivery[hash_id] ), REMOVEFILTERS ( fct_delivery[is_active] ) )
+			RETURN CALCULATE ( DISTINCTCOUNT ( expected[hash_id] ), FILTER ( expected, NOT ( expected[hash_id] IN DeliveredHashes ) && expected[deadline_date] >= TODAY () ) )
+		formatString: #,0
+		displayFolder: 02 Derived late
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000022
+
+	/// % of expected files delivered. Delivered / Expected.
+	measure '% Delivered' = DIVIDE ( [# Delivered], [# Expected] )
+		formatString: 0.0%
+		displayFolder: 03 Rates
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000030
+
+	/// % of delivered files that were on time.
+	measure '% On Time' = DIVIDE ( [# On Time], [# Delivered] )
+		formatString: 0.0%
+		displayFolder: 03 Rates
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000031
+
+	/// % of delivered files that reached Gold.
+	measure '% Reached Gold' = DIVIDE ( [# Reached Gold], [# Delivered] )
+		formatString: 0.0%
+		displayFolder: 03 Rates
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000032
+
+	/// Record-level — sum of records on time across active deliveries.
+	measure '# Records On Time' = CALCULATE ( SUM ( fct_delivery[status_3_on_time] ), fct_delivery[is_active] = TRUE () )
+		displayFolder: 04 Record volumes
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000040
+
+		formatStringDefinition =
+				
+				SWITCH ( TRUE (), ABS ( SELECTEDMEASURE () ) < 1000000, "#,0", ABS ( SELECTEDMEASURE () ) < 1000000000, "#,0.0,,\M", "#,0.0,,,\B" )
+
+	/// Record-level — sum of records reached Gold across active deliveries.
+	measure '# Records Reached Gold' = CALCULATE ( SUM ( fct_delivery[status_9_reached_gold] ), fct_delivery[is_active] = TRUE () )
+		displayFolder: 04 Record volumes
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000041
+
+		formatStringDefinition =
+				
+				SWITCH ( TRUE (), ABS ( SELECTEDMEASURE () ) < 1000000, "#,0", ABS ( SELECTEDMEASURE () ) < 1000000000, "#,0.0,,\M", "#,0.0,,,\B" )
+
+	/// Record-level — sum of records inspected across active deliveries.
+	measure '# Records Inspected' = CALCULATE ( SUM ( fct_delivery[insp_record_count] ), fct_delivery[is_active] = TRUE () )
+		displayFolder: 04 Record volumes
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000042
+
+		formatStringDefinition =
+				
+				SWITCH ( TRUE (), ABS ( SELECTEDMEASURE () ) < 1000000, "#,0", ABS ( SELECTEDMEASURE () ) < 1000000000, "#,0.0,,\M", "#,0.0,,,\B" )
+
+	/// Daily — active deliveries received on the date(s) in filter context. Uses USERELATIONSHIP on received_date.
+	measure '# Received Today' =
+			CALCULATE (
+				COUNTROWS ( fct_delivery ),
+				fct_delivery[is_active] = TRUE (),
+				USERELATIONSHIP ( fct_delivery[received_date], dim_calendar[Date] )
+			)
+		formatString: #,0
+		displayFolder: 05 Daily flow
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000050
+
+	/// Daily — cumulative active deliveries received from start of month to current date.
+	measure '# Received MTD' =
+			VAR _MaxDate = MAX ( dim_calendar[Date] )
+			VAR _StartOfMonth = DATE ( YEAR ( _MaxDate ), MONTH ( _MaxDate ), 1 )
+			RETURN
+				CALCULATE (
+					COUNTROWS ( fct_delivery ),
+					fct_delivery[is_active] = TRUE (),
+					DATESBETWEEN ( dim_calendar[Date], _StartOfMonth, _MaxDate ),
+					USERELATIONSHIP ( fct_delivery[received_date], dim_calendar[Date] )
+				)
+		formatString: #,0
+		displayFolder: 05 Daily flow
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000051
+
+	/// Daily — cumulative expected files due by the latest date in filter context.
+	measure '# Expected by Day' =
+			VAR _MaxDate = MAX ( dim_calendar[Date] )
+			RETURN
+				CALCULATE (
+					DISTINCTCOUNT ( expected[hash_id] ),
+					REMOVEFILTERS ( dim_calendar ),
+					expected[deadline_date] <= _MaxDate
+				)
+		formatString: #,0
+		displayFolder: 05 Daily flow
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000052
+
+	/// Mutually-exclusive outcome bucket. Expected files whose active delivery reached Gold with NO DQ flag. Stacks cleanly with the other Outcome measures to sum to # Expected.
+	measure 'Outcome · Gold Clean' = VAR H = CALCULATETABLE ( VALUES ( fct_delivery[hash_id] ), fct_delivery[is_active] = TRUE (), fct_delivery[status_9_reached_gold] > 0, fct_delivery[status_7_dq_records] = FALSE () ) RETURN CALCULATE ( COUNTROWS ( expected ), FILTER ( expected, expected[hash_id] IN H ) )
+		formatString: #,0
+		displayFolder: 06 Outcome buckets
+		lineageTag: d4b0a7e3-401b-4785-8210-5a3c11b824be
+
+	/// Mutually-exclusive outcome bucket. Expected files whose active delivery reached Gold but carried a DQ flag (records found in inspection). Distinct from Gold Clean.
+	measure 'Outcome · Gold with DQ' = VAR H = CALCULATETABLE ( VALUES ( fct_delivery[hash_id] ), fct_delivery[is_active] = TRUE (), fct_delivery[status_9_reached_gold] > 0, fct_delivery[status_7_dq_records] = TRUE () ) RETURN CALCULATE ( COUNTROWS ( expected ), FILTER ( expected, expected[hash_id] IN H ) )
+		formatString: #,0
+		displayFolder: 06 Outcome buckets
+		lineageTag: 64df9dd1-294c-475e-ac7a-84cac10bc4cf
+
+	/// Mutually-exclusive outcome bucket. Expected files whose active delivery failed schema validation and did not reach Gold (terminal quarantine).
+	measure 'Outcome · Schema Failed' = VAR H = CALCULATETABLE ( VALUES ( fct_delivery[hash_id] ), fct_delivery[is_active] = TRUE (), fct_delivery[status_4_schema_failed] = TRUE (), fct_delivery[status_9_reached_gold] = 0 ) RETURN CALCULATE ( COUNTROWS ( expected ), FILTER ( expected, expected[hash_id] IN H ) )
+		formatString: #,0
+		displayFolder: 06 Outcome buckets
+		lineageTag: 05acbae4-3650-43d6-91f2-6de9f6c664f4
+
+	/// Mutually-exclusive outcome bucket. Expected files with no delivery whose deadline has passed.
+	measure 'Outcome · Overdue' = VAR DeliveredHashes = CALCULATETABLE ( VALUES ( fct_delivery[hash_id] ), REMOVEFILTERS ( fct_delivery[is_active] ) ) RETURN CALCULATE ( COUNTROWS ( expected ), FILTER ( expected, NOT ( expected[hash_id] IN DeliveredHashes ) && expected[deadline_date] < TODAY () ) )
+		formatString: #,0
+		displayFolder: 06 Outcome buckets
+		lineageTag: 948783ab-5698-4ae6-ac98-ca4051a854f2
+
+	/// Mutually-exclusive outcome bucket. Expected files with no delivery whose deadline has not yet passed (window not yet closed).
+	measure 'Outcome · Pending' = VAR DeliveredHashes = CALCULATETABLE ( VALUES ( fct_delivery[hash_id] ), REMOVEFILTERS ( fct_delivery[is_active] ) ) RETURN CALCULATE ( COUNTROWS ( expected ), FILTER ( expected, NOT ( expected[hash_id] IN DeliveredHashes ) && expected[deadline_date] >= TODAY () ) )
+		formatString: #,0
+		displayFolder: 06 Outcome buckets
+		lineageTag: 7d5f9235-e03e-4dda-831b-73444cc5a227
+
+	/// Mutually-exclusive outcome bucket (flowchart box 4). Expected files whose active delivery was quarantined for SCOPE — it carries the wrong reporting period/year context. Scope dominates: a file flagged both scope and time lands here, not in Late. Excludes files that reached Gold or failed schema.
+	measure 'Outcome · Out of Scope' = VAR H = CALCULATETABLE ( VALUES ( fct_delivery[hash_id] ), fct_delivery[is_active] = TRUE (), fct_delivery[status_5_quar_scope] = TRUE (), fct_delivery[status_4_schema_failed] = FALSE (), fct_delivery[status_9_reached_gold] = 0 ) RETURN CALCULATE ( COUNTROWS ( expected ), FILTER ( expected, expected[hash_id] IN H ) )
+		formatString: #,0
+		displayFolder: 06 Outcome buckets
+		lineageTag: ff5136b6-2222-40d6-bfde-18cf1056867e
+
+	/// Mutually-exclusive outcome bucket (flowchart box 5). Expected files whose active delivery was quarantined for DELIVERY TIME (late) — correct scope but arrived after the window. Excludes scope-flagged files (those go to Out of Scope), and excludes files that reached Gold or failed schema.
+	measure 'Outcome · Late' = VAR H = CALCULATETABLE ( VALUES ( fct_delivery[hash_id] ), fct_delivery[is_active] = TRUE (), fct_delivery[status_6_quar_time] = TRUE (), fct_delivery[status_5_quar_scope] = FALSE (), fct_delivery[status_4_schema_failed] = FALSE (), fct_delivery[status_9_reached_gold] = 0 ) RETURN CALCULATE ( COUNTROWS ( expected ), FILTER ( expected, expected[hash_id] IN H ) )
+		formatString: #,0
+		displayFolder: 06 Outcome buckets
+		lineageTag: ff3984ed-7713-437a-b31d-d8864309ca99
+
+	/// Dynamic header label for the report. Reflects the year slicer selection (single year, range, or all) and always shows today's date as the as-of. Use as a Card or text-box title.
+	measure 'Header · Reporting Period' = VAR YearCount = DISTINCTCOUNT ( dim_calendar[Year] ) VAR MinY = MIN ( dim_calendar[Year] ) VAR MaxY = MAX ( dim_calendar[Year] ) VAR AllYears = CALCULATE ( DISTINCTCOUNT ( dim_calendar[Year] ), REMOVEFILTERS ( dim_calendar ) ) VAR YearPart = SWITCH ( TRUE (), YearCount = AllYears, "All years", YearCount = 1, "Reporting year " & MinY, "Reporting years " & MinY & "–" & MaxY ) VAR AsOf = FORMAT ( TODAY (), "d MMM yyyy" ) RETURN YearPart & " · as of " & AsOf
+		displayFolder: 07 Labels
+		lineageTag: 635fa07e-60b7-4ba2-9127-6cb2eaf9e75f
+
+	/// Dynamic context subtitle describing the current filter scope (group / frequency / time). Designed for the # Expected card subtitle. Falls back gracefully to 'All groups · full year' style when nothing is selected.
+	measure 'Context · Expected Scope' = VAR AllGroups = CALCULATE ( DISTINCTCOUNT ( dim_group[group_name] ), REMOVEFILTERS () ) VAR SelGroups = DISTINCTCOUNT ( dim_group[group_name] ) VAR GroupPart = SWITCH ( TRUE (), SelGroups = 1, SELECTEDVALUE ( dim_group[group_name] ), SelGroups = AllGroups, "All groups", SelGroups & " groups" ) VAR AllFreq = CALCULATE ( DISTINCTCOUNT ( dim_dataset[frequency] ), REMOVEFILTERS () ) VAR SelFreq = DISTINCTCOUNT ( dim_dataset[frequency] ) VAR FreqPart = IF ( SelFreq = 1, " · " & SELECTEDVALUE ( dim_dataset[frequency] ), "" ) VAR AllMonths = CALCULATE ( DISTINCTCOUNT ( dim_calendar[Month] ), REMOVEFILTERS () ) VAR SelMonths = DISTINCTCOUNT ( dim_calendar[Month] ) VAR SelYear = SELECTEDVALUE ( dim_calendar[Year] ) VAR YearTxt = IF ( ISBLANK ( SelYear ), "", SelYear ) VAR TimePart = SWITCH ( TRUE (), SelMonths = 1, " · " & FORMAT ( DATE ( 2000, SELECTEDVALUE ( dim_calendar[Month] ), 1 ), "MMM" ) & " " & YearTxt, SelMonths = AllMonths && NOT ISBLANK ( SelYear ), " · " & YearTxt & " full year", NOT ISBLANK ( SelYear ), " · " & SelMonths & " months " & YearTxt, " · all periods" ) RETURN GroupPart & FreqPart & TimePart
+		displayFolder: 07 Labels
+		lineageTag: 881d6a2c-3ab6-4ba5-9c6c-abf14f2dcd62
+
+	/// Delivered as a share of files due by today (deadline passed). The as-of-today performance rate — use as the reference/callout value on the # Delivered card. Distinct from % Delivered which uses full-year expected.
+	measure '% Delivered (of Due)' = DIVIDE ( [# Delivered], [# Due By Today] )
+		formatString: 0%
+		displayFolder: 03 Rates
+		lineageTag: 0fa897d3-8751-4888-8c2c-465d813ba80c
+
+	/// Overdue as a share of files due by today. The as-of-today miss rate — use as the reference/callout value on the # Files Overdue card.
+	measure '% Overdue (of Due)' = DIVIDE ( [# Files Overdue], [# Due By Today] )
+		formatString: 0%
+		displayFolder: 03 Rates
+		lineageTag: 2be966a1-f80a-4a4d-8254-cf6bc5de79aa
+
+	/// Files due by today as a share of full-year expected. Use as the reference/callout value on the # Due By Today card.
+	measure '% Due (of Year)' = DIVIDE ( [# Due By Today], [# Expected] )
+		formatString: 0%
+		displayFolder: 03 Rates
+		lineageTag: afcab68e-d165-4f58-bbff-2e99cb90b7ca
+
+	column Value
+		isHidden
+		lineageTag: c0a1ddd0-9004-4004-aaaa-000000000099
+		isNameInferred
+		sourceColumn: [Value]
+
+	partition _Measures = calculated
+		mode: import
+		source = {BLANK()}
+

@@ -1,0 +1,28 @@
+/// Group dimension — one row per group including idle groups (Makro, NPM Capital, Corporate) so all groups appear in slicers. group_type = Operating/Holding, is_active_group flags those with contracts.
+table dim_group
+	lineageTag: 734688d8-6e3b-4af4-afa4-6e62c12c6782
+
+	column group_name
+		lineageTag: 4facb6ab-c883-4a3b-aa8b-ad6b3669fdd2
+		isNameInferred
+		sourceColumn: [group_name]
+
+	column entity
+		lineageTag: 386b1b65-335c-4b5c-82bd-e419afe84e54
+		isNameInferred
+		sourceColumn: [entity]
+
+	column group_type
+		lineageTag: 389b51c4-7765-412f-ab20-874f3ba6c358
+		isNameInferred
+		sourceColumn: [group_type]
+
+	column is_active_group
+		lineageTag: 3ff5ab4d-47c9-46c4-a9e5-079cead8abc8
+		isNameInferred
+		sourceColumn: [is_active_group]
+
+	partition dim_group = calculated
+		mode: import
+		source = VAR FromExpected = SELECTCOLUMNS ( SUMMARIZE ( expected, expected[group], expected[entity] ), "group_name", expected[group], "entity", expected[entity], "group_type", IF ( expected[group] = "SHV Holdings", "Holding", "Operating" ), "is_active_group", TRUE () ) VAR IdleGroups = DATATABLE ( "group_name", STRING, "entity", STRING, "group_type", STRING, "is_active_group", BOOLEAN, { { "Makro", "makro", "Operating", FALSE }, { "NPM Capital", "npm", "Operating", FALSE }, { "Corporate", "corporate", "Holding", FALSE } } ) RETURN UNION ( FromExpected, IdleGroups )
+

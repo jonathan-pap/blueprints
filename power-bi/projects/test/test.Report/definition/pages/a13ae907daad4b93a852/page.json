@@ -1,0 +1,8 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "a13ae907daad4b93a852",
+  "displayName": "Native · Column & Bar",
+  "width": 1280,
+  "height": 720,
+  "displayOption": "FitToPage"
+}
