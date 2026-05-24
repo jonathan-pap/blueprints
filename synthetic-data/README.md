@@ -11,7 +11,7 @@ files that load only when their workflow runs.
 ## How to use
 
 1. Point Claude (or any LLM that can read folders) at the workspace.
-2. For this blueprint, read [claude.md](claude.md) — the L1 router.
+2. For this blueprint, read [CLAUDE.md](CLAUDE.md) — the L1 router.
 3. State your intent (e.g. "generate 5,000 dummy customer rows"). Claude routes to the matching
    room and loads only the files that workflow needs.
 

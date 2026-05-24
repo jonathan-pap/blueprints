@@ -5,7 +5,7 @@
 > Do not load anything outside the row that matches the user's intent.
 >
 > This is one blueprint inside the **Workspace-Blueprint** workspace (sibling of `power-bi/`).
-> The workspace-level `../claude.md` routes between blueprints; this file routes within this one.
+> The workspace-level `../CLAUDE.md` routes between blueprints; this file routes within this one.
 
 ## What this is
 
@@ -48,7 +48,7 @@ Example: `outputs/2026-05-24-demo-financials.csv`. Dates are absolute, never rel
 
 ```text
 synthetic-data/
-├── claude.md                 this file (L1 router)
+├── CLAUDE.md                 this file (L1 router)
 ├── README.md
 ├── 01-brief/      (context.md)   discovery / requirements
 ├── 02-schema/     (context.md)   define the data shape
@@ -77,7 +77,7 @@ Match the user's intent. Load only what's listed.
 
 ## Loading rules
 
-- **`claude.md` (this file) is always loaded.** Everything else is on demand.
+- **`CLAUDE.md` (this file) is always loaded.** Everything else is on demand.
 - **Enter one room.** Drop the previous room's context when intent changes.
 - **Scripts are tools.** Run them; don't read a whole script unless modifying it.
 - **Examples are read-only.** Reference, don't duplicate.

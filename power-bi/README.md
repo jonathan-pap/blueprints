@@ -5,15 +5,15 @@ A reusable workspace for working on Power BI Desktop projects (PBIP format) with
 ## Quick start
 
 1. Copy this `power-bi/` folder into a new working directory.
-2. Point Claude (or your agent) at the directory and tell it to read [claude.md](claude.md).
+2. Point Claude (or your agent) at the directory and tell it to read [CLAUDE.md](CLAUDE.md).
 3. Start a project: `mkdir projects/<my-project>` then follow [projects/README.md](projects/README.md).
-4. The agent will pick the right room from `claude.md`'s routing table based on what you ask for.
+4. The agent will pick the right room from `CLAUDE.md`'s routing table based on what you ask for.
 
 ## Folder map
 
 ```
 power-bi/
-├── claude.md          ← Layer 1: master router (always loaded)
+├── CLAUDE.md          ← Layer 1: master router (always loaded)
 ├── 01-brief/          ← Layer 2: discovery, KPIs, layout decisions
 ├── 02-build/          ← Layer 2: edit report / model / theme / custom visuals
 │   ├── report/
@@ -41,7 +41,7 @@ Each room has a slim `context.md` that lists which `references/<topic>.md` to lo
 | "Build a custom sparkline in the table" | `02-build/visuals/svg/` | No |
 | "Audit the sales report" | `04-review/` | No |
 
-The full routing table is in [claude.md](claude.md).
+The full routing table is in [CLAUDE.md](CLAUDE.md).
 
 ## Reuse for any project
 

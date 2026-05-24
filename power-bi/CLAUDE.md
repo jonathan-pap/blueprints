@@ -49,7 +49,7 @@ Counts shown as `(md files in this folder, total atomic files including subfolde
 
 ```text
 power-bi/
-├── claude.md                                this file (L1 router)
+├── CLAUDE.md                                this file (L1 router)
 ├── README.md
 ├── 01-brief/                                discovery / requirements room
 │   └── references/         (5 md)           vague-prompts, layout-patterns, kpi-selection, limitations, report-dev-mindset
@@ -154,7 +154,7 @@ Match the user's intent. Load only what's listed.
 
 ## Loading rules
 
-- **`claude.md` (this file) is always loaded.** Everything else is on-demand.
+- **`CLAUDE.md` (this file) is always loaded.** Everything else is on-demand.
 - **Enter one room.** When the user switches intent, drop the previous room's context before loading the new one.
 - **References are leaves.** Load a `references/<topic>.md` file only when the room's `context.md` tells you to.
 - **Scripts are tools.** Execute via Bash/PowerShell; do not read the whole file unless modifying it.

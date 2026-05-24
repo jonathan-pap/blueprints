@@ -5,8 +5,8 @@ A collection of self-contained **folder-as-app blueprints** for working with var
 ## How to use
 
 1. Point Claude (or any LLM that can read folders) at this directory.
-2. Tell it to read [claude.md](claude.md) — the blueprint directory.
-3. Pick the blueprint that matches your task. Claude follows that blueprint's own `claude.md` from there.
+2. Tell it to read [CLAUDE.md](CLAUDE.md) — the blueprint directory.
+3. Pick the blueprint that matches your task. Claude follows that blueprint's own `CLAUDE.md` from there.
 
 ## Current blueprints
 
@@ -25,7 +25,7 @@ Each blueprint:
 
 ## Adding a new blueprint
 
-Create a top-level kebab-case folder. Follow the same pattern: `claude.md`, `README.md`, numbered rooms, `projects/`, `outputs/`, `_examples/`. Add a one-line entry to the root `claude.md`'s "Available blueprints" list.
+Create a top-level kebab-case folder. Follow the same pattern: `CLAUDE.md`, `README.md`, numbered rooms, `projects/`, `outputs/`, `_examples/`. Add a one-line entry to the root `CLAUDE.md`'s "Available blueprints" list.
 
 ## Architecture reference
 

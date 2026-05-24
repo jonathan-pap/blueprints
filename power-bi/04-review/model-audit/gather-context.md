@@ -33,7 +33,7 @@ A model for 3 analysts has very different requirements than one consumed by Copi
 
 Where you save the audit affects how it gets used:
 
-- `../../outputs/YYYY-MM-DD-<model>-audit.md` — standard place, per `claude.md` naming convention
+- `../../outputs/YYYY-MM-DD-<model>-audit.md` — standard place, per `CLAUDE.md` naming convention
 - Project README — only if the user wants the findings persistent across sessions
 - Issue tracker / wiki — only if the user explicitly asks; involves auth + external tools
 
