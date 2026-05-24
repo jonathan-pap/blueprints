@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>gddt · delivery dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --paper: #f7f5ef; --ink: #15171c; --ink-2: #353841; --ink-3: #8f8e87; --ink-4: #c9c6bd;
+    --rule: #d8d5cc; --rule-2: #ebe8df;
+    --good: #2d6948; --good-soft: #d4e1d6;
+    --warn: #b46c1a; --warn-soft: #efe1c8;
+    --bad: #a23a2a; --bad-soft: #ecd0c8;
+    --info: #244e7a; --info-soft: #cbd6e2;
+    --display: "Fraunces", Georgia, serif;
+    --sans: "Inter Tight", system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #e8e5dc; color: var(--ink); font-family: var(--sans); font-size: 13px; line-height: 1.5; -webkit-font-smoothing: antialiased; font-feature-settings: "ss01", "cv11"; }
+  .navbar { position: sticky; top: 0; background: var(--paper); border-bottom: 1px solid var(--rule); z-index: 50; padding: 14px 40px; display: flex; align-items: baseline; gap: 28px; }
+  .navbar-brand { font-family: var(--display); font-weight: 600; font-size: 16px; letter-spacing: -0.01em; }
+  .navbar-brand em { font-style: italic; color: var(--ink-3); font-weight: 400; margin-left: 4px; }
+  .nav-tabs { display: flex; gap: 24px; margin-right: auto; margin-left: 16px; }
+  .nav-tab { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-3); text-decoration: none; padding-bottom: 6px; }
+  .nav-tab.active { color: var(--ink); border-bottom: 2px solid var(--ink); }
+  .nav-asof { font-family: var(--mono); font-size: 10px; color: var(--ink-3); letter-spacing: 0.05em; }
+  .nav-asof strong { color: var(--ink); font-weight: 500; }
+  .page { max-width: 1320px; margin: 32px auto 56px; background: var(--paper); border: 1px solid var(--rule); }
+  .header { padding: 28px 40px 24px; border-bottom: 1px solid var(--rule); display: grid; grid-template-columns: 1fr auto; align-items: end; }
+  .header-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 6px; }
+  h1 { font-family: var(--display); font-weight: 500; font-size: 36px; letter-spacing: -0.015em; line-height: 1.05; }
+  h1 em { font-style: italic; font-weight: 400; color: var(--ink-2); }
+  .header-meta { text-align: right; font-family: var(--mono); font-size: 10px; color: var(--ink-3); line-height: 1.7; }
+  .header-meta strong { color: var(--ink); font-weight: 500; }
+  .body { padding: 0 40px 40px; }
+  .filters { display: flex; gap: 10px; align-items: center; padding: 14px 18px; background: var(--ink); color: var(--paper); margin: 24px 0; }
+  .filter-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-right: 6px; }
+  .filter-chip { font-family: var(--mono); font-size: 11px; padding: 4px 10px; border: 1px solid var(--paper); }
+  .filter-chip strong { font-family: var(--sans); font-weight: 500; margin-left: 6px; }
+  .section-label { display: flex; align-items: baseline; justify-content: space-between; margin: 32px 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); }
+  .section-label-text { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-2); }
+  .section-label-hint { font-size: 11px; color: var(--ink-3); font-style: italic; }
+  .hero { display: grid; grid-template-columns: 1.4fr 1fr; border: 1px solid var(--ink); }
+  .hero-statement { padding: 32px 36px; background: var(--ink); color: var(--paper); }
+  .hero-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.55; margin-bottom: 14px; }
+  .hero-line { font-family: var(--display); font-size: 26px; font-weight: 400; line-height: 1.25; letter-spacing: -0.01em; }
+  .hero-line .num-bad { color: #ed8d80; font-weight: 600; }
+  .hero-line .num-good { color: #7ab494; font-weight: 600; }
+  .hero-statement-foot { font-family: var(--mono); font-size: 11px; opacity: 0.55; margin-top: 18px; border-top: 1px solid rgba(247,245,239,0.2); padding-top: 14px; }
+  .hero-verdict { padding: 28px 32px; background: var(--paper); display: flex; flex-direction: column; justify-content: space-between; }
+  .verdict-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 10px; }
+  .verdict { font-family: var(--display); font-size: 56px; font-weight: 500; line-height: 1; letter-spacing: -0.025em; color: var(--bad); margin-bottom: 4px; }
+  .verdict-sub { font-size: 14px; color: var(--ink-2); line-height: 1.5; }
+  .kpis { display: grid; grid-template-columns: repeat(5, 1fr); border: 1px solid var(--rule); border-top: none; }
+  .kpi { padding: 18px 20px; border-right: 1px solid var(--rule); background: var(--paper); }
+  .kpi:last-child { border-right: none; }
+  .kpi-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 6px; }
+  .kpi-value { font-family: var(--display); font-size: 36px; font-weight: 500; line-height: 1; letter-spacing: -0.02em; }
+  .kpi-value .unit { font-size: 13px; color: var(--ink-3); font-family: var(--sans); font-weight: 400; margin-left: 4px; }
+  .kpi-sub { font-family: var(--mono); font-size: 10px; color: var(--ink-3); margin-top: 6px; }
+  .kpi-value.good { color: var(--good); } .kpi-value.warn { color: var(--warn); } .kpi-value.bad { color: var(--bad); }
+  .trend { background: var(--paper); border: 1px solid var(--rule); padding: 20px 24px 16px; }
+  .trend-title { font-family: var(--display); font-size: 18px; font-weight: 500; margin-bottom: 2px; }
+  .trend-sub { font-size: 11px; color: var(--ink-3); font-style: italic; margin-bottom: 16px; }
+  .trend-svg { width: 100%; height: auto; }
+  .legend { display: flex; gap: 18px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
+  .legend-item { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-family: var(--mono); color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.05em; }
+  .legend-swatch { width: 12px; height: 12px; display: inline-block; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .panel { background: var(--paper); border: 1px solid var(--rule); padding: 18px 22px; }
+  .panel-title { font-family: var(--display); font-size: 17px; font-weight: 500; margin-bottom: 2px; }
+  .panel-subtitle { font-size: 11px; color: var(--ink-3); font-style: italic; margin-bottom: 14px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th, td { padding: 8px 0; border-bottom: 1px solid var(--rule-2); text-align: left; }
+  th { font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); font-weight: 500; border-bottom: 1px solid var(--rule); padding-bottom: 8px; }
+  th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); }
+  tr:last-child td { border-bottom: none; }
+  tfoot td { border-top: 1px solid var(--ink); border-bottom: none; background: var(--rule-2); font-weight: 600; padding: 10px 0; }
+  td.danger { color: var(--bad); font-weight: 500; } td.success { color: var(--good); font-weight: 500; } td.warn { color: var(--warn); font-weight: 500; } td.zero { color: var(--ink-4); }
+  tr.clickable:hover { background: var(--rule-2); cursor: pointer; }
+  .rate-bar { display: inline-block; width: 56px; height: 4px; background: var(--rule-2); margin-right: 8px; position: relative; vertical-align: middle; }
+  .rate-bar-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--good); }
+  .rate-bar-fill.low { background: var(--bad); } .rate-bar-fill.mid { background: var(--warn); }
+  .rate-text { display: inline-block; width: 44px; text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); font-size: 11px; }
+  .grade { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; font-family: var(--display); font-weight: 600; font-size: 13px; border-radius: 4px; line-height: 1; }
+  .grade-A { background: var(--good); color: var(--paper); }
+  .grade-B { background: var(--good-soft); color: var(--good); }
+  .grade-C { background: var(--warn-soft); color: var(--warn); }
+  .grade-D { background: var(--bad-soft); color: var(--bad); }
+  .grade-F { background: var(--bad); color: var(--paper); }
+  .grade-empty { background: var(--rule-2); color: var(--ink-3); }
+  .contract-name { font-family: var(--mono); font-size: 10px; color: var(--ink); line-height: 1.3; }
+  .contract-name .dim { color: var(--ink-3); }
+  .contract-group { font-size: 10px; color: var(--ink-3); font-style: italic; margin-top: 1px; }
+  .footnote { margin-top: 32px; padding: 14px 18px; background: var(--rule-2); border-left: 3px solid var(--info); font-size: 12px; color: var(--ink-2); line-height: 1.6; }
+  .footnote strong { color: var(--ink); }
+  .footnote code { font-family: var(--mono); background: var(--paper); padding: 1px 5px; font-size: 11px; }
+  .page-divider { text-align: center; margin: 60px auto 0; font-family: var(--mono); font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-3); max-width: 1320px; padding: 16px 0; }
+  .page-divider::before, .page-divider::after { content: " · "; margin: 0 8px; }
+  .group-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 1px solid var(--rule); border-left: 1px solid var(--rule); }
+  .group-card { padding: 18px 20px; border-bottom: 1px solid var(--rule); border-right: 1px solid var(--rule); background: var(--paper); }
+  .group-card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .group-card-name { font-family: var(--display); font-weight: 500; font-size: 18px; letter-spacing: -0.01em; }
+  .group-card-name-sub { font-family: var(--mono); font-size: 10px; color: var(--ink-3); margin-top: 2px; }
+  .group-card-score { text-align: right; }
+  .group-card-score-num { font-family: var(--display); font-size: 32px; font-weight: 500; line-height: 1; letter-spacing: -0.02em; }
+  .group-card-score-grade { margin-top: 4px; }
+  .group-card.empty .group-card-name { color: var(--ink-3); }
+  .group-card.empty .group-card-score-num { color: var(--ink-4); }
+  .dim-row { display: grid; grid-template-columns: 70px 1fr 32px; align-items: center; gap: 8px; padding: 4px 0; }
+  .dim-label { font-family: var(--mono); color: var(--ink-3); letter-spacing: 0.05em; text-transform: uppercase; font-size: 9px; }
+  .dim-bar { height: 4px; background: var(--rule-2); position: relative; }
+  .dim-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--ink-2); }
+  .dim-fill.low { background: var(--bad); } .dim-fill.mid { background: var(--warn); } .dim-fill.high { background: var(--good); }
+  .dim-value { font-family: var(--mono); font-size: 10px; color: var(--ink); text-align: right; font-weight: 500; }
+  .dim-value.muted { color: var(--ink-4); }
+  table.datasets td { padding: 9px 8px; vertical-align: middle; font-size: 11px; }
+  .status-pill { display: inline-block; padding: 2px 8px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 2px; font-weight: 500; }
+  .status-pill.gold { background: var(--good-soft); color: var(--good); }
+  .status-pill.dq { background: var(--warn-soft); color: var(--warn); }
+  .status-pill.schema { background: var(--bad-soft); color: var(--bad); }
+  .status-pill.missing { background: var(--bad); color: var(--paper); }
+  .status-pill.pending { background: var(--rule-2); color: var(--ink-3); }
+  .formula-box { background: var(--ink); color: var(--paper); padding: 22px 28px; }
+  .formula-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.55; margin-bottom: 12px; }
+  .formula { font-family: var(--mono); font-size: 13px; line-height: 1.7; opacity: 0.92; }
+  .formula .w { color: #f4a987; } .formula .m { color: #c4d8c8; }
+  .leaderboard-row { display: grid; grid-template-columns: 30px 1fr 60px 80px 30px; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--rule-2); gap: 16px; }
+  .leaderboard-row:hover { background: var(--rule-2); }
+  .leaderboard-rank { font-family: var(--display); font-size: 18px; font-weight: 500; color: var(--ink-3); }
+  .leaderboard-name { font-family: var(--display); font-size: 17px; font-weight: 500; }
+  .leaderboard-sub { font-family: var(--mono); font-size: 10px; color: var(--ink-3); margin-top: 2px; }
+  .leaderboard-score { font-family: var(--display); font-size: 26px; font-weight: 500; text-align: right; line-height: 1; }
+  .leaderboard-delta { font-family: var(--mono); font-size: 10px; color: var(--ink-3); text-align: right; }
+  .radar-wrap { background: var(--paper); border: 1px solid var(--rule); padding: 22px 24px; }
+  .radar-title { font-family: var(--display); font-size: 16px; font-weight: 500; margin-bottom: 4px; }
+  .radar-sub { font-size: 11px; color: var(--ink-3); font-style: italic; margin-bottom: 12px; }
+  .spark { height: 24px; display: inline-block; vertical-align: middle; }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <span class="navbar-brand">gddt <em>· delivery monitor</em></span>
+  <div class="nav-tabs">
+    <a href="#summary" class="nav-tab active">summary</a>
+    <a href="#group" class="nav-tab">groups</a>
+    <a href="#dataset" class="nav-tab">datasets</a>
+    <a href="#scoring" class="nav-tab">scoring</a>
+  </div>
+  <span class="nav-asof">as of · <strong>12 May 2026</strong></span>
+</nav>
+
+<!-- PAGE 1 · SUMMARY -->
+<section class="page" id="summary">
+  <div class="header">
+    <div>
+      <div class="header-eyebrow">page 1 · summary</div>
+      <h1>Where <em>is my</em> data?</h1>
+    </div>
+    <div class="header-meta">reporting year · <strong>2026</strong><br>groups · <strong>5 active</strong> · 3 idle<br>contracts · <strong>104</strong></div>
+  </div>
+  <div class="body">
+    <div class="filters">
+      <span class="filter-label">filters</span>
+      <span class="filter-chip">year <strong>2026</strong></span>
+      <span class="filter-chip">group <strong>all</strong></span>
+      <span class="filter-chip">domain <strong>all</strong></span>
+      <span class="filter-chip">frequency <strong>all</strong></span>
+    </div>
+    <div class="hero">
+      <div class="hero-statement">
+        <div class="hero-eyebrow">at a glance · period 2026</div>
+        <div class="hero-line">Of <strong>312</strong> files due so far, <span class="num-bad">252</span> haven't arrived.<br>The <span class="num-good">62</span> that did mostly reached gold &mdash; <span class="num-good">59</span> of them.</div>
+        <div class="hero-statement-foot">934 files have deadlines later this year &mdash; not yet a concern.<br>1 schema failure · 10 DQ issues · 0 late · 0 quarantine</div>
+      </div>
+      <div class="hero-verdict">
+        <div>
+          <div class="verdict-label">Group verdict</div>
+          <div class="verdict">5 of 5</div>
+          <div class="verdict-sub">active groups under 35% delivery pace. <strong>SHV Energy at 0%</strong> needs escalation.</div>
+        </div>
+      </div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Expected · 2026</div><div class="kpi-value">1,248</div><div class="kpi-sub">104 × 12 months</div></div>
+      <div class="kpi"><div class="kpi-label">Due by today</div><div class="kpi-value">312<span class="unit">&nbsp;files</span></div><div class="kpi-sub">Jan–Apr deadlines</div></div>
+      <div class="kpi"><div class="kpi-label">Delivered</div><div class="kpi-value good">62</div><div class="kpi-sub">19.9% of due</div></div>
+      <div class="kpi"><div class="kpi-label">Overdue</div><div class="kpi-value bad">252</div><div class="kpi-sub">past deadline, no file</div></div>
+      <div class="kpi"><div class="kpi-label">Reached gold</div><div class="kpi-value good">59</div><div class="kpi-sub">95% of delivered</div></div>
+    </div>
+    <div class="section-label">
+      <span class="section-label-text">monthly delivery · period view</span>
+      <span class="section-label-hint">each bar = 104 expected · stacked by current state</span>
+    </div>
+    <div class="trend">
+      <div class="trend-title">Delivery health, month by month</div>
+      <div class="trend-sub">Jan–Mar peaked, April fell off · windows after April haven't opened yet</div>
+      <svg class="trend-svg" viewBox="0 0 1200 280" preserveAspectRatio="xMidYMid meet">
+        <line x1="50" y1="220" x2="1180" y2="220" stroke="#d8d5cc"/>
+        <line x1="50" y1="170" x2="1180" y2="170" stroke="#ebe8df" stroke-dasharray="2 4"/>
+        <line x1="50" y1="120" x2="1180" y2="120" stroke="#ebe8df" stroke-dasharray="2 4"/>
+        <line x1="50" y1="70"  x2="1180" y2="70"  stroke="#ebe8df" stroke-dasharray="2 4"/>
+        <text x="44" y="224" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#8f8e87">0</text>
+        <text x="44" y="174" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#8f8e87">25</text>
+        <text x="44" y="124" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#8f8e87">50</text>
+        <text x="44" y="74"  text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#8f8e87">100</text>
+        <g transform="translate(58, 0)"><rect x="0" y="195" width="78" height="25" fill="#2d6948"/><rect x="0" y="193" width="78" height="2"  fill="#b46c1a"/><rect x="0" y="24"  width="78" height="169" fill="#ecd0c8"/><text x="39" y="240" text-anchor="middle" font-family="Inter Tight" font-weight="500" font-size="12" fill="#15171c">Jan</text><text x="39" y="254" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#8f8e87">16 / 104</text><text x="39" y="190" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#15171c" font-weight="600">16</text></g>
+        <g transform="translate(152, 0)"><rect x="0" y="197" width="78" height="23" fill="#2d6948"/><rect x="0" y="191" width="78" height="6"  fill="#b46c1a"/><rect x="0" y="189" width="78" height="2"  fill="#a23a2a"/><rect x="0" y="12"  width="78" height="177" fill="#ecd0c8"/><text x="39" y="240" text-anchor="middle" font-family="Inter Tight" font-weight="500" font-size="12" fill="#15171c">Feb</text><text x="39" y="254" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#8f8e87">12 / 104</text><text x="39" y="184" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#15171c" font-weight="600">12</text></g>
+        <g transform="translate(246, 0)"><rect x="0" y="158" width="78" height="62" fill="#2d6948"/><rect x="0" y="146" width="78" height="12" fill="#b46c1a"/><rect x="0" y="8"   width="78" height="138" fill="#ecd0c8"/><text x="39" y="240" text-anchor="middle" font-family="Inter Tight" font-weight="500" font-size="12" fill="#15171c">Mar</text><text x="39" y="254" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#8f8e87">32 / 104</text><text x="39" y="142" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#15171c" font-weight="600">32</text></g>
+        <g transform="translate(340, 0)"><rect x="0" y="216" width="78" height="4"  fill="#2d6948"/><rect x="0" y="20"  width="78" height="196" fill="#ebe8df"/><text x="39" y="240" text-anchor="middle" font-family="Inter Tight" font-weight="500" font-size="12" fill="#15171c">Apr</text><text x="39" y="254" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#8f8e87">2 / 104</text><text x="39" y="212" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#15171c" font-weight="600">2</text></g>
+        <g transform="translate(434, 0)"><rect x="0" y="20" width="78" height="200" fill="#ebe8df"/><text x="39" y="240" text-anchor="middle" font-family="Inter Tight" font-weight="500" font-size="12" fill="#8f8e87">May</text></g>
+        <g transform="translate(528, 0)"><rect x="0" y="20" width="78" height="200" fill="#ebe8df"/><text x="39" y="240" text-anchor="middle" font-family="Inter Tight" font-weight="500" font-size="12" fill="#8f8e87">Jun</text></g>
+        <g transform="translate(622, 0)"><rect x="0" y="20" width="78" height="200" fill="#ebe8df"/><text x="39" y="240" text-anchor="middle" font-family="Inter Tight" font-weight="500" font-size="12" fill="#8f8e87">Jul</text></g>
+        <g transform="translate(716, 0)"><rect x="0" y="20" width="78" height="200" fill="#ebe8df"/><text x="39" y="240" text-anchor="middle" font-family="Inter Tight" font-weight="500" font-size="12" fill="#8f8e87">Aug</text></g>
+        <g transform="translate(810, 0)"><rect x="0" y="20" width="78" height="200" fill="#ebe8df"/><text x="39" y="240" text-anchor="middle" font-family="Inter Tight" font-weight="500" font-size="12" fill="#8f8e87">Sep</text></g>
+        <g transform="translate(904, 0)"><rect x="0" y="20" width="78" height="200" fill="#ebe8df"/><text x="39" y="240" text-anchor="middle" font-family="Inter Tight" font-weight="500" font-size="12" fill="#8f8e87">Oct</text></g>
+        <g transform="translate(998, 0)"><rect x="0" y="20" width="78" height="200" fill="#ebe8df"/><text x="39" y="240" text-anchor="middle" font-family="Inter Tight" font-weight="500" font-size="12" fill="#8f8e87">Nov</text></g>
+        <g transform="translate(1092, 0)"><rect x="0" y="20" width="78" height="200" fill="#ebe8df"/><text x="39" y="240" text-anchor="middle" font-family="Inter Tight" font-weight="500" font-size="12" fill="#8f8e87">Dec</text></g>
+        <text x="800" y="125" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#8f8e87" font-style="italic">window not yet open</text>
+        <line x1="425" y1="10" x2="425" y2="220" stroke="#15171c" stroke-dasharray="3 3" opacity="0.55"/>
+        <rect x="395" y="0" width="60" height="14" fill="#15171c"/>
+        <text x="425" y="10" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#f7f5ef" font-weight="500">TODAY</text>
+      </svg>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-swatch" style="background: #2d6948;"></span>Reached gold</span>
+        <span class="legend-item"><span class="legend-swatch" style="background: #b46c1a;"></span>DQ found</span>
+        <span class="legend-item"><span class="legend-swatch" style="background: #a23a2a;"></span>Schema failed</span>
+        <span class="legend-item"><span class="legend-swatch" style="background: #ecd0c8;"></span>Overdue</span>
+        <span class="legend-item"><span class="legend-swatch" style="background: #ebe8df;"></span>Pending</span>
+      </div>
+    </div>
+    <div class="section-label">
+      <span class="section-label-text">where to look</span>
+      <span class="section-label-hint">left · groups · right · what to chase today</span>
+    </div>
+    <div class="split">
+      <div class="panel">
+        <div class="panel-title">By group</div>
+        <div class="panel-subtitle">sorted by delivery rate · period 2026</div>
+        <table>
+          <thead><tr><th>Group</th><th class="num">Expected</th><th class="num">Delivered</th><th class="num">Overdue</th><th class="num">Gold</th><th>Rate</th></tr></thead>
+          <tbody>
+            <tr class="clickable"><td><strong>Mammoet</strong></td><td class="num">72</td><td class="num success">6</td><td class="num danger">12</td><td class="num warn">3</td><td><span class="rate-bar"><span class="rate-bar-fill mid" style="width: 33%;"></span></span><span class="rate-text">33.3%</span></td></tr>
+            <tr class="clickable"><td><strong>Nutreco</strong></td><td class="num">372</td><td class="num success">25</td><td class="num danger">69</td><td class="num success">25</td><td><span class="rate-bar"><span class="rate-bar-fill mid" style="width: 26.6%;"></span></span><span class="rate-text">26.6%</span></td></tr>
+            <tr class="clickable"><td><strong>Kiwa</strong></td><td class="num">372</td><td class="num success">18</td><td class="num danger">76</td><td class="num success">18</td><td><span class="rate-bar"><span class="rate-bar-fill low" style="width: 19.1%;"></span></span><span class="rate-text">19.1%</span></td></tr>
+            <tr class="clickable"><td><strong>SHV Holdings</strong></td><td class="num">360</td><td class="num success">13</td><td class="num danger">77</td><td class="num success">13</td><td><span class="rate-bar"><span class="rate-bar-fill low" style="width: 14.4%;"></span></span><span class="rate-text">14.4%</span></td></tr>
+            <tr class="clickable"><td><strong>SHV Energy</strong></td><td class="num">72</td><td class="num danger">0</td><td class="num danger">18</td><td class="num danger">0</td><td><span class="rate-bar"><span class="rate-bar-fill low" style="width: 1%;"></span></span><span class="rate-text" style="color: var(--bad);">0%</span></td></tr>
+          </tbody>
+          <tfoot><tr><td>Total · active</td><td class="num">1,248</td><td class="num">62</td><td class="num">252</td><td class="num">59</td><td><span class="rate-bar"><span class="rate-bar-fill low" style="width: 19.9%;"></span></span><span class="rate-text">19.9%</span></td></tr></tfoot>
+        </table>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Top overdue</div>
+        <div class="panel-subtitle">first 8 of 252 · by deadline date</div>
+        <table>
+          <thead><tr><th>Contract</th><th class="num">Days late</th></tr></thead>
+          <tbody>
+            <tr><td><div class="contract-name"><span class="dim">…__shvenergy__</span>csrd_esg_env__sc1_ghg</div><div class="contract-group">SHV Energy · Jan</div></td><td class="num"><span style="font-family:var(--mono);color:var(--bad);font-weight:500">87</span></td></tr>
+            <tr><td><div class="contract-name"><span class="dim">…__shvenergy__</span>csrd_esg_env__sc2_ghg</div><div class="contract-group">SHV Energy · Jan</div></td><td class="num"><span style="font-family:var(--mono);color:var(--bad);font-weight:500">87</span></td></tr>
+            <tr><td><div class="contract-name"><span class="dim">…__shvenergy__</span>csrd_esg_soc__health_safety</div><div class="contract-group">SHV Energy · Jan</div></td><td class="num"><span style="font-family:var(--mono);color:var(--bad);font-weight:500">87</span></td></tr>
+            <tr><td><div class="contract-name"><span class="dim">…__mammoet__</span>csrd_esg_soc__injuries</div><div class="contract-group">Mammoet · Jan</div></td><td class="num"><span style="font-family:var(--mono);color:var(--bad);font-weight:500">87</span></td></tr>
+            <tr><td><div class="contract-name"><span class="dim">…__nutreco__</span>csrd_esg_soc__health_safety</div><div class="contract-group">Nutreco · Jan</div></td><td class="num"><span style="font-family:var(--mono);color:var(--bad);font-weight:500">87</span></td></tr>
+            <tr><td><div class="contract-name"><span class="dim">…__kiwa__</span>csrd_esg_soc__health_safety</div><div class="contract-group">Kiwa · Jan</div></td><td class="num"><span style="font-family:var(--mono);color:var(--bad);font-weight:500">87</span></td></tr>
+            <tr><td><div class="contract-name"><span class="dim">…__shv__</span>csrd_ref__dim_site</div><div class="contract-group">SHV Holdings · Jan</div></td><td class="num"><span style="font-family:var(--mono);color:var(--bad);font-weight:500">87</span></td></tr>
+            <tr><td><div class="contract-name"><span class="dim">…__shvenergy__</span>csrd_esg_env__sc3_ghg_categories</div><div class="contract-group">SHV Energy · Feb</div></td><td class="num"><span style="font-family:var(--mono);color:var(--bad);font-weight:500">58</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="footnote"><strong>How to read this page:</strong> <code>Due by today</code> = deadline ≤ today. <code>Overdue</code> = past deadline, no delivery. <code>Pending</code> = future deadline. Three status types currently zero because the source pipeline isn't populating those flags &mdash; PRISMA finding.</div>
+  </div>
+</section>
+
+<div class="page-divider">page 2</div>
+
+<!-- PAGE 2 · GROUPS -->
+<section class="page" id="group">
+  <div class="header">
+    <div>
+      <div class="header-eyebrow">page 2 · groups</div>
+      <h1>Group <em>performance</em></h1>
+    </div>
+    <div class="header-meta">ranked · <strong>by health</strong><br>active <strong>5</strong> · idle <strong>3</strong></div>
+  </div>
+  <div class="body">
+    <div class="filters">
+      <span class="filter-label">filters</span>
+      <span class="filter-chip">year <strong>2026</strong></span>
+      <span class="filter-chip">view <strong>all groups</strong></span>
+      <span class="filter-chip">sort <strong>health desc</strong></span>
+      <span class="filter-chip">show idle <strong>yes</strong></span>
+    </div>
+    <div class="group-grid" style="margin-top: 4px;">
+      <div class="group-card">
+        <div class="group-card-head">
+          <div><div class="group-card-name">Mammoet</div><div class="group-card-name-sub">6 contracts · 72 expected</div></div>
+          <div class="group-card-score"><div class="group-card-score-num">42</div><div class="group-card-score-grade"><span class="grade grade-D">D</span></div></div>
+        </div>
+        <div class="dim-row"><span class="dim-label">Reliable</span><div class="dim-bar"><div class="dim-fill mid" style="width: 33%;"></div></div><span class="dim-value">33</span></div>
+        <div class="dim-row"><span class="dim-label">On time</span><div class="dim-bar"><div class="dim-fill high" style="width: 100%;"></div></div><span class="dim-value">100</span></div>
+        <div class="dim-row"><span class="dim-label">Quality</span><div class="dim-bar"><div class="dim-fill mid" style="width: 50%;"></div></div><span class="dim-value">50</span></div>
+        <div class="dim-row"><span class="dim-label">Recovery</span><div class="dim-bar"></div><span class="dim-value muted">—</span></div>
+        <div class="dim-row"><span class="dim-label">Discipline</span><div class="dim-bar"><div class="dim-fill high" style="width: 100%;"></div></div><span class="dim-value">100</span></div>
+      </div>
+      <div class="group-card">
+        <div class="group-card-head">
+          <div><div class="group-card-name">Nutreco</div><div class="group-card-name-sub">31 contracts · 372 expected</div></div>
+          <div class="group-card-score"><div class="group-card-score-num">39</div><div class="group-card-score-grade"><span class="grade grade-F">F</span></div></div>
+        </div>
+        <div class="dim-row"><span class="dim-label">Reliable</span><div class="dim-bar"><div class="dim-fill mid" style="width: 27%;"></div></div><span class="dim-value">27</span></div>
+        <div class="dim-row"><span class="dim-label">On time</span><div class="dim-bar"><div class="dim-fill high" style="width: 100%;"></div></div><span class="dim-value">100</span></div>
+        <div class="dim-row"><span class="dim-label">Quality</span><div class="dim-bar"><div class="dim-fill high" style="width: 100%;"></div></div><span class="dim-value">100</span></div>
+        <div class="dim-row"><span class="dim-label">Recovery</span><div class="dim-bar"></div><span class="dim-value muted">—</span></div>
+        <div class="dim-row"><span class="dim-label">Discipline</span><div class="dim-bar"><div class="dim-fill high" style="width: 100%;"></div></div><span class="dim-value">100</span></div>
+      </div>
+      <div class="group-card">
+        <div class="group-card-head">
+          <div><div class="group-card-name">Kiwa</div><div class="group-card-name-sub">31 contracts · 372 expected</div></div>
+          <div class="group-card-score"><div class="group-card-score-num">36</div><div class="group-card-score-grade"><span class="grade grade-F">F</span></div></div>
+        </div>
+        <div class="dim-row"><span class="dim-label">Reliable</span><div class="dim-bar"><div class="dim-fill low" style="width: 19%;"></div></div><span class="dim-value">19</span></div>
+        <div class="dim-row"><span class="dim-label">On time</span><div class="dim-bar"><div class="dim-fill high" style="width: 100%;"></div></div><span class="dim-value">100</span></div>
+        <div class="dim-row"><span class="dim-label">Quality</span><div class="dim-bar"><div class="dim-fill high" style="width: 100%;"></div></div><span class="dim-value">100</span></div>
+        <div class="dim-row"><span class="dim-label">Recovery</span><div class="dim-bar"><div class="dim-fill mid" style="width: 63%;"></div></div><span class="dim-value">63</span></div>
+        <div class="dim-row"><span class="dim-label">Discipline</span><div class="dim-bar"><div class="dim-fill high" style="width: 100%;"></div></div><span class="dim-value">100</span></div>
+      </div>
+      <div class="group-card">
+        <div class="group-card-head">
+          <div><div class="group-card-name">SHV Holdings</div><div class="group-card-name-sub">30 contracts · 360 expected</div></div>
+          <div class="group-card-score"><div class="group-card-score-num">31</div><div class="group-card-score-grade"><span class="grade grade-F">F</span></div></div>
+        </div>
+        <div class="dim-row"><span class="dim-label">Reliable</span><div class="dim-bar"><div class="dim-fill low" style="width: 14%;"></div></div><span class="dim-value">14</span></div>
+        <div class="dim-row"><span class="dim-label">On time</span><div class="dim-bar"><div class="dim-fill high" style="width: 100%;"></div></div><span class="dim-value">100</span></div>
+        <div class="dim-row"><span class="dim-label">Quality</span><div class="dim-bar"><div class="dim-fill high" style="width: 100%;"></div></div><span class="dim-value">100</span></div>
+        <div class="dim-row"><span class="dim-label">Recovery</span><div class="dim-bar"></div><span class="dim-value muted">—</span></div>
+        <div class="dim-row"><span class="dim-label">Discipline</span><div class="dim-bar"><div class="dim-fill high" style="width: 100%;"></div></div><span class="dim-value">100</span></div>
+      </div>
+      <div class="group-card">
+        <div class="group-card-head">
+          <div><div class="group-card-name">SHV Energy</div><div class="group-card-name-sub">6 contracts · 72 expected</div></div>
+          <div class="group-card-score"><div class="group-card-score-num" style="color: var(--bad);">0</div><div class="group-card-score-grade"><span class="grade grade-F">F</span></div></div>
+        </div>
+        <div class="dim-row"><span class="dim-label">Reliable</span><div class="dim-bar"><div class="dim-fill low" style="width: 1%;"></div></div><span class="dim-value" style="color: var(--bad);">0</span></div>
+        <div class="dim-row"><span class="dim-label">On time</span><div class="dim-bar"></div><span class="dim-value muted">—</span></div>
+        <div class="dim-row"><span class="dim-label">Quality</span><div class="dim-bar"></div><span class="dim-value muted">—</span></div>
+        <div class="dim-row"><span class="dim-label">Recovery</span><div class="dim-bar"></div><span class="dim-value muted">—</span></div>
+        <div class="dim-row"><span class="dim-label">Discipline</span><div class="dim-bar"></div><span class="dim-value muted">—</span></div>
+      </div>
+      <div class="group-card empty">
+        <div class="group-card-head"><div><div class="group-card-name">Makro</div><div class="group-card-name-sub">no contracts assigned</div></div><div class="group-card-score"><div class="group-card-score-num">—</div><div class="group-card-score-grade"><span class="grade grade-empty">—</span></div></div></div>
+        <p style="font-size: 11px; color: var(--ink-3); font-style: italic; margin-top: 16px;">Idle group · awaiting onboarding.</p>
+      </div>
+      <div class="group-card empty">
+        <div class="group-card-head"><div><div class="group-card-name">NPM Capital</div><div class="group-card-name-sub">no contracts assigned</div></div><div class="group-card-score"><div class="group-card-score-num">—</div><div class="group-card-score-grade"><span class="grade grade-empty">—</span></div></div></div>
+        <p style="font-size: 11px; color: var(--ink-3); font-style: italic; margin-top: 16px;">Idle group · awaiting onboarding.</p>
+      </div>
+      <div class="group-card empty">
+        <div class="group-card-head"><div><div class="group-card-name">Corporate</div><div class="group-card-name-sub">no contracts assigned</div></div><div class="group-card-score"><div class="group-card-score-num">—</div><div class="group-card-score-grade"><span class="grade grade-empty">—</span></div></div></div>
+        <p style="font-size: 11px; color: var(--ink-3); font-style: italic; margin-top: 16px;">Idle group · awaiting onboarding.</p>
+      </div>
+    </div>
+    <div class="section-label">
+      <span class="section-label-text">where the gap is, by frequency</span>
+      <span class="section-label-hint">same data, different lens · v0 is monthly-only</span>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Status by frequency</div>
+      <div class="panel-subtitle">Files by current state, broken out per reporting cadence</div>
+      <table>
+        <thead><tr><th>Frequency</th><th class="num">Expected</th><th class="num">Due today</th><th class="num">Delivered</th><th class="num">Gold</th><th class="num">Overdue</th><th class="num">Pending</th></tr></thead>
+        <tbody><tr><td><strong>Monthly</strong></td><td class="num">1,248</td><td class="num">312</td><td class="num success">62</td><td class="num success">59</td><td class="num danger">252</td><td class="num">934</td></tr></tbody>
+        <tfoot><tr><td>Total</td><td class="num">1,248</td><td class="num">312</td><td class="num">62</td><td class="num">59</td><td class="num">252</td><td class="num">934</td></tr></tfoot>
+      </table>
+      <p class="footnote" style="margin-top: 14px;"><strong>V0 note:</strong> all contracts currently registered as monthly. Frequency-driven cadence (Q/H/Y) is a v1 refinement. Once applied, January should spike as Y+H+Q+M periods converge there.</p>
+    </div>
+  </div>
+</section>
+
+<div class="page-divider">page 3</div>
+
+<!-- PAGE 3 · DATASETS -->
+<section class="page" id="dataset">
+  <div class="header">
+    <div>
+      <div class="header-eyebrow">page 3 · datasets</div>
+      <h1>Contract <em>detail</em></h1>
+    </div>
+    <div class="header-meta">contracts · <strong>104</strong><br>filtered · <strong>15 shown</strong></div>
+  </div>
+  <div class="body">
+    <div class="filters">
+      <span class="filter-label">filters</span>
+      <span class="filter-chip">year <strong>2026</strong></span>
+      <span class="filter-chip">group <strong>all</strong></span>
+      <span class="filter-chip">domain <strong>all</strong></span>
+      <span class="filter-chip">period <strong>all</strong></span>
+      <span class="filter-chip">state <strong>any</strong></span>
+      <span class="filter-chip">sort <strong>days late desc</strong></span>
+    </div>
+    <div class="kpis" style="border-top: 1px solid var(--rule);">
+      <div class="kpi"><div class="kpi-label">In view</div><div class="kpi-value">15</div><div class="kpi-sub">of 104 total</div></div>
+      <div class="kpi"><div class="kpi-label">Delivered</div><div class="kpi-value good">5</div><div class="kpi-sub">33% of in-view</div></div>
+      <div class="kpi"><div class="kpi-label">Overdue</div><div class="kpi-value bad">8</div><div class="kpi-sub">past deadline</div></div>
+      <div class="kpi"><div class="kpi-label">Avg days late</div><div class="kpi-value bad">83<span class="unit"> d</span></div><div class="kpi-sub">overdue contracts</div></div>
+      <div class="kpi"><div class="kpi-label">Retried</div><div class="kpi-value warn">2</div><div class="kpi-sub">both Kiwa</div></div>
+    </div>
+    <div class="section-label">
+      <span class="section-label-text">contracts in view</span>
+      <span class="section-label-hint">sorted by days late · click a row to drill in</span>
+    </div>
+    <div class="panel">
+      <table class="datasets">
+        <thead><tr><th>Contract</th><th>Group</th><th>Domain</th><th>Period</th><th>Deadline</th><th class="num">Days late</th><th class="num">Retries</th><th>Last state</th><th class="num">Records</th></tr></thead>
+        <tbody>
+          <tr class="clickable"><td><div class="contract-name"><span class="dim">…__shvenergy__</span>csrd_esg_env__sc1_ghg</div></td><td>SHV Energy</td><td>esg_env</td><td>Jan 2026</td><td>15 Feb</td><td class="num danger">87</td><td class="num zero">—</td><td><span class="status-pill missing">missing</span></td><td class="num zero">—</td></tr>
+          <tr class="clickable"><td><div class="contract-name"><span class="dim">…__shvenergy__</span>csrd_esg_env__sc2_ghg</div></td><td>SHV Energy</td><td>esg_env</td><td>Jan 2026</td><td>15 Feb</td><td class="num danger">87</td><td class="num zero">—</td><td><span class="status-pill missing">missing</span></td><td class="num zero">—</td></tr>
+          <tr class="clickable"><td><div class="contract-name"><span class="dim">…__shvenergy__</span>csrd_esg_soc__health_safety</div></td><td>SHV Energy</td><td>esg_soc</td><td>Jan 2026</td><td>15 Feb</td><td class="num danger">87</td><td class="num zero">—</td><td><span class="status-pill missing">missing</span></td><td class="num zero">—</td></tr>
+          <tr class="clickable"><td><div class="contract-name"><span class="dim">…__mammoet__</span>csrd_esg_soc__injuries</div></td><td>Mammoet</td><td>esg_soc</td><td>Jan 2026</td><td>15 Feb</td><td class="num danger">87</td><td class="num zero">—</td><td><span class="status-pill missing">missing</span></td><td class="num zero">—</td></tr>
+          <tr class="clickable"><td><div class="contract-name"><span class="dim">…__nutreco__</span>csrd_esg_soc__health_safety</div></td><td>Nutreco</td><td>esg_soc</td><td>Jan 2026</td><td>15 Feb</td><td class="num danger">87</td><td class="num zero">—</td><td><span class="status-pill missing">missing</span></td><td class="num zero">—</td></tr>
+          <tr class="clickable"><td><div class="contract-name"><span class="dim">…__kiwa__</span>csrd_esg_soc__health_safety</div></td><td>Kiwa</td><td>esg_soc</td><td>Jan 2026</td><td>15 Feb</td><td class="num danger">87</td><td class="num zero">—</td><td><span class="status-pill missing">missing</span></td><td class="num zero">—</td></tr>
+          <tr class="clickable"><td><div class="contract-name"><span class="dim">…__shv__</span>csrd_ref__dim_site</div></td><td>SHV Holdings</td><td>ref</td><td>Jan 2026</td><td>15 Feb</td><td class="num danger">87</td><td class="num zero">—</td><td><span class="status-pill missing">missing</span></td><td class="num zero">—</td></tr>
+          <tr class="clickable"><td><div class="contract-name"><span class="dim">…__shvenergy__</span>csrd_esg_env__sc3_ghg_categories</div></td><td>SHV Energy</td><td>esg_env</td><td>Feb 2026</td><td>15 Mar</td><td class="num danger">58</td><td class="num zero">—</td><td><span class="status-pill missing">missing</span></td><td class="num zero">—</td></tr>
+          <tr class="clickable"><td><div class="contract-name"><span class="dim">…__nutreco__</span>csrd_esg_env__capex_incurred</div></td><td>Nutreco</td><td>esg_env</td><td>Mar 2026</td><td>15 Apr</td><td class="num zero">—</td><td class="num zero">—</td><td><span class="status-pill gold">reached gold</span></td><td class="num">12,453</td></tr>
+          <tr class="clickable"><td><div class="contract-name"><span class="dim">…__kiwa__</span>csrd_esg_env__sc3_ghg_categories</div></td><td>Kiwa</td><td>esg_env</td><td>Feb 2026</td><td>15 Mar</td><td class="num zero">—</td><td class="num warn">3</td><td><span class="status-pill gold">reached gold</span></td><td class="num">690</td></tr>
+          <tr class="clickable"><td><div class="contract-name"><span class="dim">…__kiwa__</span>csrd_hs__esg_psif.csv</div></td><td>Kiwa</td><td>hs</td><td>Feb 2026</td><td>15 Mar</td><td class="num zero">—</td><td class="num warn">3</td><td><span class="status-pill gold">reached gold</span></td><td class="num">428</td></tr>
+          <tr class="clickable"><td><div class="contract-name"><span class="dim">…__mammoet__</span>csrd_esg_soc__psif</div></td><td>Mammoet</td><td>esg_soc</td><td>Mar 2026</td><td>15 Apr</td><td class="num zero">—</td><td class="num zero">—</td><td><span class="status-pill dq">DQ found</span></td><td class="num">82,103</td></tr>
+          <tr class="clickable"><td><div class="contract-name"><span class="dim">…__mammoet__</span>csrd_hs__esg_hs.csv</div></td><td>Mammoet</td><td>hs</td><td>Feb 2026</td><td>15 Mar</td><td class="num zero">—</td><td class="num zero">—</td><td><span class="status-pill schema">schema fail</span></td><td class="num zero">—</td></tr>
+          <tr class="clickable"><td><div class="contract-name"><span class="dim">…__nutreco__</span>csrd_esg_env__energy_production</div></td><td>Nutreco</td><td>esg_env</td><td>May 2026</td><td>15 Jun</td><td class="num zero">—</td><td class="num zero">—</td><td><span class="status-pill pending">pending</span></td><td class="num zero">—</td></tr>
+          <tr class="clickable"><td><div class="contract-name"><span class="dim">…__nutreco__</span>csrd_esg_env__ghg_targets</div></td><td>Nutreco</td><td>esg_env</td><td>May 2026</td><td>15 Jun</td><td class="num zero">—</td><td class="num zero">—</td><td><span class="status-pill pending">pending</span></td><td class="num zero">—</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size: 11px; color: var(--ink-3); font-style: italic; margin-top: 14px; text-align: center;">showing 15 of 104 contracts · load more →</p>
+    </div>
+    <div class="footnote"><strong>Click any row</strong> to open contract-detail drill: full delivery history, re-ingestion attempts, raw status flags. Designed for maintenance triage: sort by days-late, filter by state, work through the list.</div>
+  </div>
+</section>
+
+<div class="page-divider">page 4</div>
+
+<!-- PAGE 4 · SCORING -->
+<section class="page" id="scoring">
+  <div class="header">
+    <div>
+      <div class="header-eyebrow">page 4 · scoring</div>
+      <h1>Group <em>health</em> score</h1>
+    </div>
+    <div class="header-meta">formula · <strong>5 dimensions</strong><br>weights · <strong>tunable</strong></div>
+  </div>
+  <div class="body">
+    <div class="filters">
+      <span class="filter-label">filters</span>
+      <span class="filter-chip">year <strong>2026</strong></span>
+      <span class="filter-chip">as of <strong>today</strong></span>
+      <span class="filter-chip">scoring <strong>weighted composite</strong></span>
+    </div>
+    <div class="section-label">
+      <span class="section-label-text">how the score works</span>
+      <span class="section-label-hint">five dimensions · weighted composite · 0–100 · A–F grade</span>
+    </div>
+    <div class="formula-box">
+      <div class="formula-eyebrow">composite health score · 0–100</div>
+      <div class="formula"><span class="m">score</span> = <span class="w">0.25</span>×reliability + <span class="w">0.15</span>×punctuality + <span class="w">0.25</span>×quality + <span class="w">0.10</span>×recovery + <span class="w">0.15</span>×discipline − <span class="w">0.10</span>×overdue_share</div>
+    </div>
+    <div class="split" style="margin-top: 16px;">
+      <div class="panel">
+        <div class="panel-title">Dimensions</div>
+        <div class="panel-subtitle">each measured 0–100 · latest-wins active deliveries</div>
+        <table>
+          <thead><tr><th>Dimension</th><th>Weight</th><th>What it measures</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Reliability</strong></td><td style="font-family:var(--mono);color:var(--info)">25%</td><td class="zero">delivered / expected-by-today · did the source show up?</td></tr>
+            <tr><td><strong>Punctuality</strong></td><td style="font-family:var(--mono);color:var(--info)">15%</td><td class="zero">on-time / delivered · did they meet the window?</td></tr>
+            <tr><td><strong>Quality</strong></td><td style="font-family:var(--mono);color:var(--info)">25%</td><td class="zero">gold / delivered · was the data usable?</td></tr>
+            <tr><td><strong>Recovery</strong></td><td style="font-family:var(--mono);color:var(--info)">10%</td><td class="zero">re-ingested / first-failures · do they fix what breaks?</td></tr>
+            <tr><td><strong>Discipline</strong></td><td style="font-family:var(--mono);color:var(--info)">15%</td><td class="zero">1 − scope-quar / delivered · contract respect</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Grade bands</div>
+        <div class="panel-subtitle">colour mapping for cards and tables</div>
+        <table>
+          <tbody>
+            <tr><td><span class="grade grade-A">A</span></td><td>90+</td><td class="zero">excellent · low intervention</td></tr>
+            <tr><td><span class="grade grade-B">B</span></td><td>75–89</td><td class="zero">acceptable</td></tr>
+            <tr><td><span class="grade grade-C">C</span></td><td>60–74</td><td class="zero">monitor · watch trend</td></tr>
+            <tr><td><span class="grade grade-D">D</span></td><td>40–59</td><td class="zero">underperforming</td></tr>
+            <tr><td><span class="grade grade-F">F</span></td><td>&lt; 40</td><td class="zero">critical · escalate</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="section-label">
+      <span class="section-label-text">leaderboard</span>
+      <span class="section-label-hint">ranked descending · sparkline = score over 4 weeks</span>
+    </div>
+    <div class="panel" style="padding: 0;">
+      <div class="leaderboard-row" style="border-top: none;">
+        <div class="leaderboard-rank">1</div>
+        <div><div class="leaderboard-name">Mammoet</div><div class="leaderboard-sub">6 contracts · 72 expected · 6 delivered</div></div>
+        <svg class="spark" viewBox="0 0 60 24" width="60" height="24"><polyline points="0,18 12,14 24,10 36,12 48,8 60,7" fill="none" stroke="#2d6948" stroke-width="1.5"/></svg>
+        <div><div class="leaderboard-score">41.7</div><div class="leaderboard-delta" style="color: var(--good);">▲ 3.2</div></div>
+        <div><span class="grade grade-D">D</span></div>
+      </div>
+      <div class="leaderboard-row">
+        <div class="leaderboard-rank">2</div>
+        <div><div class="leaderboard-name">Nutreco</div><div class="leaderboard-sub">31 contracts · 372 expected · 25 delivered</div></div>
+        <svg class="spark" viewBox="0 0 60 24" width="60" height="24"><polyline points="0,12 12,8 24,9 36,11 48,13 60,14" fill="none" stroke="#b46c1a" stroke-width="1.5"/></svg>
+        <div><div class="leaderboard-score">39.4</div><div class="leaderboard-delta" style="color: var(--bad);">▼ 2.1</div></div>
+        <div><span class="grade grade-F">F</span></div>
+      </div>
+      <div class="leaderboard-row">
+        <div class="leaderboard-rank">3</div>
+        <div><div class="leaderboard-name">Kiwa</div><div class="leaderboard-sub">31 contracts · 372 expected · 18 delivered</div></div>
+        <svg class="spark" viewBox="0 0 60 24" width="60" height="24"><polyline points="0,14 12,12 24,11 36,11 48,10 60,9" fill="none" stroke="#2d6948" stroke-width="1.5"/></svg>
+        <div><div class="leaderboard-score">36.4</div><div class="leaderboard-delta" style="color: var(--good);">▲ 1.4</div></div>
+        <div><span class="grade grade-F">F</span></div>
+      </div>
+      <div class="leaderboard-row">
+        <div class="leaderboard-rank">4</div>
+        <div><div class="leaderboard-name">SHV Holdings</div><div class="leaderboard-sub">30 contracts · 360 expected · 13 delivered</div></div>
+        <svg class="spark" viewBox="0 0 60 24" width="60" height="24"><polyline points="0,18 12,16 24,17 36,15 48,14 60,13" fill="none" stroke="#244e7a" stroke-width="1.5"/></svg>
+        <div><div class="leaderboard-score">31.4</div><div class="leaderboard-delta" style="color: var(--good);">▲ 0.8</div></div>
+        <div><span class="grade grade-F">F</span></div>
+      </div>
+      <div class="leaderboard-row">
+        <div class="leaderboard-rank">5</div>
+        <div><div class="leaderboard-name">SHV Energy</div><div class="leaderboard-sub">6 contracts · 72 expected · <span style="color: var(--bad);">0 delivered</span></div></div>
+        <svg class="spark" viewBox="0 0 60 24" width="60" height="24"><polyline points="0,22 12,22 24,22 36,22 48,22 60,22" fill="none" stroke="#a23a2a" stroke-width="1.5"/></svg>
+        <div><div class="leaderboard-score" style="color: var(--bad);">0.0</div><div class="leaderboard-delta">no change</div></div>
+        <div><span class="grade grade-F">F</span></div>
+      </div>
+    </div>
+    <div class="section-label">
+      <span class="section-label-text">why each group scores what it does</span>
+      <span class="section-label-hint">dimension-by-dimension · top 3 by health</span>
+    </div>
+    <div class="split">
+      <div class="radar-wrap">
+        <div class="radar-title">Dimension shape · top 3</div>
+        <div class="radar-sub">Each axis = 0–100 · larger shape = better composite</div>
+        <svg viewBox="0 0 360 320" style="width: 100%; height: 280px;">
+          <g stroke="#d8d5cc" fill="none" stroke-width="0.8">
+            <polygon points="180,40 296,124 252,260 108,260 64,124"/>
+            <polygon points="180,80 268,140 234,232 126,232 92,140" stroke-dasharray="2 3"/>
+            <polygon points="180,120 240,156 216,204 144,204 120,156" stroke-dasharray="2 3"/>
+            <line x1="180" y1="160" x2="180" y2="40"/>
+            <line x1="180" y1="160" x2="296" y2="124"/>
+            <line x1="180" y1="160" x2="252" y2="260"/>
+            <line x1="180" y1="160" x2="108" y2="260"/>
+            <line x1="180" y1="160" x2="64" y2="124"/>
+          </g>
+          <text x="180" y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#353841">RELIABILITY</text>
+          <text x="304" y="124" text-anchor="start" font-family="JetBrains Mono" font-size="9" fill="#353841">ON TIME</text>
+          <text x="262" y="276" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#353841">QUALITY</text>
+          <text x="98" y="276" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#353841">RECOVERY</text>
+          <text x="56" y="124" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#353841">DISCIPLINE</text>
+          <polygon points="180,120 296,124 216,204 180,160 64,124" fill="#2d6948" fill-opacity="0.15" stroke="#2d6948" stroke-width="1.8"/>
+          <polygon points="180,128 296,124 252,260 180,160 64,124" fill="#244e7a" fill-opacity="0.12" stroke="#244e7a" stroke-width="1.5" stroke-dasharray="3 2"/>
+          <polygon points="180,136 296,124 252,260 122,221 64,124" fill="#b46c1a" fill-opacity="0.10" stroke="#b46c1a" stroke-width="1.5" stroke-dasharray="2 2"/>
+        </svg>
+        <div class="legend">
+          <span class="legend-item"><span class="legend-swatch" style="background: #2d6948;"></span>Mammoet</span>
+          <span class="legend-item"><span class="legend-swatch" style="background: #244e7a;"></span>Nutreco</span>
+          <span class="legend-item"><span class="legend-swatch" style="background: #b46c1a;"></span>Kiwa</span>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Score components · all groups</div>
+        <div class="panel-subtitle">breakdown by dimension</div>
+        <table>
+          <thead><tr><th>Group</th><th class="num">Rel</th><th class="num">On time</th><th class="num">Qual</th><th class="num">Recov</th><th class="num">Disc</th><th class="num">Score</th><th>Gr</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Mammoet</strong></td><td class="num">33</td><td class="num">100</td><td class="num warn">50</td><td class="num zero">—</td><td class="num">100</td><td class="num">41.7</td><td><span class="grade grade-D">D</span></td></tr>
+            <tr><td><strong>Nutreco</strong></td><td class="num">27</td><td class="num">100</td><td class="num">100</td><td class="num zero">—</td><td class="num">100</td><td class="num">39.4</td><td><span class="grade grade-F">F</span></td></tr>
+            <tr><td><strong>Kiwa</strong></td><td class="num danger">19</td><td class="num">100</td><td class="num">100</td><td class="num warn">63</td><td class="num">100</td><td class="num">36.4</td><td><span class="grade grade-F">F</span></td></tr>
+            <tr><td><strong>SHV Holdings</strong></td><td class="num danger">14</td><td class="num">100</td><td class="num">100</td><td class="num zero">—</td><td class="num">100</td><td class="num">31.4</td><td><span class="grade grade-F">F</span></td></tr>
+            <tr><td><strong>SHV Energy</strong></td><td class="num danger">0</td><td class="num zero">—</td><td class="num zero">—</td><td class="num zero">—</td><td class="num zero">—</td><td class="num danger">0.0</td><td><span class="grade grade-F">F</span></td></tr>
+          </tbody>
+        </table>
+        <p class="footnote" style="margin-top: 14px;">The portfolio is dragged down by <strong>reliability</strong>. On-time, quality, and discipline are near-perfect for groups that <em>do</em> deliver — the issue isn't <em>how</em> they deliver, it's <em>whether</em>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div style="text-align: center; padding: 32px 0 48px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-3);">· end ·</div>
+
+</body>
+</html>

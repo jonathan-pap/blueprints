@@ -13,8 +13,11 @@ annotation PBI_QueryOrder = ["financials"]
 annotation PBI_ProTooling = ["DevMode"]
 
 ref table financials
-
 ref table _Measures
+ref table 'financials Date Slicer'
+ref table 'Price Slicer'
+ref table 'Year Slicer'
+ref table 'Product Slicer'
 
 ref cultureInfo en-US
 

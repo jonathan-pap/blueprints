@@ -1,0 +1,89 @@
+/// In-model date dimension, 2025-01-01 → 2027-12-31. Generated via CALENDAR + ADDCOLUMNS. Covers both reporting periods (expected) and received dates (fct_delivery).
+table dim_calendar
+	lineageTag: c0a1ddd0-9003-4003-aaaa-000000000000
+	dataCategory: Time
+
+	column Date
+		isKey
+		formatString: Short Date
+		lineageTag: c0a1ddd0-9003-4003-aaaa-000000000001
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		formatString: 0
+		lineageTag: c0a1ddd0-9003-4003-aaaa-000000000002
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		formatString: 0
+		lineageTag: c0a1ddd0-9003-4003-aaaa-000000000003
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month]
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthName
+		lineageTag: c0a1ddd0-9003-4003-aaaa-000000000004
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [MonthName]
+		sortByColumn: Month
+
+		annotation SummarizationSetBy = Automatic
+
+	column YearMonth
+		lineageTag: c0a1ddd0-9003-4003-aaaa-000000000005
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [YearMonth]
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayOfMonth
+		formatString: 0
+		lineageTag: c0a1ddd0-9003-4003-aaaa-000000000006
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [DayOfMonth]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		lineageTag: c0a1ddd0-9003-4003-aaaa-000000000007
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Quarter]
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayOfQuarter
+		formatString: 0
+		lineageTag: c0a1ddd0-9003-4003-aaaa-000000000008
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [DayOfQuarter]
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayOfYear
+		formatString: 0
+		lineageTag: c0a1ddd0-9003-4003-aaaa-000000000009
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [DayOfYear]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_calendar = calculated
+		mode: import
+		source = ADDCOLUMNS ( CALENDAR ( DATE ( 2025, 1, 1 ), DATE ( 2027, 12, 31 ) ), "Year", YEAR ( [Date] ), "Month", MONTH ( [Date] ), "MonthName", FORMAT ( [Date], "mmm" ), "YearMonth", FORMAT ( [Date], "yyyy-mm" ), "DayOfMonth", DAY ( [Date] ), "Quarter", "Q" & FORMAT ( [Date], "q" ), "DayOfQuarter", DATEDIFF ( DATE ( YEAR ( [Date] ), ( ( MONTH ( [Date] ) - 1 ) - MOD ( MONTH ( [Date] ) - 1, 3 ) ) + 1, 1 ), [Date], DAY ) + 1, "DayOfYear", DATEDIFF ( DATE ( YEAR ( [Date] ), 1, 1 ), [Date], DAY ) + 1 )
+

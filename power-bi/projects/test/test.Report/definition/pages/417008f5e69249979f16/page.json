@@ -1,0 +1,8 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "417008f5e69249979f16",
+  "displayName": "SVG · distribution (per segment)",
+  "width": 1280,
+  "height": 720,
+  "displayOption": "FitToPage"
+}

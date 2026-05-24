@@ -136,6 +136,7 @@ table financials
 		lineageTag: 5a1c79f9-5df3-455e-896c-1f988e0587ec
 		summarizeBy: none
 		sourceColumn: Month Name
+		sortByColumn: 'Month Number'
 
 		annotation SummarizationSetBy = Automatic
 
@@ -145,6 +146,14 @@ table financials
 		lineageTag: b21ee8e2-2131-45f8-9cb3-c8b7e65ee993
 		summarizeBy: sum
 		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Sortable "MMYYYY" period key for the actual-vs-target streak / best-month measures.
+	column MonthKey = FORMAT ( financials[Month Number], "00" ) & FORMAT ( financials[Year], "0000" )
+		dataType: string
+		lineageTag: d152487e-b8f6-44c7-b37d-c408c415f88f
+		summarizeBy: none
 
 		annotation SummarizationSetBy = Automatic
 

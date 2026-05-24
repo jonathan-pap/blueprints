@@ -1,0 +1,8 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "f59408ed7db1478596ad",
+  "displayName": "SVG · per-product micro-charts",
+  "width": 1280,
+  "height": 720,
+  "displayOption": "FitToPage"
+}

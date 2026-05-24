@@ -1,0 +1,171 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "6e3ea18fda54026e9341",
+  "position": {
+    "x": 191.53284671532847,
+    "y": 187.79562043795622,
+    "z": 21001,
+    "height": 499.85401459854012,
+    "width": 1066.9781021897811,
+    "tabOrder": 21001
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "expected"
+                    }
+                  },
+                  "Property": "dc_name"
+                }
+              },
+              "queryRef": "expected.dc_name",
+              "nativeQueryRef": "Contract",
+              "displayName": "Contract"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_group"
+                    }
+                  },
+                  "Property": "group_name"
+                }
+              },
+              "queryRef": "dim_group.group_name",
+              "nativeQueryRef": "Group",
+              "displayName": "Group"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "expected"
+                    }
+                  },
+                  "Property": "domain"
+                }
+              },
+              "queryRef": "expected.domain",
+              "nativeQueryRef": "Domain",
+              "displayName": "Domain"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_dataset"
+                    }
+                  },
+                  "Property": "freq_code"
+                }
+              },
+              "queryRef": "dim_dataset.freq_code",
+              "nativeQueryRef": "Freq",
+              "displayName": "Freq"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "expected"
+                    }
+                  },
+                  "Property": "deadline_date"
+                }
+              },
+              "queryRef": "expected.deadline_date",
+              "nativeQueryRef": "Deadline",
+              "displayName": "Deadline"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "expected"
+                    }
+                  },
+                  "Property": "CurrentState"
+                }
+              },
+              "queryRef": "expected.CurrentState",
+              "nativeQueryRef": "State",
+              "displayName": "State"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "expected"
+                  }
+                },
+                "Property": "CurrentState"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "columnWidth": [
+        {
+          "properties": {},
+          "selector": {
+            "metadata": "expected.dc_name"
+          }
+        },
+        {
+          "properties": {},
+          "selector": {
+            "metadata": "dim_group.group_name"
+          }
+        },
+        {
+          "properties": {},
+          "selector": {
+            "metadata": "expected.CurrentState"
+          }
+        }
+      ],
+      "columnHeaders": [
+        {
+          "properties": {}
+        }
+      ],
+      "values": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}
