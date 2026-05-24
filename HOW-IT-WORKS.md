@@ -4,7 +4,7 @@
 
 ## What it is
 
-A set of **folder-as-app blueprints** for specific tools (currently Power BI). Each blueprint is markdown + folder structure + tiny scripts. No custom agents, no plugins, no skill bundles. Claude reads the folders to learn what to do.
+A set of **folder-as-app blueprints** for specific tools (currently **Power BI** and **synthetic data**). Each blueprint is markdown + folder structure + tiny scripts. No custom agents, no plugins, no skill bundles. Claude reads the folders to learn what to do.
 
 ## The PDF reference (3-Layer Folder Architecture)
 
@@ -42,27 +42,36 @@ Workspace-Blueprint/
 ├── README.md                    ← human intro
 ├── HOW-IT-WORKS.md              ← this file
 ├── .claude/settings.json        ← Claude Code hook registrations
-└── power-bi/                    ← ONE blueprint (others would sit alongside)
+├── power-bi/                    ← blueprint 1 — Power BI Desktop (PBIP)
+│   ├── CLAUDE.md                ← L1 router (blueprint-level — which room?)
+│   ├── hooks.yaml               ← master toggles for all hook subsystems
+│   ├── 01-brief/                ← L2 room — intake / requirements
+│   │   ├── context.md
+│   │   ├── brief-template.md
+│   │   ├── hooks/discover-briefs.sh
+│   │   └── …
+│   ├── 02-build/                ← L2 room — author reports, models, themes, visuals
+│   │   ├── report/, model/, theme/, visuals/
+│   │   └── …
+│   ├── 03-bind/                 ← L2 room — live model ops (MCP or PowerShell/TOM)
+│   ├── 04-review/               ← L2 room — validate, audit, lineage
+│   ├── projects/                ← raw layer (the actual PBIP work)
+│   │   ├── <project-name>/      ← thick PBIP project
+│   │   └── themes/<slug>/       ← theme library (separate lifecycle)
+│   ├── outputs/                 ← dated artifacts (YYYY-MM-DD-<project>-<type>.<ext>)
+│   └── _examples/               ← provenance snapshot (do not load unless asked)
+└── synthetic-data/             ← blueprint 2 — synthetic / dummy data (Python-first)
     ├── CLAUDE.md                ← L1 router (blueprint-level — which room?)
-    ├── hooks.yaml               ← master toggles for all hook subsystems
-    ├── 01-brief/                ← L2 room — intake / requirements
-    │   ├── context.md
-    │   ├── brief-template.md
-    │   ├── hooks/discover-briefs.sh
-    │   └── …
-    ├── 02-build/                ← L2 room — author reports, models, themes, visuals
-    │   ├── report/, model/, theme/, visuals/
-    │   └── …
-    ├── 03-bind/                 ← L2 room — live model ops (MCP or PowerShell/TOM)
-    ├── 04-review/               ← L2 room — validate, audit, lineage
-    ├── projects/                ← raw layer (the actual PBIP work)
-    │   ├── <project-name>/      ← thick PBIP project
-    │   └── themes/<slug>/       ← theme library (separate lifecycle)
-    ├── outputs/                 ← dated artifacts (YYYY-MM-DD-<project>-<type>.<ext>)
-    └── _examples/               ← provenance snapshot (do not load unless asked)
+    ├── 01-brief/                ← L2 room — requirements (what data, volume, seed, PII)
+    ├── 02-schema/               ← L2 room — define the data shape
+    ├── 03-generate/             ← L2 room — engines (faker / distribution / relational / …)
+    ├── 04-output/               ← L2 room — serialize & deliver (+ handoff-to-power-bi.md)
+    ├── 05-review/               ← L2 room — validate, profile, PII-leakage audit
+    ├── projects/                ← raw layer (one folder per generation job)
+    └── outputs/                 ← dated datasets (YYYY-MM-DD-<job>-<dataset>.<ext>)
 ```
 
-Today: **438 atomic .md files** across the rooms, mean **1.87 KB** per file.
+Today: **~510 atomic .md files** across two blueprints — power-bi (~500, mature) and synthetic-data (10, skeleton). Most are under 2 KB each.
 
 ---
 
@@ -221,14 +230,16 @@ Numbers from real file-size measurements in this workspace, March 2026.
 
 ## How to extend it
 
-To add a new blueprint for a different tool (Tableau, dbt, Fabric Notebooks, etc.):
+To add a new blueprint for a different tool (Tableau, dbt, Fabric Notebooks, etc.) — `synthetic-data/` is a live worked example of exactly these steps:
 
 1. Create `<tool-name>/` at the workspace root (kebab-case)
 2. Add `<tool-name>/CLAUDE.md` — L1 router for that blueprint
 3. Add `<tool-name>/README.md` — human intro
 4. Add numbered rooms (`01-…`, `02-…`) each with `context.md` + atomic files
 5. Add `projects/`, `outputs/`, `_examples/` to the same shape
-6. Update root [CLAUDE.md](CLAUDE.md) "Available blueprints" section
+6. Update root [CLAUDE.md](CLAUDE.md) "Available blueprints" section + [README.md](README.md) table
+
+Blueprints can talk to each other through one explicit seam: `synthetic-data/04-output/handoff-to-power-bi.md` writes generated data into a `power-bi/` model. Keep cross-blueprint coupling to that kind of single, documented hand-off — never let one blueprint reach into another's rooms.
 
 Same structure, different domain. The workspace router (`E:/Workspace-Blueprint/CLAUDE.md`) routes between blueprints; each blueprint routes within itself.
 
