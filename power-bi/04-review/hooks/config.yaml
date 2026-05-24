@@ -33,3 +33,8 @@ fab_exists: true
 
 # TMDL structural syntax validation (requires tmdl-validate binary)
 tmdl_syntax: true
+
+# Visual binding field check — before pbir add visual / pbir visuals bind,
+# verify each -d "role:Table.Field" actually exists in the model.
+# Catches hallucinated measure / column names. Requires pbir CLI.
+binding_check: true

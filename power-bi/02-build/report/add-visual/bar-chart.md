@@ -31,6 +31,18 @@ Bar charts → descending by primary measure:
 pbir visuals sort "<...>/by Region.Visual" -f "Sales.Revenue" -d Descending
 ```
 
+## Design rules
+
+`columnChart` (vertical) shares all of this — only axis orientation differs. Use `barChart`
+(horizontal) for long category labels or when ranking is the message; `columnChart` for time.
+
+Propagate formatting to the theme where possible; these are the per-visual exceptions.
+
+- **Sort by value descending** (above) — bars compare magnitude; largest first. Only sort chronologically when Category is time.
+- **Hide the value axis** once data labels are on — the labels make it redundant. `valueAxis.show=false`.
+- **Enable data labels** with display units (K/M) to keep them compact.
+- **Single theme color** for a one-measure comparison; reserve color variation for conditional formatting or genuine multi-series → [../references/visual-colors.md](../references/visual-colors.md).
+
 ## 100% stacked variant
 
 For a `hundredPercentStackedBarChart` (each category sums to 100%), pass `--name "stk100Bar"` — the auto-generated name overflows the PBIR schema length limit otherwise.

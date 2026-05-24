@@ -52,19 +52,21 @@ power-bi/
 ├── claude.md                                this file (L1 router)
 ├── README.md
 ├── 01-brief/                                discovery / requirements room
-│   └── references/         (4 md)           vague-prompts, layout-patterns, kpi-selection, limitations
+│   └── references/         (5 md)           vague-prompts, layout-patterns, kpi-selection, limitations, report-dev-mindset
 │
 ├── 02-build/                                edit room — biggest, 4 sub-rooms
-│   ├── report/             (2 md, 173 total)   PBIR editing — visuals, pages, bindings, formatting
+│   ├── report/             (2 md, 185 total)   PBIR editing — visuals, pages, bindings, formatting
 │   │   ├── add-visual/     (21 md)          one file per chart type (kpi, line, bar, table, …) + templates
 │   │   ├── bind/           (7  md)          find canonical names, bind/swap/clear fields
-│   │   ├── layout/         (8  md)          position, size, align, page dimensions, detail gradient
-│   │   ├── format/         (7  md)          override property, conditional fmt × 4 flavours, apply theme
+│   │   ├── layout/         (10 md)          position, size, align, page dimensions, detail gradient, guidelines, groups
+│   │   ├── format/         (8  md)          override property, conditional fmt × 4 flavours, presets, apply theme
+│   │   ├── schema-patterns/ (4 md)          PBIR internals — selectors, expressions, property catalogue
+│   │   ├── references/     (4  md)          design best-practices — cards/KPIs, tables, colors
 │   │   ├── page/           (7  md)          add / rename / delete / size / title / wallpaper
 │   │   ├── filters/        (4  md)          page filter, visual filter, filter pane
 │   │   ├── bookmarks/      (3  md)          create + navigator
 │   │   ├── calculations/   (5  md)          visual calc, thin-report measure, ref line, error bar
-│   │   ├── pbip-format/    (13 md)          PBIP file format + rename cascades + post-rename checklist
+│   │   ├── pbip-format/    (14 md)          PBIP file format + rename cascades + Copilot folder
 │   │   ├── semantic-model/ (5  md)          read TMDL from report side (no live conn)
 │   │   ├── validate/       (4  md)          pbir validate, fix broken refs, convert legacy
 │   │   ├── examples/                        K201-MonthSlicer report + 55 visual.json templates
@@ -91,7 +93,7 @@ power-bi/
 │   │
 │   └── visuals/            (1 md, 91 total)    custom visual engines
 │       ├── deneb/          (8 md, 25 total) Vega / Vega-Lite — interactive
-│       ├── svg/            (6 md, 33 total) DAX-driven SVG — in-table micro-charts
+│       ├── svg/            (7 md, 37 total) DAX-driven SVG — in-table micro-charts
 │       ├── python/         (6 md, 16 total) matplotlib / seaborn — static stats
 │       └── r/              (6 md, 16 total) ggplot2 — static stats
 │
@@ -172,10 +174,12 @@ Match the user's intent. Load only what's listed.
 - All PBIP files are UTF-8 **without BOM**. A BOM causes parse errors.
 - Windows 260-character path limit applies — keep project roots short.
 - Run `pbir validate` after every mutation in `02-build/report/`.
+- **Theme-first formatting:** appearance cascades from the theme by default — the theme takes priority. Apply a visual-level override only when the user explicitly asks for that visual's customization, or it's a genuine one-off. The same override on more than 2 visuals of one type is a theme change — escalate to `02-build/theme/`. See `02-build/report/format/_index.md`.
 - Never modify model metadata in `03-bind/` without explicit user direction. Always `SaveChanges()` to persist.
 - Hooks in `04-review/hooks/` are opt-in — wire them per project, not globally.
 - **Master hook toggle:** `power-bi/hooks.yaml` — flip `review:`, `bind:`, `outputs:`, or `briefs:` to `false` to disable a subsystem. The parent toggle wins over any per-subsystem `config.yaml`. Honor `outputs: false` by not writing audit artifacts to `outputs/`.
 - **Brief auto-discovery:** if your harness has the `UserPromptSubmit` hook registered (see `01-brief/hooks/README.md`), recently-modified `projects/**/brief.md` files arrive each turn inside a `<recent-briefs>` block — read any flagged brief before asking discovery questions.
+- **Canonical-name check before any binding:** run `pbir model "<project>.Report" -d` and confirm the exact `Table.Field` names BEFORE every `pbir add visual` / `pbir visuals bind` call. Do not guess from English (e.g., "Gross Profit Margin" might be `Profit %`). The `validate-visual-binding` hook (`04-review/hooks/`) blocks bindings with unknown fields, but treat it as a safety net — not the first line of defense. See `02-build/report/bind/find-canonical-name.md`.
 
 ## Provenance
 

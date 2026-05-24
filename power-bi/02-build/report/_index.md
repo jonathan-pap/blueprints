@@ -22,6 +22,8 @@
 - `position-visual.md`, `size-visual.md`
 - `align-visuals-row.md`, `align-visuals-grid.md`
 - `detail-gradient.md` — 3-30-300 layout pattern
+- `layout-guidelines.md` — sizes, equal-gap math, column alignment, z-order, perf limits
+- `visual-groups.md` — bind visuals to move/scale together (`pbir visuals group`)
 - `copy-move-delete.md`
 
 ## format/ — appearance
@@ -30,7 +32,18 @@
 - `conditional-fmt-data-bar.md`
 - `conditional-fmt-rule.md`
 - `conditional-fmt-svg-icon.md`
+- `visual-presets.md` — one-shot style bundles (`pbir visuals preset`)
 - `apply-theme-to-report.md`
+
+## schema-patterns/ — PBIR formatting internals (hand-authoring)
+- `selectors.md` — when/what a property applies to (dataViewWildcard, metadata:"select", scopeId)
+- `expressions.md` — what goes inside `expr` (literals, Measure, FillRule, Conditional)
+- `property-catalogue.md` — `pbir schema` discovery + per-type container index (49 types)
+
+## references/ — design best-practices (build-time)
+- `cards-and-kpis.md` — three elements, display units, title-vs-label, anti-patterns
+- `tables-and-matrices.md` — table vs matrix, subtract-don't-add, strategic CF
+- `visual-colors.md` — theme tokens, semantic sentiment, contrast, colorblind-safe
 
 ## page/ — page-level edits
 - `add-page.md`, `rename-page.md`, `delete-page.md`

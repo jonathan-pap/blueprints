@@ -16,6 +16,15 @@ Match the task to one sub-room. Enter one sub-room at a time. Each sub-room has 
 | Add or change measures, columns, tables, relationships, hierarchies | `model/` |
 | Change colors, fonts, default styles for all visuals of a type | `theme/` |
 | Build a custom visual that native Power BI can't express | `visuals/` then pick engine |
+| Apply a multi-step composed pattern that spans model + report | `recipes/` then pick a recipe |
+
+### Recipes (cross-room compositions)
+
+Self-contained, atomized patterns that combine model + report primitives. Each recipe has its own `context.md`, atomic `primitives/`, `variants/`, `templates/`, and a worked `examples/`.
+
+- `recipes/disconnected-selection-emphasis/` — a disconnected slicer harvested into boundary measures that drive visual emphasis (reference-band shading + a gated series) **without filtering**. Variants: time-window highlight, numeric threshold band, comparison-period shading, category spotlight.
+- `recipes/pareto-chart/` — a sorted column + cumulative-% line that splits at the 80% mark ("vital few vs. trivial many"), built entirely from **visual calculations** (no model changes). The trick is `RUNNINGSUM(..., ORDERBY([value], DESC))`. Variants: dynamic threshold, ABC classification, count Pareto, model-measure Pareto.
+- `recipes/actual-vs-target-variance/` — a native clustered column that reads as an actual-vs-target variance chart: outlined target + filled actual bars with **directional green/red connectors drawn from repurposed error bars**, a ▲/▼ % label, and a narrative subtitle. Native visuals only. Variants: vs prior year, tolerance band (RAG), horizontal by category, minimal.
 
 ## Decision rules
 

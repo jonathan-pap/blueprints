@@ -1,0 +1,45 @@
+// Model-measure Pareto variant ONLY — the base recipe needs none of this.
+// The base Pareto is pure visual calculations (see ../templates/visual-calcs.dax).
+// Use this when you need the cumulative outside the chart (cards, tables) or on a
+// Power BI version without visual calculations. See ../variants/model-measure-pareto.md.
+
+// 1 ── Rank column — APPEND inside '<CATEGORY_TABLE>'.tmdl (a calculated column).
+//      A physical column so it can sort the axis and feed other visuals.
+	column '<RANK_COLUMN_NAME>' =
+			RANKX (
+			    ALL ( '<CATEGORY_TABLE>'[<CATEGORY_COLUMN>] ),
+			    CALCULATE ( [<VALUE_MEASURE>] ),
+			    ,
+			    DESC,
+			    DENSE
+			)
+		formatString: 0
+		lineageTag: <RANK_LINEAGE_TAG>
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+// 2 ── Cumulative % — APPEND in '<MEASURE_TABLE>'.tmdl (before its `partition` line).
+//      Sums every category whose value >= the current one = cumulative in value-desc order.
+	measure '<CUM_MEASURE_NAME>' =
+			VAR _cur   = [<VALUE_MEASURE>]
+			VAR _grand = CALCULATE ( [<VALUE_MEASURE>], ALLSELECTED ( '<CATEGORY_TABLE>'[<CATEGORY_COLUMN>] ) )
+			VAR _cum =
+			    CALCULATE (
+			        [<VALUE_MEASURE>],
+			        FILTER (
+			            ALLSELECTED ( '<CATEGORY_TABLE>'[<CATEGORY_COLUMN>] ),
+			            CALCULATE ( [<VALUE_MEASURE>] ) >= _cur
+			        )
+			    )
+			RETURN DIVIDE ( _cum, _grand )
+		formatString: 0%
+		lineageTag: <CUM_LINEAGE_TAG>
+
+// 3 ── Optional KPI: "how many categories make up 80%?" — APPEND in '<MEASURE_TABLE>'.tmdl.
+	measure '# Categories to 80%' =
+			COUNTROWS (
+			    FILTER ( VALUES ( '<CATEGORY_TABLE>'[<CATEGORY_COLUMN>] ), [<CUM_MEASURE_NAME>] <= 0.8 )
+			) + 1
+		formatString: 0
+		lineageTag: <COUNT80_LINEAGE_TAG>

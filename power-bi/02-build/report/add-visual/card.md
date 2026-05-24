@@ -2,17 +2,24 @@
 
 Use for a headline number without a target. If a target exists, use `kpi-card.md` instead.
 
+> Design guidance (the three elements, display-unit rule, title-vs-label, anti-patterns):
+> [../references/cards-and-kpis.md](../references/cards-and-kpis.md).
+
 ## Create
 
 ```bash
-pbir add visual cardVisual "<project>.Report/Overview.Page" --title "Revenue" \
-  -d "Data:Sales.Revenue" \
+pbir add visual card "<project>.Report/Overview.Page" --title "Revenue" \
+  -d "Values:Sales.Revenue" \
   --x 24 --y 120 --width 290 --height 140
 ```
 
+For the newer `cardVisual` (different visualType), the role names also differ — use `pbir add visual cardVisual --list` or check `examples/visuals/default/cardVisual.json`.
+
 ## Field roles
 
-- `Data` (Measure, required)
+- `Values` (Measure, required) — the headline number
+
+> Confirmed against pbir 0.9.19 on 2026-05-19. Earlier this doc said `Data`, which the CLI rejects: `Role 'Data' not valid for card. Available: Values`.
 
 ## Sizing
 

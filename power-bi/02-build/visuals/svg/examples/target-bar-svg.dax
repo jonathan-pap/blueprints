@@ -1,0 +1,52 @@
+-- Target Bar (linear gauge) SVG Measure
+-- dataType: Text, dataCategory: ImageUrl
+-- Horizontal track split into red/amber/green zones with a needle at the current ratio
+-- Target visual: Card, Image, or a wide Table/Matrix cell (imageHeight: 30, imageWidth: 150)
+-- Input: any 0..1 ratio measure (here [Cache Hit Ratio %])
+-- Note: colors use '#' directly (NOT '%23' URL-encoding) per the blueprint SVG convention
+
+Target Bar SVG =
+VAR _ratio = [Cache Hit Ratio %]                  -- 0..1
+VAR _pct   = MIN ( MAX ( _ratio, 0 ), 1 ) * 100   -- clamp 0..100
+VAR _w     = 320     -- viewbox width
+VAR _h     = 60      -- viewbox height
+VAR _x0    = 10      -- track left
+VAR _x1    = 300     -- track right
+VAR _trackW = _x1 - _x0
+VAR _needleX = _x0 + _trackW * _pct / 100
+
+VAR _svg =
+"data:image/svg+xml;utf8," &
+"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 " & _w & " " & _h & "' " &
+"font-family='Segoe UI, Arial, sans-serif'>" &
+
+  -- three colored zones (red 0-30, amber 30-70, green 70-100)
+  "<rect x='" & _x0 & "' y='28' width='" & (_trackW*0.30) & "' height='10' fill='#f4d4d0'/>" &
+  "<rect x='" & (_x0 + _trackW*0.30) & "' y='28' width='" & (_trackW*0.40) & "' height='10' fill='#f5e1c8'/>" &
+  "<rect x='" & (_x0 + _trackW*0.70) & "' y='28' width='" & (_trackW*0.30) & "' height='10' fill='#d6e7d3'/>" &
+
+  -- thin baseline
+  "<line x1='" & _x0 & "' y1='32' x2='" & _x1 & "' y2='32' stroke='#222' stroke-width='1'/>" &
+
+  -- tick labels
+  "<g fill='#888' font-size='11'>" &
+    "<text x='" & _x0 & "' y='52'>0</text>" &
+    "<text x='" & (_x0 + _trackW*0.30 - 6)  & "' y='52'>30</text>" &
+    "<text x='" & (_x0 + _trackW*0.70 - 6)  & "' y='52'>70</text>" &
+    "<text x='" & (_x1 - 12) & "' y='52'>100</text>" &
+  "</g>" &
+
+  -- needle stem
+  "<line x1='" & _needleX & "' y1='18' x2='" & _needleX & "' y2='42' stroke='#c97a3a' stroke-width='1.5'/>" &
+
+  -- diamond head
+  "<polygon points='" &
+    _needleX & ",14 " &
+    (_needleX + 5) & ",19 " &
+    _needleX & ",24 " &
+    (_needleX - 5) & ",19" &
+  "' fill='#c97a3a'/>" &
+
+"</svg>"
+
+RETURN _svg

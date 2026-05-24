@@ -1,0 +1,33 @@
+// Pareto chart — the five visual calculations, in build order.
+// These live ON the combo visual (NativeVisualCalculation), not in the model.
+// Substitute <VALUE_MEASURE> and <THRESHOLD>. Names are referenced across expressions
+// and in formatting selectors — keep them as-is unless you rename every reference.
+
+// ── P2 · share of total ──  (Y well, hidden)
+// Each bar's contribution to the visual's grand total. COLLAPSEALL(..., ROWS) = the all-bars total.
+Percent of grand total =
+DIVIDE ( [<VALUE_MEASURE>], COLLAPSEALL ( [<VALUE_MEASURE>], ROWS ) )
+
+// ── P3 · naive cumulative ──  (Y2 well, hidden — kept only as the "before")
+// Correct ONLY while the visual is sorted by value. Re-sort the axis and it zig-zags.
+Pareto =
+RUNNINGSUM ( [Percent of grand total] )
+
+// ── P3 · sort-independent cumulative ──  (Y2 well, shown, format "0%")
+// THE TRICK: ORDERBY pins accumulation to value-descending, independent of the visual's sort.
+Easy Pareto =
+RUNNINGSUM ( [Percent of grand total], ORDERBY ( [<VALUE_MEASURE>], DESC ) )
+
+// ── P4 · threshold split ──  (Y2 well, two series; BLANK hides the off-segment)
+// Green extends to the FIRST bar past the threshold so it shares that point with red →
+// one continuous line that flips color (no gap). [Easy Pareto]-[Percent of grand total]
+// = the cumulative BEFORE this bar; if that was still under the threshold, this bar is the
+// crossing point and stays green.
+GreenLine =
+IF ( [Easy Pareto] - [Percent of grand total] < <THRESHOLD>, [Easy Pareto] )   // vital few (+ crossing bar)
+
+RedLine =
+IF ( [Easy Pareto] > <THRESHOLD>, [Easy Pareto] )                              // trivial many
+
+// Simpler split (one-segment GAP at the cutoff — only use if red is drawn markers-only):
+// GreenLine = IF ( [Easy Pareto] <= <THRESHOLD>, [Easy Pareto] )

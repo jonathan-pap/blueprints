@@ -1,6 +1,25 @@
 {
-  "description": "Validates PBIP project files (PBIR structure, TMDL syntax, report binding) after Write/Edit and Bash modifications",
+  "description": "Validates PBIP project files (PBIR structure, TMDL syntax, report binding, visual field bindings) before/after Write/Edit/Bash modifications",
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/validate-visual-binding.sh\"",
+            "timeout": 15,
+            "if": "Bash(*pbir add visual*)"
+          },
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/validate-visual-binding.sh\"",
+            "timeout": 15,
+            "if": "Bash(*pbir visuals bind*)"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit",

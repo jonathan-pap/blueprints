@@ -6,6 +6,8 @@
 - `align-visuals-row.md` — equal-gap row of visuals
 - `align-visuals-grid.md` — equal-gap grid
 - `detail-gradient.md` — 3-30-300 layout pattern (where things go)
+- `layout-guidelines.md` — page sizes, equal-gap math, cross-row column alignment, z-order, perf limits
+- `visual-groups.md` — bind visuals to move/scale as one unit (`pbir visuals group`)
 - `copy-move-delete.md` — rearrange visuals
 
 ## Golden rules

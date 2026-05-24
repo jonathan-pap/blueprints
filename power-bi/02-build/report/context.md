@@ -15,7 +15,10 @@ Find your intent. Each bullet gives the exact step files to load in order.
 - **Bind / rebind fields** → `bind/_index.md` → matching step
 - **Position / size / align visuals** → `layout/_index.md` → matching step
 - **Format a single visual (border, title, fonts)** → `format/override-property.md` (or escalate to `../theme/` if it applies to all visuals of a type)
+- **Apply a style preset / group visuals** → `format/visual-presets.md` / `layout/visual-groups.md`
 - **Conditional formatting** → `format/_index.md` → choose flavour (color-scale, data-bar, rule, svg-icon)
+- **Hand-authoring `visual.json` formatting (recipes, build scripts)** → `schema-patterns/_index.md` (selectors, expressions, property catalogue)
+- **Design judgment (which/how to format cards, tables, colors, layout)** → `references/_index.md`
 - **Add / rename / size a page** → `page/_index.md` → step
 - **Add filters / configure filter pane** → `filters/_index.md` → step
 - **Bookmarks** → `bookmarks/_index.md`
@@ -37,5 +40,5 @@ Find your intent. Each bullet gives the exact step files to load in order.
 ## What's here
 
 - `_index.md` — full picker by intent (load when unsure which step)
-- Family folders — `add-visual/`, `bind/`, `layout/`, `format/`, `page/`, `filters/`, `bookmarks/`, `calculations/`, `pbip-format/`, `validate/`, `semantic-model/`
+- Family folders — `add-visual/`, `bind/`, `layout/`, `format/`, `schema-patterns/`, `references/`, `page/`, `filters/`, `bookmarks/`, `calculations/`, `pbip-format/`, `validate/`, `semantic-model/`
 - `examples/K201-MonthSlicer.Report/` — structural reference, do not edit

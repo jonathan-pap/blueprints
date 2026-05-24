@@ -1,0 +1,163 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "<VISUAL_NAME_CHART>",
+  "position": {
+    "x": <CHART_X>,
+    "y": <CHART_Y>,
+    "z": <CHART_Z>,
+    "height": <CHART_HEIGHT>,
+    "width": <CHART_WIDTH>,
+    "tabOrder": <CHART_TAB_ORDER>
+  },
+  "visual": {
+    "visualType": "clusteredColumnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": { "Column": { "Expression": { "SourceRef": { "Entity": "<AXIS_TABLE>" } }, "Property": "<AXIS_COLUMN>" } },
+              "queryRef": "<AXIS_TABLE>.<AXIS_COLUMN>", "nativeQueryRef": "Mois", "active": true, "displayName": "Mois"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": { "Measure": { "Expression": { "SourceRef": { "Entity": "<MEASURE_TABLE>" } }, "Property": "<TARGET_MEASURE>" } },
+              "queryRef": "<MEASURE_TABLE>.<TARGET_MEASURE>", "nativeQueryRef": "Target", "displayName": "Target"
+            },
+            {
+              "field": { "Measure": { "Expression": { "SourceRef": { "Entity": "<MEASURE_TABLE>" } }, "Property": "<ACTUAL_MEASURE>" } },
+              "queryRef": "<MEASURE_TABLE>.<ACTUAL_MEASURE>", "nativeQueryRef": "Net", "displayName": "Net"
+            },
+            {
+              "field": { "Measure": { "Expression": { "SourceRef": { "Entity": "<MEASURE_TABLE>" } }, "Property": "MAX VALUE" } },
+              "queryRef": "<MEASURE_TABLE>.MAX VALUE", "nativeQueryRef": " ", "displayName": " "
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "categoryAxis": [
+        { "properties": {
+          "showAxisTitle": { "expr": { "Literal": { "Value": "false" } } },
+          "innerPadding": { "expr": { "Literal": { "Value": "50L" } } },
+          "fontSize": { "expr": { "Literal": { "Value": "9D" } } }
+        } }
+      ],
+      "valueAxis": [
+        { "properties": {
+          "showAxisTitle": { "expr": { "Literal": { "Value": "false" } } },
+          "labelDisplayUnits": { "expr": { "Literal": { "Value": "1D" } } },
+          "labelPrecision": { "expr": { "Literal": { "Value": "0L" } } },
+          "fontSize": { "expr": { "Literal": { "Value": "9D" } } }
+        } }
+      ],
+      "dataPoint": [
+        { "properties": { "fill": { "solid": { "color": { "expr": { "ThemeDataColor": { "ColorId": 1, "Percent": 0.2 } } } } } },
+          "selector": { "metadata": "<MEASURE_TABLE>.<ACTUAL_MEASURE>" } },
+        { "properties": {
+            "fill": { "solid": { "color": { "expr": { "ThemeDataColor": { "ColorId": 0, "Percent": 0 } } } } },
+            "borderShow": { "expr": { "Literal": { "Value": "true" } } },
+            "borderColor": { "solid": { "color": { "expr": { "ThemeDataColor": { "ColorId": 1, "Percent": 0.2 } } } } } },
+          "selector": { "metadata": "<MEASURE_TABLE>.<TARGET_MEASURE>" } },
+        { "properties": {
+            "fillTransparency": { "expr": { "Literal": { "Value": "100D" } } },
+            "fill": { "solid": { "color": { "expr": { "ThemeDataColor": { "ColorId": 0, "Percent": 0 } } } } } },
+          "selector": { "metadata": "<MEASURE_TABLE>.MAX VALUE" } }
+      ],
+      "layout": [
+        { "properties": {
+          "clusteredGapSize": { "expr": { "Literal": { "Value": "25D" } } },
+          "clusteredGapOverlaps": { "expr": { "Literal": { "Value": "true" } } },
+          "clusteredGapOverlapReverse": { "expr": { "Literal": { "Value": "false" } } },
+          "seriesOrderReversed": { "expr": { "Literal": { "Value": "false" } } }
+        } }
+      ],
+      "error": [
+        { "properties": {
+            "enabled": { "expr": { "Literal": { "Value": "true" } } },
+            "barColor": { "solid": { "color": { "expr": { "Literal": { "Value": "'<NEG_COLOR>'" } } } } },
+            "markerShow": { "expr": { "Literal": { "Value": "false" } } },
+            "barWidth": { "expr": { "Literal": { "Value": "3D" } } },
+            "barBorderSize": { "expr": { "Literal": { "Value": "0L" } } } },
+          "selector": { "metadata": "<MEASURE_TABLE>.<ACTUAL_MEASURE>" } },
+        { "properties": { "errorRange": { "kind": "ErrorRange", "explicit": {
+              "isRelative": { "expr": { "Literal": { "Value": "false" } } },
+              "upperBound": { "expr": { "Measure": { "Expression": { "SourceRef": { "Entity": "<MEASURE_TABLE>" } }, "Property": "RED MAX" } } } } } },
+          "selector": { "data": [ { "dataViewWildcard": { "matchingOption": 0 } } ], "metadata": "<MEASURE_TABLE>.<ACTUAL_MEASURE>", "highlightMatching": 1 } },
+        { "properties": { "errorRange": { "kind": "ErrorRange", "explicit": {
+              "isRelative": { "expr": { "Literal": { "Value": "false" } } },
+              "upperBound": { "expr": { "Measure": { "Expression": { "SourceRef": { "Entity": "<MEASURE_TABLE>" } }, "Property": "GREEN MAX" } } } } } },
+          "selector": { "data": [ { "dataViewWildcard": { "matchingOption": 0 } } ], "metadata": "<MEASURE_TABLE>.<TARGET_MEASURE>", "highlightMatching": 1 } },
+        { "properties": {
+            "enabled": { "expr": { "Literal": { "Value": "true" } } },
+            "markerShow": { "expr": { "Literal": { "Value": "false" } } },
+            "barMatchSeriesColor": { "expr": { "Literal": { "Value": "false" } } },
+            "barWidth": { "expr": { "Literal": { "Value": "3D" } } },
+            "barColor": { "solid": { "color": { "expr": { "Literal": { "Value": "'<POS_COLOR>'" } } } } },
+            "barBorderSize": { "expr": { "Literal": { "Value": "0L" } } } },
+          "selector": { "metadata": "<MEASURE_TABLE>.<TARGET_MEASURE>" } }
+      ],
+      "labels": [
+        { "properties": {
+          "show": { "expr": { "Literal": { "Value": "true" } } },
+          "labelPosition": { "expr": { "Literal": { "Value": "'OutsideEnd'" } } },
+          "fontSize": { "expr": { "Literal": { "Value": "10D" } } },
+          "labelDisplayUnits": { "expr": { "Literal": { "Value": "1D" } } }
+        } },
+        { "properties": {
+            "showSeries": { "expr": { "Literal": { "Value": "true" } } },
+            "labelPosition": { "expr": { "Literal": { "Value": "'OutsideEnd'" } } },
+            "labelDisplayUnits": { "expr": { "Literal": { "Value": "1D" } } } },
+          "selector": { "metadata": "<MEASURE_TABLE>.MAX VALUE" } },
+        { "properties": {
+            "dynamicLabelValue": { "expr": { "Measure": { "Expression": { "SourceRef": { "Entity": "<MEASURE_TABLE>" } }, "Property": "% Delta" } } } },
+          "selector": { "data": [ { "dataViewWildcard": { "matchingOption": 1 } } ], "highlightMatching": 1 } },
+        { "properties": {
+            "showSeries": { "expr": { "Literal": { "Value": "false" } } } },
+          "selector": { "metadata": "<MEASURE_TABLE>.<TARGET_MEASURE>" } },
+        { "properties": {
+            "showSeries": { "expr": { "Literal": { "Value": "false" } } } },
+          "selector": { "metadata": "<MEASURE_TABLE>.<ACTUAL_MEASURE>" } },
+        { "properties": {
+            "color": { "solid": { "color": { "expr": { "Measure": { "Expression": { "SourceRef": { "Entity": "<MEASURE_TABLE>" } }, "Property": "Delta Color" } } } } } },
+          "selector": { "data": [ { "dataViewWildcard": { "matchingOption": 1 } } ] } }
+      ],
+      "legend": [
+        { "properties": {
+          "position": { "expr": { "Literal": { "Value": "'Top'" } } },
+          "showTitle": { "expr": { "Literal": { "Value": "false" } } },
+          "italic": { "expr": { "Literal": { "Value": "true" } } },
+          "fontSize": { "expr": { "Literal": { "Value": "10D" } } }
+        } }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        { "properties": {
+          "text": { "expr": { "Literal": { "Value": "'Sales'" } } },
+          "fontSize": { "expr": { "Literal": { "Value": "14D" } } }
+        } }
+      ],
+      "subTitle": [
+        { "properties": {
+          "show": { "expr": { "Literal": { "Value": "true" } } },
+          "text": { "expr": { "Measure": { "Expression": { "SourceRef": { "Entity": "<MEASURE_TABLE>" } }, "Property": "TAKEAWAY" } } },
+          "titleWrap": { "expr": { "Literal": { "Value": "true" } } },
+          "italic": { "expr": { "Literal": { "Value": "true" } } },
+          "fontSize": { "expr": { "Literal": { "Value": "10D" } } }
+        } }
+      ],
+      "border": [
+        { "properties": {
+          "show": { "expr": { "Literal": { "Value": "true" } } },
+          "radius": { "expr": { "Literal": { "Value": "5D" } } }
+        } }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

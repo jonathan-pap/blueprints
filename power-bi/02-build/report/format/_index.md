@@ -8,6 +8,7 @@
 - `conditional-fmt-data-bar.md` — in-cell bar per value
 - `conditional-fmt-rule.md` — discrete colors by threshold
 - `conditional-fmt-svg-icon.md` — SVG icon driven by DAX measure
+- `visual-presets.md` — one-shot style bundles (minimal/clean/bold/emphasis/presentation)
 
 ## Rule
 
