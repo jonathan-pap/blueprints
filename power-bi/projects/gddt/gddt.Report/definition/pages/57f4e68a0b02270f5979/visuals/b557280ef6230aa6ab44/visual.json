@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "b557280ef6230aa6ab44",
   "position": {
-    "x": 191.53284671532847,
-    "y": 187.79562043795622,
+    "x": 191.4018691588785,
+    "y": 187.41433021806853,
     "z": 18000,
-    "height": 499.85401459854012,
-    "width": 1066.9781021897811,
+    "height": 505.4205607476635,
+    "width": 1066.6666666666665,
     "tabOrder": 18000
   },
   "visual": {
@@ -20,75 +20,56 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "expected"
+                      "Entity": "fct_delivery"
                     }
                   },
-                  "Property": "dc_name"
+                  "Property": "is_active"
                 }
               },
-              "queryRef": "expected.dc_name",
-              "nativeQueryRef": "Contract",
-              "displayName": "Contract"
+              "queryRef": "fct_delivery.is_active",
+              "nativeQueryRef": "is_active"
             },
             {
               "field": {
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "dim_group"
+                      "Entity": "fct_delivery"
                     }
                   },
-                  "Property": "group_name"
+                  "Property": "sdp_group_filename"
                 }
               },
-              "queryRef": "dim_group.group_name",
-              "nativeQueryRef": "Group",
-              "displayName": "Group"
+              "queryRef": "fct_delivery.sdp_group_filename",
+              "nativeQueryRef": "sdp_group_filename"
             },
             {
               "field": {
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "expected"
+                      "Entity": "fct_delivery"
                     }
                   },
-                  "Property": "domain"
+                  "Property": "received_ts_quar"
                 }
               },
-              "queryRef": "expected.domain",
-              "nativeQueryRef": "Domain",
-              "displayName": "Domain"
+              "queryRef": "fct_delivery.received_ts_quar",
+              "nativeQueryRef": "received_ts_quar"
             },
             {
               "field": {
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "dim_dataset"
+                      "Entity": "fct_delivery"
                     }
                   },
-                  "Property": "freq_code"
+                  "Property": "received_ts_rai"
                 }
               },
-              "queryRef": "dim_dataset.freq_code",
-              "nativeQueryRef": "Freq",
-              "displayName": "Freq"
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "expected"
-                    }
-                  },
-                  "Property": "deadline_date"
-                }
-              },
-              "queryRef": "expected.deadline_date",
-              "nativeQueryRef": "Deadline",
-              "displayName": "Deadline"
+              "queryRef": "fct_delivery.received_ts_rai",
+              "nativeQueryRef": "received_ts_rai"
             },
             {
               "field": {
@@ -102,51 +83,13 @@
                 }
               },
               "queryRef": "expected.CurrentState",
-              "nativeQueryRef": "State",
-              "displayName": "State"
+              "nativeQueryRef": "CurrentState"
             }
           ]
         }
-      },
-      "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "expected"
-                  }
-                },
-                "Property": "CurrentState"
-              }
-            },
-            "direction": "Ascending"
-          }
-        ]
       }
     },
     "objects": {
-      "columnWidth": [
-        {
-          "properties": {},
-          "selector": {
-            "metadata": "expected.dc_name"
-          }
-        },
-        {
-          "properties": {},
-          "selector": {
-            "metadata": "dim_group.group_name"
-          }
-        },
-        {
-          "properties": {},
-          "selector": {
-            "metadata": "expected.CurrentState"
-          }
-        }
-      ],
       "columnHeaders": [
         {
           "properties": {}
@@ -162,6 +105,22 @@
                 }
               }
             }
+          }
+        }
+      ],
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "126.14641991728067D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "fct_delivery.is_active"
           }
         }
       ]
