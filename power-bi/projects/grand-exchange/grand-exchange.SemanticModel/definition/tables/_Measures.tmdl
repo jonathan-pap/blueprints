@@ -1,0 +1,77 @@
+table _Measures
+	isHidden
+	lineageTag: 70d50eba-454f-5579-8105-aeff160c829f
+
+	/// Total gold value of all trades.
+	measure 'Total Trade Value' = SUM(FactTrade[TotalPrice])
+		formatString: $#,##0
+		displayFolder: 1. Headline
+		lineageTag: 84354dc0-0473-5749-baf7-03ef50c7469d
+
+	/// Total units traded across all trades.
+	measure 'Trade Quantity' = SUM(FactTrade[Quantity])
+		formatString: #,##0
+		displayFolder: 1. Headline
+		lineageTag: ed42dd02-78db-536e-b358-a22e5b19c91f
+
+	/// Number of trade transactions.
+	measure 'Trade Count' = COUNTROWS(FactTrade)
+		formatString: #,##0
+		displayFolder: 1. Headline
+		lineageTag: 1ef20e69-0237-548f-8bd0-9fb5d2148c0a
+
+	/// Distinct tradeable items that changed hands.
+	measure 'Distinct Items Traded' = DISTINCTCOUNT(FactTrade[ItemKey])
+		formatString: #,##0
+		displayFolder: 1. Headline
+		lineageTag: a1e818fd-09b3-5ad5-86b1-2a6a17d1cc21
+
+	/// Average daily market price across items in context.
+	measure 'Avg Market Price' = AVERAGE(FactMarketPriceDaily[AvgPrice])
+		formatString: $#,##0.00
+		displayFolder: 2. Market
+		lineageTag: cca897cd-37b9-5579-94fe-47d7f3d15c61
+
+	/// Total units listed on the market (daily snapshot sum).
+	measure 'Total Market Volume' = SUM(FactMarketPriceDaily[Volume])
+		formatString: #,##0
+		displayFolder: 2. Market
+		lineageTag: 0fb54e06-8889-56db-b8ad-68b367501196
+
+	/// Active listings on the market (daily snapshot sum).
+	measure 'Active Listings' = SUM(FactMarketPriceDaily[ListingsCount])
+		formatString: #,##0
+		displayFolder: 2. Market
+		lineageTag: 4b4b8914-79e2-5385-99e9-a43887121916
+
+	/// Trade value year-to-date (needs the marked DimDate date table).
+	measure 'Trade Value YTD' =
+			CALCULATE(
+				[Total Trade Value],
+				DATESYTD(DimDate[Date])
+			)
+		formatString: $#,##0
+		displayFolder: 3. Time Intelligence
+		lineageTag: 6546e9aa-6dad-55c5-b8fc-c88f6aaf3a4f
+
+	/// Trade value in the same period one year ago.
+	measure 'Trade Value PY' =
+			CALCULATE(
+				[Total Trade Value],
+				SAMEPERIODLASTYEAR(DimDate[Date])
+			)
+		formatString: $#,##0
+		displayFolder: 3. Time Intelligence
+		lineageTag: 89054b35-eef5-56b1-98e5-897876d00bc2
+
+	column _
+		lineageTag: 271a7b31-cdcd-5410-81c4-6ed8fb705b55
+		isNameInferred
+		sourceColumn: [_]
+
+	partition _Measures = calculated
+		mode: import
+		source = ROW("_", "")
+
+	annotation PBI_ResultType = Table
+

@@ -19,7 +19,8 @@ Each Power BI project lives in `projects/<project-name>/` and follows the standa
 projects/<project-name>/
 ├── <project-name>.Report/        # PBIR JSON — edit here for visuals/layout/theme
 ├── <project-name>.SemanticModel/ # TMDL — edit here for tables/measures/columns
-└── <project-name>.pbip           # entry point opened by PBI Desktop
+├── <project-name>.pbip           # entry point opened by PBI Desktop
+└── design-system.yaml            # layout tokens — read before every `pbir add visual` (optional but recommended)
 ```
 
 A project can be thick (model + report together) or thin (report only, connects to a remote model).
@@ -55,10 +56,10 @@ power-bi/
 │   └── references/         (5 md)           vague-prompts, layout-patterns, kpi-selection, limitations, report-dev-mindset
 │
 ├── 02-build/                                edit room — biggest, 4 sub-rooms
-│   ├── report/             (2 md, 185 total)   PBIR editing — visuals, pages, bindings, formatting
+│   ├── report/             (2 md, 98 atomic)   PBIR editing — visuals, pages, bindings, formatting
 │   │   ├── add-visual/     (21 md)          one file per chart type (kpi, line, bar, table, …) + templates
 │   │   ├── bind/           (7  md)          find canonical names, bind/swap/clear fields
-│   │   ├── layout/         (10 md)          position, size, align, page dimensions, detail gradient, guidelines, groups
+│   │   ├── layout/         (11 md)          design-system tokens, position, size, align, page dims, detail gradient, guidelines, groups
 │   │   ├── format/         (8  md)          override property, conditional fmt × 4 flavours, presets, apply theme
 │   │   ├── schema-patterns/ (4 md)          PBIR internals — selectors, expressions, property catalogue
 │   │   ├── references/     (4  md)          design best-practices — cards/KPIs, tables, colors
@@ -72,7 +73,7 @@ power-bi/
 │   │   ├── examples/                        K201-MonthSlicer report + 55 visual.json templates
 │   │   └── scripts/                         convert_legacy, background utilities
 │   │
-│   ├── model/              (4 md, 175+ total)  TMDL editing + DAX + Power Query + naming
+│   ├── model/              (4 md, 108 atomic) TMDL editing + DAX + Power Query + naming
 │   │   ├── add/            (11 md)          measure, column, table, relationship, role, hierarchy, …
 │   │   ├── update/         (3  md)          property, measure expression, multi-line DAX
 │   │   ├── fix-pattern/    (7  md)          common bug recipes (summarizeBy, format, namespace collision)
@@ -82,7 +83,7 @@ power-bi/
 │   │   ├── dax/            (50 md)          DAX optimization — 21 Tier-1 patterns + 4 QRY + 10 MDL + 2 DL + engine internals
 │   │   └── examples/                        SpaceParts.SemanticModel (full real-world model)
 │   │
-│   ├── theme/              (3 md, 71 total)    theme JSON authoring + serialize/build
+│   ├── theme/              (3 md, 32 atomic)  theme JSON authoring + serialize/build
 │   │   ├── apply/          (3  md)          template, file, copy-from-other
 │   │   ├── modify/         (5  md)          colors, text classes, wildcard, visual-type override, sentiment
 │   │   ├── promote/        (2  md)          lift visual-level overrides to theme
@@ -91,7 +92,7 @@ power-bi/
 │   │   ├── _deep-reference/ (1 md)          theme-json-spec (25 KB; load on explicit ask only)
 │   │   └── examples/                        community theme JSONs + 49 per-visual-type override examples
 │   │
-│   └── visuals/            (1 md, 91 total)    custom visual engines
+│   └── visuals/            (1 md, 60 atomic)  custom visual engines
 │       ├── deneb/          (8 md, 25 total) Vega / Vega-Lite — interactive
 │       ├── svg/            (7 md, 37 total) DAX-driven SVG — in-table micro-charts
 │       ├── python/         (6 md, 16 total) matplotlib / seaborn — static stats
@@ -99,7 +100,7 @@ power-bi/
 │
 ├── 03-bind/                                 live model — three tiers
 │   ├── via-mcp/            (11 md)          PREFERRED — Power BI MCP tool calls
-│   └── via-powershell/     (19 md, 45 total) ALTERNATIVE — connect-pbid TOM/ADOMD + Enhanced Refresh REST
+│   └── via-powershell/     (19 md, 41 atomic) ALTERNATIVE — connect-pbid TOM/ADOMD + Enhanced Refresh REST
 │       ├── tom-object-types/ (16 md)        per-object CRUD via TOM
 │       └── scripts/                         PowerShell + sh + refresh_model.py
 │
@@ -137,7 +138,8 @@ Three-tier, top to bottom:
 Match the user's intent. Load only what's listed.
 
 - **New report from scratch** → `01-brief/context.md` → `02-build/context.md` → `02-build/report/context.md`
-- **Add or rearrange visuals** → `02-build/report/context.md` → `add-visual/_index.md`
+- **Add or rearrange visuals** → `02-build/report/context.md` → `add-visual/_index.md` (read `projects/<name>/design-system.yaml` first for sizes)
+- **Set up / change layout tokens (consistent sizes, grid, gaps)** → `02-build/report/layout/design-system.md`
 - **Edit a theme** → `02-build/theme/context.md`
 - **Add a measure / column / table (TMDL on disk)** → `02-build/model/context.md`
 - **Build a custom visual (Deneb / SVG / Python / R)** → `02-build/visuals/context.md` → pick engine
@@ -175,6 +177,7 @@ Match the user's intent. Load only what's listed.
 - Windows 260-character path limit applies — keep project roots short.
 - Run `pbir validate` after every mutation in `02-build/report/`.
 - **Theme-first formatting:** appearance cascades from the theme by default — the theme takes priority. Apply a visual-level override only when the user explicitly asks for that visual's customization, or it's a genuine one-off. The same override on more than 2 visuals of one type is a theme change — escalate to `02-build/theme/`. See `02-build/report/format/_index.md`.
+- **Layout-first dimensions:** size and position cascade from the project's `projects/<name>/design-system.yaml` (the dimension counterpart to the theme — Power BI themes have no width/height). Read it BEFORE every `pbir add visual`; use its per-type sizes, grid, gaps, and zones. Override a visual's dimensions only when the brief explicitly asks, or it's a one-off — and record it in the yaml `overrides:` block. The `audit-layout-consistency` hook (`04-review/hooks/`) flags off-token sizes and off-grid/sub-pixel positions. See `02-build/report/layout/design-system.md`.
 - Never modify model metadata in `03-bind/` without explicit user direction. Always `SaveChanges()` to persist.
 - Hooks in `04-review/hooks/` are opt-in — wire them per project, not globally.
 - **Master hook toggle:** `power-bi/hooks.yaml` — flip `review:`, `bind:`, `outputs:`, or `briefs:` to `false` to disable a subsystem. The parent toggle wins over any per-subsystem `config.yaml`. Honor `outputs: false` by not writing audit artifacts to `outputs/`.

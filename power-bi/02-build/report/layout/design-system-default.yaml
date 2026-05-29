@@ -1,0 +1,43 @@
+# Design system — DEFAULT STARTER
+#
+# Copy to `projects/<name>/design-system.yaml` and adapt. Layout tokens Claude reads BEFORE
+# every `pbir add visual`. Power BI never sees this file — it's the layout counterpart to the
+# theme (theme = appearance, this = dimensions). See ../design-system.md for the full spec.
+
+meta:
+  page: { width: 1280, height: 720 }
+  theme: <theme-name>                       # appearance lives in the theme, not here
+  units: px
+
+grid:
+  unit: 8
+  snap_to: 8                                # positions/sizes are multiples of this (audited)
+margins: { top: 24, right: 24, bottom: 24, left: 24 }
+gaps: { horizontal: 16, vertical: 16 }
+
+zones:
+  summary:  { y: 24,  height: 144 }         # KPIs, slicers
+  analysis: { y: 184, height: 320 }         # charts, maps
+  detail:   { y: 520, height: 176 }         # tables, matrices
+
+defaults:
+  slicer:
+    type: slicer                            # dropdown by default
+    size: { width: 240, height: 40 }
+    zone: summary
+  card:
+    type: card
+    size: { width: 296, height: 136 }       # 8-grid, >=130 min so value+label don't clip
+    zone: summary
+  chart_small:  { width: 400, height: 304 }
+  chart_medium: { width: 600, height: 320 }
+  chart_wide:   { width: 1232, height: 320 }
+  table:        { width: 1232, height: 176 }
+  matrix:       { width: 1232, height: 176 }
+  title:        { type: textbox, width: 1232, height: 40 }
+
+# Equal-gap math decided once: width = (page - 2*margin - gap*(n-1)) / n
+layouts:
+  kpi_row_4: { width: 296, height: 136, y: 24,  x: [24, 336, 648, 960] }
+  charts_2up:{ width: 608, height: 320, y: 184, x: [24, 648] }
+  charts_3up:{ width: 400, height: 320, y: 184, x: [24, 440, 856] }

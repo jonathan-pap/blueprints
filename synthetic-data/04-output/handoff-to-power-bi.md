@@ -7,8 +7,15 @@
 
 | Mode | What it does | When |
 |---|---|---|
-| **CSV-for-import** | write `outputs/…csv`, then import via Power Query (Get Data) | simplest; user wires it once in Desktop |
+| **CSV-for-import** | point Power Query at the dataset's `latest/` folder, then Get Data | simplest; user wires it once in Desktop |
 | **TMDL table splice** | write a table into `<project>.SemanticModel/definition/tables/` so it appears on next open | no manual import; mirrors how `power-bi/projects/test/_build-svg-gallery.py` splices TMDL |
+
+For a multi-table dataset, import from the stable run folder — `outputs/<job>/latest/` never changes
+on regeneration, so the Power Query connection survives every re-run (only the data refreshes):
+
+```text
+synthetic-data/outputs/<job>/latest/<Table>.csv
+```
 
 ## Where it writes (cross-blueprint, by path)
 

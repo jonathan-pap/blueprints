@@ -10,6 +10,7 @@ PreToolUse + PostToolUse hooks that validate PBIR/TMDL files and visual bindings
 | `validate-pbir.sh` | PostToolUse | Write, Edit, Bash | .json/.pbir files in .Report/ |
 | `validate-report-binding.sh` | PostToolUse | Write, Edit, Bash | definition.pbir binding validation (byPath/byConnection) |
 | `validate-tmdl.sh` | PostToolUse | Write, Edit, Bash | .tmdl files in .SemanticModel/ or .Dataset/ |
+| `audit-layout-consistency.sh` | manual / opt-in PostToolUse | run on a `.Report` | Flags layout drift vs the project's `design-system.yaml`: sub-pixel + off-grid positions, slicer type/size drift. See below. |
 
 ## Checks
 
@@ -25,6 +26,34 @@ All checks are toggleable via `config.yaml`. Set any key to `false` to disable.
 | `bypath_exists` | byPath target directory exists locally | validate-report-binding |
 | `fab_exists` | byConnection model exists in Fabric (via `fab exists`) | validate-report-binding |
 | `tmdl_syntax` | TMDL structural syntax (via `tmdl-validate`) | validate-tmdl |
+
+## Layout consistency audit (`audit-layout-consistency.sh`)
+
+Unlike the validators above (which block *broken* output), this audits *inconsistent* output against
+the project's layout tokens — the dimension counterpart to the theme. See
+`../../02-build/report/layout/design-system.md`.
+
+```bash
+# manual audit — prints findings to stdout, exit 0
+bash audit-layout-consistency.sh "projects/<name>/<name>.Report"
+
+# opt-in hook mode — findings to stderr, exit 2 (so they surface in Claude Code)
+bash audit-layout-consistency.sh --hook "projects/<name>/<name>.Report"
+```
+
+Checks each `visual.json`:
+
+| Finding | Meaning |
+|---|---|
+| `SUBPIXEL` | x/y/width/height is not a whole number (usually a Desktop drag-resize artifact) |
+| `OFFGRID` | a whole-number value not a multiple of `grid.snap_to` |
+| `SLICER_TYPE` | a slicer-family visual whose type ≠ `defaults.slicer.type` |
+| `SLICER_SIZE` | a slicer of the configured type whose size ≠ `defaults.slicer.size` |
+
+- **`design-system.yaml` is optional** — if a project has none, the audit skips silently (exit 0).
+- Visuals listed in the yaml `overrides:` block are exempt (intentional deviations).
+- Dependency-light: needs `python` on PATH (no `pyyaml`); skips silently if absent or only the
+  Windows Store alias stub is found.
 
 ## Required fields (from schemas)
 

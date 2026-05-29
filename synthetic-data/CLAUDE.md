@@ -30,11 +30,26 @@ projects/<job-name>/
 
 ## Output convention (output layer)
 
-```text
-outputs/YYYY-MM-DD-<job>-<dataset>.<ext>
-```
+Two patterns by shape:
 
-Example: `outputs/2026-05-24-demo-financials.csv`. Dates are absolute, never relative.
+- **Single-file dataset** (one table) → flat + dated:
+  `outputs/YYYY-MM-DD-<job>-<dataset>.<ext>` — e.g. `outputs/2026-05-24-demo-financials.csv`.
+- **Multi-table dataset** (a job that emits many tables) → **run folder** with clean table names:
+
+  ```text
+  outputs/<job>/
+  ├── latest/                  ← current run; the Power BI hand-off imports from here (stable path)
+  │   ├── DimItem.csv
+  │   ├── FactTrade.csv
+  │   └── _manifest.json       ← seed, scale, date range, per-table row counts
+  └── runs/                    ← snapshots, only when the generator is run with --archive
+      └── YYYY-MM-DD-<scale>/
+  ```
+
+  Filenames inside a run are just the table name (no long shared prefix). `latest/` is overwritten
+  each run; `_manifest.json` makes the folder self-describing even though the date isn't in the path.
+
+Dates are absolute, never relative.
 
 ## Rooms (pipeline order — enter one at a time)
 
@@ -87,7 +102,7 @@ Match the user's intent. Load only what's listed.
 
 - **Folders:** kebab-case, lowercase; numbered prefix on rooms (`01-brief/`, `02-schema/`) to enforce pipeline order.
 - **Room files:** each room uses `context.md` (no SKILL.md). Atomic files are kebab-case topic names, no date.
-- **Output files:** `YYYY-MM-DD-<job>-<dataset>.<ext>` (absolute dates).
+- **Output files:** single-file → `YYYY-MM-DD-<job>-<dataset>.<ext>`; multi-table → `outputs/<job>/latest/<Table>.<ext>` (+ `runs/<date>-<scale>/` snapshots). Absolute dates.
 
 ## Critical rules (apply everywhere)
 

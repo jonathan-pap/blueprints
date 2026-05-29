@@ -15,6 +15,7 @@ Thumbs.db
 
 # Large generated datasets — keep the outputs/ folder + its README, ignore bulky artifacts.
 # Commit small sample outputs deliberately with `git add -f` if you want them tracked.
+# Flat single-file outputs:
 outputs/*.csv
 outputs/*.tsv
 outputs/*.parquet
@@ -22,4 +23,6 @@ outputs/*.json
 outputs/*.ndjson
 outputs/*.xlsx
 outputs/*.sql
+# Multi-table run folders (outputs/<job>/latest/, outputs/<job>/runs/...):
+outputs/*/**
 !outputs/README.md

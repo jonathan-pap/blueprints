@@ -1,0 +1,58 @@
+relationship ccd832f3-2252-52c8-bd18-2db1a02c7e87
+	fromColumn: FactMarketPriceDaily.ItemKey
+	toColumn: DimItem.ItemKey
+
+relationship 5611dedb-ebd3-5029-9025-33a1baa7fcc5
+	fromColumn: FactMarketPriceDaily.DateKey
+	toColumn: DimDate.DateKey
+
+relationship 0146fdcd-5376-5f31-831b-c4b26842e04a
+	fromColumn: FactTrade.ItemKey
+	toColumn: DimItem.ItemKey
+
+relationship 9a7e239f-b490-52f9-89e5-3beb0a3c9e41
+	fromColumn: FactTrade.DateKey
+	toColumn: DimDate.DateKey
+
+relationship 662d93c4-ede3-594c-ab59-8e58bd974d3f
+	fromColumn: FactTrade.SellerKey
+	toColumn: DimSeller.SellerKey
+
+relationship 8a0e87b0-9186-5536-92f7-5f71c7716da8
+	isActive: false
+	fromColumn: FactTrade.BuyerSellerKey
+	toColumn: DimSeller.SellerKey
+
+relationship 32efde9c-14d0-598e-924d-9f5511b31af3
+	fromColumn: FactDropTable.MonsterKey
+	toColumn: DimMonster.MonsterKey
+
+relationship b656ffe3-96c1-5e7c-b585-a727d6501cf6
+	fromColumn: FactDropTable.ItemKey
+	toColumn: DimItem.ItemKey
+
+relationship 2e177189-c22e-510e-9414-b0cc404f7e94
+	fromColumn: FactItemSource.ItemKey
+	toColumn: DimItem.ItemKey
+
+relationship d62261e4-5d14-5848-8682-61eb1930cabf
+	fromColumn: FactRecipeIngredient.RecipeKey
+	toColumn: DimRecipe.RecipeKey
+
+relationship 75b94233-bf42-53a9-b27b-73c660f3a80c
+	fromColumn: FactRecipeIngredient.IngredientItemKey
+	toColumn: DimItem.ItemKey
+
+relationship eceb336e-0d16-5522-8d15-a8b998e55870
+	isActive: false
+	fromColumn: DimRecipe.OutputItemKey
+	toColumn: DimItem.ItemKey
+
+relationship f8ac3438-2be7-5d8c-8187-e48367888f77
+	fromColumn: DimMonster.RegionKey
+	toColumn: DimRegion.RegionKey
+
+relationship aa191f42-757e-5f86-b1a7-f591e125d165
+	fromColumn: DimItem.RarityKey
+	toColumn: DimRarity.RarityKey
+

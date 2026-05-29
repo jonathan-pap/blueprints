@@ -1,0 +1,56 @@
+table DimSeller
+	lineageTag: 290cad56-f52b-5e3f-b99a-f439f05bec44
+
+	column SellerKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 840f4448-f941-5a0c-a531-3ff57754511f
+		summarizeBy: none
+		sourceColumn: SellerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column SellerName
+		dataType: string
+		lineageTag: bae03e15-8742-506c-b4a5-660c1efdf0bf
+		summarizeBy: none
+		sourceColumn: SellerName
+
+		annotation SummarizationSetBy = Automatic
+
+	column SellerType
+		dataType: string
+		lineageTag: eae65f02-c96d-53fd-9f10-99faa3e07f52
+		summarizeBy: none
+		sourceColumn: SellerType
+
+		annotation SummarizationSetBy = Automatic
+
+	column Realm
+		dataType: string
+		lineageTag: 34f289cf-04f4-5dc1-b688-16d3155be8be
+		summarizeBy: none
+		sourceColumn: Realm
+
+		annotation SummarizationSetBy = Automatic
+
+	column ReputationTier
+		dataType: string
+		lineageTag: d3b49de9-ecbe-5313-82cd-d43fa949991f
+		summarizeBy: none
+		sourceColumn: ReputationTier
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimSeller = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents("E:\Workspace-Blueprint\synthetic-data\outputs\grand-exchange\latest\DimSeller.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Promoted, {{"SellerKey", Int64.Type}, {"SellerName", type text}, {"SellerType", type text}, {"Realm", type text}, {"ReputationTier", type text}})
+				in
+					Typed
+
+	annotation PBI_ResultType = Table
+

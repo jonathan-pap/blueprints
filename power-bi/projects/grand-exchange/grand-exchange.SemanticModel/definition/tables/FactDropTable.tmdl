@@ -1,0 +1,61 @@
+table FactDropTable
+	lineageTag: a2ec5457-99bb-5789-a1e4-79ea1e4bd9aa
+
+	column MonsterKey
+		dataType: int64
+		formatString: 0
+		lineageTag: feb39423-1f0b-5e18-b753-67a1fe197f40
+		summarizeBy: none
+		sourceColumn: MonsterKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ItemKey
+		dataType: int64
+		formatString: 0
+		lineageTag: a347a5cf-0fe2-5ba6-a436-7795b5d8ff01
+		summarizeBy: none
+		sourceColumn: ItemKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column DropRatePct
+		dataType: double
+		lineageTag: 17ff7332-42f3-562c-ae3c-ac9297aae6d2
+		summarizeBy: sum
+		sourceColumn: DropRatePct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column MinQty
+		dataType: int64
+		formatString: 0
+		lineageTag: a6c0f6ab-34de-59c6-884a-f3fa1e6d8b9f
+		summarizeBy: sum
+		sourceColumn: MinQty
+
+		annotation SummarizationSetBy = Automatic
+
+	column MaxQty
+		dataType: int64
+		formatString: 0
+		lineageTag: 6a0f3c32-e745-5579-afa2-4c773cecce94
+		summarizeBy: sum
+		sourceColumn: MaxQty
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FactDropTable = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents("E:\Workspace-Blueprint\synthetic-data\outputs\grand-exchange\latest\FactDropTable.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Promoted, {{"MonsterKey", Int64.Type}, {"ItemKey", Int64.Type}, {"DropRatePct", type number}, {"MinQty", Int64.Type}, {"MaxQty", Int64.Type}})
+				in
+					Typed
+
+	annotation PBI_ResultType = Table
+

@@ -71,7 +71,7 @@ Workspace-Blueprint/
     └── outputs/                 ← dated datasets (YYYY-MM-DD-<job>-<dataset>.<ext>)
 ```
 
-Today: **~510 atomic .md files** across two blueprints — power-bi (~500, mature) and synthetic-data (10, skeleton). Most are under 2 KB each.
+Today: **~506 atomic .md files** across two blueprints — power-bi (~493, mature) and synthetic-data (13, skeleton). Most are under 2 KB each.
 
 ---
 

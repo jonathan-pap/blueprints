@@ -1,5 +1,7 @@
 # layout/ — atomic files
 
+- `design-system.md` — **read first** — project layout tokens (`design-system.yaml`): per-type sizes, grid, gaps, zones. The dimension counterpart to the theme.
+- `design-system-default.yaml` — copyable starter tokens for a new project
 - `page-dimensions.md` — query and choose page size
 - `position-visual.md` — set x, y
 - `size-visual.md` — set width, height

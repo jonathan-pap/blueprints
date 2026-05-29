@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "grand-exchange"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "5850b1d1-f154-497b-a2fb-171a55961236"
+  }
+}

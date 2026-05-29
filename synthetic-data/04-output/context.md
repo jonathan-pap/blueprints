@@ -16,7 +16,12 @@
 
 ## Conventions
 
-- Name outputs `outputs/YYYY-MM-DD-<job>-<dataset>.<ext>` (absolute dates).
+- **Single-file dataset** → flat + dated: `outputs/YYYY-MM-DD-<job>-<dataset>.<ext>`.
+- **Multi-table dataset** → run folder with clean table names: `outputs/<job>/latest/<Table>.<ext>`,
+  self-described by `latest/_manifest.json` (seed, scale, date range, row counts). Snapshot history
+  to `outputs/<job>/runs/<date>-<scale>/` only when the generator is run with `--archive`.
+  The Power BI hand-off imports from `latest/` — a stable path that survives regeneration.
+- Absolute dates, never relative.
 - Large datasets are git-ignored by default (see `../.gitignore`); commit small samples deliberately.
 - Partition / compress large outputs where the consumer supports it.
 

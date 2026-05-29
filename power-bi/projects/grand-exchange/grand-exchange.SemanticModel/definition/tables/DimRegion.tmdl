@@ -1,0 +1,58 @@
+table DimRegion
+	lineageTag: 42fa849e-8cba-5f84-87b7-7b2f13e67a3f
+
+	column RegionKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 5185fb2d-2e5f-5500-9d19-502a25423938
+		summarizeBy: none
+		sourceColumn: RegionKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column RegionName
+		dataType: string
+		lineageTag: 144f436e-b8bd-5dfc-b252-d7c81bc4d246
+		summarizeBy: none
+		sourceColumn: RegionName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Biome
+		dataType: string
+		lineageTag: 8e2df06e-712a-5c4f-95c1-1ec016968e68
+		summarizeBy: none
+		sourceColumn: Biome
+
+		annotation SummarizationSetBy = Automatic
+
+	column LevelMin
+		dataType: int64
+		formatString: 0
+		lineageTag: f158c5f2-38e5-503f-b76e-4847384861d1
+		summarizeBy: sum
+		sourceColumn: LevelMin
+
+		annotation SummarizationSetBy = Automatic
+
+	column LevelMax
+		dataType: int64
+		formatString: 0
+		lineageTag: abdc57fe-fd1e-5d9c-b6fb-47e8887f5171
+		summarizeBy: sum
+		sourceColumn: LevelMax
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimRegion = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents("E:\Workspace-Blueprint\synthetic-data\outputs\grand-exchange\latest\DimRegion.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Promoted, {{"RegionKey", Int64.Type}, {"RegionName", type text}, {"Biome", type text}, {"LevelMin", Int64.Type}, {"LevelMax", Int64.Type}})
+				in
+					Typed
+
+	annotation PBI_ResultType = Table
+

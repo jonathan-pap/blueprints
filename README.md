@@ -14,7 +14,7 @@ Starting a new piece of work? See [briefs/](briefs/) — a shared hub with brief
 
 | Blueprint | Tool | Status |
 | --- | --- | --- |
-| [power-bi/](power-bi/) | Power BI Desktop (PBIP format) | Complete — 265 atomic files across 11 rooms |
+| [power-bi/](power-bi/) | Power BI Desktop (PBIP format) | Complete — ~493 atomic files across 4 rooms (with nested sub-rooms) |
 | [synthetic-data/](synthetic-data/) | Synthetic / dummy data creation (Python-first) | Skeleton — 5 rooms + Power BI hand-off; rooms grow per job |
 
 ## Why folder-as-app

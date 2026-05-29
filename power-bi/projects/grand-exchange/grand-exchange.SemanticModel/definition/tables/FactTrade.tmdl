@@ -1,0 +1,89 @@
+table FactTrade
+	lineageTag: 924a7cbd-1faa-59b7-8aa6-955a980f4016
+
+	column TradeKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 34a060e3-23de-5b66-b330-de01e1d3ff10
+		summarizeBy: none
+		sourceColumn: TradeKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column DateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: f6870fe1-110c-5752-ab94-08bc51d503da
+		summarizeBy: none
+		sourceColumn: DateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ItemKey
+		dataType: int64
+		formatString: 0
+		lineageTag: acbe71b8-190e-5a3c-8044-331a70690fb0
+		summarizeBy: none
+		sourceColumn: ItemKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column SellerKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 75a8616d-4090-5b4d-bacc-3f38ac1229b7
+		summarizeBy: none
+		sourceColumn: SellerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column BuyerSellerKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 3d7e4f3a-ebc9-5a6e-b581-50580fb7604d
+		summarizeBy: none
+		sourceColumn: BuyerSellerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quantity
+		dataType: int64
+		formatString: 0
+		lineageTag: 0e8e10a7-ca62-5947-983e-57ad4077781a
+		summarizeBy: sum
+		sourceColumn: Quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column UnitPrice
+		dataType: double
+		lineageTag: 97152f4b-b8a9-5833-86c5-76bf99dbe531
+		summarizeBy: sum
+		sourceColumn: UnitPrice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column TotalPrice
+		dataType: double
+		lineageTag: 44bb79dc-0719-5b53-9934-e7aec9465e65
+		summarizeBy: sum
+		sourceColumn: TotalPrice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition FactTrade = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents("E:\Workspace-Blueprint\synthetic-data\outputs\grand-exchange\latest\FactTrade.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Promoted, {{"TradeKey", Int64.Type}, {"DateKey", Int64.Type}, {"ItemKey", Int64.Type}, {"SellerKey", Int64.Type}, {"BuyerSellerKey", Int64.Type}, {"Quantity", Int64.Type}, {"UnitPrice", type number}, {"TotalPrice", type number}})
+				in
+					Typed
+
+	annotation PBI_ResultType = Table
+

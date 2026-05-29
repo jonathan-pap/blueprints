@@ -1,0 +1,101 @@
+table FactMarketPriceDaily
+	lineageTag: 78a896bc-96b2-5219-807d-97bbe3c1a060
+
+	column DateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: d039486b-6def-5ab9-a077-212eb715855d
+		summarizeBy: none
+		sourceColumn: DateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ItemKey
+		dataType: int64
+		formatString: 0
+		lineageTag: b60b8207-fb82-5c48-907b-69c541f22745
+		summarizeBy: none
+		sourceColumn: ItemKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column OpenPrice
+		dataType: double
+		lineageTag: 34c42b51-72fd-50e5-8fe7-7255108b6641
+		summarizeBy: sum
+		sourceColumn: OpenPrice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ClosePrice
+		dataType: double
+		lineageTag: 442677ab-679a-5df6-87b6-902bb2576af7
+		summarizeBy: sum
+		sourceColumn: ClosePrice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column HighPrice
+		dataType: double
+		lineageTag: 6e55ab93-cc6a-58b4-9119-1ce182f86006
+		summarizeBy: sum
+		sourceColumn: HighPrice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column LowPrice
+		dataType: double
+		lineageTag: 3c72464f-db90-5606-b8a0-ab4d1a89b7d3
+		summarizeBy: sum
+		sourceColumn: LowPrice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column AvgPrice
+		dataType: double
+		lineageTag: a10acc2b-54be-51a3-baf7-17232ea1a721
+		summarizeBy: sum
+		sourceColumn: AvgPrice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Volume
+		dataType: int64
+		formatString: 0
+		lineageTag: 0d240ef4-f427-55bb-9a6f-712d80681ae0
+		summarizeBy: sum
+		sourceColumn: Volume
+
+		annotation SummarizationSetBy = Automatic
+
+	column ListingsCount
+		dataType: int64
+		formatString: 0
+		lineageTag: a1ba4f16-97bf-5ce2-b580-fef1968c8845
+		summarizeBy: sum
+		sourceColumn: ListingsCount
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FactMarketPriceDaily = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents("E:\Workspace-Blueprint\synthetic-data\outputs\grand-exchange\latest\FactMarketPriceDaily.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Promoted, {{"DateKey", Int64.Type}, {"ItemKey", Int64.Type}, {"OpenPrice", type number}, {"ClosePrice", type number}, {"HighPrice", type number}, {"LowPrice", type number}, {"AvgPrice", type number}, {"Volume", Int64.Type}, {"ListingsCount", Int64.Type}})
+				in
+					Typed
+
+	annotation PBI_ResultType = Table
+

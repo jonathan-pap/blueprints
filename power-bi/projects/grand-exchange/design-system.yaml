@@ -1,0 +1,80 @@
+# Design system — grand-exchange
+#
+# Layout tokens for this project. Claude reads this BEFORE every `pbir add visual`.
+# Power BI never sees this file — it's a build-time input, the layout counterpart to the
+# theme (which Power BI DOES see). The theme governs appearance; this governs dimensions.
+#
+# Rule: a visual's size/position comes from here by default. Override only when the brief
+# explicitly asks for that visual, or it's a genuine one-off. See
+# ../../../02-build/report/layout/design-system.md.
+
+meta:
+  page: { width: 1280, height: 720 }      # all pages 16:9 standard
+  theme: BluPulse                          # appearance lives in the theme, not here
+  units: px
+
+grid:
+  unit: 8                                  # everything snaps to multiples of 8
+  snap_to: 8                               # positions/sizes are multiples of this (audited)
+margins: { top: 24, right: 24, bottom: 24, left: 24 }
+gaps: { horizontal: 16, vertical: 16 }     # equal gaps everywhere (non-negotiable)
+
+# Detail gradient (3-30-300). Where a visual type belongs vertically.
+zones:
+  summary:  { y: 24,  height: 144 }        # zone 1 — KPIs, slicers (top)
+  analysis: { y: 184, height: 320 }        # zone 2 — charts, maps (middle)
+  detail:   { y: 520, height: 176 }        # zone 3 — tables, matrices (bottom)
+
+# Per-visual-type defaults. width/height in px. `type` pins the exact visualType.
+defaults:
+  slicer:
+    type: slicer                           # dropdown — NOT listSlicer / advancedSlicerVisual
+    size: { width: 240, height: 40 }
+    zone: summary
+  card:                                    # single KPI / card
+    type: card
+    size: { width: 296, height: 136 }      # 4 across a 1280 page (see layouts.kpi_row_4); h=136 (8-grid, >=130 min)
+    zone: summary
+  chart_small:  { width: 400, height: 304 }
+  chart_medium: { width: 600, height: 320 }
+  chart_wide:   { width: 1232, height: 320 }   # full content width
+  table:        { width: 1232, height: 176 }   # full width, detail zone
+  matrix:       { width: 1232, height: 176 }
+  title:        { type: textbox, width: 1232, height: 40 }   # page title band
+
+# Pre-computed multi-visual layouts (so equal-gap math is decided once, not re-derived).
+# Formula: content = 1280 - 2*24 = 1232 ; width = (content - gap*(n-1)) / n
+layouts:
+  kpi_row_4:                               # 4 KPI cards across the summary zone
+    width: 296
+    height: 136
+    y: 24
+    x: [24, 336, 648, 960]
+  charts_2up:                              # two medium charts in the analysis zone
+    width: 608
+    height: 320
+    y: 184
+    x: [24, 648]
+  charts_3up:
+    width: 400
+    height: 320
+    y: 184
+    x: [24, 440, 856]
+
+# Project pages — as built (title-less; the page tab is the title). Audited: 0 drift.
+pages:
+  - name: Market Overview                  # KPI-led exec page
+    visuals: [kpi_row_4 (Total Trade Value / Trade Count / Avg Market Price / Active Listings),
+              chart_wide (Daily Trade Value line), table (Top Items by Trade Value)]
+  - name: Craft vs Buy
+    visuals: [slicer (Crafting Skill, summary), charts_2up (Avg Market Price by Rarity |
+              Trade Value by Category), table (Item Value Detail)]
+    todo: add a recursive craft-cost measure (DAX over the BOM bridge) for the true craft-vs-buy delta
+  - name: Concentration
+    visuals: [2 cards (Distinct Items Traded, Total Trade Value), chart_wide (Trade Value by Item),
+              table (Item Ranking)]
+    todo: add Pareto cumulative-% line + 80% marker (visual calc or model measure, see test/_Measures)
+
+# When to override a default (record the reason so the audit hook knows it's intentional):
+#   overrides:
+#     - { page: "Craft vs Buy", visual: "margin-detail", reason: "needs full height for 30 rows" }

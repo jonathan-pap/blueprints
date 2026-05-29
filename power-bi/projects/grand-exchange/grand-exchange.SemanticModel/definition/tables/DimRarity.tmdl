@@ -1,0 +1,68 @@
+table DimRarity
+	lineageTag: 5d82ece4-2ceb-5fcb-9ddc-c9a1253a600e
+
+	column RarityKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 492147ef-9825-5f01-b62e-805e2d65a008
+		summarizeBy: none
+		sourceColumn: RarityKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column RarityName
+		dataType: string
+		lineageTag: 4c4a20ab-66fc-558c-970d-b381f8649fd0
+		summarizeBy: none
+		sourceColumn: RarityName
+
+		annotation SummarizationSetBy = Automatic
+
+	column RarityRank
+		dataType: int64
+		formatString: 0
+		lineageTag: 1a00ca38-fefe-57bc-a94e-10afb8f45273
+		summarizeBy: sum
+		sourceColumn: RarityRank
+
+		annotation SummarizationSetBy = Automatic
+
+	column DropWeight
+		dataType: int64
+		formatString: 0
+		lineageTag: 9dc24b60-4c5a-58e9-ab82-63508f878111
+		summarizeBy: sum
+		sourceColumn: DropWeight
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValueMultiplier
+		dataType: double
+		lineageTag: aaa6d9a7-e06f-54ef-91dc-21182972b719
+		summarizeBy: sum
+		sourceColumn: ValueMultiplier
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ColorHex
+		dataType: string
+		lineageTag: 7f338afc-b4d6-52fa-ab15-25f13c52a4a1
+		summarizeBy: none
+		sourceColumn: ColorHex
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimRarity = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents("E:\Workspace-Blueprint\synthetic-data\outputs\grand-exchange\latest\DimRarity.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Promoted, {{"RarityKey", Int64.Type}, {"RarityName", type text}, {"RarityRank", Int64.Type}, {"DropWeight", Int64.Type}, {"ValueMultiplier", type number}, {"ColorHex", type text}})
+				in
+					Typed
+
+	annotation PBI_ResultType = Table
+
