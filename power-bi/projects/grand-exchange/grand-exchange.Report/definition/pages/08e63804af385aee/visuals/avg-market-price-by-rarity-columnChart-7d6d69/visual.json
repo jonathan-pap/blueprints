@@ -1,5 +1,14 @@
 {
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "avg-market-price-by-rarity-columnChart-7d6d69",
+  "position": {
+    "x": 24,
+    "y": 184,
+    "z": 0,
+    "height": 320,
+    "width": 608,
+    "tabOrder": 0
+  },
   "visual": {
     "visualType": "columnChart",
     "query": {
@@ -7,7 +16,6 @@
         "Category": {
           "projections": [
             {
-              "queryRef": "DimRarity.RarityName",
               "field": {
                 "Column": {
                   "Expression": {
@@ -18,14 +26,15 @@
                   "Property": "RarityName"
                 }
               },
-              "nativeQueryRef": "RarityName"
+              "queryRef": "DimRarity.RarityName",
+              "nativeQueryRef": "RarityName",
+              "active": true
             }
           ]
         },
         "Y": {
           "projections": [
             {
-              "queryRef": "_Measures.Avg Market Price",
               "field": {
                 "Measure": {
                   "Expression": {
@@ -36,6 +45,7 @@
                   "Property": "Avg Market Price"
                 }
               },
+              "queryRef": "_Measures.Avg Market Price",
               "nativeQueryRef": "Avg Market Price"
             }
           ]
@@ -60,8 +70,6 @@
         "isDefaultSort": true
       }
     },
-    "objects": {},
-    "drillFilterOtherVisuals": true,
     "visualContainerObjects": {
       "title": [
         {
@@ -96,15 +104,7 @@
           }
         }
       ]
-    }
-  },
-  "position": {
-    "x": 24,
-    "y": 184,
-    "z": 0,
-    "width": 608,
-    "height": 320,
-    "tabOrder": 0
-  },
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json"
+    },
+    "drillFilterOtherVisuals": true
+  }
 }

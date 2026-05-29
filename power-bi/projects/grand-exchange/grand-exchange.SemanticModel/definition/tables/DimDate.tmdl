@@ -2,6 +2,107 @@ table DimDate
 	lineageTag: e38e7662-a45a-57b1-a3ab-b862afb77089
 	dataCategory: Time
 
+	measure 'Item Card SVG' = ```
+			
+			VAR _hasOne   = HASONEVALUE ( DimItem[ItemKey] )
+			VAR _itemKey  = SELECTEDVALUE ( DimItem[ItemKey] )
+			VAR _name     = SUBSTITUTE ( SELECTEDVALUE ( DimItem[ItemName] ), "&", "&amp;" )
+			VAR _cat      = SELECTEDVALUE ( DimItem[ItemCategory] )
+			VAR _sub      = SELECTEDVALUE ( DimItem[ItemSubtype] )
+			VAR _tier     = SELECTEDVALUE ( DimItem[BomTier] )
+			VAR _elem     = SELECTEDVALUE ( DimItem[Element] )
+			VAR _rkey     = SELECTEDVALUE ( DimItem[RarityKey] )
+			VAR _rname    = LOOKUPVALUE ( DimRarity[RarityName], DimRarity[RarityKey], _rkey )
+			VAR _rcol     = LOOKUPVALUE ( DimRarity[ColorHex],  DimRarity[RarityKey], _rkey )
+			VAR _price    = [Avg Market Price]
+			VAR _listings = [Active Listings]
+			VAR _volume   = [Total Market Volume]
+			VAR _recipe   = FILTER ( ALL ( DimRecipe ), DimRecipe[OutputItemKey] = _itemKey )
+			VAR _rKeyR    = MAXX ( _recipe, DimRecipe[RecipeKey] )
+			VAR _yield    = MAXX ( _recipe, DimRecipe[YieldQty] )
+			VAR _skill    = MAXX ( _recipe, DimRecipe[CraftingSkill] )
+			VAR _reqLvl   = MAXX ( _recipe, DimRecipe[RequiredLevel] )
+			VAR _hasRecipe = NOT ISBLANK ( _rKeyR )
+			VAR _ingr     = FILTER ( ALL ( FactRecipeIngredient ), FactRecipeIngredient[RecipeKey] = _rKeyR )
+			VAR _craftCost =
+			    DIVIDE (
+			        SUMX (
+			            _ingr,
+			            VAR _ik = FactRecipeIngredient[IngredientItemKey]
+			            VAR _q  = FactRecipeIngredient[QtyRequired]
+			            VAR _ip = CALCULATE ( [Avg Market Price], ALL ( DimItem ), DimItem[ItemKey] = _ik )
+			            RETURN _ip * _q
+			        ),
+			        _yield
+			    )
+			VAR _chips =
+			    CONCATENATEX (
+			        _ingr,
+			        VAR _ik = FactRecipeIngredient[IngredientItemKey]
+			        VAR _q  = FactRecipeIngredient[QtyRequired]
+			        VAR _in = SUBSTITUTE ( LOOKUPVALUE ( DimItem[ItemName], DimItem[ItemKey], _ik ), "&", "&amp;" )
+			        VAR _ic = LOOKUPVALUE ( DimRarity[ColorHex], DimRarity[RarityKey],
+			                    LOOKUPVALUE ( DimItem[RarityKey], DimItem[ItemKey], _ik ) )
+			        RETURN "<span class='chip' style='border-color:" & _ic & "'>" & _q & "&#215; " & _in & "</span>",
+			        ""
+			    )
+			VAR _delta = _price - _craftCost
+			VAR _verdict =
+			    IF ( _hasRecipe,
+			        IF ( _craftCost < _price,
+			            "<div class='vd craft'>CRAFT &#9650; save " & FORMAT ( _delta, "#,##0" ) & " gp &#183; craft " & FORMAT ( _craftCost, "#,##0" ) & " vs buy " & FORMAT ( _price, "#,##0" ) & "</div>",
+			            "<div class='vd buy'>BUY &#9660; cheaper by " & FORMAT ( -_delta, "#,##0" ) & " gp &#183; craft " & FORMAT ( _craftCost, "#,##0" ) & " vs buy " & FORMAT ( _price, "#,##0" ) & "</div>"
+			        ),
+			        "<div class='vd none'>No recipe &#183; acquired via drop / gather / vendor</div>"
+			    )
+			VAR _elemBadge = IF ( NOT ISBLANK ( _elem ) && _elem <> "None", "<span class='el'>" & _elem & "</span>", "" )
+			VAR _css =
+			    "<style>" &
+			    ".c{width:440px;box-sizing:border-box;font-family:Segoe UI,Arial,sans-serif;background:linear-gradient(180deg,#1b2436,#101726);border:1px solid #2c3a52;border-radius:14px;padding:14px 16px;color:#e8edf5}" &
+			    ".c .hd{display:flex;align-items:center;justify-content:space-between;gap:10px}" &
+			    ".c .nm{font-size:19px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" &
+			    ".c .pill{font-size:10px;font-weight:700;color:#10131a;padding:3px 9px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}" &
+			    ".c .sub{font-size:11px;color:#8aa0c0;margin:4px 0 12px;text-transform:uppercase;letter-spacing:.5px}" &
+			    ".c .el{margin-left:8px;color:#7fd1ff;border:1px solid #2c4a66;border-radius:8px;padding:1px 7px}" &
+			    ".c .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}" &
+			    ".c .t{background:#141d30;border:1px solid #233149;border-radius:9px;padding:8px 9px}" &
+			    ".c .k{font-size:10px;color:#7d92b3;text-transform:uppercase;letter-spacing:.5px}" &
+			    ".c .v{font-size:16px;font-weight:700;color:#f4d770;margin-top:3px}" &
+			    ".c .v .u{font-size:11px;color:#9a8a3f;font-weight:400}" &
+			    ".c .rc{border-top:1px solid #2c3a52;padding-top:10px;margin-bottom:12px}" &
+			    ".c .rl{font-size:10px;color:#8aa0c0;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}" &
+			    ".c .chips{display:flex;flex-wrap:wrap;gap:5px}" &
+			    ".c .chip{font-size:11px;background:#141d30;border:1px solid #233149;border-radius:8px;padding:3px 8px;color:#cdd9ec}" &
+			    ".c .vd{border-radius:9px;padding:9px 11px;font-size:12px;font-weight:600;text-align:center}" &
+			    ".c .vd.craft{background:#143a28;color:#5ee08a;border:1px solid #1d6e44}" &
+			    ".c .vd.buy{background:#3a1f14;color:#f0a868;border:1px solid #7a4a24}" &
+			    ".c .vd.none{background:#1c2740;color:#8aa0c0;border:1px solid #2c3a52}" &
+			    "</style>"
+			VAR _body =
+			    "<div xmlns='http://www.w3.org/1999/xhtml' class='c'>" & _css &
+			    "<div class='hd'><div class='nm' style='color:" & _rcol & "'>" & _name & "</div>" &
+			        "<span class='pill' style='background:" & _rcol & "'>" & _rname & "</span></div>" &
+			    "<div class='sub'>" & _cat & " &#183; " & _sub & " &#183; Tier " & _tier & _elemBadge & "</div>" &
+			    "<div class='grid'>" &
+			        "<div class='t'><div class='k'>Market Price</div><div class='v'>" & FORMAT ( _price, "#,##0" ) & "<span class='u'> gp</span></div></div>" &
+			        "<div class='t'><div class='k'>Listings</div><div class='v'>" & FORMAT ( _listings, "#,##0" ) & "</div></div>" &
+			        "<div class='t'><div class='k'>Volume</div><div class='v'>" & FORMAT ( _volume, "#,##0" ) & "</div></div>" &
+			    "</div>" &
+			    IF ( _hasRecipe,
+			        "<div class='rc'><div class='rl'>Recipe &#183; " & _skill & " Lv " & _reqLvl & " &#183; yields " & _yield & "</div><div class='chips'>" & _chips & "</div></div>",
+			        "" ) &
+			    _verdict &
+			    "</div>"
+			RETURN
+			    IF ( NOT _hasOne,
+			        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='440' height='110'><foreignObject width='440' height='110'><div xmlns='http://www.w3.org/1999/xhtml' style='font-family:Segoe UI,Arial,sans-serif;color:#8aa0c0;padding:38px;text-align:center;background:#141c2e;border:1px solid #2c3a52;border-radius:14px'>Select a single item to inspect</div></foreignObject></svg>",
+			        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='440' height='380'><foreignObject width='440' height='380'>" & _body & "</foreignObject></svg>"
+			    )
+			
+			```
+		lineageTag: 8e4c5c52-b4f3-46f6-9e18-228b93041ddb
+		dataCategory: ImageUrl
+
 	column DateKey
 		dataType: int64
 		formatString: 0

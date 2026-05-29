@@ -1,5 +1,14 @@
 {
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "crafting-skill-slicer-3c4cbc",
+  "position": {
+    "x": 24,
+    "y": 24,
+    "z": 0,
+    "height": 40,
+    "width": 240,
+    "tabOrder": 0
+  },
   "visual": {
     "visualType": "slicer",
     "query": {
@@ -7,7 +16,6 @@
         "Values": {
           "projections": [
             {
-              "queryRef": "DimRecipe.CraftingSkill",
               "field": {
                 "Column": {
                   "Expression": {
@@ -18,14 +26,14 @@
                   "Property": "CraftingSkill"
                 }
               },
-              "nativeQueryRef": "CraftingSkill"
+              "queryRef": "DimRecipe.CraftingSkill",
+              "nativeQueryRef": "CraftingSkill",
+              "active": true
             }
           ]
         }
       }
     },
-    "objects": {},
-    "drillFilterOtherVisuals": true,
     "visualContainerObjects": {
       "title": [
         {
@@ -60,15 +68,7 @@
           }
         }
       ]
-    }
-  },
-  "position": {
-    "x": 24,
-    "y": 24,
-    "z": 0,
-    "width": 240,
-    "height": 40,
-    "tabOrder": 0
-  },
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json"
+    },
+    "drillFilterOtherVisuals": true
+  }
 }

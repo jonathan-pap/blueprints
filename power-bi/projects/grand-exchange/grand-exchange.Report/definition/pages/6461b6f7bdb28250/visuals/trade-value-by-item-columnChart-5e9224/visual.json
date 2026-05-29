@@ -1,5 +1,14 @@
 {
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "trade-value-by-item-columnChart-5e9224",
+  "position": {
+    "x": 24,
+    "y": 184,
+    "z": 0,
+    "height": 320,
+    "width": 1232,
+    "tabOrder": 0
+  },
   "visual": {
     "visualType": "columnChart",
     "query": {
@@ -7,7 +16,6 @@
         "Category": {
           "projections": [
             {
-              "queryRef": "DimItem.ItemName",
               "field": {
                 "Column": {
                   "Expression": {
@@ -18,14 +26,15 @@
                   "Property": "ItemName"
                 }
               },
-              "nativeQueryRef": "ItemName"
+              "queryRef": "DimItem.ItemName",
+              "nativeQueryRef": "ItemName",
+              "active": true
             }
           ]
         },
         "Y": {
           "projections": [
             {
-              "queryRef": "_Measures.Total Trade Value",
               "field": {
                 "Measure": {
                   "Expression": {
@@ -36,6 +45,7 @@
                   "Property": "Total Trade Value"
                 }
               },
+              "queryRef": "_Measures.Total Trade Value",
               "nativeQueryRef": "Total Trade Value"
             }
           ]
@@ -60,8 +70,6 @@
         "isDefaultSort": true
       }
     },
-    "objects": {},
-    "drillFilterOtherVisuals": true,
     "visualContainerObjects": {
       "title": [
         {
@@ -96,15 +104,7 @@
           }
         }
       ]
-    }
-  },
-  "position": {
-    "x": 24,
-    "y": 184,
-    "z": 0,
-    "width": 1232,
-    "height": 320,
-    "tabOrder": 0
-  },
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json"
+    },
+    "drillFilterOtherVisuals": true
+  }
 }
