@@ -1,0 +1,61 @@
+// HTML-in-SVG ranked board (foreignObject). Worked example on the grand-exchange model.
+// TopN items by Total Trade Value, rarity-colored names + gp price + listings + relative value bar.
+// Rebind for another model: swap DimItem/DimRarity + the 3 measures; change _N for row count.
+// For an interactive row count, harvest a disconnected what-if slicer (../../recipes/disconnected-selection-emphasis/).
+// Set dataCategory = ImageUrl; render in a tableEx cell ~620x460. foreignObject = Desktop/Service only (no PDF/PPT export).
+Market Board SVG =
+VAR _N = 12
+VAR _Items =
+    ADDCOLUMNS (
+        SUMMARIZE (
+            ALLSELECTED ( DimItem ),
+            DimItem[ItemKey], DimItem[ItemName], DimItem[RarityKey]
+        ),
+        "@price", [Avg Market Price],
+        "@listings", [Active Listings],
+        "@value", [Total Trade Value]
+    )
+VAR _Top = TOPN ( _N, FILTER ( _Items, [@value] > 0 ), [@value], DESC )
+VAR _MaxVal = MAXX ( _Top, [@value] )
+VAR _Rows =
+    CONCATENATEX (
+        _Top,
+        VAR _name  = SUBSTITUTE ( DimItem[ItemName], "&", "&amp;" )
+        VAR _col   = LOOKUPVALUE ( DimRarity[ColorHex], DimRarity[RarityKey], DimItem[RarityKey] )
+        VAR _price = FORMAT ( [@price], "#,##0" )
+        VAR _qty   = FORMAT ( [@listings], "#,##0" )
+        VAR _pct   = INT ( DIVIDE ( [@value], _MaxVal ) * 100 )
+        RETURN
+            "<div class='r'>" &
+                "<div class='nm' style='border-left:3px solid " & _col & ";color:" & _col & "'>" & _name & "</div>" &
+                "<div class='pr'>" & _price & "<span class='u'> gp</span></div>" &
+                "<div class='qty'>" & _qty & "</div>" &
+                "<div class='bar'><span style='width:" & _pct & "%'></span></div>" &
+            "</div>",
+        ""
+    )
+RETURN
+    "data:image/svg+xml;utf8," &
+    "<svg xmlns='http://www.w3.org/2000/svg' width='620' height='460'>" &
+    "<foreignObject x='0' y='0' width='620' height='460'>" &
+    "<div xmlns='http://www.w3.org/1999/xhtml' class='ge'>" &
+    "<style>" &
+    ".ge{width:620px;height:460px;box-sizing:border-box;font-family:Segoe UI,Arial,sans-serif;background:linear-gradient(180deg,#1b2436,#101726);border:2px solid #c9a227;border-radius:12px;padding:14px 16px;color:#e8edf5}" &
+    ".ge .hd{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid #2c3a52;padding-bottom:8px;margin-bottom:2px}" &
+    ".ge .ttl{font-size:18px;font-weight:700;letter-spacing:2px;color:#e8c349}" &
+    ".ge .sub{font-size:11px;color:#8aa0c0;text-transform:uppercase;letter-spacing:1px}" &
+    ".ge .ch,.ge .r{display:grid;grid-template-columns:1fr 110px 70px 90px;align-items:center;column-gap:10px}" &
+    ".ge .ch{font-size:10px;color:#7d92b3;text-transform:uppercase;letter-spacing:1px;padding:6px 0 4px;border-bottom:1px solid #2c3a52}" &
+    ".ge .ch .ra{text-align:right}" &
+    ".ge .r{padding:5px 0;border-bottom:1px solid #1b243a;font-size:13px}" &
+    ".ge .nm{padding-left:8px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" &
+    ".ge .pr{text-align:right;font-weight:600;color:#f4d770;font-variant-numeric:tabular-nums}" &
+    ".ge .pr .u{color:#9a8a3f;font-weight:400;font-size:11px}" &
+    ".ge .qty{text-align:right;color:#9fb3d1;font-variant-numeric:tabular-nums}" &
+    ".ge .bar{height:7px;background:#1f2a3d;border-radius:4px;overflow:hidden}" &
+    ".ge .bar span{display:block;height:100%;background:linear-gradient(90deg,#c9a227,#f4d770)}" &
+    "</style>" &
+    "<div class='hd'><div class='ttl'>THE GRAND EXCHANGE</div><div class='sub'>Live Market Board</div></div>" &
+    "<div class='ch'><div>Item</div><div class='ra'>Unit Price</div><div class='ra'>Listings</div><div class='ra'>Value</div></div>" &
+    _Rows &
+    "</div></foreignObject></svg>"

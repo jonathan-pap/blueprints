@@ -21,7 +21,10 @@
 2. Set the measure's **`dataCategory = ImageUrl`** in TMDL (see `../../model/object-types/column-properties.md`).
 3. Bind the measure to a visual role that accepts an image (table/matrix `Values`, card `Image URL`).
 
-Power BI renders the returned string as an inline SVG. No CSS, no JS, no animation.
+Power BI renders the returned string as an inline SVG (as an `<img>`). Raw SVG is static. **Exception:**
+a `<foreignObject>` can embed XHTML+CSS for real layout (flex/grid, wrapping text, chips, cards) and
+**declarative** animation (SMIL/CSS loops) — but never hover/click/JS, and it won't export to PDF/PPT.
+See `html-in-svg.md`.
 
 ## Workflow router
 
@@ -34,6 +37,7 @@ Power BI renders the returned string as an inline SVG. No CSS, no JS, no animati
 - **Wire into a slicer button** → `wiring/in-slicer.md`
 - **Wire as a standalone image visual** → `wiring/in-image.md` (KPI header, dashboard tile, wide gauge)
 - **Per chart type** → `per-chart/_index.md` for sparkline / progress-bar / bullet / status-pill / lollipop / ibcs-bar / overlapping-bars / dumbbell / waterfall / boxplot / jitter-plot / target-bar
+- **Rich HTML+CSS layouts (cards, boards, chips, wrapping text)** → `html-in-svg.md` → `per-chart/html-item-card.md`, `per-chart/html-market-board.md`
 - **Inspiration** → `community-examples.md`
 
 ## Example DAX measures (ready to copy)
@@ -53,6 +57,8 @@ Each `.dax` file in `examples/` is a complete measure — copy, rename, adjust f
 - `examples/jitter-plot-measure.dax` — mini jittered distribution
 - `examples/waterfall-measure.dax` — waterfall steps per row
 - `examples/target-bar-svg.dax` — linear gauge: red/amber/green zones + needle (card / image)
+- `examples/html-item-card-measure.dax` — foreignObject entity card (rarity color, stat grid, ingredient chips, craft-vs-buy verdict)
+- `examples/html-market-board-measure.dax` — foreignObject ranked board (TopN rows + value bars)
 
 ## Rules
 

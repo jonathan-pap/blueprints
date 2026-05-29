@@ -8,6 +8,7 @@
 - `svg-elements.md` — element cheat-sheet (rect / line / circle / text / polyline / path / gradient)
 - `image-url-data-category.md` — the `dataCategory = ImageUrl` requirement
 - `theme-color-references.md` — pull colors from theme rather than hardcoding
+- `html-in-svg.md` — the CSS escape hatch: embed XHTML+CSS via `<foreignObject>` (flex/grid, wrapping text, chips, cards) + the animation/interactivity reality
 
 ## Wiring (where the SVG renders)
 
@@ -31,6 +32,13 @@
 - `per-chart/boxplot.md`
 - `per-chart/jitter-plot.md`
 - `per-chart/target-bar.md`
+
+## HTML-in-SVG components (foreignObject — see `html-in-svg.md`)
+
+Rich XHTML+CSS layouts, not micro-charts. Desktop/Service only (no PDF/PPT export).
+
+- `per-chart/html-item-card.md` — entity "360" card (→ `examples/html-item-card-measure.dax`)
+- `per-chart/html-market-board.md` — ranked listing board (→ `examples/html-market-board-measure.dax`)
 
 ## Reference
 
