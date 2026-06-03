@@ -172,6 +172,7 @@ Match the user's intent. Load only what's listed.
 
 ## Critical rules (apply everywhere)
 
+- **Rooms are the workflow — not `projects/`.** When asked to build/edit, read the relevant room's atomic files (`02-build/.../*.md`) for HOW. Read only the **active** project's files (its `brief.md`, `design-system.yaml`, current `.Report/` and `.SemanticModel/`) for WHAT. Do NOT browse other `projects/<name>/` folders to crib patterns — they're user data, often stale, mid-experiment, or done in a way that wasn't best-practice. If a real worked example is needed, the rooms point to `examples/` / `_examples/` — use those. The same applies to `outputs/`: read only the active project's outputs.
 - Power BI Desktop does not detect external file changes — always tell the user to close and reopen after edits.
 - All PBIP files are UTF-8 **without BOM**. A BOM causes parse errors.
 - Windows 260-character path limit applies — keep project roots short.

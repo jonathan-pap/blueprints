@@ -106,6 +106,7 @@ Match the user's intent. Load only what's listed.
 
 ## Critical rules (apply everywhere)
 
+- **Rooms are the workflow — not `projects/`.** When asked to build/edit, read the relevant room's atomic files (`02-schema/`, `03-generate/`, etc.) for HOW. Read only the **active** project's files (its `brief.md`, `schema.<ext>`, `generate.py`, `seed.txt`) for WHAT. Do NOT browse other `projects/<job-name>/` folders to crib patterns — they're user data, often stale, mid-experiment, or done in a way that wasn't best-practice. If a real worked example is needed, the rooms point to `_examples/` — use those. The same applies to `outputs/`: read only the active job's outputs.
 - **Synthetic only.** Never embed, copy, or output real PII or real records. When mimicking a real dataset, learn its *distributions and structure* — never copy rows through.
 - **Reproducible.** Always set and record an RNG seed (`seed.txt`). Same seed + same schema = same data.
 - **Schema before generation.** Define `02-schema/` before running `03-generate/`.

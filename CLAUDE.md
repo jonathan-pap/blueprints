@@ -61,3 +61,7 @@ discovery hook picks it up. See [briefs/README.md](briefs/README.md).
 ## Routing rule
 
 Match the user's intent to a blueprint. Load only that blueprint's `CLAUDE.md`. Do not browse other blueprints. `briefs/` is a hub, not a blueprint — the filled brief always lands under a blueprint's `projects/`.
+
+## Critical rule — rooms vs `projects/`
+
+Once inside a blueprint: its **rooms** (`02-build/`, `02-schema/`, etc.) are the workflow. Its **`projects/`** folders are user data — possibly stale, mid-experiment, or built before the current best-practice landed. When asked to build/edit, read the room atomic files for HOW, and read only the **active** project's files (brief, schema/design-system, current state) for WHAT. Do NOT mine other `projects/<name>/` folders for patterns. If a real worked example is genuinely needed, the rooms point to `examples/` or `_examples/` — use those. Same goes for `outputs/`.
