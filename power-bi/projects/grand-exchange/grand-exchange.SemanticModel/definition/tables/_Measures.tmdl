@@ -142,6 +142,529 @@ table _Measures
 		lineageTag: 1a29b170-1cc8-4c91-8da3-59f4803202a8
 		dataCategory: ImageUrl
 
+	/// Average daily close price across items in context.
+	measure 'Avg Close Price' = AVERAGE ( FactMarketPriceDaily[ClosePrice] )
+		formatString: $#,##0.00
+		displayFolder: 4. Price Dynamics
+		lineageTag: e234f9cf-f200-4480-8fa7-f88eff66141a
+
+	/// 30-day rolling average close price — smooths daily noise.
+	measure '30D Avg Close' =
+			CALCULATE (
+			    [Avg Close Price],
+			    DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -30, DAY )
+			)
+		formatString: $#,##0.00
+		displayFolder: 4. Price Dynamics
+		lineageTag: f92cb57a-8138-4ef2-b507-d22020cfd1da
+
+	/// 30-day standard deviation of close price — pair with 30D Avg for a volatility band.
+	measure '30D Close Volatility' =
+			CALCULATE (
+			    STDEV.S ( FactMarketPriceDaily[ClosePrice] ),
+			    DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -30, DAY )
+			)
+		formatString: $#,##0.00
+		displayFolder: 4. Price Dynamics
+		lineageTag: d051fad7-78c0-46b3-9d7c-19d0659f0b86
+
+	/// Average intraday High - Low — a fantasy 'Average True Range'.
+	measure 'Avg Daily Spread' =
+			AVERAGEX (
+			    FactMarketPriceDaily,
+			    FactMarketPriceDaily[HighPrice] - FactMarketPriceDaily[LowPrice]
+			)
+		formatString: $#,##0.00
+		displayFolder: 4. Price Dynamics
+		lineageTag: 39e56282-745e-4960-a27f-df6b708b91a3
+
+	/// Highest price across the trailing 52 weeks.
+	measure '52W High' =
+			CALCULATE (
+			    MAX ( FactMarketPriceDaily[HighPrice] ),
+			    DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -1, YEAR )
+			)
+		formatString: $#,##0.00
+		displayFolder: 4. Price Dynamics
+		lineageTag: 99225709-833a-4269-a902-882e300fe012
+
+	/// Close price change vs the prior day. Momentum signal.
+	measure 'Day-over-Day Price %' =
+			VAR T = [Avg Close Price]
+			VAR Y =
+			    CALCULATE ( [Avg Close Price], DATEADD ( DimDate[Date], -1, DAY ) )
+			RETURN
+			    DIVIDE ( T - Y, Y )
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: 4. Price Dynamics
+		lineageTag: c96ce111-24c3-4f7b-8d37-3dcdf1c6a44e
+
+	/// Volume-weighted average price from FactTrade — the true trade-weighted price; compare with Avg Market Price for divergence.
+	measure VWAP = DIVIDE ( SUM ( FactTrade[TotalPrice] ), SUM ( FactTrade[Quantity] ) )
+		formatString: $#,##0.00
+		displayFolder: 5. Liquidity & Flow
+		lineageTag: a33e095c-3814-4620-b7eb-b1a391fbca41
+
+	/// Units traded per listing — how fast inventory clears. High = liquid, low = stale.
+	measure 'Turnover Ratio' = DIVIDE ( SUM ( FactMarketPriceDaily[Volume] ), SUM ( FactMarketPriceDaily[ListingsCount] ) )
+		formatString: 0.00
+		displayFolder: 5. Liquidity & Flow
+		lineageTag: a22c399f-fae1-4aa8-a6cc-90884b60e146
+
+	/// Year-over-year growth in trade value.
+	measure 'Trade Value YoY %' = DIVIDE ( [Total Trade Value] - [Trade Value PY], [Trade Value PY] )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 6. Time Intelligence
+		lineageTag: dccb2616-f2f2-4b0f-a5a7-c72945225be0
+
+	/// Trade value summed over the trailing 30 days.
+	measure 'Trade Value Rolling 30D' =
+			CALCULATE (
+			    [Total Trade Value],
+			    DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -30, DAY )
+			)
+		formatString: $#,##0
+		displayFolder: 6. Time Intelligence
+		lineageTag: 621b6cfb-9f79-4989-a908-1cdfeb850a33
+
+	/// Share of total trade value captured by the item in context.
+	measure 'Item % of Trade Value' =
+			DIVIDE (
+			    [Total Trade Value],
+			    CALCULATE ( [Total Trade Value], ALLSELECTED ( DimItem[ItemName] ) )
+			)
+		formatString: 0.00%
+		displayFolder: 7. Concentration / Pareto
+		lineageTag: a3b77a63-8c83-4ded-b6c3-39cb214cc1cd
+
+	/// Pareto cumulative — running share of total when items are sorted descending by trade value.
+	measure 'Cumulative % Trade Value' =
+			VAR CurrentVal = [Total Trade Value]
+			VAR AllItems =
+			    ADDCOLUMNS ( ALLSELECTED ( DimItem[ItemName] ), "@val", [Total Trade Value] )
+			VAR HigherSum =
+			    SUMX ( FILTER ( AllItems, [@val] >= CurrentVal ), [@val] )
+			VAR Total = SUMX ( AllItems, [@val] )
+			RETURN
+			    DIVIDE ( HigherSum, Total )
+		formatString: 0.00%
+		displayFolder: 7. Concentration / Pareto
+		lineageTag: bf116c04-4aa8-40ae-a9a5-c82c13f9bebf
+
+	/// Trade value attributed to a seller as buyer (activates the inactive BuyerSellerKey role-playing relationship).
+	measure 'Buy Trade Value' =
+			CALCULATE (
+			    [Total Trade Value],
+			    USERELATIONSHIP ( FactTrade[BuyerSellerKey], DimSeller[SellerKey] )
+			)
+		formatString: $#,##0
+		displayFolder: 8. Buyer Side
+		lineageTag: cc9b2e58-08e7-4da9-a325-dd3787b97e8e
+
+	/// One-level BOM craft cost: sum(ingredient avg market price * qty required) / yield. Requires a single item selection.
+	measure 'Craft Cost (1-Level)' =
+			VAR Sel = SELECTEDVALUE ( DimItem[ItemKey] )
+			VAR Recipe =
+			    CALCULATETABLE (
+			        DimRecipe,
+			        REMOVEFILTERS ( DimItem ),
+			        DimRecipe[OutputItemKey] = Sel
+			    )
+			VAR RK = MAXX ( Recipe, DimRecipe[RecipeKey] )
+			VAR Yield = MAXX ( Recipe, DimRecipe[YieldQty] )
+			VAR Cost =
+			    SUMX (
+			        CALCULATETABLE ( FactRecipeIngredient, FactRecipeIngredient[RecipeKey] = RK ),
+			        VAR Ik = FactRecipeIngredient[IngredientItemKey]
+			        VAR Qy = FactRecipeIngredient[QtyRequired]
+			        VAR Px =
+			            CALCULATE (
+			                AVERAGE ( FactMarketPriceDaily[AvgPrice] ),
+			                ALL ( DimItem ),
+			                DimItem[ItemKey] = Ik
+			            )
+			        RETURN Qy * Px
+			    )
+			RETURN
+			    DIVIDE ( Cost, Yield )
+		formatString: $#,##0.00
+		displayFolder: 9. Craft Economics
+		lineageTag: 1105abde-6884-4342-a96b-e04c5d1f98e5
+
+	/// Profitability of crafting vs buying at market: (market price - craft cost) / market price.
+	measure 'Craft Margin %' =
+			DIVIDE (
+			    [Avg Market Price] - [Craft Cost (1-Level)],
+			    [Avg Market Price]
+			)
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 9. Craft Economics
+		lineageTag: 9ab0e5ea-d74d-4dc1-a4fc-676266566040
+
+	/// Lowest price across the trailing 52 weeks. Pairs with 52W High to define the year's range.
+	measure '52W Low' =
+			CALCULATE (
+			    MIN ( FactMarketPriceDaily[LowPrice] ),
+			    DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -1, YEAR )
+			)
+		formatString: $#,##0.00
+		displayFolder: 4. Price Dynamics
+		lineageTag: 1a105b16-1422-429b-859a-8a1fbb489ebb
+
+	/// Herfindahl–Hirschman Index (0–10000) of seller concentration. >2500 = monopolistic capture.
+	measure 'Seller HHI' =
+			VAR Total = [Total Trade Value]
+			VAR Shares =
+			    ADDCOLUMNS (
+			        VALUES ( DimSeller[SellerKey] ),
+			        "@s", DIVIDE ( [Total Trade Value], Total )
+			    )
+			RETURN
+			    SUMX ( Shares, [@s] ^ 2 ) * 10000
+		formatString: #,##0
+		displayFolder: 10. Competitive Structure
+		lineageTag: 811471c1-7f69-4c40-b4dc-56e92001ebfe
+
+	/// Share of trade value captured by the single largest seller in context. >30% = one actor controls the book.
+	measure 'Top Seller Dominance %' =
+			DIVIDE (
+			    MAXX ( VALUES ( DimSeller[SellerKey] ), [Total Trade Value] ),
+			    [Total Trade Value]
+			)
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 10. Competitive Structure
+		lineageTag: 9d14d452-3c61-4061-b6a5-449951d1c248
+
+	/// Number of distinct items competing in the same Subtype × Rarity slot (with trade activity). Low = pricing power; high = commodity.
+	measure 'Substitute Density' =
+			CALCULATE (
+			    COUNTROWS (
+			        FILTER ( VALUES ( DimItem[ItemKey] ), [Total Trade Value] > 0 )
+			    ),
+			    ALLEXCEPT ( DimItem, DimItem[ItemSubtype], DimItem[RarityKey] )
+			)
+		formatString: #,##0
+		displayFolder: 10. Competitive Structure
+		lineageTag: 6ecbcab5-430d-4571-b762-f1a23b915350
+
+	/// Average (monster level / drop-rate %) across the item's drop sources. High = rare drops from tough monsters = supply-side leverage.
+	measure 'Supplier Power Index' =
+			AVERAGEX (
+			    RELATEDTABLE ( FactDropTable ),
+			    DIVIDE ( RELATED ( DimMonster[Level] ), FactDropTable[DropRatePct] )
+			)
+		formatString: 0.00
+		displayFolder: 10. Competitive Structure
+		lineageTag: ef22438c-ed49-418c-a989-19d4c47b0ea0
+
+	/// >1 = oversupply (buyer's market). <1 = shortage (seller's market). Power lens on the Turnover Ratio.
+	measure 'Listings Pressure Ratio' =
+			DIVIDE (
+			    SUM ( FactMarketPriceDaily[ListingsCount] ),
+			    SUM ( FactMarketPriceDaily[Volume] )
+			)
+		formatString: 0.00
+		displayFolder: 10. Competitive Structure
+		lineageTag: 30f75f7f-1fbd-4ef8-a955-c03f58728c08
+
+	/// Worst peak-to-trough fall in close price over the trailing 90 days. The 'if you held it' loss number.
+	measure 'Max Drawdown 90D %' =
+			VAR W = DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -90, DAY )
+			VAR DailyClose =
+			    ADDCOLUMNS (
+			        CALCULATETABLE ( VALUES ( DimDate[Date] ), W ),
+			        "@P", CALCULATE ( [Avg Close Price] )
+			    )
+			VAR Drawdowns =
+			    ADDCOLUMNS (
+			        DailyClose,
+			        "@DD",
+			            VAR CurDate = DimDate[Date]
+			            VAR CurP = [@P]
+			            VAR RM = MAXX ( FILTER ( DailyClose, DimDate[Date] <= CurDate ), [@P] )
+			            RETURN DIVIDE ( RM - CurP, RM )
+			    )
+			RETURN MAXX ( Drawdowns, [@DD] )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 11. Risk & Tails
+		lineageTag: 6a264e67-71b8-4165-ac29-92ca9ae65737
+
+	/// Conditional Value at Risk — average return on the worst 5% of days. Tail-risk Markowitz misses.
+	measure 'CVaR 95% (Daily Return)' =
+			VAR Returns =
+			    FILTER (
+			        ADDCOLUMNS ( VALUES ( DimDate[Date] ), "@r", [Day-over-Day Price %] ),
+			        NOT ISBLANK ( [@r] )
+			    )
+			VAR P5 = PERCENTILEX.INC ( Returns, [@r], 0.05 )
+			RETURN
+			    AVERAGEX ( FILTER ( Returns, [@r] <= P5 ), [@r] )
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: 11. Risk & Tails
+		lineageTag: cf9e2a4b-af60-480c-b54b-ad877717626e
+
+	/// Distribution skew of daily returns. >0 = upside-asymmetric (lottery ticket). <0 = crash-prone.
+	measure 'Return Skewness' =
+			VAR Returns =
+			    FILTER (
+			        ADDCOLUMNS ( VALUES ( DimDate[Date] ), "@r", [Day-over-Day Price %] ),
+			        NOT ISBLANK ( [@r] )
+			    )
+			VAR N = COUNTROWS ( Returns )
+			VAR M = AVERAGEX ( Returns, [@r] )
+			VAR V = DIVIDE ( SUMX ( Returns, ( [@r] - M ) ^ 2 ), N )
+			VAR S = SQRT ( V )
+			RETURN
+			    DIVIDE ( SUMX ( Returns, ( [@r] - M ) ^ 3 ), N * S ^ 3 )
+		formatString: 0.000
+		displayFolder: 11. Risk & Tails
+		lineageTag: 5316e397-c2ef-4e8a-85e3-17c96b1e0e7b
+
+	/// Volume lift on event days vs baseline. >0 = item gains in chaos (antifragile candidate).
+	measure 'Antifragility Score' =
+			VAR EventDates =
+			    CALCULATETABLE (
+			        VALUES ( DimDate[Date] ),
+			        FILTER (
+			            ALL ( DimDate[Date] ),
+			            COUNTROWS (
+			                FILTER (
+			                    ALL ( DimMarketEvent ),
+			                    DimDate[Date] >= DimMarketEvent[StartDate]
+			                        && DimDate[Date] <= DimMarketEvent[EndDate]
+			                )
+			            ) > 0
+			        )
+			    )
+			VAR VolEvent =
+			    CALCULATE (
+			        AVERAGE ( FactMarketPriceDaily[Volume] ),
+			        TREATAS ( EventDates, DimDate[Date] )
+			    )
+			VAR VolBase =
+			    CALCULATE (
+			        AVERAGE ( FactMarketPriceDaily[Volume] ),
+			        EXCEPT ( ALL ( DimDate[Date] ), EventDates )
+			    )
+			RETURN DIVIDE ( VolEvent - VolBase, VolBase )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 11. Risk & Tails
+		lineageTag: 7d3d07d9-bd3c-40b0-a54b-7fadc927edaa
+
+	/// >2 = upside dwarfs downside (call-option-shaped exposure). Cheap-option screening.
+	measure 'Optionality Asymmetry' =
+			VAR Up = [52W High] - [Avg Close Price]
+			VAR Down = [Avg Close Price] - [52W Low]
+			RETURN DIVIDE ( Up, Down )
+		formatString: 0.00
+		displayFolder: 11. Risk & Tails
+		lineageTag: bf8cdf06-8ab6-42dc-b966-59862c81a998
+
+	/// Days of demand sitting on the shelves at current pace. >30 = oversupplied, <3 = shortage.
+	measure 'Stock Coverage Days' =
+			VAR Listings = SUM ( FactMarketPriceDaily[ListingsCount] )
+			VAR AvgDailyVol =
+			    AVERAGEX (
+			        VALUES ( DimDate[Date] ),
+			        CALCULATE ( SUM ( FactMarketPriceDaily[Volume] ) )
+			    )
+			RETURN DIVIDE ( Listings, AvgDailyVol )
+		formatString: 0.0
+		displayFolder: 12. System Dynamics
+		lineageTag: ca9a0d40-a087-42fa-bc42-6c7f9038f556
+
+	/// Pearson correlation of price vs listings over 30 days. Negative = healthy balancing loop. Positive = speculative momentum (death-spiral risk).
+	measure 'Price-Listings Correlation 30D' =
+			VAR W = DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -30, DAY )
+			VAR Pairs =
+			    CALCULATETABLE (
+			        ADDCOLUMNS (
+			            VALUES ( DimDate[Date] ),
+			            "@P", [Avg Close Price],
+			            "@L", CALCULATE ( SUM ( FactMarketPriceDaily[ListingsCount] ) )
+			        ),
+			        W
+			    )
+			VAR Cleaned = FILTER ( Pairs, NOT ISBLANK ( [@P] ) && NOT ISBLANK ( [@L] ) )
+			VAR PM = AVERAGEX ( Cleaned, [@P] )
+			VAR LM = AVERAGEX ( Cleaned, [@L] )
+			VAR Num = SUMX ( Cleaned, ( [@P] - PM ) * ( [@L] - LM ) )
+			VAR DenP = SUMX ( Cleaned, ( [@P] - PM ) ^ 2 )
+			VAR DenL = SUMX ( Cleaned, ( [@L] - LM ) ^ 2 )
+			RETURN DIVIDE ( Num, SQRT ( DenP * DenL ) )
+		formatString: 0.000;-0.000;0.000
+		displayFolder: 12. System Dynamics
+		lineageTag: 814829aa-2a41-400c-b432-659f3d223e5e
+
+	/// Turnover × Volatility. Spikes = unstable equilibrium.
+	measure 'Demand-Supply Tension' = [Turnover Ratio] * [30D Close Volatility]
+		formatString: $#,##0.00
+		displayFolder: 12. System Dynamics
+		lineageTag: ffcfff8e-3c0f-4322-9abd-dcd8a8dc7b07
+
+	/// Number of distinct recipes that consume this item as an ingredient. Leverage-point detector — high centrality items move the craft economy when they move.
+	measure 'Ingredient Centrality' = CALCULATE ( DISTINCTCOUNT ( FactRecipeIngredient[RecipeKey] ) )
+		formatString: #,##0
+		displayFolder: 12. System Dynamics
+		lineageTag: 6204909d-78f5-4b3b-a081-ca327df254c1
+
+	/// High centrality × high volatility = systemic risk vector. The items whose price shocks ripple.
+	measure 'Cascade Risk Score' = [Ingredient Centrality] * [30D Close Volatility]
+		formatString: $#,##0.00
+		displayFolder: 12. System Dynamics
+		lineageTag: d1aafcdd-f45d-424d-8de6-5957e54e5d42
+
+	/// Correlation of today's price change with next-day volume. Strong = market reacts after 1 day; near-zero = noise or instant reaction.
+	measure 'Lag-1 Price-Volume Correlation 30D' =
+			VAR W = DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -30, DAY )
+			VAR Pairs =
+			    CALCULATETABLE (
+			        ADDCOLUMNS (
+			            VALUES ( DimDate[Date] ),
+			            "@dP", [Day-over-Day Price %],
+			            "@Vn", CALCULATE ( SUM ( FactMarketPriceDaily[Volume] ), DATEADD ( DimDate[Date], 1, DAY ) )
+			        ),
+			        W
+			    )
+			VAR Cleaned = FILTER ( Pairs, NOT ISBLANK ( [@dP] ) && NOT ISBLANK ( [@Vn] ) )
+			VAR PM = AVERAGEX ( Cleaned, [@dP] )
+			VAR VM = AVERAGEX ( Cleaned, [@Vn] )
+			VAR Num = SUMX ( Cleaned, ( [@dP] - PM ) * ( [@Vn] - VM ) )
+			VAR DenP = SUMX ( Cleaned, ( [@dP] - PM ) ^ 2 )
+			VAR DenV = SUMX ( Cleaned, ( [@Vn] - VM ) ^ 2 )
+			RETURN DIVIDE ( Num, SQRT ( DenP * DenV ) )
+		formatString: 0.000;-0.000;0.000
+		displayFolder: 12. System Dynamics
+		lineageTag: 728f2c1b-fa4b-46b2-9bee-601b186b97ae
+
+	/// Average 14-day Day-over-Day on Common/Uncommon items. Positive sustained = classic Christensen low-end disruption pattern.
+	measure 'Low-End Momentum 14D' =
+			CALCULATE (
+			    AVERAGEX ( VALUES ( DimDate[Date] ), [Day-over-Day Price %] ),
+			    DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -14, DAY ),
+			    DimRarity[RarityRank] <= 2
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: 13. Disruption Signals
+		lineageTag: 17393bad-905b-415d-950b-a11c56c0190b
+
+	/// Trade value YoY for Legendary/Mythic items only. Sustained negative = performance over-supply (customers don't need the top tier).
+	measure 'Top Rarity YoY %' = CALCULATE ( [Trade Value YoY %], DimRarity[RarityRank] >= 5 )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 13. Disruption Signals
+		lineageTag: 4900f05d-2d74-4c58-bf31-3e14da47dffd
+
+	/// Recent 30D trade quantity vs prior 90D 30D-average. >5 = item is exploding off baseline.
+	measure 'Disruptive Entry Velocity' =
+			VAR Recent =
+			    CALCULATE ( [Trade Quantity], DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -30, DAY ) )
+			VAR PriorEnd = MAX ( DimDate[Date] ) - 31
+			VAR PriorStart = MAX ( DimDate[Date] ) - 120
+			VAR Prior =
+			    CALCULATE ( [Trade Quantity], DATESBETWEEN ( DimDate[Date], PriorStart, PriorEnd ) ) / 3
+			RETURN DIVIDE ( Recent, Prior )
+		formatString: 0.00"x"
+		displayFolder: 13. Disruption Signals
+		lineageTag: 59a7e1d3-1657-4088-bfe2-3d8d04c22aa2
+
+	/// Share of subtype trade value captured by its top 3 items. High = winner-take-most job; low = fragmented, ripe for disruption.
+	measure 'Top 3 Subtype Concentration' =
+			VAR Items =
+			    CALCULATETABLE (
+			        ADDCOLUMNS ( VALUES ( DimItem[ItemKey] ), "@v", [Total Trade Value] ),
+			        ALLEXCEPT ( DimItem, DimItem[ItemSubtype] )
+			    )
+			VAR Total = SUMX ( Items, [@v] )
+			VAR Top3 = SUMX ( TOPN ( 3, Items, [@v], DESC ), [@v] )
+			RETURN DIVIDE ( Top3, Total )
+		formatString: 0.0%
+		displayFolder: 13. Disruption Signals
+		lineageTag: ab6cc67b-331f-4cb2-b47f-3465faf1e51a
+
+	/// Revenue per (substitute × competing seller). High = uncontested commercial slot.
+	measure 'Blue Ocean Score' =
+			DIVIDE (
+			    [Total Trade Value],
+			    [Substitute Density] * DISTINCTCOUNT ( FactTrade[SellerKey] )
+			)
+		formatString: $#,##0.00
+		displayFolder: 14. Blue Ocean
+		lineageTag: 7df1bc07-144f-4ed5-b76c-06f9f2911f8b
+
+	/// Price premium that 'having an element' commands. Value-innovation pricing pocket.
+	measure 'Element Premium %' =
+			VAR WithEl =
+			    CALCULATE ( [Avg Close Price], DimItem[Element] <> "None" )
+			VAR NoEl =
+			    CALCULATE ( [Avg Close Price], DimItem[Element] = "None" )
+			RETURN DIVIDE ( WithEl - NoEl, NoEl )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 14. Blue Ocean
+		lineageTag: 83523b1c-0bf9-4dbb-b766-4c1265133bd6
+
+	/// How many standard deviations the item's BaseValue sits from its subtype mean. Far from the curve = differentiated.
+	measure 'BaseValue Z-Score (vs Subtype)' =
+			VAR ItemBV = SELECTEDVALUE ( DimItem[BaseValue] )
+			VAR M = CALCULATE ( AVERAGE ( DimItem[BaseValue] ), ALLEXCEPT ( DimItem, DimItem[ItemSubtype] ) )
+			VAR S = CALCULATE ( STDEV.S ( DimItem[BaseValue] ), ALLEXCEPT ( DimItem, DimItem[ItemSubtype] ) )
+			RETURN DIVIDE ( ItemBV - M, S )
+		formatString: 0.00
+		displayFolder: 14. Blue Ocean
+		lineageTag: 00ead580-f27a-4676-9436-afbd78053c25
+
+	/// 1 = item has ≤3 sellers ever AND above-median revenue. Pure blue ocean / possibly under-priced.
+	measure 'Solitary-Seller Flag' =
+			VAR NSellers = DISTINCTCOUNT ( FactTrade[SellerKey] )
+			VAR MedianTV = MEDIANX ( VALUES ( DimItem[ItemKey] ), [Total Trade Value] )
+			VAR ThisTV = [Total Trade Value]
+			RETURN IF ( NSellers <= 3 && ThisTV > MedianTV, 1, 0 )
+		formatString: 0
+		displayFolder: 14. Blue Ocean
+		lineageTag: 2bbb6e93-9471-444c-993c-32a9a474626a
+
+	/// Gold per active trading day in context. Reveals high-yield sellers vs spammy listing-churners.
+	measure 'Seller Productivity' = DIVIDE ( [Total Trade Value], DISTINCTCOUNT ( FactTrade[DateKey] ) )
+		formatString: $#,##0
+		displayFolder: 15. Market Hygiene
+		lineageTag: fa4cf138-f206-41c5-9ee7-1603a78c2326
+
+	/// % of buyers active on ≥2 distinct days in trailing 30D. Habit / stickiness signal.
+	measure 'Buyer Repeat Rate 30D' =
+			VAR W = DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -30, DAY )
+			VAR AllBuyers = CALCULATE ( DISTINCTCOUNT ( FactTrade[BuyerSellerKey] ), W )
+			VAR Repeaters =
+			    COUNTROWS (
+			        FILTER (
+			            CALCULATETABLE ( VALUES ( FactTrade[BuyerSellerKey] ), W ),
+			            CALCULATE ( DISTINCTCOUNT ( FactTrade[DateKey] ), W ) >= 2
+			        )
+			    )
+			RETURN DIVIDE ( Repeaters, AllBuyers )
+		formatString: 0.0%
+		displayFolder: 15. Market Hygiene
+		lineageTag: 31e8f0fd-4586-4a19-88ee-2a23d30ab181
+
+	/// % of tradeable items with zero trades in trailing 30D. The market's unproductive mass.
+	measure 'Dead Stock %' =
+			VAR W = DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -30, DAY )
+			VAR Tradeable = CALCULATE ( DISTINCTCOUNT ( DimItem[ItemKey] ), DimItem[IsTradeable] = TRUE )
+			VAR Active =
+			    CALCULATE ( DISTINCTCOUNT ( FactTrade[ItemKey] ), W, DimItem[IsTradeable] = TRUE )
+			RETURN DIVIDE ( Tradeable - Active, Tradeable )
+		formatString: 0.0%
+		displayFolder: 15. Market Hygiene
+		lineageTag: 752f10c5-540d-4732-95be-1bf8ee901a9d
+
+	/// Share of trade value flowing through NPC vendors vs players. Floor/ceiling vs real market activity.
+	measure 'NPC Trade Share %' =
+			DIVIDE (
+			    CALCULATE ( [Total Trade Value], DimSeller[SellerType] = "NPC" ),
+			    [Total Trade Value]
+			)
+		formatString: 0.0%
+		displayFolder: 15. Market Hygiene
+		lineageTag: b8045e7c-dbaa-4680-9411-2ff12f7f1699
+
 	column _
 		lineageTag: 271a7b31-cdcd-5410-81c4-6ed8fb705b55
 		isNameInferred
