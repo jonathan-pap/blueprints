@@ -36,3 +36,4 @@ node_modules/
 # Local-only WIP projects (kept on disk, not synced to remote)
 power-bi/projects/gddt/
 power-bi/projects/test/
+power-bi/projects/grand-exchange/
