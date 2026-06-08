@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 140" width="140" height="140">
+<circle cx='70' cy='70' r='62' fill='none' stroke='#E8C24A' stroke-width='1.4'/>
+<circle cx='70' cy='70' r='56' fill='none' stroke='#E8C24A' stroke-width='0.4' opacity='0.6'/>
+<path d='M 67,8 L 70,5 L 73,8 L 70,11 Z' fill='#E8C24A'/>
+<path d='M 67,132 L 70,129 L 73,132 L 70,135 Z' fill='#E8C24A'/>
+<path d='M 8,67 L 5,70 L 8,73 L 11,70 Z' fill='#E8C24A'/>
+<path d='M 132,67 L 129,70 L 132,73 L 135,70 Z' fill='#E8C24A'/>
+</svg>

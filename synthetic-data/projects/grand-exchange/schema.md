@@ -7,16 +7,20 @@ Galaxy/constellation schema. `DimItem` is the hub. All keys are integer surrogat
 ## Scale knobs
 
 | Knob | smoke | full |
-|---|---|---|
+| --- | --- | --- |
 | `N_ITEMS` | 200 | 3,000 |
-| `N_DAYS` | 90 | 1,095 (3 years) |
+| `N_DAYS` | 90 | 1,617 (4 full years + 2026 YTD) |
 | `N_SELLERS` | 400 | 4,000 |
 | `N_MONSTERS` | 80 | 400 |
 | `N_REGIONS` | 12 | 40 |
 | `N_RECIPES` | ~0.30 × N_ITEMS | ~0.30 × N_ITEMS |
-| `N_TRADES` | 50,000 | 5,000,000 |
+| `N_TRADES` | 50,000 | 7,500,000 |
+| `N_EVENTS` | 12 | 90 |
+| `DATE_START` | 2026-03-08 | 2022-01-01 |
 
-`DATE_START = 2023-01-01`, `DATE_END = DATE_START + N_DAYS - 1`.
+Both scales end at **`TODAY = 2026-06-05`** (fixed-anchor for reproducibility). Smoke is the most-recent 90-day window (no multi-year YoY); full spans 4 prior calendar years + 2026 YTD.
+
+**Single global market.** The exchange is one shared market — there is exactly one OHLC price per item per day. **Realm was removed entirely on 2026-06-07** (realms were only a player-connection grouping, not separate markets, so per-realm prices modelled a world this dataset doesn't have). History: realm was added as a dim (Stages 1–2, 2026-06-06), a per-realm OHLC re-grain was tried and reverted (Stage 3), a separate per-realm fact was built and then also removed (Stage 4) when the "one shared market" decision was made. No `DimRealm`, no `RealmKey` anywhere.
 
 ## Dimensions
 
@@ -34,7 +38,7 @@ Galaxy/constellation schema. `DimItem` is the hub. All keys are integer surrogat
 RegionKey int PK, RegionName str, Biome categorical {Forest, Desert, Tundra, Volcanic, Coastal, Swamp, Mountains, Plains}, LevelMin int, LevelMax int.
 
 ### DimSeller (~4,000)
-SellerKey int PK, SellerName str (themed by SellerType), SellerType cat {Player 80%, NPC 20%}, Realm cat (~8 realms), ReputationTier cat {Bronze, Silver, Gold, Platinum} weighted by `SellerType` (NPCs skew Gold/Platinum).
+SellerKey int PK, SellerName str (themed by SellerType), SellerType cat {Player 80%, NPC 20%}, ReputationTier cat {Bronze, Silver, Gold, Platinum} weighted by `SellerType` (NPCs skew Gold/Platinum). *(No realm — removed 2026-06-07.)*
 
 ### DimMonster (~400)
 MonsterKey int PK, MonsterName str (themed), MonsterType cat {Beast, Undead, Demon, Elemental, Dragon, Humanoid}, Level int 1–80 (right-skewed low), RegionKey FK→DimRegion, IsElite bool (~12%), IsBoss bool (~3%).
@@ -77,23 +81,24 @@ RecipeKey FK, IngredientItemKey FK→DimItem, QtyRequired int (1–10). **Recurs
 ### FactItemSource (~6,000)
 ItemKey FK, AcquisitionMethod cat {Crafted, MonsterDrop, Gathered, Vendor, QuestReward, Treasure}, PrimaryFlag bool (exactly one primary per item).
 
-### FactMarketPriceDaily (~3.3 M at full)
+### FactMarketPriceDaily (~4.85 M at full — grain (Item, Date))
 DateKey FK, ItemKey FK, OpenPrice, ClosePrice, HighPrice, LowPrice, AvgPrice, Volume, ListingsCount.
+
+**Grain = (Item, Date).** One global exchange — the daily OHLC is the single market-wide price for each item (no realm dimension).
 
 **Price model per item** (where coherence lives):
 - `anchor = BaseValue × RarityMultiplier × craft_cost_factor`
   - `craft_cost_factor = max(1.0, recursive_craft_cost / BaseValue)` if craftable, else 1.0
-- Daily walk: `price[t] = anchor × trend(t) × seasonality(t) × event_shock(t) × random_walk(t)`
-  - `trend`: gentle ±10% across 3 years
-  - `seasonality`: weekly — weekend +5–15% demand spike on Consumables/Materials, others flat
+- Daily walk: `price[t] = anchor × trend(t) × seasonality(t) × event_shock(t) + random_walk(t)`
+  - `trend`: gentle ±10% across the span
+  - `seasonality`: weekly weekend boost (Consumable/Material)
   - `event_shock`: `DimMarketEvent` rows pump/crash a category for their window
-  - `random_walk`: AR(1) `walk[t] = 0.85 × walk[t-1] + N(0, σ)` with `σ = anchor × 0.04`
-- OHLC: `Open = price[t-1]`, `Close = price[t]`; sample High/Low around `[Open, Close]` with extra noise. **Invariant:** `LowPrice ≤ Open/Close ≤ HighPrice`.
-- `Volume`: ~ Poisson(λ) where λ inversely scales with rarity; weekend boost.
-- `ListingsCount`: ~ Poisson(λ_listings); always > 0 if tradeable.
+  - `random_walk`: AR(1) `walk[t] = 0.85 × walk[t-1] + N(0, σ)`, `σ = anchor × 0.04`
+- OHLC: `Open = price[t-1]`, `Close = price[t]`; High/Low sampled around `[Open, Close]`. **Invariant:** `LowPrice ≤ Open/Close ≤ HighPrice`.
+- `Volume` ~ Poisson(λ), λ inversely scales with rarity, weekend boost. `ListingsCount` ~ Poisson(λ_listings), > 0 if tradeable.
 
 ### FactTrade (~5 M at full, sampled ~50 k at smoke)
-TradeKey int PK, DateKey FK, ItemKey FK, SellerKey FK→DimSeller, BuyerSellerKey FK→DimSeller (role-playing), Quantity int, UnitPrice decimal, TotalPrice decimal. `UnitPrice` sampled around that day's `AvgPrice` ± noise; `TotalPrice = Quantity × UnitPrice`.
+TradeKey int PK, DateKey FK, ItemKey FK, SellerKey FK→DimSeller, BuyerSellerKey FK→DimSeller (role-playing), Quantity int, UnitPrice decimal, TotalPrice decimal. `UnitPrice` sampled around that day's `AvgPrice` ± noise; `TotalPrice = Quantity × UnitPrice`. *(No realm — removed 2026-06-07.)*
 
 ## Business rules (enforced post-generation, checked by 05-review)
 

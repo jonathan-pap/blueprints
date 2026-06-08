@@ -1,0 +1,42 @@
+table FactRecipeIngredient
+	lineageTag: 5a62b2de-3af8-5b81-93d1-1a2d439e30f8
+
+	column RecipeKey
+		dataType: int64
+		formatString: 0
+		lineageTag: bfa9a0f4-6805-5df2-b527-50deee86905c
+		summarizeBy: none
+		sourceColumn: RecipeKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column IngredientItemKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 7913d339-7918-5cbb-b980-a3bd6e863eae
+		summarizeBy: none
+		sourceColumn: IngredientItemKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column QtyRequired
+		dataType: int64
+		formatString: 0
+		lineageTag: 0bdfd0cf-be4b-584d-b7b5-e0512aa540a8
+		summarizeBy: sum
+		sourceColumn: QtyRequired
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FactRecipeIngredient = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents("E:\Workspace-Blueprint\synthetic-data\outputs\grand-exchange\latest\FactRecipeIngredient.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Promoted, {{"RecipeKey", Int64.Type}, {"IngredientItemKey", Int64.Type}, {"QtyRequired", Int64.Type}})
+				in
+					Typed
+
+	annotation PBI_ResultType = Table
+

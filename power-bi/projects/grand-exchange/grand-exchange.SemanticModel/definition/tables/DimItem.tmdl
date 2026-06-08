@@ -1,0 +1,139 @@
+table DimItem
+	lineageTag: d57682ce-b0a0-5bf2-91b9-0427e39e4ad6
+
+	column ItemKey
+		dataType: int64
+		formatString: 0
+		lineageTag: f3bff4e0-d969-5fbc-9079-e0a1cfffb438
+		summarizeBy: none
+		sourceColumn: ItemKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ItemName
+		dataType: string
+		lineageTag: 52b0d1cd-f1f4-5f7a-940f-3c6c1eef2b58
+		summarizeBy: none
+		sourceColumn: ItemName
+
+		annotation SummarizationSetBy = Automatic
+
+	column ItemCategory
+		dataType: string
+		lineageTag: d4d91677-07c9-522a-b09d-863ffe2a8af8
+		summarizeBy: none
+		sourceColumn: ItemCategory
+
+		annotation SummarizationSetBy = Automatic
+
+	column ItemSubtype
+		dataType: string
+		lineageTag: 81e39540-b60a-5879-918b-a2c0f6c6416a
+		summarizeBy: none
+		sourceColumn: ItemSubtype
+
+		annotation SummarizationSetBy = Automatic
+
+	column RarityKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 091ee07a-eb61-5226-ad9e-2a369ca54254
+		summarizeBy: none
+		sourceColumn: RarityKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column BaseValue
+		dataType: double
+		lineageTag: 0fb1157b-149f-5c22-9916-928ae5eb0d4b
+		summarizeBy: sum
+		sourceColumn: BaseValue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column StackSize
+		dataType: int64
+		formatString: 0
+		lineageTag: bc6e9dde-ebbf-5d10-bb92-5f1cf658daad
+		summarizeBy: sum
+		sourceColumn: StackSize
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsCraftable
+		dataType: boolean
+		lineageTag: 91839dd0-f28d-5005-a454-60b805a7b1d8
+		summarizeBy: none
+		sourceColumn: IsCraftable
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsTradeable
+		dataType: boolean
+		lineageTag: 8da91382-11c6-597e-b97b-f9d3975f4498
+		summarizeBy: none
+		sourceColumn: IsTradeable
+
+		annotation SummarizationSetBy = Automatic
+
+	column Element
+		dataType: string
+		lineageTag: 154d13b3-6eca-5b66-b06e-926bb8a3c3d6
+		summarizeBy: none
+		sourceColumn: Element
+
+		annotation SummarizationSetBy = Automatic
+
+	column Potency
+		dataType: double
+		lineageTag: 9cf769fe-687d-530e-bbe3-f9e48fd8fc76
+		summarizeBy: sum
+		sourceColumn: Potency
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Density
+		dataType: double
+		lineageTag: c76dad7e-a038-54e5-a0cb-fa0c581cce6c
+		summarizeBy: sum
+		sourceColumn: Density
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Volatility
+		dataType: double
+		lineageTag: 953c7e89-12a2-57a9-9f8f-6f2552eeb9aa
+		summarizeBy: sum
+		sourceColumn: Volatility
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column BomTier
+		dataType: int64
+		formatString: 0
+		lineageTag: 043dfb26-cf7c-5c52-8f72-d5e249934b1f
+		summarizeBy: sum
+		sourceColumn: BomTier
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimItem = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents("E:\Workspace-Blueprint\synthetic-data\outputs\grand-exchange\latest\DimItem.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Promoted, {{"ItemKey", Int64.Type}, {"ItemName", type text}, {"ItemCategory", type text}, {"ItemSubtype", type text}, {"RarityKey", Int64.Type}, {"BaseValue", type number}, {"StackSize", Int64.Type}, {"IsCraftable", type logical}, {"IsTradeable", type logical}, {"Element", type text}, {"Potency", type number}, {"Density", type number}, {"Volatility", type number}, {"BomTier", Int64.Type}})
+				in
+					Typed
+
+	annotation PBI_ResultType = Table
+

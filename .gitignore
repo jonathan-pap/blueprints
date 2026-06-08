@@ -36,4 +36,10 @@ node_modules/
 # Local-only WIP projects (kept on disk, not synced to remote)
 power-bi/projects/gddt/
 power-bi/projects/test/
-power-bi/projects/grand-exchange/
+
+# grand-exchange: now tracked (source of truth). The .pbi/ cache + localSettings are already
+# ignored above; exclude only the regenerable bound-data copies (model reads from synthetic-data/outputs).
+power-bi/projects/grand-exchange/data/
+
+# Local restore points / scratch (per-user, not synced to remote)
+.scratch/

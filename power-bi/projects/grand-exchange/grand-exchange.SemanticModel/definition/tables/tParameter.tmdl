@@ -1,0 +1,13 @@
+/// What-if parameter for the moving-average period (20/30/40/50). Slicer + harvester drive [Moving Average].
+table tParameter
+	lineageTag: 417d2d04-ce5c-4f6e-b060-9dd45bff8f2f
+
+	column Value
+		lineageTag: 88e3efe2-fe14-48fa-9f51-d3f5a5e3a95d
+		isNameInferred
+		sourceColumn: [Value]
+
+	partition tParameter = calculated
+		mode: import
+		source = GENERATESERIES ( 20, 50, 10 )
+

@@ -1,0 +1,89 @@
+table DimMarketEvent
+	lineageTag: df388013-942d-55ba-af34-ef903fd9e89b
+
+	column EventKey
+		dataType: int64
+		formatString: 0
+		lineageTag: b910baa9-f15e-574c-bbbf-ee4d6f9306a3
+		summarizeBy: none
+		sourceColumn: EventKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column EventName
+		dataType: string
+		lineageTag: e9ff6774-2b66-549c-a689-8ce07900164f
+		summarizeBy: none
+		sourceColumn: EventName
+
+		annotation SummarizationSetBy = Automatic
+
+	column EventType
+		dataType: string
+		lineageTag: 488464a5-0f4b-5138-a02a-906315087400
+		summarizeBy: none
+		sourceColumn: EventType
+
+		annotation SummarizationSetBy = Automatic
+
+	column StartDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 1fa29961-d4da-5314-b24c-e592bd55c500
+		summarizeBy: none
+		sourceColumn: StartDate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column EndDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: e8091c6d-ccec-5c47-89bf-6b9bf6e66492
+		summarizeBy: none
+		sourceColumn: EndDate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column AffectedCategory
+		dataType: string
+		lineageTag: cb83256a-3a73-5179-abf1-c1267e7bb917
+		summarizeBy: none
+		sourceColumn: AffectedCategory
+
+		annotation SummarizationSetBy = Automatic
+
+	column PriceShockPct
+		dataType: double
+		lineageTag: fa871d8c-dd11-57c8-aea9-0c86a71458f9
+		summarizeBy: sum
+		sourceColumn: PriceShockPct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column DurationDays
+		dataType: int64
+		formatString: 0
+		lineageTag: 5a9ffcbd-661a-59b9-bfca-883f0a0aa616
+		summarizeBy: sum
+		sourceColumn: DurationDays
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimMarketEvent = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents("E:\Workspace-Blueprint\synthetic-data\outputs\grand-exchange\latest\DimMarketEvent.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Promoted, {{"EventKey", Int64.Type}, {"EventName", type text}, {"EventType", type text}, {"StartDate", type date}, {"EndDate", type date}, {"AffectedCategory", type text}, {"PriceShockPct", type number}, {"DurationDays", Int64.Type}})
+				in
+					Typed
+
+	annotation PBI_ResultType = Table
+

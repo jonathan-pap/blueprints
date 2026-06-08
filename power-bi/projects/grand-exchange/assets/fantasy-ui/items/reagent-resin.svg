@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='64' height='64'>
+<path d='M14 16 Q24 12 32 18 Q40 12 50 16 Q56 28 50 40 Q42 54 32 56 Q22 54 14 40 Q8 28 14 16 Z' fill='none' stroke='#E8C24A' stroke-width='2' stroke-linejoin='round'/><path d='M22 22 Q32 18 42 22 Q46 30 42 38 Q36 48 32 48 Q28 48 22 38 Q18 30 22 22 Z' fill='#E8C24A' opacity='0.4'/><ellipse cx='26' cy='28' rx='3' ry='5' fill='#E8C24A' opacity='0.7'/>
+</svg>

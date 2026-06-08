@@ -1,0 +1,34 @@
+/// Tomas's 9-row period selector (1D/5D/1M/3M/6M/YTD/1Y/2Y/5Y). StartDate per period; EndDate = latest DimDate.
+table dimPeriod
+	lineageTag: 1818bb8e-5eb6-4fd6-b85e-4ceba4587212
+
+	column Date
+		lineageTag: 260fd4c0-ade1-416b-9d28-c7785a62b110
+		isNameInferred
+		sourceColumn: [Date]
+
+	column Order
+		lineageTag: 3ec66f79-34dd-4d4a-935b-e8acf8a26c63
+		isNameInferred
+		sourceColumn: [Order]
+
+	column StartDate
+		lineageTag: 0b91e8b7-59cf-4778-bf34-3a8e61910456
+		isNameInferred
+		sourceColumn: [StartDate]
+
+	column EndDate
+		lineageTag: 34e92ffe-7416-461d-91aa-0abb189e53c9
+		isNameInferred
+		sourceColumn: [EndDate]
+
+	column Period
+		lineageTag: ea161e4a-545d-4112-bc1e-31fb42ca6167
+		isNameInferred
+		sourceColumn: [Period]
+		sortByColumn: Order
+
+	partition dimPeriod = calculated
+		mode: import
+		source = VAR _MaxDate = MAX ( DimDate[Date] ) VAR _MinDate = MIN ( DimDate[Date] ) VAR _ReferenceDate = _MaxDate VAR _src = CALENDAR ( _ReferenceDate - 9, _ReferenceDate ) VAR _EndDate = _ReferenceDate RETURN GENERATE ( _src, VAR BaseDate = [Date] VAR _Order = SWITCH ( TRUE (), BaseDate = _ReferenceDate, 1, BaseDate = _ReferenceDate - 1, 2, BaseDate = _ReferenceDate - 2, 3, BaseDate = _ReferenceDate - 3, 4, BaseDate = _ReferenceDate - 4, 5, BaseDate = _ReferenceDate - 5, 6, BaseDate = _ReferenceDate - 6, 7, BaseDate = _ReferenceDate - 7, 8, BaseDate = _ReferenceDate - 8, 9, BaseDate = _ReferenceDate - 9, 10 ) VAR _StartDate = SWITCH ( TRUE (), BaseDate = _ReferenceDate, _EndDate - 1, BaseDate = _ReferenceDate - 1, _EndDate - 5, BaseDate = _ReferenceDate - 2, _EndDate - 7, BaseDate = _ReferenceDate - 3, _EndDate - 30, BaseDate = _ReferenceDate - 4, _EndDate - 90, BaseDate = _ReferenceDate - 5, _EndDate - 180, BaseDate = _ReferenceDate - 6, DATE ( YEAR ( BaseDate ), 1, 1 ), BaseDate = _ReferenceDate - 7, DATE ( YEAR ( BaseDate ) - 1, MONTH ( BaseDate ), DAY ( _ReferenceDate ) ), BaseDate = _ReferenceDate - 8, DATE ( YEAR ( BaseDate ) - 2, MONTH ( BaseDate ), DAY ( _ReferenceDate ) ), BaseDate = _ReferenceDate - 9, _MinDate ) VAR _PeriodName = SWITCH ( TRUE (), BaseDate = _ReferenceDate, "1D", BaseDate = _ReferenceDate - 1, "5D", BaseDate = _ReferenceDate - 2, "7D", BaseDate = _ReferenceDate - 3, "1M", BaseDate = _ReferenceDate - 4, "3M", BaseDate = _ReferenceDate - 5, "6M", BaseDate = _ReferenceDate - 6, "YTD", BaseDate = _ReferenceDate - 7, "1Y", BaseDate = _ReferenceDate - 8, "2Y", BaseDate = _ReferenceDate - 9, "5Y" ) RETURN ROW ( "Order", _Order, "StartDate", _StartDate, "EndDate", _EndDate, "Period", _PeriodName ) )
+

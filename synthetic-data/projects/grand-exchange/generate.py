@@ -28,17 +28,26 @@ JOB = "grand-exchange"
 # ──────────────────────────────────────────────────────────────────────────────
 # Scale config
 # ──────────────────────────────────────────────────────────────────────────────
+# TODAY is the canonical end-date for all scales. Anchored absolute (per project
+# convention "dates are absolute, never relative") rather than date.today() so a
+# fixed seed produces fixed data across runs.
+TODAY = date(2026, 6, 5)
 SCALES = {
     "smoke": dict(
+        # 90 days ending today — most-recent window for fast iteration. No multi-year YoY.
         N_ITEMS=200, N_DAYS=90, N_SELLERS=400, N_MONSTERS=80,
         N_REGIONS=12, N_TRADES=50_000, N_EVENTS=12,
+        DATE_START=TODAY - timedelta(days=89),  # 2026-03-08
     ),
     "full": dict(
-        N_ITEMS=3_000, N_DAYS=1_095, N_SELLERS=4_000, N_MONSTERS=400,
-        N_REGIONS=40, N_TRADES=5_000_000, N_EVENTS=60,
+        # 4 full years (2022-2025) + 2026 YTD = 1,617 days. Enables 4-year YoY.
+        # Single global market — realm was removed entirely 2026-06-07 (realms share one exchange;
+        # they were only a connection grouping, so per-realm prices modelled a world we don't have).
+        N_ITEMS=3_000, N_DAYS=1_617, N_SELLERS=4_000, N_MONSTERS=400,
+        N_REGIONS=40, N_TRADES=7_500_000, N_EVENTS=90,
+        DATE_START=date(2022, 1, 1),
     ),
 }
-DATE_START = date(2023, 1, 1)
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -50,6 +59,13 @@ PREFIXES = ["Ember", "Frost", "Storm", "Shadow", "Sun", "Moon", "Iron", "Mithril
 SUFFIXES_OF = ["of Dawn", "of Embers", "of Tides", "of the Void", "of Whispers",
                "of Valor", "of Ruin", "of Stars", "of the Forge", "of the Wild",
                "of Echoes", "of Lightning", "of Frost", "of Flame", "of Glass"]
+# Disambiguating epithets — inserted between prefix and subtype to make a colliding name unique
+# WITHOUT a numeric suffix (e.g. "Frost Helm" → "Frost Gilded Helm"). Disjoint from PREFIXES so a
+# disambiguated name can never collide with a naturally-generated one.
+EPITHETS = ["Gilded", "Runed", "Jagged", "Ornate", "Polished", "Etched", "Tempered", "Honed",
+            "Engraved", "Inlaid", "Reinforced", "Weathered", "Fabled", "Hallowed", "Grim",
+            "Radiant", "Vile", "Sacred", "Profane", "Stalwart", "Wicked", "Regal", "Battered",
+            "Pristine", "Adamant", "Corrupted", "Glimmering", "Scarred", "Venerable", "Forsaken"]
 WEAPON_TYPES = ["Sword", "Bow", "Staff", "Dagger", "Axe", "Spear", "Mace", "Wand", "Crossbow", "Glaive"]
 ARMOR_TYPES = ["Helm", "Chestplate", "Gauntlets", "Greaves", "Boots", "Cloak", "Robe", "Pauldrons"]
 CONSUMABLE_TYPES = ["Potion", "Elixir", "Tonic", "Draught", "Food", "Scroll"]
@@ -70,7 +86,7 @@ MONSTER_TYPES = ["Beast", "Undead", "Demon", "Elemental", "Dragon", "Humanoid"]
 MONSTER_NAMES = ["Wraith", "Ghoul", "Direwolf", "Ogre", "Lich", "Wyrm", "Drake", "Imp",
                  "Golem", "Hydra", "Specter", "Basilisk", "Manticore", "Banshee", "Troll", "Harpy"]
 CRAFT_SKILLS = ["Alchemy", "Smithing", "Cooking", "Enchanting", "Tailoring", "Engineering"]
-REALMS = ["Aurelia", "Mythos", "Veridian", "Stormhaven", "Ashfall", "Eldoria", "Tenebris", "Solaris"]
+
 REP_TIERS = ["Bronze", "Silver", "Gold", "Platinum"]
 PLAYER_NAMES = ["Aria", "Bjorn", "Caelum", "Drust", "Eira", "Faelyn", "Gorm", "Hesper",
                 "Idra", "Joren", "Kael", "Lyra", "Myrra", "Nyx", "Oryn", "Pell", "Quill",
@@ -105,7 +121,6 @@ def build_dim_region(rng: np.random.Generator, n: int) -> pd.DataFrame:
 
 def build_dim_seller(rng: np.random.Generator, n: int) -> pd.DataFrame:
     types = rng.choice(["Player", "NPC"], n, p=[0.80, 0.20])
-    realms = rng.choice(REALMS, n)
     names = []
     for i, t in enumerate(types):
         if t == "Player":
@@ -120,7 +135,7 @@ def build_dim_seller(rng: np.random.Generator, n: int) -> pd.DataFrame:
     )
     return pd.DataFrame({
         "SellerKey": range(1, n + 1), "SellerName": names,
-        "SellerType": types, "Realm": realms, "ReputationTier": rep,
+        "SellerType": types, "ReputationTier": rep,
     })
 
 
@@ -140,8 +155,8 @@ def build_dim_monster(rng: np.random.Generator, n: int, n_regions: int) -> pd.Da
     })
 
 
-def build_dim_date(n_days: int) -> pd.DataFrame:
-    dates = pd.date_range(DATE_START, periods=n_days, freq="D")
+def build_dim_date(n_days: int, date_start: date) -> pd.DataFrame:
+    dates = pd.date_range(date_start, periods=n_days, freq="D")
     return pd.DataFrame({
         "DateKey": dates.strftime("%Y%m%d").astype(int),
         "Date": dates.date,
@@ -155,7 +170,7 @@ def build_dim_date(n_days: int) -> pd.DataFrame:
 
 
 def build_dim_market_event(rng: np.random.Generator, n: int, n_days: int,
-                           categories: list[str]) -> pd.DataFrame:
+                           categories: list[str], date_start: date) -> pd.DataFrame:
     event_types = rng.choice(["Patch", "Seasonal", "Crisis", "Bonanza"], n,
                              p=[0.30, 0.35, 0.20, 0.15])
     start_offsets = np.sort(rng.integers(0, max(1, n_days - 14), n))
@@ -166,7 +181,7 @@ def build_dim_market_event(rng: np.random.Generator, n: int, n_days: int,
                                rng.normal(0.0, 0.20, n))).clip(-0.50, 0.80)
     affected = rng.choice(categories + [None], n,
                           p=[0.95 / len(categories)] * len(categories) + [0.05])
-    starts = [DATE_START + timedelta(days=int(o)) for o in start_offsets]
+    starts = [date_start + timedelta(days=int(o)) for o in start_offsets]
     ends = [s + timedelta(days=int(d) - 1) for s, d in zip(starts, durations)]
     return pd.DataFrame({
         "EventKey": range(1, n + 1),
@@ -198,10 +213,29 @@ def build_dim_item(rng: np.random.Generator, n: int, dim_rarity: pd.DataFrame) -
     # names
     prefixes = rng.choice(PREFIXES, n)
     suffixes_use_of = rng.random(n) < 0.45
+    # Build unique display names (no numeric suffixes). First occurrence of a name keeps the bare
+    # "{Prefix} {Subtype}{ of X}" form; a collision inserts a flavour epithet between prefix and
+    # subtype ("Frost Helm" → "Frost Gilded Helm"). ItemKey remains the machine key; this makes
+    # ItemName a unique *human* label too. Deterministic (epithet picked by collision index, not
+    # RNG) → consumes no RNG, so every other table stays byte-identical.
     names = []
+    _seen: dict[str, int] = {}
     for i in range(n):
         suff = f" {rng.choice(SUFFIXES_OF)}" if suffixes_use_of[i] else ""
-        names.append(f"{prefixes[i]} {subtypes[i]}{suff}")
+        nm = f"{prefixes[i]} {subtypes[i]}{suff}"
+        if nm in _seen:
+            k = _seen[nm]
+            _seen[nm] = k + 1
+            nm2 = f"{prefixes[i]} {EPITHETS[(k - 1) % len(EPITHETS)]} {subtypes[i]}{suff}"
+            bump = k
+            while nm2 in _seen:  # extremely unlikely secondary collision guard
+                bump += 1
+                nm2 = f"{prefixes[i]} {EPITHETS[(bump - 1) % len(EPITHETS)]} {subtypes[i]}{suff}"
+            _seen[nm2] = 1
+            nm = nm2
+        else:
+            _seen[nm] = 1
+        names.append(nm)
 
     stack_size = np.where(np.isin(cats, ["Weapon", "Armor"]), 1,
                           np.where(np.isin(cats, ["Consumable"]), 20, 99))
@@ -375,6 +409,8 @@ def compute_craft_costs(dim_item: pd.DataFrame, dim_recipe: pd.DataFrame,
 def build_fact_market_price(rng: np.random.Generator, dim_item: pd.DataFrame,
                              dim_date: pd.DataFrame, anchors: dict[int, float],
                              dim_event: pd.DataFrame) -> pd.DataFrame:
+    """One row per (Item, Date). The exchange is a single global market — there is exactly one
+    OHLC price per item per day (no realm dimension; realms were removed 2026-06-07)."""
     n_items = len(dim_item)
     n_days = len(dim_date)
     item_keys = dim_item["ItemKey"].values
@@ -404,7 +440,7 @@ def build_fact_market_price(rng: np.random.Generator, dim_item: pd.DataFrame,
     seasonal_boost = np.where(np.isin(cats, ["Consumable", "Material"]), 0.10, 0.02)
     seasonal_mult = np.outer(np.where(is_weekend, 1.0, 0.0), seasonal_boost) + 1.0
 
-    # gentle trend over 3-year span (±10%)
+    # gentle trend over span (±10%)
     trend = 1.0 + np.linspace(-0.05, 0.05, n_days) + rng.normal(0, 0.01, n_days)
     trend_mult = np.broadcast_to(trend[:, None], (n_days, n_items))
 
@@ -519,11 +555,11 @@ def main():
     dim_region = build_dim_region(rng, cfg["N_REGIONS"])
     dim_seller = build_dim_seller(rng, cfg["N_SELLERS"])
     dim_monster = build_dim_monster(rng, cfg["N_MONSTERS"], cfg["N_REGIONS"])
-    dim_date = build_dim_date(cfg["N_DAYS"])
+    dim_date = build_dim_date(cfg["N_DAYS"], cfg["DATE_START"])
     dim_item = build_dim_item(rng, cfg["N_ITEMS"], dim_rarity)
 
     categories = list(dim_item["ItemCategory"].unique())
-    dim_event = build_dim_market_event(rng, cfg["N_EVENTS"], cfg["N_DAYS"], categories)
+    dim_event = build_dim_market_event(rng, cfg["N_EVENTS"], cfg["N_DAYS"], categories, cfg["DATE_START"])
 
     # 2. recipes + BOM (modifies dim_item.IsCraftable)
     print("[2/6] recipes + BOM bridge")
@@ -538,7 +574,7 @@ def main():
     print("[4/6] recursive craft cost roll-up")
     anchors = compute_craft_costs(dim_item, dim_recipe, fact_bom)
 
-    # 5. price spine
+    # 5. price spine — global (Item, Date) grain, exchange-wide
     print(f"[5/6] FactMarketPriceDaily ({cfg['N_ITEMS']:,} items × {cfg['N_DAYS']:,} days = {cfg['N_ITEMS'] * cfg['N_DAYS']:,} rows)")
     fact_price = build_fact_market_price(rng, dim_item, dim_date, anchors, dim_event)
 
@@ -552,9 +588,10 @@ def main():
     manifest = {
         "job": JOB, "scale": args.scale, "seed": seed,
         "generated": date.today().isoformat(),
-        "date_start": DATE_START.isoformat(),
-        "date_end": (DATE_START + timedelta(days=cfg["N_DAYS"] - 1)).isoformat(),
-        "config": cfg, "tables": {},
+        "date_start": cfg["DATE_START"].isoformat(),
+        "date_end": (cfg["DATE_START"] + timedelta(days=cfg["N_DAYS"] - 1)).isoformat(),
+        "config": {k: (v.isoformat() if isinstance(v, date) else v) for k, v in cfg.items()},
+        "tables": {},
     }
     write_table(dim_rarity, out_dir, "DimRarity", False, manifest)
     write_table(dim_region, out_dir, "DimRegion", False, manifest)

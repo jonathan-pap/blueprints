@@ -1,0 +1,40 @@
+table FactItemSource
+	lineageTag: 614f2939-d2dd-5021-837b-85117f5146e6
+
+	column ItemKey
+		dataType: int64
+		formatString: 0
+		lineageTag: bf2ac3ee-a7ed-5269-be5d-c7f4eafc0ac9
+		summarizeBy: none
+		sourceColumn: ItemKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column AcquisitionMethod
+		dataType: string
+		lineageTag: a6652d2f-97d5-5ff3-870e-0a1c616810ac
+		summarizeBy: none
+		sourceColumn: AcquisitionMethod
+
+		annotation SummarizationSetBy = Automatic
+
+	column PrimaryFlag
+		dataType: boolean
+		lineageTag: 6d6b2e99-3cfa-5ce5-9458-b9e5bc4fc316
+		summarizeBy: none
+		sourceColumn: PrimaryFlag
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FactItemSource = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents("E:\Workspace-Blueprint\synthetic-data\outputs\grand-exchange\latest\FactItemSource.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Promoted, {{"ItemKey", Int64.Type}, {"AcquisitionMethod", type text}, {"PrimaryFlag", type logical}})
+				in
+					Typed
+
+	annotation PBI_ResultType = Table
+

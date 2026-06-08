@@ -1,0 +1,114 @@
+table DimDate
+	lineageTag: e38e7662-a45a-57b1-a3ab-b862afb77089
+	dataCategory: Time
+
+	column DateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 475c3d00-9cf0-5cd3-8c26-9de5e0e8f32e
+		summarizeBy: none
+		sourceColumn: DateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: ea1b8d52-8ee5-51df-854e-d608fea08140
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: 90c61f22-8206-56e6-aa75-8fb0df710085
+		summarizeBy: sum
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		dataType: int64
+		formatString: 0
+		lineageTag: 24dc4d14-6b7e-56fd-9a53-1885316a9fa9
+		summarizeBy: sum
+		sourceColumn: Quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		dataType: int64
+		formatString: 0
+		lineageTag: a429f07d-bd5c-56f0-824a-a3346eb64427
+		summarizeBy: sum
+		sourceColumn: Month
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthName
+		dataType: string
+		lineageTag: 4c32a2df-eba3-5552-9f08-5d088dc0eb7f
+		summarizeBy: none
+		sourceColumn: MonthName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Day
+		dataType: int64
+		formatString: 0
+		lineageTag: b3fd9a07-d10e-5e73-b096-739ff5c1fda2
+		summarizeBy: sum
+		sourceColumn: Day
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayOfWeek
+		dataType: int64
+		formatString: 0
+		lineageTag: c04c4829-bb70-5d16-9909-3eb034ab0e2b
+		summarizeBy: sum
+		sourceColumn: DayOfWeek
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayName
+		dataType: string
+		lineageTag: 942b4c2d-5be7-5978-a802-052c8eec5a83
+		summarizeBy: none
+		sourceColumn: DayName
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsWeekend
+		dataType: boolean
+		lineageTag: 3f60a168-ebe9-5754-b76d-1018b4491d30
+		summarizeBy: none
+		sourceColumn: IsWeekend
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsoWeek
+		dataType: int64
+		formatString: 0
+		lineageTag: acc4c358-8385-5b81-99ef-2810b5d511f7
+		summarizeBy: sum
+		sourceColumn: IsoWeek
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimDate = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents("E:\Workspace-Blueprint\synthetic-data\outputs\grand-exchange\latest\DimDate.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Promoted, {{"DateKey", Int64.Type}, {"Date", type date}, {"Year", Int64.Type}, {"Quarter", Int64.Type}, {"Month", Int64.Type}, {"MonthName", type text}, {"Day", Int64.Type}, {"DayOfWeek", Int64.Type}, {"DayName", type text}, {"IsWeekend", type logical}, {"IsoWeek", Int64.Type}})
+				in
+					Typed
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+<path d='M 50,10 L 90,90 L 10,90 Z' fill='none' stroke='#E8C24A' stroke-width='1.4'/>
+<path d='M 45,55 L 50,50 L 55,55 L 50,60 Z' fill='#E8C24A'/>
+<path d='M 47,7 L 50,4 L 53,7 L 50,10 Z' fill='#E8C24A'/>
+<path d='M 50,30 L 75,80 L 25,80 Z' fill='none' stroke='#E8C24A' stroke-width='0.6' opacity='0.6'/>
+</svg>

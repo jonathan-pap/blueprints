@@ -1,6 +1,6 @@
 # Brief — The Grand Exchange (Fantasy MMO Economy)
 
-Last updated: 2026-05-27
+Last updated: 2026-06-06
 
 > **One-line concept:** A fully-invented fantasy MMO economy. `DimItem` sits at the hub; every item
 > has a **rarity**, a **source** (craftable / monster drop / gathered / vendor / quest), an optional
@@ -25,14 +25,14 @@ Last updated: 2026-05-27
 |---|---|---|
 | `DimItem` | ~3,000 | The hub. Every tradeable thing: weapons, armor, consumables, materials, crystals. |
 | `DimRarity` | 6 | Common → Uncommon → Rare → Epic → Legendary → Mythic. Carries `DropWeight` + `ColorHex`. |
-| `DimSeller` | ~4,000 | Player + NPC traders, across realms/servers. |
+| `DimSeller` | ~4,000 | Player + NPC traders. (No realm — removed 2026-06-07; see §10.) |
 | `DimMonster` | ~400 | Drop sources: name, type, level, region, rarity. |
 | `DimRegion` | ~40 | Zones/biomes — gathering nodes + monster habitats. |
 | `DimRecipe` | ~900 | Craftable items: skill, level, yield, craft time. Output item → `DimItem`. |
-| `DimDate` | ~1,095 | 3 years, daily. Marked date table. |
-| `DimMarketEvent` (optional) | ~60 | "Patch" / seasonal events that shock a category's prices. |
-| `FactMarketPriceDaily` | ~3.3M | **Primary time-series.** One row per tradeable item per day: OHLC + volume + listings. |
-| `FactTrade` (optional) | 10–50M | Transaction grain. The stress-test fact — tune the volume knob. |
+| `DimDate` | ~1,617 | 4 full years (2022–2025) + 2026 YTD through today (2026-06-05), daily. Marked date table. |
+| `DimMarketEvent` (optional) | ~90 | "Patch" / seasonal events that shock a category's prices. Scaled with span: ~15 events/year + ~7 YTD. |
+| `FactMarketPriceDaily` | ~4.85M | **Primary time-series.** One row per (Item × Day): OHLC + volume + listings. Single global market — one price per item per day. |
+| `FactTrade` (optional) | 15–75M | Transaction grain. The stress-test fact — tune the volume knob. |
 | `FactDropTable` (bridge) | ~4,000 | Monster ↔ item, with `DropRatePct`. Many-to-many. |
 | `FactRecipeIngredient` (BOM bridge) | ~4,500 | Recipe ↔ ingredient item, with `QtyRequired`. **Recursive** (items made from items). |
 | `FactItemSource` (bridge) | ~6,000 | Item ↔ acquisition method (an item can have several). |
@@ -64,7 +64,7 @@ Last updated: 2026-05-27
 **`DimRarity`**: RarityKey, RarityName, RarityRank (1–6), DropWeight (e.g. 50/25/14/7/3/1),
 ValueMultiplier, ColorHex (for conditional formatting demos).
 
-**`DimSeller`**: SellerKey, SellerName, SellerType {Player, NPC}, Realm, ReputationTier.
+**`DimSeller`**: SellerKey, SellerName, SellerType {Player, NPC}, ReputationTier. *(No realm — removed 2026-06-07; see §10.)*
 
 **`DimMonster`**: MonsterKey, MonsterName, MonsterType, Level, RegionKey (FK), MonsterRarity (elite/boss).
 
@@ -82,7 +82,7 @@ Enchanting}, RequiredLevel, YieldQty, CraftTimeSecs.
 | ListingsCount | int | active listings | 0 |
 
 **`FactTrade`** (optional, grain = one trade): TradeKey, DateKey, ItemKey, SellerKey, BuyerKey,
-Quantity, UnitPrice, TotalPrice.
+Quantity, UnitPrice, TotalPrice. *(No realm — removed 2026-06-07.)*
 
 **`FactDropTable`** (bridge): MonsterKey, ItemKey, DropRatePct (0–100), MinQty, MaxQty.
 
@@ -95,8 +95,8 @@ QuestReward, Treasure}, PrimaryFlag.
 
 - **Keys:** surrogate PKs on every dim; bridges carry composite keys.
 - **Relationships (galaxy / constellation schema, `DimItem` at the centre):**
-  - `FactMarketPriceDaily` → `DimItem`, `DimDate`.
-  - `FactTrade` → `DimItem`, `DimDate`, `DimSeller` (+ Buyer as a **role-playing** seller relationship).
+  - `FactMarketPriceDaily` → `DimItem`, `DimDate`. Single global market — no realm dimension.
+  - `FactTrade` → `DimItem`, `DimDate`, `DimSeller`, + Buyer as a **role-playing** seller relationship.
   - `FactDropTable`: `DimMonster` ↔ `DimItem` (**many-to-many** via the bridge).
   - `FactRecipeIngredient`: `DimRecipe` ↔ `DimItem` (**recursive BOM** — an item is both a recipe output
     *and* an ingredient in other recipes; supports a parent-child / `PATH` cost roll-up).
@@ -109,9 +109,12 @@ QuestReward, Treasure}, PrimaryFlag.
   - For drop items: price rises as `DropRatePct` falls and monster level rises.
   - OHLC integrity: `LowPrice ≤ Open/Close ≤ HighPrice`; `Volume`, `ListingsCount` ≥ 0.
   - Materials/Crystals only carry Element/Potency/etc.; finished gear does not.
-- **Temporal:** 3 years daily. Build in a base trend + **weekly seasonality** (weekend demand spikes)
-  + a bounded random walk, plus a handful of scripted **market events** (`DimMarketEvent`) that pump or
-  crash a whole category for a window — great for event-annotated time-series demos.
+- **Temporal:** 4 full years (2022–2025) + 2026 YTD daily — `2022-01-01` through today (`2026-06-05`),
+  ~1,617 days. Long enough for **YoY comparisons across 4 prior years** (Trade Value PY/YoY %, the
+  YoY variance recipe, rolling 30D), a multi-year **base trend** + **weekly seasonality** (weekend
+  demand spikes) + a bounded random walk, plus scripted **market events** (`DimMarketEvent`) that
+  pump or crash a category for a window — event-annotated time-series demos that span multiple
+  patches per year.
 
 ## 6. Reproducibility
 
@@ -129,15 +132,38 @@ QuestReward, Treasure}, PrimaryFlag.
 - **Destination:** `outputs/` → handed off to a Power BI project (`../power-bi/projects/grand-exchange/`).
 - Build as a clean galaxy schema: hidden keys, display folders, marked date table, bridges hidden.
 
-## 9. Decisions (resolved 2026-05-27)
+## 9. Decisions (resolved 2026-05-27; time-span extended 2026-06-05)
 
 - [x] **Market fact grain:** BOTH — `FactMarketPriceDaily` (daily OHLC snapshot) for charts/time-intel + a sampled `FactTrade` for volume/flow analysis.
 - [x] **Volume target:** two-knob scale.
-  - **smoke** — 200 items × 90 days = ~18 k snapshot rows, ~50 k trades. Default for iteration.
-  - **full** — 3,000 items × 1,095 days = ~3.3 M snapshot rows, ~5 M trades. The performance fact.
-- [x] **Time span:** 3 years daily (`2023-01-01` → `2025-12-31`); no intraday.
+  - **smoke** — 200 items × 90 days (most-recent window: `2026-03-09` → `2026-06-05`) = ~18 k snapshot rows, ~50 k trades. Default for iteration.
+  - **full** — 3,000 items × 1,617 days (`2022-01-01` → `2026-06-05`) = **~4.85 M snapshot rows**, **~7.5 M trades**. The performance fact.
+- [x] **Time span:** 4 full years + 2026 YTD daily (`2022-01-01` → `2026-06-05`, ~1,617 days); no intraday.
 - [x] **Craft-batch layer:** SKIP `FactCraftBatch` for v1 — BOM bridge is enough. Add later if manufacturing analytics requested.
 - [x] **Sellers:** BOTH player + NPC. Track buyer too (`BuyerSellerKey` on `FactTrade`, role-playing relationship to `DimSeller`).
-- [x] **Market events:** INCLUDE `DimMarketEvent` (~60 rows, scripted shocks). Huge analytical payoff for ~60 rows.
+- [x] **Market events:** INCLUDE `DimMarketEvent` (~90 rows, scripted shocks scaled with the extended span). Huge analytical payoff for ~90 rows.
 - [x] **Theme set:** GENERIC fantasy-MMO flavour (no specific game IP) — themed name pools per category.
 - [x] **BOM depth:** 3 tiers (raw → refined → component → finished). Meaningful recursion for `PATH` cost roll-up without combinatorial blow-up.
+
+## 10. Realm — explored, then removed (decided 2026-06-07)
+
+**Decision: there is no realm dimension. The exchange is a single global market.** Realms are
+purely a player-connection grouping — everyone trades on *one* shared exchange, so there is
+exactly one price per item per day and nothing meaningful to slice "market by realm." Realm was
+removed from the model entirely (no `DimRealm`, no `RealmKey` on `DimSeller`/`FactTrade`, no
+per-realm price fact, no Arbitrage measures).
+
+**Why it was explored first (and what we learned).** A realm slicer was originally requested for
+the market + trade visuals. Four iterations established that it doesn't fit this world:
+
+| Attempt | What | Outcome |
+| --- | --- | --- |
+| 1–2 | Extract `DimRealm`; put `RealmKey` on `DimSeller` + `FactTrade`. | Realm worked as a *trade/seller* grouping, but the **market candle is exchange-wide** — a realm slicer has no price path to it (you never join fact→fact; conform via shared dims only). |
+| 3 | Re-grain the single `FactMarketPriceDaily` to (Item, Realm, Date). | Reverted — 38.8 M rows, and every SUM-based candle measure inflated 8×. |
+| 4 | Separate `FactMarketPriceDailyByRealm` fact (~2.34 M) with faction-tilted per-realm price divergence + Arbitrage measures. | Built and validated, then **removed** — per-realm *divergent* prices only make sense if realms are separate markets. They aren't: one shared exchange = one price. The divergence modelled a world we don't have. |
+
+**The takeaway (kept for posterity):** realm/seller can only meaningfully filter **trades** (who
+traded), never the **market price** (which is global). Filtering market by realm is not a modelling
+gap — it's semantically empty under "one shared exchange." If a true multi-server world is ever
+wanted, that's a separate `FactMarketPriceDailyByRealm` with genuinely independent per-server
+prices — a deliberate re-introduction, not a default.
