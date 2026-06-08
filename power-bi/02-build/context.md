@@ -25,6 +25,7 @@ Self-contained, atomized patterns that combine model + report primitives. Each r
 - `recipes/disconnected-selection-emphasis/` — a disconnected slicer harvested into boundary measures that drive visual emphasis (reference-band shading + a gated series) **without filtering**. Variants: time-window highlight, numeric threshold band, comparison-period shading, category spotlight.
 - `recipes/pareto-chart/` — a sorted column + cumulative-% line that splits at the 80% mark ("vital few vs. trivial many"), built entirely from **visual calculations** (no model changes). The trick is `RUNNINGSUM(..., ORDERBY([value], DESC))`. Variants: dynamic threshold, ABC classification, count Pareto, model-measure Pareto.
 - `recipes/actual-vs-target-variance/` — a native clustered column that reads as an actual-vs-target variance chart: outlined target + filled actual bars with **directional green/red connectors drawn from repurposed error bars**, a ▲/▼ % label, and a narrative subtitle. Native visuals only. Variants: vs prior year, tolerance band (RAG), horizontal by category, minimal.
+- `recipes/waterfall/` — a DAX-driven waterfall on a native `lineStackedColumnComboChart` (or `barChart` for horizontal). A **disconnected steps table** + per-step `IF SELECTEDVALUE` body measures drive totals/drops via a transparent floater. Variants: vertical/horizontal × standard/detailed labels, plus stacked composition for steps that split into tier-coherent sub-segments. **Interactive recipe** — asks the user for steps + types + sources + orientation + label style BEFORE generating any DAX.
 
 ## Decision rules
 
@@ -41,6 +42,7 @@ Self-contained, atomized patterns that combine model + report primitives. Each r
 - Never edit `.pbi`/`.platform` files unless explicitly intended — they carry IDs.
 - Renames cascade: a table or measure rename touches TMDL, visual JSON, report extensions, culture files, and DAX query files. See `report/references/rename-patterns.md` and `model/references/naming-conventions.md`.
 - Tell the user to close and reopen Power BI Desktop after the change — it does not detect external file edits.
+- **Desktop must be CLOSED before editing TMDL on disk.** Desktop holds an in-memory copy of the model; its next save (or close-with-save) writes that copy back to disk and silently overwrites every external edit. Confirm Desktop is closed before each `model/` mutation, or tell the user to close it first. After editing, if Desktop was open during the edits, close it WITHOUT saving so the stale copy doesn't clobber the new files. A clean `pbir model -d` immediately after editing proves the on-disk state is good but does NOT protect it from a later Desktop save. Symptom of a clobber: `<system-reminder>` notes that a file you just wrote was "modified by user or linter" — that's the overwrite signature. Confirmed against gddt 2026-05-21 (lost calc columns + `dim_calendar` + `_Measures` + relationships to one Desktop save).
 
 ## Project layout you're editing
 

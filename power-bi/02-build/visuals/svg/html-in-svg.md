@@ -63,6 +63,22 @@ Spinner (rotate): `<animateTransform attributeName='transform' type='rotate' fro
 
 **Don't use** when: the page is **exported to PDF/PPT** (renders blank); you need **interactivity** (inert image — use buttons / HTML visual); the data is **large** (you marshal rows through `CONCATENATEX` — great for ~5–30 rows, bad for thousands).
 
+## Companion — HTML Content custom visual (when interactivity is required)
+
+When the page needs hover/click on the rich HTML (the SVG-image approach is inert), use the **HTML Content** custom visual (Daniel Marsh-Patrick — typeId seen as `htmlContent443BE3AD55E043BF878BED274D3A6855`). It's a separate custom visual, not part of this foundation, but the binding is trivial: a column whose values are HTML strings, bound to the visual's **`content`** role as a plain `Column` (no `Aggregation` wrapper, no extra `objects`).
+
+```json
+"query": { "queryState": {
+  "content": { "projections": [{
+    "field": { "Column": { "Expression": { "SourceRef": { "Entity": "DimItem" } }, "Property": "HTML Snippet" } },
+    "queryRef": "DimItem.HTML Snippet",
+    "nativeQueryRef": "HTML Snippet"
+  }]}
+}}
+```
+
+Filter it via cross-filter or a slicer on the related dimension — with no filter it stacks every row's HTML vertically.
+
 ## Components built on this foundation
 
 - `per-chart/html-item-card.md` — entity "360" card (rarity color, stat grid, ingredient chips, craft-vs-buy verdict). Example: `examples/html-item-card-measure.dax`.

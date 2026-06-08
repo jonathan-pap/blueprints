@@ -2,6 +2,7 @@
 
 - `full-report.md` — one-shot audit via `pbir audit`
 - `quick-checks.md` — fast smoke tests (page count, visual count per page)
+- `pbir-validate.md` — interpreting `pbir validate` output: real errors vs CLI bundled-schema lag (false positives on report.json / pages.json / 2.9.0 visuals)
 - `visual-design.md` — design-quality checklist (3-30-300, spacing, sorting)
 - `performance.md` — query-time + render-time smell tests
 

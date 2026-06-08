@@ -48,6 +48,32 @@ Useful for:
 - Multi-line `formatStringDefinition` expressions.
 - DAX you pasted from a `dax` query file and don't want to re-indent.
 
-## Pitfall
+## Pitfall — body indent MUST be deeper than properties
+
+The body must sit **strictly deeper** than the trailing `formatString:` / `displayFolder:` / `lineageTag:` lines. Same indent and the parser keeps consuming the body into the next property and reports *"The syntax for 'formatString' is incorrect"* on the first property line — which makes it look like a `formatString` typo, not an indent bug.
+
+Right (body depth 3, properties depth 2 — shown with 4 spaces per level to match this doc's convention):
+
+```tmdl
+    measure 'Item Flow Base' =
+            VAR _Sold = [Trade Quantity]
+            RETURN SWITCH ( SELECTEDVALUE ( ItemFlowSteps[Step] ), "Items Placed", 0, ... )
+        formatString: #,0
+        displayFolder: 17. Item Flow Waterfall
+        lineageTag: cc496d4a-...
+```
+
+Wrong (body and properties at the same depth — `formatString` gets parsed as DAX):
+
+```tmdl
+    measure 'Item Flow Base' =
+        VAR _Sold = [Trade Quantity]
+        RETURN SWITCH ( SELECTEDVALUE ( ItemFlowSteps[Step] ), "Items Placed", 0, ... )
+        formatString: #,0          ← parser thinks this is still part of the DAX
+```
+
+Single-line measures (`measure 'X' = SUM(...)`) are immune — only multi-line bodies hit this. The `pbir` CLI accepts the wrong form silently; only Desktop catches it. Confirmed against working `Funnel Base` (correctly indented) and broken `Item Flow Base` (same indent) — 2026-06-04.
+
+## Pitfall — triple-backtick fence indent
 
 Triple-backtick must close at the same indent level as the opening triple-backtick. Mismatched fence indentation = parse error.

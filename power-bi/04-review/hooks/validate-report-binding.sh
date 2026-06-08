@@ -68,8 +68,11 @@ else
     exit 0
 fi
 
-# Normalize path separators
-FILE_PATH="${FILE_PATH//\\//}"
+# Normalize backslashes to forward slashes. The bash substitution
+# ${VAR//\\//} mis-parses on MSYS bash 5.2+ (strips forward slashes
+# instead of replacing backslashes) — tr is portable across MSYS,
+# Linux, and macOS.
+FILE_PATH=$(printf '%s' "$FILE_PATH" | tr '\134' '/')
 
 [[ -z "$FILE_PATH" ]] && exit 0
 [[ "$(basename "$FILE_PATH")" != "definition.pbir" ]] && exit 0

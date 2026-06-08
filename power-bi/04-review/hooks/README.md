@@ -10,6 +10,7 @@ PreToolUse + PostToolUse hooks that validate PBIR/TMDL files and visual bindings
 | `validate-pbir.sh` | PostToolUse | Write, Edit, Bash | .json/.pbir files in .Report/ |
 | `validate-report-binding.sh` | PostToolUse | Write, Edit, Bash | definition.pbir binding validation (byPath/byConnection) |
 | `validate-tmdl.sh` | PostToolUse | Write, Edit, Bash | .tmdl files in .SemanticModel/ or .Dataset/ |
+| `lint-tmdl-traps.sh` | PostToolUse | Write, Edit | Desktop-strict TMDL traps the structural validator misses ([[tmdl-multiline-measures]] indent collision, [[tmdl-comment-syntax]] standalone `//`). Pure awk, no external binary. |
 | `audit-layout-consistency.sh` | manual / opt-in PostToolUse | run on a `.Report` | Flags layout drift vs the project's `design-system.yaml`: sub-pixel + off-grid positions, slicer type/size drift. See below. |
 
 ## Checks

@@ -34,7 +34,13 @@ table '<SELECTION_TABLE_NAME>'
 
 - **No relationships.** This is the whole point — verify in Model view it sits alone. A relationship would turn selection back into filtering and break the recipe.
 - `VALUES(...)` gives the distinct domain to pick from. Use `DISTINCT` / `CALENDAR` / a numeric `GENERATESERIES` instead if the source column isn't ideal (see variants).
-- Keep the column name identical to the source so tokens read cleanly.
+- **The column name MUST match the partition's output** — `VALUES(SourceTable[SourceCol])` produces a column named `SourceCol` verbatim, and `isNameInferred` locks that in. Declaring `column 'Pretty Name'` while the source emits `SourceCol` errors at Desktop open: *"Column 'Pretty Name' in table 'X' cannot be found or may not be used in this expression"* — at every measure or visual that binds to the declared name. Either match the source name exactly (simplest), or rename the column at the partition with `SELECTCOLUMNS`:
+
+  ```tmdl
+  source = SELECTCOLUMNS ( VALUES ( <SOURCE_TABLE>[<SOURCE_COLUMN>] ), "<PRETTY_NAME>", [<SOURCE_COLUMN>] )
+  ```
+
+  Plain `VALUES`/`DISTINCT`/`ALL` cannot rename — they pass the source name through. Only `SELECTCOLUMNS`, `ADDCOLUMNS`, `ROW`, or `UNION/ROW(...)` can name a column.
 - The triple-backtick `source` block is indentation-sensitive in Desktop — keep the body indented exactly as shown, or collapse to one line `source = VALUES( <SOURCE_TABLE>[<SOURCE_COLUMN>] )`.
 
 ## Source by variant

@@ -50,6 +50,36 @@ ref table 'Sales'
 
 Use `` ``` `` fences for the M expression — preserves indentation and avoids needing to count tabs.
 
+## Pitfall — single-line `let…in` partition source triggers spurious "cyclic reference"
+
+For a multi-step M expression, the source MUST be the canonical multi-line block. Writing it on one line:
+
+```tmdl
+    partition 'Sales' = m
+        mode: import
+        source = let Source = Csv.Document(...), Promoted = ..., Typed = ... in Typed   ← BROKEN
+```
+
+makes Power BI Desktop fail the load with *"A cyclic reference was encountered during evaluation"* — even though the M is a clean DAG (Source → Promoted → Typed) with no self-reference. The error blocks every table in the failing query's load-evaluation cluster, so it looks systemic, not per-table. `pbir model -d` / `tmdl-validate` accept the single-line form silently; only Desktop catches it.
+
+The fix is the canonical multi-line shape Desktop itself writes — `source =` alone, then `let` / step lines / `in` / result each on their own line, indented **deeper than `source =`**, with **no triple-backticks**:
+
+```tmdl
+    partition 'Sales' = m
+        mode: import
+        source =
+                let
+                    Source = Csv.Document(File.Contents("E:/data/sales.csv"), [Delimiter=","]),
+                    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+                    Typed = Table.TransformColumnTypes(Promoted, {{"Date", type date}, {"Amount", Currency.Type}})
+                in
+                    Typed
+```
+
+Single-line is only safe for a **single-expression** source (one `ROW(...)`, one `DATATABLE(...)`, one function call). Multi-step `let…in` always needs the multi-line block.
+
+Reference shape: this file's example, and `projects/test/.../financials.tmdl`. Confirmed 2026-05-28 against a 13-table CSV splice that failed with cyclic-reference on single-line partitions and loaded all 14 tables cleanly after switching to multi-line.
+
 ## After
 
 `bash ../../../04-review/hooks/validate-tmdl.sh "<project>.SemanticModel"`. Reopen Desktop and refresh the table to load data.

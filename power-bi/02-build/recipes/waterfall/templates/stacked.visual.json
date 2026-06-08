@@ -1,0 +1,86 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "<VISUAL_NAME>",
+  "position": { "x": 24, "y": 24, "z": 0, "height": 648, "width": 1232, "tabOrder": 0 },
+  "visual": {
+    "visualType": "lineStackedColumnComboChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            { "field": { "Column": { "Expression": { "SourceRef": { "Entity": "<STEPS_TABLE>" } }, "Property": "Step" } }, "queryRef": "<STEPS_TABLE>.Step", "nativeQueryRef": "Step", "active": true }
+          ]
+        },
+        "Y": {
+          "projections": [
+            { "field": { "Measure": { "Expression": { "SourceRef": { "Entity": "<MEASURE_TABLE>" } }, "Property": "<PREFIX> Base" } }, "queryRef": "<MEASURE_TABLE>.<PREFIX> Base", "nativeQueryRef": "<PREFIX> Base" }
+            /*
+             * Stacked Y order — substitute per the user's intake (Q2a sub-segments):
+             *
+             * For each STACKED step, list its sub-segments bottom-to-top:
+             *   { "field": { "Measure": { ..., "Property": "<PREFIX> Stack · <STEP> · <SEGMENT_BOTTOM>" } }, ... },
+             *   { "field": { "Measure": { ..., "Property": "<PREFIX> Stack · <STEP> · <SEGMENT_MIDDLE>" } }, ... },
+             *   { "field": { "Measure": { ..., "Property": "<PREFIX> Stack · <STEP> · <SEGMENT_TOP>" } }, ... },
+             *
+             * For each NON-STACKED step, the regular Body measure:
+             *   { "field": { "Measure": { ..., "Property": "<PREFIX> Body · <STEP>" } }, ... },
+             *
+             * IMPORTANT: order matters for tier-coherent reading — keep the same TIER (e.g. "Low")
+             * at the same RELATIVE position across stacked steps.
+             */
+          ]
+        }
+      }
+    },
+    "objects": {
+      "layout": [{ "properties": { "stackedGapSize": { "expr": { "Literal": { "Value": "2D" } } } } }],
+      "dataPoint": [
+        { "properties": { "fillTransparency": { "expr": { "Literal": { "Value": "100D" } } } }, "selector": { "metadata": "<MEASURE_TABLE>.<PREFIX> Base" } }
+        /*
+         * Tier-coherent colors — SAME color per tier wherever it appears.
+         * Example for 3-tier (NPC / Low / Rare+):
+         *   <PREFIX> Stack · Total · NPC      → <COLOR_TIER_NPC>
+         *   <PREFIX> Stack · Total · Low      → <COLOR_TIER_LOW>
+         *   <PREFIX> Stack · Total · Rare+    → <COLOR_TIER_HIGH>
+         *   <PREFIX> Body  · NPC Mediated     → <COLOR_TIER_NPC>   (same as stack)
+         *   <PREFIX> Stack · Player · Low     → <COLOR_TIER_LOW>
+         *   <PREFIX> Stack · Player · Rare+   → <COLOR_TIER_HIGH>
+         *   <PREFIX> Body  · Common+Uncommon  → <COLOR_TIER_LOW>   (same as stack)
+         *   <PREFIX> Body  · Rare+ Player     → <COLOR_TIER_HIGH>
+         */
+      ],
+      "valueAxis": [{ "properties": {
+        "show": { "expr": { "Literal": { "Value": "false" } } },
+        "showAxisTitle": { "expr": { "Literal": { "Value": "false" } } },
+        "start": { "expr": { "Literal": { "Value": "0D" } } },
+        "end": { "expr": { "Measure": { "Expression": { "SourceRef": { "Entity": "<MEASURE_TABLE>" } }, "Property": "<PREFIX> Axis Max" } } },
+        "secStart": { "expr": { "Literal": { "Value": "0D" } } },
+        "secShow": { "expr": { "Literal": { "Value": "false" } } }
+      } }],
+      "categoryAxis": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "showAxisTitle": { "expr": { "Literal": { "Value": "false" } } } } }],
+      "legend": [{ "properties": { "show": { "expr": { "Literal": { "Value": "false" } } } } }],
+      "labels": [
+        /*
+         * Mixed label pattern for stacked variant:
+         *  - Stack segments: default value labels (each colored slice shows its own number)
+         *  - Drop bars: dynamic <PREFIX> Label so they keep the '-' prefix
+         *  - End total: default value label
+         *  - Funnel Base: suppressed
+         */
+        { "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "labelPosition": { "expr": { "Literal": { "Value": "'InsideCenter'" } } }, "fontSize": { "expr": { "Literal": { "Value": "9D" } } }, "enableValueDataLabel": { "expr": { "Literal": { "Value": "true" } } } } },
+        { "properties": { "enableValueDataLabel": { "expr": { "Literal": { "Value": "false" } } } }, "selector": { "metadata": "<MEASURE_TABLE>.<PREFIX> Base" } }
+        /*
+         * For each DROP step, add a dynamic label binding (signed value via <PREFIX> Label):
+         *   { "properties": { "dynamicLabelValue": { "expr": { "Measure": { ..., "Property": "<PREFIX> Label" } } } },
+         *     "selector": { "data": [{ "dataViewWildcard": { "matchingOption": 1 } }],
+         *                   "metadata": "<MEASURE_TABLE>.<PREFIX> Body · <DROP_STEP_NAME>",
+         *                   "highlightMatching": 1 } }
+         */
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "text": { "expr": { "Literal": { "Value": "'<PAGE_DISPLAY_NAME> — Stacked composition'" } } }, "fontSize": { "expr": { "Literal": { "Value": "14D" } } } } }]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

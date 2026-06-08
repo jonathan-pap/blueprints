@@ -78,6 +78,21 @@ Prefer this over hardcoded hex inside visuals; see [../references/visual-colors.
 } }
 ```
 
+## Aggregation — aggregate a column inside a visual
+
+When a column needs to roll up inside the visual (e.g. counts on a text column for a card, or a reference-line value), wrap the `Column` in an `Aggregation`. A bare `Column` projection on a text field shows "First", not Count.
+
+```json
+"field": { "Aggregation": {
+  "Expression": { "Column": { "Expression": { "SourceRef": { "Entity": "ModelMeasures" } }, "Property": "name" } },
+  "Function": 2
+} }
+```
+
+`Function` enum: **0=Sum, 1=Avg, 2=Count, 3=Min, 4=Max** (same enum used by `reference-line.value`).
+
+The accompanying `queryRef` reflects the aggregation, not the bare column — for Count: `"queryRef": "CountNonNull(Entity.Property)"`. The `nativeQueryRef` is the friendly label that becomes the card caption / axis title.
+
 ## FillRule — gradient (numeric measure → color)
 
 Use when a measure returns a **numeric** value (e.g. 0.75) and you want a smooth gradient,

@@ -38,6 +38,12 @@
           },
           {
             "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/lint-tmdl-traps.sh\"",
+            "timeout": 10,
+            "if": "Edit(**/*.tmdl)"
+          },
+          {
+            "type": "command",
             "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/validate-report-binding.sh\"",
             "timeout": 10,
             "if": "Edit(**/definition.pbir)"
@@ -56,6 +62,12 @@
           {
             "type": "command",
             "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/validate-tmdl.sh\"",
+            "timeout": 10,
+            "if": "Write(**/*.tmdl)"
+          },
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/lint-tmdl-traps.sh\"",
             "timeout": 10,
             "if": "Write(**/*.tmdl)"
           },

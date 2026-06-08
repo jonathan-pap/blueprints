@@ -1,0 +1,163 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/powerbi-desktop-samples/main/Report%20Theme%20JSON%20Schema/reportThemeSchema-2.152.json",
+  "name": "Dragonhoard (Dark)",
+  "dataColors": [
+    "#E0A100",
+    "#E8662A",
+    "#D1344B",
+    "#2BA56B",
+    "#3E84D6",
+    "#9B5FD0"
+  ],
+  "good": "#2BA56B",
+  "neutral": "#897B5E",
+  "bad": "#D1344B",
+  "maximum": "#E0A100",
+  "center": "#262019",
+  "minimum": "#D1344B",
+  "null": "#897B5E",
+  "foreground": "#F5ECD8",
+  "foregroundNeutralSecondary": "#D8C9A8",
+  "foregroundLight": "#A89878",
+  "foregroundNeutralTertiary": "#897B5E",
+  "foregroundDark": "#F5ECD8",
+  "background": "#1C1812",
+  "backgroundLight": "#15110C",
+  "backgroundNeutral": "#262019",
+  "backgroundDark": "#100D09",
+  "tableAccent": "#E0A100",
+  "hyperlink": "#E0A100",
+  "shapeStroke": "#3A3024",
+  "accent": "#E0A100",
+  "textClasses": {
+    "callout": {
+      "color": "#F5ECD8",
+      "fontFace": "Segoe UI",
+      "fontSize": 28
+    },
+    "title": {
+      "color": "#F5ECD8",
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 12
+    },
+    "header": {
+      "color": "#F5ECD8",
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 10
+    },
+    "label": {
+      "color": "#D8C9A8",
+      "fontFace": "Segoe UI",
+      "fontSize": 9
+    }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "background": [
+          {
+            "show": true,
+            "color": {
+              "solid": {
+                "color": "#1C1812"
+              }
+            },
+            "transparency": 0
+          }
+        ],
+        "border": [
+          {
+            "show": true,
+            "color": {
+              "solid": {
+                "color": "#3A3024"
+              }
+            },
+            "radius": 5
+          }
+        ],
+        "dropShadow": [
+          {
+            "show": false
+          }
+        ],
+        "title": [
+          {
+            "show": true,
+            "fontColor": {
+              "solid": {
+                "color": "#F5ECD8"
+              }
+            },
+            "background": {
+              "solid": {
+                "color": "#1C1812"
+              }
+            },
+            "fontFamily": "Segoe UI Semibold",
+            "fontSize": 12,
+            "alignment": "left"
+          }
+        ],
+        "outspacePane": [
+          {
+            "backgroundColor": {
+              "solid": {
+                "color": "#15110C"
+              }
+            },
+            "foregroundColor": {
+              "solid": {
+                "color": "#F5ECD8"
+              }
+            },
+            "transparency": 0,
+            "border": true,
+            "borderColor": {
+              "solid": {
+                "color": "#3A3024"
+              }
+            },
+            "titleSize": 13,
+            "headerSize": 11,
+            "fontFamily": "Segoe UI",
+            "checkboxAndApplyColor": {
+              "solid": {
+                "color": "#E0A100"
+              }
+            },
+            "inputBoxColor": {
+              "solid": {
+                "color": "#262019"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "page": {
+      "*": {
+        "background": [
+          {
+            "color": {
+              "solid": {
+                "color": "#15110C"
+              }
+            },
+            "transparency": 0
+          }
+        ],
+        "outspace": [
+          {
+            "color": {
+              "solid": {
+                "color": "#15110C"
+              }
+            },
+            "transparency": 0
+          }
+        ]
+      }
+    }
+  }
+}

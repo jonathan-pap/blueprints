@@ -11,6 +11,23 @@
 
 - `summarizeBy` — `default`, `none`, `sum`, `min`, `max`, `count`, `average`, `distinctCount`
 
+### Pitfall — `summarizeBy: none` silently breaks Sum/Avg in visuals
+
+A numeric column declared with `summarizeBy: none` + `annotation SummarizationSetBy = Automatic` renders nothing when bound to a chart that needs Sum or Avg — the chart shows categories with empty values and no error. Count (`Aggregation.Function: 2`) still works because it ignores `summarizeBy`, so the symptom reads as "sum of `<col>` missing" while counts/donuts look fine on the same field.
+
+Some external generators (e.g. `powerbi-lineage`) emit every numeric column with this pair. Fix in TMDL:
+
+```tmdl
+column 'Trade Value'
+    dataType: double
+    summarizeBy: sum                       ← was `none`
+    sourceColumn: TradeValue
+
+    annotation SummarizationSetBy = User   ← was `Automatic`; User stops Desktop reverting
+```
+
+`User` stops Desktop's SummarizationSetBy heuristic from reverting the edit to `none` on next save. Re-running the external generator re-emits the bad pair, so reapply after each regeneration.
+
 ## Type variant
 
 - `type` — `data`, `calculated`, `rowNumber`, `calculatedTableColumn`

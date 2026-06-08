@@ -110,7 +110,11 @@ fi
 
 validate_tmdl_file() {
     local FILE_PATH="$1"
-    FILE_PATH="${FILE_PATH//\\//}"
+    # Normalize backslashes to forward slashes. The bash substitution
+    # ${VAR//\\//} mis-parses on MSYS bash 5.2+ (strips forward slashes
+    # instead of replacing backslashes) — tr is portable across MSYS,
+    # Linux, and macOS.
+    FILE_PATH=$(printf '%s' "$FILE_PATH" | tr '\134' '/')
 
     [[ "$FILE_PATH" == *.tmdl ]] || return 0
 

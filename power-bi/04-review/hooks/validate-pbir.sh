@@ -56,8 +56,11 @@ SKILL_TIP="Tip: use the pbir-format skill if you are modifying PBIR files direct
 validate_file() {
     local FILE_PATH="$1"
 
-    # Normalize path separators
-    FILE_PATH="${FILE_PATH//\\//}"
+    # Normalize backslashes to forward slashes. The bash substitution
+    # ${VAR//\\//} mis-parses on MSYS bash 5.2+ (strips forward slashes
+    # instead of replacing backslashes) — tr is portable across MSYS,
+    # Linux, and macOS.
+    FILE_PATH=$(printf '%s' "$FILE_PATH" | tr '\134' '/')
 
     # Must be a JSON or PBIR file
     case "$FILE_PATH" in

@@ -1,0 +1,146 @@
+// Recipe: waterfall
+// Append these measures to <MEASURE_TABLE>.tmdl (typically _Measures.tmdl) BEFORE the partition line.
+// Substitute <TOKENS> per tokens.md. Lineage tags are auto-filled by Desktop / the MCP on save.
+
+// =============================================================================
+// P1 — Source helpers (only if Q1 sources require derivation; otherwise skip)
+// =============================================================================
+
+/// Optional: helper measures that derive step sources from existing model measures.
+/// Add ONE per source measure that's not already in the model (e.g. "NPC Volume" = filtered Trade Quantity).
+measure '<Helper Name>' = CALCULATE ( [<Existing Measure>], <Filter Expression> )
+	formatString: #,0
+	displayFolder: <DISPLAY_FOLDER> \ helpers
+	lineageTag: <NEW_GUID>
+
+// =============================================================================
+// P2 — Floater + body measures (the engine)
+// =============================================================================
+
+/// Transparent floater. Lifts each step's body to its floating position. Set fillTransparency: 100D in the visual.
+/// INDENT RULE: body lines (VAR/RETURN/SWITCH) sit ONE TAB DEEPER than formatString/displayFolder/lineageTag —
+/// or the parser eats the properties and errors with "syntax for formatString is incorrect" ([[tmdl-multiline-measures]]).
+measure '<PREFIX> Base' =
+		VAR <S1> = [<source for step 1>]
+		VAR <S2> = [<source for step 2>]
+		/* ... one VAR per source ... */
+		RETURN
+		    SWITCH (
+		        SELECTEDVALUE ( <STEPS_TABLE>[Step] ),
+		        "<STEP_1_NAME>", 0,                          /* total → floor 0 */
+		        "<STEP_2_NAME>", <running floor expression>, /* drop  → floor at running value */
+		        "<STEP_3_NAME>", 0,
+		        /* ... */
+		        BLANK ()
+		    )
+	formatString: #,0
+	displayFolder: <DISPLAY_FOLDER>
+	lineageTag: <NEW_GUID>
+
+/// One Body per step. IF SELECTEDVALUE matches, returns the body value; else BLANK.
+measure '<PREFIX> Body · <STEP_1_NAME>' =
+	IF ( SELECTEDVALUE ( <STEPS_TABLE>[Step] ) = "<STEP_1_NAME>", [<source for step 1>] )
+	formatString: #,0
+	displayFolder: <DISPLAY_FOLDER>
+	lineageTag: <NEW_GUID>
+
+measure '<PREFIX> Body · <STEP_2_NAME>' =
+	IF ( SELECTEDVALUE ( <STEPS_TABLE>[Step] ) = "<STEP_2_NAME>", [<source for step 2>] )
+	formatString: #,0
+	displayFolder: <DISPLAY_FOLDER>
+	lineageTag: <NEW_GUID>
+
+/* ... one per step ... */
+
+// =============================================================================
+// P3 — Label measures
+// =============================================================================
+
+/// Simple signed label. Drops get a '-' prefix; totals show plain cumulative value.
+/// Same indent rule as Base — see [[tmdl-multiline-measures]].
+measure '<PREFIX> Label' =
+		VAR <S1> = [<source for step 1>]
+		VAR <S2> = [<source for step 2>]
+		/* ... */
+		RETURN
+		    SWITCH (
+		        SELECTEDVALUE ( <STEPS_TABLE>[Step] ),
+		        "<STEP_1_NAME>" /*total*/, FORMAT ( <running total at step 1>, "#,0" ),
+		        "<STEP_2_NAME>" /*drop*/,  "-" & FORMAT ( <S2>, "#,0" ),
+		        "<STEP_3_NAME>" /*total*/, FORMAT ( <running total at step 3>, "#,0" ),
+		        /* ... */
+		        BLANK ()
+		    )
+	displayFolder: <DISPLAY_FOLDER>
+	lineageTag: <NEW_GUID>
+
+/// Rich label. Value + share-of-total + contextual phrase. Edit phrases per use-case.
+/// Same indent rule as Base — see [[tmdl-multiline-measures]].
+measure '<PREFIX> Label (rich)' =
+		VAR T = [<FIRST_TOTAL_MEASURE>]
+		VAR <S2> = [<source for step 2>]
+		/* ... */
+		RETURN
+		    SWITCH (
+		        SELECTEDVALUE ( <STEPS_TABLE>[Step] ),
+		        "<STEP_1_NAME>",
+		            FORMAT ( T, "#,0" ) & " · 100% <phrase 1>",
+		        "<STEP_2_NAME>",
+		            "-" & FORMAT ( <S2>, "#,0" ) & " · "
+		            & FORMAT ( DIVIDE ( <S2>, T ), "0%" ) & " <phrase 2>",
+		        /* ... */
+		        BLANK ()
+		    )
+	displayFolder: <DISPLAY_FOLDER>
+	lineageTag: <NEW_GUID>
+
+// =============================================================================
+// P4 — Axis max + label anchor
+// =============================================================================
+
+/// Dynamic value-axis end with headroom for labels. Bound to valueAxis.end on vertical visuals.
+measure '<PREFIX> Axis Max' =
+	CEILING ( [<FIRST_TOTAL_MEASURE>] * <AXIS_MAX_HEADROOM>, <AXIS_MAX_ROUND> )
+	formatString: #,0
+	displayFolder: <DISPLAY_FOLDER>
+	lineageTag: <NEW_GUID>
+
+/// Constant value = first total. Used as Y2 anchor (vertical) or stacked anchor (horizontal). Label carrier — DO NOT apply showSeries: false in labels[] to this measure.
+measure '<PREFIX> Label Anchor' = [<FIRST_TOTAL_MEASURE>]
+	formatString: #,0
+	displayFolder: <DISPLAY_FOLDER>
+	lineageTag: <NEW_GUID>
+
+// =============================================================================
+// P5 — Horizontal label pad (HORIZONTAL VARIANTS ONLY — omit for vertical)
+// =============================================================================
+
+/// Transparent right-edge filler. Pads every bar out to <PREFIX> Axis Max so the Anchor sits at a constant right edge. Stack LAST before Anchor in Y. Set fillTransparency: 100D in the visual.
+/// Same indent rule as Base — see [[tmdl-multiline-measures]].
+measure '<PREFIX> Label Pad' =
+		VAR AxisMax = [<PREFIX> Axis Max]
+		VAR BarTop =
+		    [<PREFIX> Base]
+		        + COALESCE ( [<PREFIX> Body · <STEP_1_NAME>], 0 )
+		        + COALESCE ( [<PREFIX> Body · <STEP_2_NAME>], 0 )
+		        /* ... + COALESCE ( [<PREFIX> Body · <STEP_N_NAME>], 0 ) ... */
+		RETURN
+		    AxisMax - BarTop
+	formatString: #,0
+	displayFolder: <DISPLAY_FOLDER>
+	lineageTag: <NEW_GUID>
+
+// =============================================================================
+// P6 — Stacked sub-segments (STACKED COMPOSITION VARIANT ONLY)
+// =============================================================================
+
+/// One measure per (stacked step, sub-segment). Replaces the simple <PREFIX> Body · <Step> measure for that step.
+/// For non-stacked steps, keep the simple Body measure from P2.
+measure '<PREFIX> Stack · <STACKED_STEP_NAME> · <SEGMENT_NAME>' =
+	IF (
+		SELECTEDVALUE ( <STEPS_TABLE>[Step] ) = "<STACKED_STEP_NAME>",
+		[<source measure for this segment>]
+	)
+	formatString: #,0
+	displayFolder: <DISPLAY_FOLDER> \ stacked
+	lineageTag: <NEW_GUID>

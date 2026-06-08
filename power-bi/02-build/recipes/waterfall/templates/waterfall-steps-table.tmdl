@@ -1,0 +1,27 @@
+/// Disconnected helper table for the <PREFIX> waterfall. <N_STEPS> ordered steps. Drives every recipe measure via SELECTEDVALUE(<STEPS_TABLE>[Step]).
+table <STEPS_TABLE>
+	lineageTag: <NEW_GUID>
+
+	column Step
+		lineageTag: <NEW_GUID>
+		isNameInferred
+		sourceColumn: [Step]
+		sortByColumn: StepSort
+		summarizeBy: none
+
+	column StepSort
+		lineageTag: <NEW_GUID>
+		isNameInferred
+		sourceColumn: [StepSort]
+		isHidden
+		summarizeBy: none
+
+	partition <STEPS_TABLE> = calculated
+		mode: import
+		source =
+			UNION (
+				SELECTCOLUMNS ( { ( "<STEP_1_NAME>", 1 ) }, "Step", [Value1], "StepSort", [Value2] ),
+				SELECTCOLUMNS ( { ( "<STEP_2_NAME>", 2 ) }, "Step", [Value1], "StepSort", [Value2] ),
+				SELECTCOLUMNS ( { ( "<STEP_3_NAME>", 3 ) }, "Step", [Value1], "StepSort", [Value2] )
+				/* ... one row per step, StepSort = 1..N in display order ... */
+			)
