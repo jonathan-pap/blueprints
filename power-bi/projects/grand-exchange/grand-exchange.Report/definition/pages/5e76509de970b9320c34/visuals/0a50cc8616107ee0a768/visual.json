@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "0a50cc8616107ee0a768",
   "position": {
-    "x": 872.22222222222217,
-    "y": 87.777777777777771,
+    "x": 864.44444444444446,
+    "y": 155.55555555555554,
     "z": 5000,
-    "height": 242.22222222222223,
-    "width": 383.33333333333331,
-    "tabOrder": 5000
+    "height": 177.77777777777777,
+    "width": 395.55555555555554,
+    "tabOrder": 4000
   },
   "visual": {
     "visualType": "donutChart",
@@ -79,6 +79,41 @@
         "isDefaultSort": true
       }
     },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "labelDisplayUnits": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "legend": [
+        {
+          "properties": {
+            "position": {
+              "expr": {
+                "Literal": {
+                  "Value": "'RightCenter'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
     "visualContainerObjects": {
       "title": [
         {
@@ -87,6 +122,17 @@
               "expr": {
                 "Literal": {
                   "Value": "'Market Breadth'"
+                }
+              }
+            },
+            "background": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "null"
+                    }
+                  }
                 }
               }
             }
@@ -100,6 +146,32 @@
               "expr": {
                 "Literal": {
                   "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "50D"
                 }
               }
             }

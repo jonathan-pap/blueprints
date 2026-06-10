@@ -69,6 +69,11 @@
       "type": "RegisteredResources",
       "items": [
         {
+          "name": "bg-stars-dense5019320431521154.svg",
+          "path": "bg-stars-dense5019320431521154.svg",
+          "type": "Image"
+        },
+        {
           "name": "Gilded_Arcanum_(Dark)20018395256199784.json",
           "path": "Gilded_Arcanum_(Dark)20018395256199784.json",
           "type": "CustomTheme"

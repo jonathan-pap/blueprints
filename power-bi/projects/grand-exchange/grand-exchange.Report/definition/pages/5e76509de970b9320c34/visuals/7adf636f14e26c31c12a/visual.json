@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "7adf636f14e26c31c12a",
   "position": {
-    "x": 178.88888888888889,
-    "y": 306.66666666666669,
+    "x": 153.33333333333334,
+    "y": 155.55555555555554,
     "z": 4000,
-    "height": 242.22222222222223,
-    "width": 702.22222222222217,
-    "tabOrder": 4000
+    "height": 177.77777777777777,
+    "width": 696.66666666666663,
+    "tabOrder": 3000
   },
   "visual": {
     "visualType": "lineChart",
@@ -108,7 +108,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9D"
+                  "Value": "8D"
                 }
               }
             },
@@ -187,6 +187,19 @@
             }
           }
         }
+      ],
+      "lineStyles": [
+        {
+          "properties": {
+            "strokeWidth": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "visualContainerObjects": {
@@ -203,7 +216,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Daily OHLC + dynamic MA — pick item + range tile'"
+                  "Value": "'Exchange Index'"
                 }
               }
             },
@@ -218,6 +231,17 @@
               "expr": {
                 "Literal": {
                   "Value": "true"
+                }
+              }
+            },
+            "background": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "null"
+                    }
+                  }
                 }
               }
             }
@@ -271,6 +295,19 @@
               "expr": {
                 "Literal": {
                   "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "50D"
                 }
               }
             }

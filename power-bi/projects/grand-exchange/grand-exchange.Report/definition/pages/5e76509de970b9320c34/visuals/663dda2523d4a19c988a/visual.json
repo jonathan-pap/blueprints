@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
-  "name": "053b77edb0d038410e20",
+  "name": "663dda2523d4a19c988a",
   "position": {
-    "x": 2,
-    "y": 4,
-    "z": 2000,
-    "height": 36,
-    "width": 33,
-    "tabOrder": 1000
+    "x": 0,
+    "y": 43,
+    "z": 10000,
+    "height": 18,
+    "width": 140,
+    "tabOrder": 9000
   },
   "visual": {
     "visualType": "image",
@@ -30,7 +30,7 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "SVG · Mandala Hexagram"
+                  "Property": "SVG · Bar Crosshatch"
                 }
               }
             }
@@ -39,7 +39,7 @@
       ]
     },
     "visualContainerObjects": {
-      "border": [
+      "title": [
         {
           "properties": {
             "show": {
@@ -53,6 +53,19 @@
         }
       ],
       "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
         {
           "properties": {
             "show": {

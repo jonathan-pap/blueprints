@@ -89,7 +89,7 @@
                           [
                             {
                               "Literal": {
-                                "Value": "'1M'"
+                                "Value": "'6M'"
                               }
                             }
                           ]
@@ -345,6 +345,11 @@
           }
         }
       ]
+    },
+    "syncGroup": {
+      "groupName": "Period",
+      "fieldChanges": true,
+      "filterChanges": true
     },
     "drillFilterOtherVisuals": true
   }

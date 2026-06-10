@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
-  "name": "5e76509de970b9320c34",
-  "displayName": "Market Watch",
+  "name": "ba574a5e9017ad5caea3",
+  "displayName": "Duplicate of Market Watch",
   "displayOption": "FitToPage",
   "height": 720,
   "width": 1280,
