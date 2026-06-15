@@ -37,9 +37,13 @@ node_modules/
 power-bi/projects/gddt/
 power-bi/projects/test/
 
-# grand-exchange: now tracked (source of truth). The .pbi/ cache + localSettings are already
-# ignored above; exclude only the regenerable bound-data copies (model reads from synthetic-data/outputs).
-power-bi/projects/grand-exchange/data/
+# grand-exchange — WIP, NOT ready to ship (re-ignored 2026-06-08; see BACKLOG.md).
+# Whole project across both blueprints: PBI report/model + data generator/brief/schema.
+power-bi/projects/grand-exchange/
+synthetic-data/projects/grand-exchange/
+
+# candlestick (OHLC + volume-overlay) recipe — not validated, not ready to ship (see BACKLOG.md).
+power-bi/02-build/recipes/candlestick/
 
 # Local restore points / scratch (per-user, not synced to remote)
 .scratch/

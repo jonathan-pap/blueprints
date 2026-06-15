@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='64' height='64'>
-<rect x='28' y='10' width='8' height='8' fill='#E8C24A'/><path d='M24 18 L40 18 L46 30 Q46 50 32 54 Q18 50 18 30 Z' fill='none' stroke='#E8C24A' stroke-width='2' stroke-linejoin='round'/><path d='M22 36 Q32 32 42 36 Q42 50 32 52 Q22 50 22 36' fill='#E8C24A' opacity='0.4'/><circle cx='28' cy='40' r='1.5' fill='#E8C24A'/>
-</svg>

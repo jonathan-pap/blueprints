@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='64' height='64'>
-<rect x='28' y='8' width='8' height='6' fill='#E8C24A'/><path d='M22 14 L42 14 L42 22 L46 26 L46 54 L18 54 L18 26 L22 22 Z' fill='none' stroke='#E8C24A' stroke-width='2' stroke-linejoin='round'/><rect x='22' y='32' width='20' height='20' fill='#E8C24A' opacity='0.4'/><rect x='22' y='38' width='20' height='3' fill='#E8C24A'/><text x='32' y='48' text-anchor='middle' font-size='10' fill='#E8C24A' font-family='serif'>+</text>
-</svg>

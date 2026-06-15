@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='64' height='64'>
-<path d='M10 18 L54 14 L54 50 L10 54 Z' fill='none' stroke='#E8C24A' stroke-width='2' stroke-linejoin='round'/><path d='M10 26 Q32 22 54 22 M10 34 Q32 30 54 30 M10 42 Q32 38 54 38' stroke='#E8C24A' stroke-width='1.5' fill='none'/><path d='M22 14 L20 54 M40 14 L42 54' stroke='#9C7E2A' stroke-width='1' stroke-dasharray='2 2'/>
-</svg>

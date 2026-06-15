@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 360" width="200" height="360">
-<path d='M 10,100 Q 10,15 100,15 Q 190,15 190,100 L 190,350 L 10,350 Z' fill='none' stroke='#E8C24A' stroke-width='1.4'/>
-<path d='M 16,100 Q 16,21 100,21 Q 184,21 184,100 L 184,344 L 16,344 Z' fill='none' stroke='#E8C24A' stroke-width='0.4' opacity='0.6'/>
-<path d='M 95,11 L 100,6 L 105,11 L 100,16 Z' fill='#E8C24A'/>
-<path d='M 5,350 L 10,345 L 15,350 L 10,355 Z' fill='#E8C24A'/>
-<path d='M 185,350 L 190,345 L 195,350 L 190,355 Z' fill='#E8C24A'/>
-</svg>
