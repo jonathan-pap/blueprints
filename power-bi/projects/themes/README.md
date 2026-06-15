@@ -28,8 +28,9 @@ Themed (not accessibility-reference) palettes for the **Grand Exchange** — a m
 | [Dragonhoard](dragonhoard/dragonhoard-v1.0.json) | dark | 6 | Treasure pile in obsidian — molten gold, ember, gemstone jewels. |
 | [Royal Arcanum](royal-arcanum/royal-arcanum-v1.0.json) | dark | 6 | Regal treasury vault — deep navy/violet, royal gold, jewel tones. |
 | [Gilded Arcanum](gilded-arcanum/gilded-arcanum-v1.0.json) | dark | 8 | "Dark Fantasy UI" — ornate gold line-art on deep navy-black, gold text + bright-gold container borders. |
+| [Verdigris Arcanum](verdigris-arcanum/verdigris-arcanum-v1.0.json) | dark | 8 | Gilded Arcanum **patinated** — teal-forward (verdigris on aged gold): teal leads the data + text, gold demoted to the frame metal. Same midnight surface. |
 
-**Pick:** ledger/document feel → Parchment Ledger · nature/markets → Emerald Guild · bold dark dashboard → Dragonhoard · premium dark → Royal Arcanum · gold-on-navy ornamental → Gilded Arcanum.
+**Pick:** ledger/document feel → Parchment Ledger · nature/markets → Emerald Guild · bold dark dashboard → Dragonhoard · premium dark → Royal Arcanum · gold-on-navy ornamental → Gilded Arcanum · teal-on-navy (gold trim) → Verdigris Arcanum.
 
 Apply: `pbir theme apply-template "<report>.Report" --from-file ../themes/<slug>/<slug>-v1.0.json`
 

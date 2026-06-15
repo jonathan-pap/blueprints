@@ -29,6 +29,7 @@
 - `wildcard.md` — `visualStyles["*"]["*"]` overrides
 - `visual-type-override.md` — `visualStyles["lineChart"]["*"]` overrides
 - `sentiment-colors.md` — set `good`/`bad`/`neutral` for semantic measures
+- `dark-mode-checklist.md` — consolidated re-theming / light↔dark sweep (polarity gate, `#FFFFFF` trap, `stylePreset:'None'`, azureMap enum, per-visual sweep)
 
 ## promote/
 

@@ -2,6 +2,11 @@
 
 > Pick by intent. Load only the file(s) you need. Folder map below.
 
+## build-report.md — the one path for a full report (greenfield/redesign)
+- `build-report.md` — **read first when building a whole report** — the end-to-end pipeline:
+  design (tone → archetype → charts → contract) → build (design-system.yaml → theme → pages → visuals → gate)
+- the design vocabulary it uses lives in `references/` (below); the contract spec is `layout/design-contract.md`
+
 ## add-visual/ — create a new visual
 - `kpi-card.md`, `card.md` — single-value visuals
 - `line-chart.md`, `bar-chart.md`, `column-chart.md`, `clustered-column-chart.md`
@@ -40,7 +45,15 @@
 - `expressions.md` — what goes inside `expr` (literals, Measure, FillRule, Conditional)
 - `property-catalogue.md` — `pbir schema` discovery + per-type container index (49 types)
 
-## references/ — design best-practices (build-time)
+## references/ — design judgment + vocabulary (build-time)
+- `design-identity.md` — the tone + signature + per-page archetype model (read for greenfield)
+- `tones.md` · `signatures.md` — the design-identity catalogs (12 tones, 15 signatures)
+- `archetypes/_index.md` — per-page router → 5 archetypes (+ variants)
+- `composition.md` — multi-page composition + variant rotation
+- `color-palettes.md` — CVD-safe palettes + colour-assignment strategy
+- `accessibility.md` · `anti-patterns.md` — pre-ship checks (WCAG, the slop catalog)
+- `interactivity.md` — cross-filter etiquette, interaction budget per archetype
+- `brownfield.md` — redesign / restyle / theme-swap workflow
 - `cards-and-kpis.md` — three elements, display units, title-vs-label, anti-patterns
 - `tables-and-matrices.md` — table vs matrix, subtract-don't-add, strategic CF
 - `visual-colors.md` — theme tokens, semantic sentiment, contrast, colorblind-safe

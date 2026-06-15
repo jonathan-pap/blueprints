@@ -53,7 +53,12 @@ doesn't write those). See P5.
 - The line is **green up to the 80% mark, red after** — and the bars under the green run are green, the rest red.
 - **Re-sort the axis alphabetically** (temporarily): the line should *stay* a smooth Pareto curve. If it zig-zags, you used the naive `RUNNINGSUM` without `ORDERBY` — fix P3.
 - Secondary axis reads 0%–100% (fixed), not auto-scaled.
-- `pbir validate "<project>.Report"` is clean.
+- `pbir validate "<project>.Report"` is clean (a `SCHEMA_DEGRADED` on the 2.9.0 combo is cosmetic
+  bundled-schema lag — see [`../../../04-review/audit/pbir-validate.md`](../../../04-review/audit/pbir-validate.md)).
+  **`pbir validate --fields` emits false `INVALID_FORMAT` warnings** ("Field 'Percent of grand total' /
+  'GreenLine' / 'RedLine' not found. Use format 'Table.Field'.") — the validator doesn't model
+  `NativeVisualCalculation`, so it mistakes the visual calcs for missing model fields. They're defined
+  on the visual; ignore. The chart rendering in Desktop is the real check.
 
 ## Adapt for a variant
 

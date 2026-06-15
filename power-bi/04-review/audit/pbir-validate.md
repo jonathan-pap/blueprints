@@ -16,7 +16,7 @@ PYTHONIOENCODING=utf-8 PYTHONUTF8=1 COLUMNS=400 pbir validate "<project>.Report"
 
 ## Telling real errors from CLI lag
 
-`pbir` (v0.9.19 at time of writing) ships bundled JSON schemas that are one version behind Desktop. Desktop currently writes:
+`pbir` (v0.9.19 **through at least 0.9.21** — upgrading does **not** fix it) ships bundled JSON schemas that are one version behind Desktop. Desktop currently writes:
 
 - `report/3.3.0` (report.json)
 - `pagesMetadata/1.1.0` (pages.json)
@@ -31,6 +31,35 @@ PYTHONIOENCODING=utf-8 PYTHONUTF8=1 COLUMNS=400 pbir validate "<project>.Report"
 | Any 2.9.0 visual → `SCHEMA_DEGRADED` (validated against bundled fallback) | Cosmetic — visual is fine |
 | `queryState.sortDefinition` → "Additional properties not allowed / 'projections' is required" | **False positive** — Desktop accepts this; omit only if you want a clean pbir run |
 | `visualContainerObjects` at root → `SCHEMA_ERROR` cascade | **Real** — Desktop also rejects this. See `../../02-build/report/schema-patterns/visual-json-structure.md` |
+
+## ⚠️ The lag can FATALLY BLOCK writes — not just colour `validate` output
+
+The same version mismatch that is *cosmetic* for `validate` is **fatal** for write operations. When
+Desktop has bumped `pages.json` to `pagesMetadata/1.1.0`, **`pbir add page` / `add visual` refuse to
+run** because they re-validate `pages.json` against the bundled `1.0.0` schema before writing:
+
+```text
+Error: Schema validation failed for 'pagesMetadata': $schema: Declared schema 'pagesMetadata'
+version '1.1.0' is not available locally; ... '.../pagesMetadata/1.0.0/schema.json' was expected
+```
+
+There is **no `--force` / `--no-validate` flag**, and **upgrading pbir does not help** (0.9.21 still
+bundles 1.0.0). `add page` is also **not atomic** — it can create the page folder before failing on the
+`pages.json` write, leaving an orphan.
+
+**Workaround — pin the declared schema down to the bundled version, build, let Desktop re-bump:**
+
+```bash
+# 1. pin pages.json $schema to what pbir bundles (1.1.0 -> 1.0.0)
+#    (1.0.0 is a strict subset; Desktop re-bumps it to 1.1.0 on next open/save)
+# edit <project>.Report/definition/pages/pages.json: pagesMetadata/1.1.0  ->  /1.0.0
+# 2. run your pbir add page / add visual commands (they now write)
+# 3. optional: leave it at 1.0.0 (stays pbir-editable) OR restore 1.1.0 for fidelity
+```
+
+`report.json` (`report/3.3.0`) and `visual.json` (`visualContainer/2.9.0`) lag too, but those are only
+*read* during `add visual`, so they don't block — only `pages.json`, which every `add page` rewrites,
+does. Revert the pin any time with `git checkout -- <...>/pages.json`.
 
 ## Validate against a backup to discriminate
 

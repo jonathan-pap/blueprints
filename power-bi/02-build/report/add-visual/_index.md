@@ -25,6 +25,10 @@
 
 - `scatter-chart.md` — two continuous axes
 
+## Geographic
+
+- `map.md` — `azureMap` (the default; legacy `map`/`filledMap`/`shapeMap` are deprecated)
+
 ## Records & detail
 
 - `table.md` — flat row list (`tableEx`)
@@ -61,6 +65,12 @@
 
 - Run `../bind/find-canonical-name.md` BEFORE creating any data visual.
 - Run `../validate/validate.md` AFTER each addition.
+- **Bind inline with `-d "Role:Table.Field"`** on the same `pbir add visual` call (repeatable for multiple
+  roles) — it's the one-shot path the per-visual files split into a separate `pbir visuals bind` step.
+  Both work; inline is fewer calls. Roles are the type's exact role names (`pbir add visual --list`):
+  e.g. `cardVisual`→`Data`, charts→`Category`/`Y`/`Y2`, `scatterChart`→`X`/`Y`, `gauge`→`Y`/`TargetValue`,
+  `tableEx`/`slicer`→`Values`, `pivotTable`→`Rows`/`Columns`/`Values`, `azureMap`→`Category`/`Size`.
+  ⚠️ On `add visual`, **`-t` means `--title`, not `--type`** (the type is the positional arg).
 - Place visuals at y ≥ 120 to avoid the default page title textbox.
 - For each visual you add, check `../examples/visuals/default/<type>.json` first — fastest path to a working visual.
 - **Long-named visual types** (`hundredPercentStackedAreaChart`, `hundredPercentStackedBarChart`, `hundredPercentStackedColumnChart`, `lineClusteredColumnComboChart`, `lineStackedColumnComboChart`) need explicit `--name "shortname"` — the auto-generated `<title>-<type>-<hash>` name overflows the PBIR schema length limit. Without `--name`, you get: `Schema validation failed for 'visual': name '…' is too long`.

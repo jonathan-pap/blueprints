@@ -15,6 +15,11 @@ Prefer theme references inside visuals; reserve literal hex for extension measur
 
 Changing the theme then re-colors every visual and every conditional format at once.
 
+> **Two exceptions where `ThemeDataColor` silently fails — use `Literal` hex instead:** (1) inside a
+> **FillRule gradient stop** (renders black), and (2) in a `dataPoint.fill` with a **`metadata`
+> selector** (resolves to white/black). Direct colour usage cascades fine; these two positions don't.
+> See [../format/conditional-fmt-color-scale.md](../format/conditional-fmt-color-scale.md) § hand-authoring traps.
+
 ## Semantic sentiment tokens
 
 Use named theme tokens in conditional-format measures, not hardcoded colors:

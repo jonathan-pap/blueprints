@@ -30,7 +30,7 @@
 ## Hard rules
 
 - **Never read the monolithic theme JSON.** Files hit 75 KB / 2000+ lines. Always serialize first or use `jq` to extract specific keys.
-- **New reports already ship with sqlbi.** Don't apply a template unless the user explicitly asks for a different one.
+- **Default to the report's existing theme.** New/existing reports already ship with a base theme (sqlbi / Fluent2). **Never create, apply, or swap a theme JSON unless the user explicitly asks for a different one.** A tone / design-identity choice is design *direction* — it informs the brief's `color_map`; it does **not** authorize authoring or swapping a theme.
 - **Push formatting up.** If the same override appears on > 2 visuals of the same type, lift it into the theme via `promote/from-visuals.md`.
 - **Validate every theme JSON write** with `jq empty <file>.json`.
 

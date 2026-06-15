@@ -19,6 +19,8 @@ Find your intent. Each bullet gives the exact step files to load in order.
 - **Conditional formatting** → `format/_index.md` → choose flavour (color-scale, data-bar, rule, svg-icon)
 - **Hand-authoring `visual.json` formatting (recipes, build scripts)** → `schema-patterns/_index.md` (selectors, expressions, property catalogue)
 - **Design judgment (which/how to format cards, tables, colors, layout)** → `references/_index.md`
+- **Build a full / multi-page report (greenfield or redesign)** → `build-report.md` — the end-to-end path (design → contract → design-system.yaml → theme → pages → visuals → gate)
+- **Pick tone / signature / archetype (design judgment only)** → `references/design-identity.md` → emit `layout/design-contract.md`
 - **Add / rename / size a page** → `page/_index.md` → step
 - **Add filters / configure filter pane** → `filters/_index.md` → step
 - **Bookmarks** → `bookmarks/_index.md`
@@ -39,6 +41,7 @@ Find your intent. Each bullet gives the exact step files to load in order.
 
 ## What's here
 
+- `build-report.md` — the end-to-end "build a full report" pipeline (greenfield/redesign)
 - `_index.md` — full picker by intent (load when unsure which step)
 - Family folders — `add-visual/`, `bind/`, `layout/`, `format/`, `schema-patterns/`, `references/`, `page/`, `filters/`, `bookmarks/`, `calculations/`, `pbip-format/`, `validate/`, `semantic-model/`
 - `examples/K201-MonthSlicer.Report/` — structural reference, do not edit
