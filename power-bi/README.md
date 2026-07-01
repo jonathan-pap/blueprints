@@ -5,15 +5,17 @@ A reusable workspace for working on Power BI Desktop projects (PBIP format) with
 ## Quick start
 
 1. Copy this `power-bi/` folder into a new working directory.
-2. Point Claude (or your agent) at the directory and tell it to read [CLAUDE.md](CLAUDE.md).
-3. Start a project: `mkdir projects/<my-project>` then follow [projects/README.md](projects/README.md).
-4. The agent will pick the right room from `CLAUDE.md`'s routing table based on what you ask for.
+2. **Install prerequisites:** `pwsh setup.ps1` (installs the `pbir` CLI; add `-InstallMissing` to also get Python / jq / Node / Power BI Desktop / the Desktop Bridge CLI). What each tool is + the license caveat: [00-setup.md](00-setup.md).
+3. Point Claude (or your agent) at the directory and tell it to read [CLAUDE.md](CLAUDE.md).
+4. Start a project: `mkdir projects/<my-project>` then follow [projects/README.md](projects/README.md).
+5. The agent picks the right room from `CLAUDE.md`'s routing table based on what you ask for — and **preflights the toolchain** before its first edit, prompting you to run `setup.ps1` if anything's missing.
 
 ## Folder map
 
 ```
 power-bi/
 ├── CLAUDE.md          ← Layer 1: master router (always loaded)
+├── 00-setup.md        ← prerequisites + tooling (read once per machine); setup.ps1 bootstraps it
 ├── 01-brief/          ← Layer 2: discovery, KPIs, layout decisions
 ├── 02-build/          ← Layer 2: edit report / model / theme / custom visuals
 │   ├── report/
@@ -21,7 +23,7 @@ power-bi/
 │   ├── theme/
 │   └── visuals/
 │       ├── deneb/   svg/   python/   r/
-├── 03-bind/           ← Layer 2: live model bridge (TOM + ADOMD via PowerShell)
+├── 03-bind/           ← Layer 2: live model (Modeling MCP / TOM+ADOMD) + Desktop Bridge (reload + screenshot verify)
 ├── 04-review/         ← Layer 2: validate, audit, performance, hooks
 ├── projects/          ← raw layer: actual PBI projects you're editing
 └── outputs/           ← output layer: dated generated artifacts
@@ -42,6 +44,15 @@ Each room has a slim `context.md` that lists which `references/<topic>.md` to lo
 | "Audit the sales report" | `04-review/` | No |
 
 The full routing table is in [CLAUDE.md](CLAUDE.md).
+
+### The build → verify loop
+
+Under the hood, every change follows the same loop:
+
+1. **Model edits** (measures, columns, relationships) go through the **Power BI Modeling MCP** with Desktop open — or hand-edited TMDL with Desktop closed.
+2. **Report edits** (pages, visuals, formatting, theme) are **`pbir`** commands against the PBIR JSON on disk, with Desktop closed so a Desktop save can't clobber them.
+3. **Validate** every mutation with `pbir validate` (structure) — non-negotiable.
+4. **See the result.** Reopen Desktop, *or* — with the **Desktop Bridge** enabled (`desktop_bridge` toggle in [`03-bind/via-powershell/hooks/config.yaml`](03-bind/via-powershell/hooks/config.yaml)) — the agent keeps Desktop open and does **edit → `powerbi-desktop reload` → `screenshot`**, reading the PNG to verify rendering itself. See [00-setup.md](00-setup.md) and [03-bind/desktop-bridge.md](03-bind/desktop-bridge.md).
 
 ## Reuse for any project
 
