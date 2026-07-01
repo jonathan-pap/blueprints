@@ -52,9 +52,9 @@ VAR _AxisRange = _BarMax - _BarMin
 VAR _ActualNormalized = DIVIDE ( _Actual, _AxisMax ) * _AxisRange
 
 -- SVG elements
-VAR _SvgPrefix = "data:image/svg+xml;utf8, <svg xmlns='http://www.w3.org/2000/svg'>"
+VAR _SvgPrefix = "data:image/svg+xml;utf8,<svg viewBox='0 0 100 22' preserveAspectRatio='xMinYMid meet' xmlns='http://www.w3.org/2000/svg'>"
 VAR _Sort = "<desc>" & FORMAT ( _Actual, "000000000000" ) & "</desc>"
-VAR _ActualBar = "<rect x='" & _BarMin & "' y='10' width='" & _ActualNormalized & "' height='15%' fill='" & _BarColor & "'/>"
+VAR _ActualBar = "<rect x='" & _BarMin & "' y='10' width='" & _ActualNormalized & "' height='4' fill='" & _BarColor & "'/>"
 VAR _ActualDot = "<circle cx='" & _ActualNormalized + _BarMin & "' cy='11.75' r='" & MAX ( DIVIDE ( _Actual, _AxisMax ) * 7.5, _DotSizeMin ) & "' fill='" & _BarColor &"'/>"
 VAR _ActualLabel = "<text x='40' y='16' font-family='" & _LabelFont & "' font-size='" & _LabelSize & "' font-weight='" & _LabelWeight & "' text-anchor='end' fill='" & _LabelColor & "'>" & _NumberFormat & "</text>"
 VAR _SvgSuffix = "</svg>"

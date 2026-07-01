@@ -1,6 +1,8 @@
 # `pbir validate` — interpreting its output
 
 > `pbir validate <project>.Report` is the standard schema check after any `report/` mutation. It produces a structured findings table. **Not every error is a real error** — the CLI's bundled schemas lag behind Desktop's current versions, so some flags are cosmetic.
+>
+> New to `pbir`? It's a **community, non-commercial-licensed** CLI (Kurt Buhler & Maxim Anatsko), **not** Microsoft — install, license, and fallback in [`../../00-setup.md`](../../00-setup.md). The blueprint assumes **≥ 0.9.25**.
 
 ## Run
 
@@ -14,9 +16,28 @@ Encoding flags for Windows (the CLI's `--help` and validation output crash on cp
 PYTHONIOENCODING=utf-8 PYTHONUTF8=1 COLUMNS=400 pbir validate "<project>.Report"
 ```
 
+## Validation modes (0.9.25)
+
+`validate` runs the schema check by default; add a flag to layer on more. Upgrade first
+(`pip install -U pbir-cli` / `uv tool upgrade pbir-cli`) — these flags need **≥ 0.9.25**:
+
+| Flag | Checks |
+| --- | --- |
+| *(none)* | schema only |
+| `--fields` | fields/columns/measures exist in the connected model (catches broken bindings; visual-calc names false-positive — see below) |
+| `--qa` | quality: overlaps, hidden visuals, visual-level filters, field counts |
+| `--semantic` | **visual `visualType` ids + `object`/`visualContainerObjects` names vs the core visual catalog** — catches `stackedColumnChart` (should be `columnChart`) and mis-placed/typo'd object names *before* Desktop silently refuses to render |
+| `--all` (`-a`) | schema + fields + qa + semantic |
+| `--allow-download-schemas` | fetch missing exact schemas on demand (may reduce, but didn't fully clear, the 2.9.0 lag in testing) |
+
+`--semantic` is the one to add to the authoring loop: it mechanises the
+[`pick-visual-type.md`](../../02-build/report/add-visual/pick-visual-type.md) "exact `visualType` string"
+trap and the [`visual-json-structure.md`](../../02-build/report/schema-patterns/visual-json-structure.md)
+object-placement trap.
+
 ## Telling real errors from CLI lag
 
-`pbir` (v0.9.19 **through at least 0.9.21** — upgrading does **not** fix it) ships bundled JSON schemas that are one version behind Desktop. Desktop currently writes:
+`pbir` (v0.9.19–0.9.21) ships bundled JSON schemas one version behind Desktop. Desktop currently writes:
 
 - `report/3.3.0` (report.json)
 - `pagesMetadata/1.1.0` (pages.json)
@@ -32,20 +53,25 @@ PYTHONIOENCODING=utf-8 PYTHONUTF8=1 COLUMNS=400 pbir validate "<project>.Report"
 | `queryState.sortDefinition` → "Additional properties not allowed / 'projections' is required" | **False positive** — Desktop accepts this; omit only if you want a clean pbir run |
 | `visualContainerObjects` at root → `SCHEMA_ERROR` cascade | **Real** — Desktop also rejects this. See `../../02-build/report/schema-patterns/visual-json-structure.md` |
 
-## ⚠️ The lag can FATALLY BLOCK writes — not just colour `validate` output
+## ⚠️ The lag can FATALLY BLOCK writes — **fixed in 0.9.25**
 
-The same version mismatch that is *cosmetic* for `validate` is **fatal** for write operations. When
-Desktop has bumped `pages.json` to `pagesMetadata/1.1.0`, **`pbir add page` / `add visual` refuse to
-run** because they re-validate `pages.json` against the bundled `1.0.0` schema before writing:
+> **Resolved on ≥ 0.9.25** (verified): `pbir add page` / `add visual` now write to a
+> `pagesMetadata/1.1.0` pages.json without complaint — the pin-to-1.0.0 workaround below is **only
+> needed on ≤ 0.9.21**. If you're current, skip this section. It's kept for anyone pinned to an older pbir.
+
+On **≤ 0.9.21**, the same version mismatch that is *cosmetic* for `validate` is **fatal** for write
+operations. When Desktop has bumped `pages.json` to `pagesMetadata/1.1.0`, **`pbir add page` /
+`add visual` refuse to run** because they re-validate `pages.json` against the bundled `1.0.0` schema
+before writing:
 
 ```text
 Error: Schema validation failed for 'pagesMetadata': $schema: Declared schema 'pagesMetadata'
 version '1.1.0' is not available locally; ... '.../pagesMetadata/1.0.0/schema.json' was expected
 ```
 
-There is **no `--force` / `--no-validate` flag**, and **upgrading pbir does not help** (0.9.21 still
-bundles 1.0.0). `add page` is also **not atomic** — it can create the page folder before failing on the
-`pages.json` write, leaving an orphan.
+On ≤ 0.9.21 there is **no `--force` / `--no-validate` flag** — **the fix is to upgrade to ≥ 0.9.25**,
+which writes 1.1.0 directly. On those older versions `add page` is also **not atomic** — it can create
+the page folder before failing on the `pages.json` write, leaving an orphan.
 
 **Workaround — pin the declared schema down to the bundled version, build, let Desktop re-bump:**
 

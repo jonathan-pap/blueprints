@@ -1,0 +1,5 @@
+# Power BI blueprint — Python dependencies.   Install:  pip install -r requirements.txt
+#
+# pbir-cli: COMMUNITY tool by Kurt Buhler & Maxim Anatsko, under a Custom Non-Commercial
+# License (commercial use needs the authors' permission). Not a Microsoft product. See 00-setup.md.
+pbir-cli>=0.9.25

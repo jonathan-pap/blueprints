@@ -8,6 +8,10 @@
 2. **Second** — **Power BI MCP** for everything live: querying values, validating DAX live, modifying the model, refreshing. → `via-mcp/_index.md`
 3. **Third** — **`connect-pbid`** (PowerShell / TOM / ADOMD) as alternative when MCP is unavailable, plus leverage points where MCP doesn't cover: field parameters, daxlib package mgmt, query traces, VertiPaq stats, Parallels-on-Mac. → `via-powershell/_index.md`
 
+**Orthogonal (not model edits):** the **Desktop Bridge** (`desktop-bridge.md`, preview) drives a *running*
+Desktop to **reload the report from disk** and **screenshot pages** — the verify half of the loop, distinct
+from the three model-edit tiers above.
+
 ## When to enter (and which branch)
 
 - **"What measures/columns exist?"** for thick PBIP → don't enter this room, use `../02-build/report/bind/find-canonical-name.md` (`pbir model -d`).

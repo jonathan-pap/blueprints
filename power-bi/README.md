@@ -47,19 +47,28 @@ The full routing table is in [CLAUDE.md](CLAUDE.md).
 
 Three properties make this reusable:
 
-1. **Self-contained.** Everything the agent needs is inside `power-bi/`. No external dependencies beyond the `pbir` CLI and (for `03-bind/`) PowerShell + TOM.
+1. **Self-contained.** Everything the agent needs is inside `power-bi/`. No external dependencies beyond the `pbir` CLI (a community, non-commercial-licensed tool — **not** Microsoft; see [`00-setup.md`](00-setup.md)) and (for `03-bind/`) PowerShell + TOM.
 2. **Pipeline-shaped.** Rooms are numbered to enforce order; the structure mirrors the actual PBI lifecycle.
 3. **Naming convention enforces routing.** Folders are kebab-case, outputs are dated, projects follow the PBIP suffix convention. The agent navigates by name, not memorized paths.
 
 ## Required tooling
 
+**One-shot install (new machine):** `pwsh power-bi/setup.ps1` (add `-InstallMissing` to winget-install
+Python/jq/Desktop too), or just the Python dep: `pip install -r power-bi/requirements.txt`.
+Full details, license caveat, and Microsoft-docs links: **[`00-setup.md`](00-setup.md)** (read once per machine).
+
 | Tool | Purpose | Install |
 |---|---|---|
-| `pbir` CLI | All `02-build/report/` mutations | `uv tool install pbir-cli` or `pip install pbir-cli` |
+| `pbir` CLI (`pbir-cli`) | All `02-build/report/` mutations + `04-review/` validation | `pip install -U pbir-cli` or `uv tool install pbir-cli` — **≥ 0.9.25** |
 | `jq` | JSON validation (used by hooks) | Platform package manager |
 | PowerShell 7+ | `03-bind/` scripts | Pre-installed on Windows; via Parallels on macOS |
 | NuGet | TOM / ADOMD.NET packages for `03-bind/` | `winget install Microsoft.NuGet` |
 | Power BI Desktop | The target tool | Microsoft Store or direct download |
+
+> ⚠️ **`pbir` is a community tool by Kurt Buhler & Maxim Anatsko — not Microsoft — under a
+> Custom Non-Commercial License** (commercial use needs the authors' permission). Everything it
+> does has a hand-edit / MCP fallback; see [`00-setup.md`](00-setup.md). Microsoft documents the
+> PBIP/PBIR *format* it edits but ships no official CLI.
 
 Tools install on first use (`03-bind/` quickstart triggers the NuGet packages). Nothing here requires a Fabric license or service connection — work is done locally against `.pbip` files and Desktop.
 

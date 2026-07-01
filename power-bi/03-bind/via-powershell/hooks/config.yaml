@@ -27,3 +27,15 @@ compatibility_check: true
 
 # Auto-upgrade compatibility level to engine max (IRREVERSIBLE; disabled by default)
 compatibility_auto_upgrade: false
+
+# ── Desktop Bridge (visual verify loop) ──────────────────────────────────────
+# NOT a hook — a feature toggle the agent honors. When true, the report
+# build/verify loop MAY use the Power BI Desktop Bridge to reload the open
+# report and screenshot pages for visual self-verification
+# (edit on disk -> `powerbi-desktop reload` -> `screenshot` -> read the PNG).
+# When false, skip the bridge and verify structurally (pbir validate) + via the
+# Modeling MCP (measure evaluation) only.
+# Requires: @microsoft/powerbi-desktop-bridge-cli + Node.js + Desktop open with
+# the "external tool access" preview toggle on. Preview feature. See
+# ../../desktop-bridge.md. Opt-in — leave false unless you've set it up.
+desktop_bridge: false

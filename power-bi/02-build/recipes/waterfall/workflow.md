@@ -78,7 +78,7 @@ Substitute [tokens](tokens.md) (`<PREFIX>`, `<STEPS_TABLE>`, `<MEASURE_TABLE>`, 
 | 4 | **Batch-create** all measures atomically | Base + 1 helper per source measure + 1 Body per step + Label + Label (rich) + Axis Max + Label Anchor (+ Label Pad if horizontal) (+ Stack measures if stacked) | `measure_operations` Create (single transaction) |
 | 5 | **Validate** math with a DAX query | Confirms steps + types are right BEFORE the visual is written | `dax_query_operations` Execute |
 | 6 | **PROMPT user to SAVE in Desktop** | Persist model to TMDL on disk so the visual can reference it | (user action) |
-| 7 | **Create** the page | `pages.json` may need manual update due to [[pbir-cli-bundled-schema-lag]] | `pbir add page` |
+| 7 | **Create** the page | Writes `pages.json` directly on **pbir ≥ 0.9.25**; only ≤ 0.9.21 needs the manual workaround ([[pbir-cli-bundled-schema-lag]]) | `pbir add page` |
 | 8 | **Write** the visual.json | Pick the variant template (vertical-standard etc.) | `Write` (recipe template substitution) |
 | 9 | **Reload Desktop** | Visual changes only take effect on file open | (user action) |
 | 10 | **Verify** | Math reads right; labels render; colors per tier | (user action) |
@@ -134,7 +134,7 @@ After Desktop reload — visual checks:
 - **Calculated tables can't have columns pre-declared.** Don't include a `columns` array in the table-create payload — the MCP rejects it. Columns are inferred from the DAX. Update column metadata (sortByColumn, isHidden) in a follow-up `column_operations` call.
 - **`SELECTCOLUMNS` over inline rows uses positional refs.** The DAX `SELECTCOLUMNS({(...)}, "Step", [Value1], "StepSort", [Value2])` form uses `[Value1]`/`[Value2]` — `Value1`, `Value2` etc. are the auto-named columns of an inline row constructor.
 - **Save before visual build.** Otherwise `pbir` and direct writes operate against a stale TMDL — the visual references measures that don't exist on disk yet.
-- **`pbir add page` may fail schema validation** with a pagesMetadata 1.0.0 / 1.1.0 mismatch (see [[pbir-cli-bundled-schema-lag]]). The page folder still gets created — manually update `pages.json` to register it in `pageOrder` and set `activePageName`.
+- **`pbir add page` write-block is fixed on ≥ 0.9.25** (the blueprint's assumed version) — it writes `pages.json` directly. Only on **≤ 0.9.21** does it fail the pagesMetadata 1.0.0 / 1.1.0 mismatch (see [[pbir-cli-bundled-schema-lag]]): the page folder still gets created, so manually register it in `pageOrder` + set `activePageName`. Version check: `pbir --version` ([`../../../00-setup.md`](../../../00-setup.md)).
 - **Horizontal needs the Pad measure.** Without `<PREFIX> Label Pad` stacked between the bodies and the Anchor, the Anchor's `labelPosition: 'InsideBase'` won't align right-edge across bars of different visible totals.
 
 ## Adapt for a variant

@@ -2,6 +2,10 @@
 
 > Three-tier preference: on-disk TMDL → Power BI MCP → connect-pbid PowerShell.
 
+## Desktop Bridge (preview — reload + screenshot the open report)
+
+- `desktop-bridge.md` — drive a running Desktop via its named-pipe JSON-RPC bridge: `file.reload` (pick up on-disk edits in place), `report.snapshot.capture` (PNG per page, for visual self-verify), `application.state.get`. Opt-in; complements the MCP (which does model edits).
+
 ## via-mcp/  (preferred for all live operations)
 
 - `check-mcp-available.md` — detect whether a Power BI MCP server is wired up

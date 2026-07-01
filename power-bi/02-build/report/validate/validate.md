@@ -8,6 +8,11 @@ Run after every mutation. Non-negotiable.
 pbir validate "<project>.Report"
 ```
 
+Add **`--semantic`** (pbir ≥ 0.9.25) to also check `visualType` ids + object names against the visual
+catalog — it catches `stackedColumnChart` (→ `columnChart`) and typo'd object names before Desktop
+silently refuses to render. Full mode table (`--fields`/`--qa`/`--semantic`/`--all`):
+[`../../../04-review/audit/pbir-validate.md`](../../../04-review/audit/pbir-validate.md#validation-modes-0925).
+
 ## Verify structure too
 
 ```bash
