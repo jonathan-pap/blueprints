@@ -54,6 +54,54 @@ Under the hood, every change follows the same loop:
 3. **Validate** every mutation with `pbir validate` (structure) — non-negotiable.
 4. **See the result.** Reopen Desktop, *or* — with the **Desktop Bridge** enabled (`desktop_bridge` toggle in [`03-bind/via-powershell/hooks/config.yaml`](03-bind/via-powershell/hooks/config.yaml)) — the agent keeps Desktop open and does **edit → `powerbi-desktop reload` → `screenshot`**, reading the PNG to verify rendering itself. See [00-setup.md](00-setup.md) and [03-bind/desktop-bridge.md](03-bind/desktop-bridge.md).
 
+## Example workloads (worked flows)
+
+Concrete end-to-end sequences. Every flow ends at `pbir validate` and — with the Desktop Bridge enabled — a visual check (`reload` → `screenshot`).
+
+### 1 · New report from a brief (greenfield)
+
+1. `01-brief/` — capture KPIs, audience, pages (or drop a filled `projects/<p>/brief.md`).
+2. `02-build/report/design/` — turn it into a design brief: archetype per page, layout, chart choices, theme.
+3. `03-bind/` (Modeling MCP) or `02-build/model/` — ensure the measures the report needs exist.
+4. `02-build/report/` — `pbir add page` / `add visual` per the design; sizes from `projects/<p>/design-system.yaml`.
+5. `pbir validate --semantic` → fix → **reload + screenshot** each page to verify.
+
+### 2 · Add a measure and show it on a card
+
+1. `03-bind/` — Modeling MCP `measure_operations` Create (Desktop open); DAX-validate it.
+2. Save in Desktop so it persists to TMDL.
+3. `02-build/report/` — `pbir add visual card -d "Values:_Measures.<Name>"`.
+4. `pbir validate` → `powerbi-desktop reload` → `screenshot` to confirm the value renders.
+
+### 3 · Apply a recipe (Pareto, candlestick, waterfall, disconnected-selection)
+
+1. `02-build/recipes/<recipe>/` — read `workflow.md` + `tokens.md`.
+2. Create any model measures/tables the recipe needs (MCP) → save (calc tables need a refresh).
+3. Write the visual from the recipe template (token substitution).
+4. `pbir validate` → reload + screenshot.
+
+### 4 · Re-theme to a dark palette
+
+1. `02-build/theme/` — edit the theme JSON (`dataColors`/`textClasses`/`visualStyles`), or `pbir color` / `pbir fonts` to swap across report *and* theme in one pass.
+2. `pbir validate`.
+3. Reload — ⚠️ theme JSON is cache-keyed by filename; if a `reload` doesn't pick it up, rename the theme file (+ update `report.json`) or reopen Desktop.
+
+### 5 · Diagnose a visual rendering as an error icon / grey box
+
+1. `powerbi-desktop screenshot <pageId>` — see the actual render, not a guess.
+2. Read the offending `visual.json` (bindings / `queryState`) or the measure DAX.
+3. Fix → `pbir validate` → reload → screenshot again. *(This is exactly how the SVG grey-box bullet was found + fixed — the measure lacked a `viewBox`.)*
+
+### 6 · Audit an existing report
+
+1. `04-review/` — run validate / audit / model-audit / lineage per its `context.md`.
+2. Write findings to `outputs/YYYY-MM-DD-<project>-audit.md` (dated-artifact convention).
+
+### 7 · Iterate live with someone watching
+
+1. Keep Desktop open on the target `.pbip` (`powerbi-desktop open "<path>"`).
+2. Loop: edit on disk (`pbir` / MCP) → `powerbi-desktop reload --pid <pid> --wait-seconds 120` → `screenshot` → read the PNG → adjust. Desktop repaints each cycle, so the user sees changes in near-real-time without reopening.
+
 ## Reuse for any project
 
 Three properties make this reusable:
