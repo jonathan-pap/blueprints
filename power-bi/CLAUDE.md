@@ -173,8 +173,9 @@ Match the user's intent. Load only what's listed.
 
 ## Critical rules (apply everywhere)
 
+- **Preflight the toolchain (first run / fresh clone).** Before your first `pbir`, model, or report operation in a workspace, verify the tools exist — run `pbir --version` (needs ≥ 0.9.25). If `pbir`, Python, or Power BI Desktop is missing, **STOP and prompt the user to install** — run `pwsh setup.ps1` (add `-InstallMissing` for Python/jq/Node/Desktop/Bridge CLI), or `pip install -r requirements.txt` for just `pbir` — pointing them to [`00-setup.md`](00-setup.md), and offer to run it for them. Don't attempt edits against a toolchain that isn't installed. (Visual verify via the Desktop Bridge is opt-in — `desktop_bridge` in `03-bind/via-powershell/hooks/config.yaml`.)
 - **Rooms are the workflow — not `projects/`.** When asked to build/edit, read the relevant room's atomic files (`02-build/.../*.md`) for HOW. Read only the **active** project's files (its `brief.md`, `design-system.yaml`, current `.Report/` and `.SemanticModel/`) for WHAT. Do NOT browse other `projects/<name>/` folders to crib patterns — they're user data, often stale, mid-experiment, or done in a way that wasn't best-practice. If a real worked example is needed, the rooms point to `examples/` / `_examples/` — use those. The same applies to `outputs/`: read only the active project's outputs.
-- Power BI Desktop does not detect external file changes — always tell the user to close and reopen after edits.
+- Power BI Desktop does not detect external file changes — tell the user to close and reopen after edits, **or** (if `desktop_bridge` is enabled) reload in place via `powerbi-desktop reload` (`03-bind/desktop-bridge.md`).
 - All PBIP files are UTF-8 **without BOM**. A BOM causes parse errors.
 - Windows 260-character path limit applies — keep project roots short.
 - Run `pbir validate` after every mutation in `02-build/report/`.
