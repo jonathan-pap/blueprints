@@ -39,7 +39,7 @@ VAR _ActualNormalized = DIVIDE(_Actual, _AxisMax) * _AxisRange
 VAR _TargetNormalized = DIVIDE(_Target, _AxisMax) * _AxisRange
 
 -- SVG construction
-VAR _SvgPrefix = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'>"
+VAR _SvgPrefix = "data:image/svg+xml;utf8,<svg viewBox='0 0 110 24' preserveAspectRatio='xMinYMid meet' xmlns='http://www.w3.org/2000/svg'>"
 VAR _Sort = "<desc>" & FORMAT(_Actual, "000000000000") & "</desc>"
 
 VAR _Icon  = "<text x='" & _BarMin - 3 & "' y='13.5' font-family='Segoe UI' font-size='6' font-weight='700' text-anchor='end' fill='" & _VarianceColor & "'>" & FORMAT(_Performance, "^^^;vvv;") & "</text>"

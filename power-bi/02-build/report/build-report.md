@@ -98,9 +98,10 @@ checks — a project without it cannot be layout-audited and visual sizes will d
 push any repeated per-visual override up into the theme; don't scatter formatting on individual visuals.
 
 ### B9 — Pages
-Create pages ([`page/add-page.md`](page/add-page.md)). **Mind the schema-lag write block** — if
-`pages.json` is at `pagesMetadata/1.1.0`, `pbir add page`/`add visual` refuse to write; pin to `1.0.0`
-first ([`../../04-review/audit/pbir-validate.md`](../../04-review/audit/pbir-validate.md)). Reference
+Create pages ([`page/add-page.md`](page/add-page.md)). On **pbir ≥ 0.9.25** (the assumed version —
+[`../../00-setup.md`](../../00-setup.md)) `add page`/`add visual` write `pages.json` directly. Only on
+**≤ 0.9.21** does the schema-lag write block bite (`pagesMetadata/1.1.0` → refuse; pin to `1.0.0`
+first) — see [`../../04-review/audit/pbir-validate.md`](../../04-review/audit/pbir-validate.md). Reference
 pages by **display name**, keep names unique, verify with `pbir ls`.
 
 ### B10 — Per page: tokens → visuals → format

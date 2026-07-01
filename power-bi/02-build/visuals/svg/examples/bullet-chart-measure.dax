@@ -50,14 +50,14 @@ VAR _ActualNormalized = DIVIDE(_Actual, _AxisMax) * _AxisRange
 VAR _TargetNormalized = (DIVIDE(_Target, _AxisMax) * _AxisRange) + _BarMin - 1
 
 -- SVG construction
-VAR _SvgPrefix = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'>"
+VAR _SvgPrefix = "data:image/svg+xml;utf8,<svg viewBox='0 0 125 24' preserveAspectRatio='xMinYMid meet' xmlns='http://www.w3.org/2000/svg'>"
 VAR _Sort = "<desc>" & FORMAT(_Actual, "000000000000") & "</desc>"
 
 VAR _ActionDot    = "<circle cx='10' cy='11' r='5' fill='" & _ActionDotFill & "'/>"
-VAR _BarBg        = "<rect x='" & _BarMin & "' y='2' width='" & _BarMax & "' height='80%' fill='" & _BackgroundColor & "'/>"
-VAR _ActualBar    = "<rect x='" & _BarMin & "' y='5' width='" & _ActualNormalized & "' height='50%' fill='" & _BarFillColor & "'/>"
-VAR _Baseline     = "<rect x='" & _BarMin & "' y='4' width='1' height='60%' fill='" & _BaselineColor & "'/>"
-VAR _TargetLine   = "<rect x='" & _TargetNormalized & "' y='2' width='2' height='80%' fill='" & _TargetColor & "'/>"
+VAR _BarBg        = "<rect x='" & _BarMin & "' y='2' width='" & _BarMax & "' height='19' fill='" & _BackgroundColor & "'/>"
+VAR _ActualBar    = "<rect x='" & _BarMin & "' y='5' width='" & _ActualNormalized & "' height='12' fill='" & _BarFillColor & "'/>"
+VAR _Baseline     = "<rect x='" & _BarMin & "' y='4' width='1' height='14' fill='" & _BaselineColor & "'/>"
+VAR _TargetLine   = "<rect x='" & _TargetNormalized & "' y='2' width='2' height='19' fill='" & _TargetColor & "'/>"
 
 VAR _SvgSuffix = "</svg>"
 

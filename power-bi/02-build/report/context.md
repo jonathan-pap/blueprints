@@ -4,7 +4,7 @@
 
 ## Tool
 
-`pbir` CLI. Install once: `uv tool install pbir-cli` or `pip install pbir-cli`. Confirm with `pbir --version`.
+`pbir` CLI (≥ 0.9.25). Install once: `pip install -U pbir-cli` or `uv tool install pbir-cli`. Confirm with `pbir --version`. It's a **community, non-commercial-licensed** tool (not Microsoft) — what it is, the license, and the hand-edit fallback are in [`../../00-setup.md`](../../00-setup.md).
 
 ## Workflow router
 

@@ -9,7 +9,8 @@ A reusable blueprint for working on Power BI Desktop projects (`.pbip` format). 
 - **Target tool:** Power BI Desktop (local)
 - **File format:** PBIP (`.Report/` + `.SemanticModel/` + `.pbip`)
 - **Live model connection:** rarely needed. Only when binding visuals to real measures/columns or validating DAX. See `03-bind`.
-- **To see edits in PBI Desktop:** close and reopen the file. No service push needed.
+- **To see edits in PBI Desktop:** close and reopen the file. No service push needed. *(Or, if the Desktop Bridge is enabled — `desktop_bridge` in `03-bind/via-powershell/hooks/config.yaml` — reload in place + screenshot without reopening: [`03-bind/desktop-bridge.md`](03-bind/desktop-bridge.md).)*
+- **Prerequisites (read once per machine):** [`00-setup.md`](00-setup.md) — the `pbir` CLI (a **community, non-commercial-licensed** tool, **not** Microsoft; needs ≥ 0.9.25), Python, Desktop, and the MS-docs links. New machine? Start there.
 
 ## Project folder convention (raw layer)
 
