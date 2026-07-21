@@ -139,6 +139,8 @@ Three-tier, top to bottom:
 Match the user's intent. Load only what's listed.
 
 - **New report from scratch** → `01-brief/context.md` → `02-build/context.md` → `02-build/report/context.md`
+- **Plan + build a new report (guided, with approval gate)** → `01-brief/report-planning-workflow.md` (Rounds → locked `report-spec.md` → approve → build)
+- **How to configure a specific visual (design rules per type)** → `02-build/report/references/visual-cookbook.md`
 - **Add or rearrange visuals** → `02-build/report/context.md` → `add-visual/_index.md` (read `projects/<name>/design-system.yaml` first for sizes)
 - **Set up / change layout tokens (consistent sizes, grid, gaps)** → `02-build/report/layout/design-system.md`
 - **Edit a theme** → `02-build/theme/context.md`

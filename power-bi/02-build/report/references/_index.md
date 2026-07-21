@@ -15,8 +15,10 @@
 - `accessibility.md` · `anti-patterns.md` — pre-ship checks (WCAG; the slop catalog)
 - `brownfield.md` — redesign / restyle / theme-swap workflow
 
-## Visual best-practices (how to make each visual useful)
+## Visual best-practices (pick it, then make it useful)
 
+- `chart-selection.md` — **pick the visual from the question** (comparison / trend / ranking / …): decision matrix, PBI native crosswalk, cardinality limits, encoding-accuracy hierarchy, archetype fit. Use this FIRST.
+- `visual-cookbook.md` — then **configure the chosen type**: sanity checks + design rules for every visual (bar, line, card, table, matrix, slicer, textbox, shape, scatter, waterfall, treemap) + theme-vs-per-visual boundary + conditional-formatting matrix. The two below are deeper dives.
 - `cards-and-kpis.md` — the three elements (value/target/gap), display-unit rule, title-vs-label, anti-patterns
 - `tables-and-matrices.md` — table vs matrix, subtract-don't-add formatting, strategic CF, the horizontal-scrollbar trap
 - `visual-colors.md` — theme tokens over hex, semantic sentiment, WCAG contrast, colorblind-safe pairings

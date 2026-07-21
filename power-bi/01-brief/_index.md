@@ -1,5 +1,9 @@
 # 01-brief — atomic file index
 
+## Guided planning workflow (plan → spec → approve → build)
+
+- `report-planning-workflow.md` — full lifecycle for a NEW report: Rounds 0–4 (audience → model inventory → page plan → identity/delivery), design-contract gate, locked `projects/<name>/report-spec.md`, approval gate, then build. Use for "plan then build a dashboard"; skip for small edits.
+
 ## Brief-as-file (preferred)
 
 - `brief-template.md` — copy-paste template for `projects/<name>/brief.md`
