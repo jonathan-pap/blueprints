@@ -1,7 +1,7 @@
 # tabular-editor — atomic file index
 
 > Reusable C# scripts for **bulk** semantic-model operations, portable across **Tabular Editor 2 & 3**.
-> Enter from [`context.md`](context.md). For single edits use `../03-bind/` (MCP) or `../02-build/model/`.
+> Enter from [`context.md`](context.md). For single edits use `../power-bi/03-bind/` (MCP) or `../power-bi/02-build/model/`.
 
 ## Room docs
 
@@ -19,4 +19,4 @@
 ## Model source
 
 TE3 opens the PBIP/TMDL folder directly; TE2 uses a `.bim` or a **live** `localhost:<port>` connection
-(same instance as `../03-bind/`). Scripts touch objects, not files, so the same `.cs` runs either way.
+(same instance as `../power-bi/03-bind/`). Scripts touch objects, not files, so the same `.cs` runs either way.

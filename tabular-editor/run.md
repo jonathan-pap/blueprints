@@ -8,7 +8,7 @@ then **save** to persist.
 1. Open the model:
    - **TE3:** *File → Open → Power BI Desktop model* (live), or open the **PBIP/TMDL** folder directly.
    - **TE2:** *File → Open → From DB…* and pick the local instance (`localhost:<port>`), or open a `.bim`.
-   - Port of the running Desktop model: `../03-bind/via-powershell/quickstart.md` (or the MCP
+   - Port of the running Desktop model: `../power-bi/03-bind/via-powershell/quickstart.md` (or the MCP
      `connection_operations ListLocalInstances`).
 2. Open the **C# Script** tab (TE3) / **Advanced Scripting** tab (TE2).
 3. Paste the script (or open the `.cs`), select target objects if the script uses `Selected.*`, **Run** (▶ / F5).
@@ -42,5 +42,5 @@ TE2 is free and CI-friendly; TE3 needs a licensed runner.
 
 ## After
 
-Reopen/refresh in Power BI Desktop (or `../03-bind/desktop-bridge.md` `reload`) to see model changes,
-then validate with `../04-review/`.
+Reopen/refresh in Power BI Desktop (or `../power-bi/03-bind/desktop-bridge.md` `reload`) to see model changes,
+then validate with `../power-bi/04-review/`.

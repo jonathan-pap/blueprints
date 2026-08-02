@@ -18,10 +18,17 @@ Workspace-Blueprint/
 │   ├── 02-build/            edit room — report, model (+DAX, Power Query, naming), theme, visuals (~490 atomic files)
 │   ├── 03-bind/             live model — Power BI MCP or PowerShell TOM + Enhanced Refresh (~50 atomic files)
 │   ├── 04-review/           validate, audit, model-audit, usage, lineage, reviewers (~45 atomic files + hooks + scripts)
-│   ├── tabular-editor/      tool room — bulk model ops via C# scripts, portable across TE2 + TE3
 │   ├── projects/            raw layer — actual <name>.Report / <name>.SemanticModel projects
 │   ├── outputs/             output layer — dated artifacts YYYY-MM-DD-<project>-<type>.<ext>
 │   └── _examples/           provenance snapshot (do not load unless asked)
+├── tabular-editor/          ── BLUEPRINT — Tabular Editor C# scripts, BPA rule sets, TE3 macros (portable TE2/TE3)
+│   ├── CLAUDE.md            entry point (L1 router)
+│   ├── README.md
+│   ├── compatibility.md     the TE2 ⇄ TE3 "works in both" ruleset
+│   ├── run.md               run from UI / CLI / CI
+│   ├── scripts/             C# advanced scripts — bulk model ops
+│   ├── bpa/                 Best Practice Analyzer rule sets + authoring guide
+│   └── macros/              TE3 macros
 └── synthetic-data/         ── BLUEPRINT — synthetic / dummy data creation (Python-first)
     ├── CLAUDE.md            entry point for this blueprint (L1 router + folder map)
     ├── README.md
@@ -38,6 +45,7 @@ Workspace-Blueprint/
 
 - **[power-bi/](power-bi/)** — Power BI Desktop projects (PBIP format). Reports, semantic models, themes, custom visuals, live-model bridge (MCP-first, PowerShell alternative), audit + validation hooks. Entry point: [power-bi/CLAUDE.md](power-bi/CLAUDE.md) (has its own detailed folder map).
 - **[synthetic-data/](synthetic-data/)** — synthetic / dummy data creation (Python-first: Faker, numpy/scipy, SDV). Schema-faithful, privacy-safe fake datasets for demos, testing, ML fixtures, or to populate a BI model. Includes a Power BI hand-off that writes generated data into a `power-bi/` semantic model. Entry point: [synthetic-data/CLAUDE.md](synthetic-data/CLAUDE.md). *(Skeleton — rooms grow per job.)*
+- **[tabular-editor/](tabular-editor/)** — Tabular Editor toolkit: reusable **C# scripts**, **BPA rule sets**, and **TE3 macros** for bulk semantic-model operations, all portable across **Tabular Editor 2 (free) and 3**. Works on any tabular model (Power BI PBIP/TMDL or live, Azure AS, SSAS, Fabric). Cross-referenced by `power-bi/` for the PBIP workflow. Entry point: [tabular-editor/CLAUDE.md](tabular-editor/CLAUDE.md).
 
 ## Convention for adding a blueprint
 

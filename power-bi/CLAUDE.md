@@ -44,7 +44,8 @@ Four pipeline rooms (enter one at a time), plus a tool room.
 - `02-build/` — Edit PBIR / TMDL / theme / custom visuals. **No live connection.**
 - `03-bind/` — Live model bridge for real field names, DAX validation, model edits. **Live connection.**
 - `04-review/` — Validate, audit, performance, BPA, hooks. No live connection (except usage scripts).
-- `tabular-editor/` — *(tool room)* reusable C# scripts for **bulk** model ops, portable across Tabular Editor 2 & 3. Reach for it over `03-bind/`/`02-build/model/` when changing **many** objects at once.
+
+**Sibling blueprint:** bulk model ops via **Tabular Editor** (C# scripts, BPA rule sets, TE3 macros — portable TE2/TE3) live in their own top-level blueprint at [`../tabular-editor/`](../tabular-editor/CLAUDE.md). Reach for it over `03-bind/` / `02-build/model/` when changing **many** model objects at once.
 
 ## Folder map (current)
 
@@ -106,24 +107,19 @@ power-bi/
 │       ├── tom-object-types/ (16 md)        per-object CRUD via TOM
 │       └── scripts/                         PowerShell + sh + refresh_model.py
 │
-├── 04-review/                               validate, audit, usage, lineage, model-audit
-│   ├── audit/              (5 md)           report-level: full report, quick checks, design, performance
-│   ├── model-audit/        (7 md)           model-level: workflow, gather-context, categories, AI readiness, perf
-│   ├── bpa/                (2 md)           Best Practice Analyzer + custom rules
-│   ├── usage/              (4 md)           workspace, single report, distribution, exclude non-consumers
-│   ├── lineage/            (3 md + 1 .py)   downstream reports finder + other-consumer caveats
-│   ├── structure/          (3 md)           validate_pbip, post-rename, UTF-8 BOM check
-│   ├── reviewers/          (7 md)           pre-flight checklists (Deneb / SVG / Python / R / PBIP / Semantic Model Auditor)
-│   ├── export/             (1 md)           visual data → Excel for QA
-│   ├── metadata/           (1 md)           file sizes / dependencies / last-modified
-│   ├── hooks/                               opt-in PostToolUse validation (PBIR + TMDL + binding)
-│   ├── scripts/                             validate_pbip + usage scripts + get_model_info
-│   └── usage-metrics-dataset/               reference Power BI usage-metrics PBIP
-│
-└── tabular-editor/         (3 md + scripts) TOOL ROOM — bulk model ops via C# scripts, portable TE2 + TE3
-    ├── compatibility.md                     the TE2 ⇄ TE3 "works in both" ruleset
-    ├── run.md                               run from UI / CLI / CI
-    └── scripts/            (4 .cs)          format-measures, create-time-intelligence, document-model, hide-technical-columns
+└── 04-review/                               validate, audit, usage, lineage, model-audit
+    ├── audit/              (5 md)           report-level: full report, quick checks, design, performance
+    ├── model-audit/        (7 md)           model-level: workflow, gather-context, categories, AI readiness, perf
+    ├── bpa/                (2 md)           Best Practice Analyzer via pbir (rule library: ../tabular-editor/bpa/)
+    ├── usage/              (4 md)           workspace, single report, distribution, exclude non-consumers
+    ├── lineage/            (3 md + 1 .py)   downstream reports finder + other-consumer caveats
+    ├── structure/          (3 md)           validate_pbip, post-rename, UTF-8 BOM check
+    ├── reviewers/          (7 md)           pre-flight checklists (Deneb / SVG / Python / R / PBIP / Semantic Model Auditor)
+    ├── export/             (1 md)           visual data → Excel for QA
+    ├── metadata/           (1 md)           file sizes / dependencies / last-modified
+    ├── hooks/                               opt-in PostToolUse validation (PBIR + TMDL + binding)
+    ├── scripts/                             validate_pbip + usage scripts + get_model_info
+    └── usage-metrics-dataset/               reference Power BI usage-metrics PBIP
 ```
 
 ## Layers (the rest of the workspace)
@@ -151,7 +147,7 @@ Match the user's intent. Load only what's listed.
 - **Set up / change layout tokens (consistent sizes, grid, gaps)** → `02-build/report/layout/design-system.md`
 - **Edit a theme** → `02-build/theme/context.md`
 - **Add a measure / column / table (TMDL on disk)** → `02-build/model/context.md`
-- **Bulk model op (format all measures, generate time-intelligence, hide keys, document the model) via a reusable script** → `tabular-editor/context.md` (C# scripts, TE2 + TE3)
+- **Bulk model op (format all measures, generate time-intelligence, hide keys, document the model) via a reusable script; author/run BPA rules; TE3 macros** → sibling blueprint `../tabular-editor/CLAUDE.md` (C# scripts, BPA, macros — TE2 + TE3)
 - **Build a custom visual (Deneb / SVG / Python / R)** → `02-build/visuals/context.md` → pick engine
 - **Bind a visual to a real measure/field** → `02-build/report/bind/find-canonical-name.md` first (no conn). If thick PBIP that's it. If thin or you need live values → `03-bind/via-mcp/` (preferred) or `03-bind/via-powershell/` (alternative).
 - **Live DAX query / validation / model mutation** → `03-bind/via-mcp/` (preferred), `03-bind/via-powershell/` (alternative + leverage)

@@ -60,7 +60,7 @@ Each library script notes its target at the top and uses this pattern where it m
 
 - **TE3** opens a **PBIP / TMDL** folder directly — point it at `projects/<p>/<name>.SemanticModel`.
 - **TE2** works with a saved **`.bim` / `Model.bim`** or a **live connection**
-  (`localhost:<port>` — the same local Desktop instance the [`../03-bind/`](../03-bind/) MCP/TOM path
+  (`localhost:<port>` — the same local Desktop instance the [`../power-bi/03-bind/`](../power-bi/03-bind/) MCP/TOM path
   uses). It does *not* open a TMDL folder natively. For a PBIP-only project, connect TE2 **live** to
   the open Desktop model, or serialize to `.bim` first.
 - Scripts here are **source-agnostic** — they touch model objects, not files — so the same `.cs` runs

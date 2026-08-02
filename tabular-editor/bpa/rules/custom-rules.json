@@ -1,0 +1,51 @@
+[
+  {
+    "ID": "MEASURE_NO_FORMAT_STRING",
+    "Name": "Measure has no format string",
+    "Category": "Formatting",
+    "Description": "Every measure should set a FormatString so visuals render consistently.",
+    "Severity": 2,
+    "Scope": "Measure",
+    "Expression": "string.IsNullOrEmpty(FormatString)",
+    "FixExpression": "FormatString = \"#,##0\""
+  },
+  {
+    "ID": "MEASURE_NO_DISPLAY_FOLDER",
+    "Name": "Measure is not in a display folder",
+    "Category": "Metadata",
+    "Description": "Loose measures clutter the field list; put each in a DisplayFolder.",
+    "Severity": 1,
+    "Scope": "Measure",
+    "Expression": "string.IsNullOrEmpty(DisplayFolder)",
+    "FixExpression": "DisplayFolder = \"Uncategorised\""
+  },
+  {
+    "ID": "COLUMN_KEY_SHOULD_NOT_SUMMARIZE",
+    "Name": "Numeric key should not summarize",
+    "Category": "Data Model",
+    "Description": "Foreign/primary key columns should have SummarizeBy = None so they don't sum by accident.",
+    "Severity": 2,
+    "Scope": "Column",
+    "Expression": "(Name.EndsWith(\"Key\") || Name.EndsWith(\"Id\") || Name.EndsWith(\"ID\")) && SummarizeBy != \"None\"",
+    "FixExpression": "SummarizeBy = TabularEditor.TOMWrapper.AggregateFunction.None"
+  },
+  {
+    "ID": "COLUMN_KEY_SHOULD_BE_HIDDEN",
+    "Name": "Key / technical column should be hidden",
+    "Category": "Data Model",
+    "Description": "Key and underscore-prefixed technical columns should not be visible to report authors.",
+    "Severity": 1,
+    "Scope": "Column",
+    "Expression": "(Name.EndsWith(\"Key\") || Name.EndsWith(\"Id\") || Name.StartsWith(\"_\")) && !IsHidden",
+    "FixExpression": "IsHidden = true"
+  },
+  {
+    "ID": "VISIBLE_MEASURE_NO_DESCRIPTION",
+    "Name": "Visible measure has no description",
+    "Category": "Metadata",
+    "Description": "Visible measures should carry a description for consumers and documentation.",
+    "Severity": 1,
+    "Scope": "Measure",
+    "Expression": "!IsHidden && string.IsNullOrEmpty(Description)"
+  }
+]

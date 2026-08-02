@@ -17,8 +17,8 @@ For single, surgical changes prefer the other rooms:
 
 | Need | Go to |
 |---|---|
-| One measure / column / relationship, live | `../03-bind/` (Power BI Modeling MCP) |
-| Hand-edit a few TMDL objects, Desktop closed | `../02-build/model/` |
+| One measure / column / relationship, live | `../power-bi/03-bind/` (Power BI Modeling MCP) |
+| Hand-edit a few TMDL objects, Desktop closed | `../power-bi/02-build/model/` |
 | **Bulk / repeatable model ops via script** | **here** |
 
 ## How it fits
@@ -27,7 +27,7 @@ Tabular Editor scripts run against **the semantic model** — either an open **P
 (TE3 natively; TE2 via a saved `.bim` or a live connection) or a **live connection** to the model
 hosted by Power BI Desktop (same local instance the `03-bind/` MCP/TOM path uses). Changes are applied
 to the in-memory model and persisted when you **save** (UI) or pass a save flag (CLI). Validate the
-result with `../04-review/` afterwards.
+result with `../power-bi/04-review/` afterwards.
 
 ## The one rule that makes a script portable
 
@@ -44,4 +44,4 @@ syntax runs in both. The full ruleset — and the exact do/don't list — is in
 
 ## After
 
-Run `../04-review/` (validate / model-audit / BPA) — a bulk script touches many objects; verify.
+Run `../power-bi/04-review/` (validate / model-audit / BPA) — a bulk script touches many objects; verify.

@@ -25,10 +25,12 @@ power-bi/
 │       ├── deneb/   svg/   python/   r/
 ├── 03-bind/           ← Layer 2: live model (Modeling MCP / TOM+ADOMD) + Desktop Bridge (reload + screenshot verify)
 ├── 04-review/         ← Layer 2: validate, audit, performance, hooks
-├── tabular-editor/    ← tool room: bulk model ops via C# scripts (portable TE2 + TE3)
 ├── projects/          ← raw layer: actual PBI projects you're editing
 └── outputs/           ← output layer: dated generated artifacts
 ```
+
+Bulk model operations via **Tabular Editor** (C# scripts, BPA rule sets, TE3 macros — portable TE2/TE3)
+live in the sibling [`../tabular-editor/`](../tabular-editor/) blueprint.
 
 Each room has a slim `context.md` that lists which `references/<topic>.md` to load for a given task. The references are the bulk of the knowledge — loaded only on demand.
 

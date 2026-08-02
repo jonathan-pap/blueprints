@@ -2,6 +2,11 @@
 
 Rules live in a JSON file. Microsoft's default set is a good starting point; copy and modify.
 
+> **Shared rule library:** the workspace's reusable BPA rule sets (+ authoring guide, `FixExpression`
+> portability) live in the sibling **Tabular Editor** blueprint: [`../../../tabular-editor/bpa/`](../../../tabular-editor/bpa/).
+> This page covers running BPA **via `pbir`**; that blueprint covers running the same rules **via
+> Tabular Editor** (`-A`) + macros. Same rules, two execution paths.
+
 ## Get the default set
 
 ```bash
