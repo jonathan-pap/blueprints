@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "346ebb142b26223a0292",
+  "position": {
+    "x": 295.55555555555554,
+    "y": 172.22222222222223,
+    "z": 0,
+    "height": 280,
+    "width": 280,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimRarity"
+                    }
+                  },
+                  "Property": "RarityName"
+                }
+              },
+              "queryRef": "DimRarity.RarityName",
+              "nativeQueryRef": "RarityName"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

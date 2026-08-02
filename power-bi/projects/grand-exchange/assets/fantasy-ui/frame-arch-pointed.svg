@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 360" width="200" height="360">
+<path d='M 100,5 L 190,80 L 190,350 L 10,350 L 10,80 L 100,5 Z' fill='none' stroke='#E8C24A' stroke-width='1.4'/>
+<path d='M 100,15 L 184,86 L 184,344 L 16,344 L 16,86 L 100,15 Z' fill='none' stroke='#E8C24A' stroke-width='0.4' opacity='0.6'/>
+<path d='M 5,350 L 10,345 L 15,350 L 10,355 Z' fill='#E8C24A'/>
+<path d='M 185,350 L 190,345 L 195,350 L 190,355 Z' fill='#E8C24A'/>
+<path d='M 5,80 L 10,75 L 15,80 L 10,85 Z' fill='#E8C24A'/>
+<path d='M 185,80 L 190,75 L 195,80 L 190,85 Z' fill='#E8C24A'/>
+</svg>

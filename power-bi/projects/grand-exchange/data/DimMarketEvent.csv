@@ -1,0 +1,13 @@
+EventKey,EventName,EventType,StartDate,EndDate,AffectedCategory,PriceShockPct,DurationDays
+1,Patch: Ember of Dawn,Patch,2023-01-12,2023-01-20,Weapon,-0.0864,9
+2,Patch: Frost of Embers,Patch,2023-01-15,2023-01-21,Crystal,-0.1913,7
+3,Crisis: Storm of Tides,Crisis,2023-01-26,2023-01-28,Reagent,-0.4627,3
+4,Seasonal: Shadow of the Void,Seasonal,2023-01-27,2023-02-11,Weapon,-0.0377,16
+5,Patch: Sun of Whispers,Patch,2023-01-31,2023-02-07,Crystal,0.4231,8
+6,Patch: Moon of Valor,Patch,2023-02-09,2023-02-27,Misc,0.2787,19
+7,Crisis: Iron of Ruin,Crisis,2023-02-14,2023-03-03,Crystal,-0.3661,18
+8,Crisis: Mithril of Stars,Crisis,2023-02-19,2023-02-23,Crystal,-0.2124,5
+9,Bonanza: Obsidian of the Forge,Bonanza,2023-03-05,2023-03-23,Material,0.5524,19
+10,Seasonal: Crystal of the Wild,Seasonal,2023-03-08,2023-03-12,Armor,-0.016,5
+11,Seasonal: Verdant of Echoes,Seasonal,2023-03-09,2023-03-19,Crystal,-0.0121,11
+12,Seasonal: Hollow of Lightning,Seasonal,2023-03-17,2023-03-27,Crystal,0.5992,11

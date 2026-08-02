@@ -1,0 +1,68 @@
+table DimRecipe
+	lineageTag: 7c922e2e-7560-545b-9182-1ba28ae863ae
+
+	column RecipeKey
+		dataType: int64
+		formatString: 0
+		lineageTag: b9eec78e-66b0-5dcf-bafd-33e204c7209b
+		summarizeBy: none
+		sourceColumn: RecipeKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column OutputItemKey
+		dataType: int64
+		formatString: 0
+		lineageTag: e5c0d03d-ab87-51ba-a017-00ff1794f037
+		summarizeBy: none
+		sourceColumn: OutputItemKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column CraftingSkill
+		dataType: string
+		lineageTag: 78dc34e6-942c-5be0-b51d-34c6c11f7bc2
+		summarizeBy: none
+		sourceColumn: CraftingSkill
+
+		annotation SummarizationSetBy = Automatic
+
+	column RequiredLevel
+		dataType: int64
+		formatString: 0
+		lineageTag: a971d19d-4d05-538e-82a9-3f973f362b4c
+		summarizeBy: sum
+		sourceColumn: RequiredLevel
+
+		annotation SummarizationSetBy = Automatic
+
+	column YieldQty
+		dataType: int64
+		formatString: 0
+		lineageTag: bf150f99-9443-500f-aa98-1a6d5c8e3461
+		summarizeBy: sum
+		sourceColumn: YieldQty
+
+		annotation SummarizationSetBy = Automatic
+
+	column CraftTimeSecs
+		dataType: int64
+		formatString: 0
+		lineageTag: 33f12691-a400-5a8e-9029-44aed712b0e2
+		summarizeBy: sum
+		sourceColumn: CraftTimeSecs
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimRecipe = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents("E:\Workspace-Blueprint\synthetic-data\outputs\grand-exchange\latest\DimRecipe.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Typed = Table.TransformColumnTypes(Promoted, {{"RecipeKey", Int64.Type}, {"OutputItemKey", Int64.Type}, {"CraftingSkill", type text}, {"RequiredLevel", Int64.Type}, {"YieldQty", Int64.Type}, {"CraftTimeSecs", Int64.Type}})
+				in
+					Typed
+
+	annotation PBI_ResultType = Table
+

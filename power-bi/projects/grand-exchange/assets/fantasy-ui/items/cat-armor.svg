@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='64' height='64'>
+<path d='M32 6 L52 14 L50 36 Q48 50 32 58 Q16 50 14 36 L12 14 Z' fill='none' stroke='#E8C24A' stroke-width='2.5' stroke-linejoin='round'/><path d='M32 14 L42 18 L40 34 Q38 44 32 50 Q26 44 24 34 L22 18 Z' fill='#E8C24A' opacity='0.3'/><path d='M32 20 L36 30 L32 40 L28 30 Z' fill='#E8C24A'/>
+</svg>

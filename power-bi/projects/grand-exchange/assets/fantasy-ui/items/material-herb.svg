@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='64' height='64'>
+<path d='M32 56 Q32 36 32 14' stroke='#E8C24A' stroke-width='2' fill='none' stroke-linecap='round'/><path d='M32 20 Q22 14 14 18 Q18 26 32 26' fill='#E8C24A' opacity='0.5' stroke='#E8C24A' stroke-width='1.5'/><path d='M32 30 Q44 24 50 28 Q46 36 32 36' fill='#E8C24A' opacity='0.5' stroke='#E8C24A' stroke-width='1.5'/><path d='M32 40 Q24 36 18 40 Q22 46 32 46' fill='#E8C24A' opacity='0.5' stroke='#E8C24A' stroke-width='1.5'/><circle cx='32' cy='12' r='3' fill='#E8C24A'/>
+</svg>

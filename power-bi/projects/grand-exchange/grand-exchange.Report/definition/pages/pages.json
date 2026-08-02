@@ -1,0 +1,15 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.1.0/schema.json",
+  "pageOrder": [
+    "9831d0adb76529808c67",
+    "candlestick-recipe",
+    "candlestick-tooltip",
+    "a62c75bea29bda034078",
+    "7e57b0b074d008d99d82",
+    "8a22f86b9200a050749d",
+    "5e76509de970b9320c34",
+    "7692b93c38596871538b",
+    "ba574a5e9017ad5caea3"
+  ],
+  "activePageName": "5e76509de970b9320c34"
+}

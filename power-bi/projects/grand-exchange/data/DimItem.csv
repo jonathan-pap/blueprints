@@ -1,0 +1,201 @@
+ItemKey,ItemName,ItemCategory,ItemSubtype,RarityKey,BaseValue,StackSize,IsCraftable,IsTradeable,Element,Potency,Density,Volatility,BomTier
+1,Crystal Hide,Material,Hide,2,65.52,99,False,True,Wind,,,,1
+2,Cursed Glaive of Echoes,Weapon,Glaive,3,68.36,1,False,True,,,,,4
+3,Cursed Shard,Crystal,Shard,3,258.38,99,False,True,Dark,86.06,3.19,0.718,1
+4,Storm Ash,Reagent,Ash,4,228.2,99,True,True,,,,,3
+5,Iron Ingot of Lightning,Material,Ingot,3,55.97,99,True,True,Fire,,,,1
+6,Moon Cloth,Material,Cloth,1,13.81,99,True,True,Ice,,,,1
+7,Blessed Bar,Material,Bar,2,453.92,99,False,True,Light,,,,1
+8,Mithril Token,Misc,Token,1,2.5,99,False,True,,,,,3
+9,Ancient Scroll of Whispers,Consumable,Scroll,1,36.59,20,True,True,,,,,4
+10,Dawn Greaves,Armor,Greaves,4,32.14,1,False,True,,,,,4
+11,Dusk Ore,Material,Ore,2,35.28,99,False,True,Water,,,,1
+12,Sun Bar,Material,Bar,5,477.48,99,False,True,Lightning,,,,2
+13,Drake Robe of the Wild,Armor,Robe,1,1.65,1,False,True,,,,,4
+14,Shadow Cloth of Dawn,Material,Cloth,2,64.07,99,False,False,Ice,,,,2
+15,Ember Spear,Weapon,Spear,1,12.73,1,True,False,,,,,4
+16,Ember Resin of Echoes,Reagent,Resin,1,1.62,99,False,True,,,,,2
+17,Sun Gauntlets,Armor,Gauntlets,1,55.01,1,True,True,,,,,4
+18,Drake Spear,Weapon,Spear,2,224.79,1,False,True,,,,,4
+19,Sun Mace of the Forge,Weapon,Mace,1,120.08,1,True,True,,,,,4
+20,Twilight Pauldrons of Whispers,Armor,Pauldrons,4,370.8,1,False,True,,,,,4
+21,Crystal Boots,Armor,Boots,1,21.23,1,False,True,,,,,4
+22,Ember Glaive of Echoes,Weapon,Glaive,1,98.87,1,True,True,,,,,4
+23,Crystal Robe,Armor,Robe,3,756.19,1,False,True,,,,,4
+24,Ember Helm,Armor,Helm,1,78.28,1,False,False,,,,,4
+25,Verdant Tonic,Consumable,Tonic,4,77.87,20,True,True,,,,,3
+26,Ancient Tonic of the Wild,Consumable,Tonic,2,51.15,20,False,True,,,,,4
+27,Hollow Potion,Consumable,Potion,1,34.04,20,True,False,,,,,4
+28,Iron Elixir,Consumable,Elixir,2,4.58,20,True,True,,,,,4
+29,Dawn Wand of Ruin,Weapon,Wand,2,70.55,1,False,True,,,,,4
+30,Cursed Dagger,Weapon,Dagger,3,1536.14,1,True,True,,,,,4
+31,Moon Chestplate,Armor,Chestplate,3,216.45,1,False,True,,,,,4
+32,Crystal Shard,Crystal,Shard,2,235.39,99,False,True,Fire,28.54,0.69,0.156,2
+33,Storm Charm,Misc,Charm,2,50.03,99,False,True,,,,,3
+34,Phoenix Powder of Tides,Reagent,Powder,1,18.4,99,True,True,,,,,3
+35,Dawn Ore of Dawn,Material,Ore,2,63.48,99,False,True,Ice,,,,1
+36,Iron Herb of Glass,Material,Herb,4,90.55,99,False,True,Lightning,,,,1
+37,Blessed Food of Whispers,Consumable,Food,2,12.64,20,False,True,,,,,4
+38,Blessed Geode,Crystal,Geode,2,183.59,99,True,True,Lightning,19.26,9.76,0.54,2
+39,Cursed Essence of Whispers,Crystal,Essence,1,104.25,99,False,True,Light,10.36,0.87,0.923,1
+40,Frost Sliver,Crystal,Sliver,3,30.57,99,False,True,Light,35.45,9.88,0.539,2
+41,Drake Tincture of Echoes,Reagent,Tincture,6,9626.1,99,False,True,,,,,2
+42,Spectral Potion of the Void,Consumable,Potion,1,18.1,20,True,True,,,,,4
+43,Spectral Sliver of Valor,Crystal,Sliver,1,30.2,99,True,True,Earth,38.76,2.92,0.178,2
+44,Spectral Crystal of Echoes,Crystal,Crystal,2,69.78,99,True,True,Water,4.85,1.85,0.101,2
+45,Phoenix Potion,Consumable,Potion,1,66.24,20,False,True,,,,,3
+46,Dawn Resin,Reagent,Resin,2,44.36,99,True,True,,,,,3
+47,Frost Wand,Weapon,Wand,1,109.09,1,True,True,,,,,4
+48,Verdant Trinket of the Forge,Misc,Trinket,1,29.12,99,True,True,,,,,3
+49,Moon Shard,Crystal,Shard,2,84.96,99,False,True,Light,42.93,6.39,0.323,1
+50,Sun Staff of the Wild,Weapon,Staff,2,14.78,1,True,True,,,,,4
+51,Wyrm Plank,Material,Plank,2,535.68,99,True,True,Ice,,,,1
+52,Dusk Glaive,Weapon,Glaive,2,70.59,1,False,True,,,,,4
+53,Hollow Shard of Dawn,Crystal,Shard,2,94.51,99,True,True,Lightning,43.57,2.33,0.905,2
+54,Dawn Shard of Ruin,Crystal,Shard,3,14.58,99,True,True,Dark,88.45,1.86,0.295,1
+55,Storm Ingot of Stars,Material,Ingot,2,14.97,99,False,True,Earth,,,,2
+56,Sun Powder of the Wild,Reagent,Powder,2,177.44,99,False,True,,,,,2
+57,Wyrm Bow,Weapon,Bow,2,56.68,1,False,True,,,,,4
+58,Crystal Boots,Armor,Boots,1,2.02,1,False,True,,,,,4
+59,Ancient Tonic,Consumable,Tonic,1,69.82,20,True,True,,,,,4
+60,Verdant Axe of Tides,Weapon,Axe,2,20.92,1,True,True,,,,,4
+61,Sun Food,Consumable,Food,3,546.22,20,True,True,,,,,3
+62,Wyrm Boots of Tides,Armor,Boots,2,36.15,1,False,True,,,,,4
+63,Dawn Potion,Consumable,Potion,1,25.68,20,True,True,,,,,3
+64,Twilight Tonic of Lightning,Consumable,Tonic,2,165.32,20,True,True,,,,,3
+65,Mithril Extract of Echoes,Reagent,Extract,1,6.84,99,True,True,,,,,2
+66,Blessed Robe,Armor,Robe,2,12.2,1,True,True,,,,,4
+67,Phoenix Extract of Frost,Reagent,Extract,3,79.33,99,True,True,,,,,3
+68,Blessed Potion,Consumable,Potion,2,108.39,20,True,True,,,,,4
+69,Verdant Food,Consumable,Food,2,8.13,20,True,True,,,,,4
+70,Moon Plank of Whispers,Material,Plank,1,2.71,99,False,True,Wind,,,,2
+71,Hollow Potion,Consumable,Potion,1,53.97,20,True,True,,,,,4
+72,Obsidian Cloak,Armor,Cloak,3,48.71,1,True,True,,,,,4
+73,Cursed Ingot,Material,Ingot,2,25.09,99,False,True,Earth,,,,1
+74,Frost Robe,Armor,Robe,2,4.33,1,False,True,,,,,4
+75,Sun Food,Consumable,Food,1,8.89,20,True,True,,,,,3
+76,Dusk Plank,Material,Plank,1,19.9,99,False,True,Earth,,,,1
+77,Obsidian Draught,Consumable,Draught,1,61.34,20,True,True,,,,,4
+78,Crystal Essence,Crystal,Essence,1,7.96,99,True,True,Dark,82.15,2.47,0.997,2
+79,Hollow Cloak of Glass,Armor,Cloak,1,146.77,1,False,True,,,,,4
+80,Crystal Trinket of Whispers,Misc,Trinket,4,106.0,99,True,True,,,,,2
+81,Dawn Shard,Crystal,Shard,2,17.7,99,False,True,Earth,25.64,8.37,0.479,2
+82,Moon Trinket of the Wild,Misc,Trinket,1,127.08,99,False,True,,,,,3
+83,Dawn Prism of Tides,Crystal,Prism,1,25.89,99,False,True,Earth,75.94,9.14,0.909,2
+84,Sun Sword of Flame,Weapon,Sword,1,10.36,1,False,True,,,,,4
+85,Obsidian Cloth,Material,Cloth,3,83.37,99,False,True,Light,,,,2
+86,Ancient Cloak of Whispers,Armor,Cloak,1,101.87,1,True,True,,,,,4
+87,Drake Sliver,Crystal,Sliver,3,583.4,99,True,True,Lightning,58.34,0.84,0.51,1
+88,Moon Bar,Material,Bar,3,37.69,99,True,True,Earth,,,,2
+89,Ancient Helm,Armor,Helm,1,19.09,1,False,True,,,,,4
+90,Frost Ash of Frost,Reagent,Ash,2,44.76,99,False,False,,,,,3
+91,Frost Sword,Weapon,Sword,4,73.8,1,True,True,,,,,4
+92,Dawn Ore,Material,Ore,1,18.79,99,True,True,Ice,,,,1
+93,Twilight Hide,Material,Hide,1,20.21,99,True,True,Light,,,,2
+94,Obsidian Crossbow,Weapon,Crossbow,4,946.87,1,True,True,,,,,4
+95,Cursed Herb of Whispers,Material,Herb,3,427.67,99,True,True,Fire,,,,1
+96,Obsidian Sliver,Crystal,Sliver,2,27.06,99,True,True,Lightning,85.79,2.31,0.033,2
+97,Iron Sword of Lightning,Weapon,Sword,2,31.07,1,False,True,,,,,4
+98,Crystal Ore,Material,Ore,1,44.57,99,True,True,Earth,,,,2
+99,Iron Gauntlets,Armor,Gauntlets,3,49.76,1,False,True,,,,,4
+100,Dusk Ore of Ruin,Material,Ore,1,40.71,99,False,True,Water,,,,2
+101,Crystal Crossbow,Weapon,Crossbow,1,18.07,1,False,True,,,,,4
+102,Mithril Powder of Dawn,Reagent,Powder,2,12.55,99,False,True,,,,,3
+103,Hollow Resin,Reagent,Resin,4,76.46,99,True,True,,,,,2
+104,Dawn Robe,Armor,Robe,3,570.16,1,False,False,,,,,4
+105,Iron Food of Tides,Consumable,Food,1,16.65,20,True,True,,,,,4
+106,Phoenix Bar of Echoes,Material,Bar,1,143.8,99,True,True,Ice,,,,2
+107,Verdant Cloth,Material,Cloth,4,130.13,99,True,True,Earth,,,,1
+108,Blessed Draught of Tides,Consumable,Draught,4,341.84,20,True,True,,,,,3
+109,Spectral Robe,Armor,Robe,2,709.36,1,False,True,,,,,4
+110,Crystal Axe,Weapon,Axe,2,11.29,1,True,True,,,,,4
+111,Sun Charm,Misc,Charm,1,2.06,99,False,True,,,,,3
+112,Dawn Food of Whispers,Consumable,Food,1,94.06,20,True,True,,,,,4
+113,Ember Tincture,Reagent,Tincture,1,7.45,99,False,True,,,,,3
+114,Verdant Tonic,Consumable,Tonic,1,19.59,20,True,True,,,,,3
+115,Spectral Powder of the Forge,Reagent,Powder,1,9.94,99,True,True,,,,,2
+116,Crystal Spear of the Void,Weapon,Spear,3,138.55,1,True,True,,,,,4
+117,Twilight Crossbow of Embers,Weapon,Crossbow,1,6.42,1,True,True,,,,,4
+118,Hollow Tincture of the Wild,Reagent,Tincture,1,16.18,99,False,True,,,,,2
+119,Sun Resin,Reagent,Resin,2,68.92,99,False,True,,,,,2
+120,Iron Potion,Consumable,Potion,1,5.99,20,True,True,,,,,4
+121,Hollow Draught,Consumable,Draught,1,8.67,20,True,True,,,,,4
+122,Storm Food of Echoes,Consumable,Food,2,26.48,20,True,False,,,,,3
+123,Crystal Scroll of Echoes,Consumable,Scroll,1,3.62,20,False,True,,,,,4
+124,Crystal Helm of Glass,Armor,Helm,2,24.19,1,False,False,,,,,4
+125,Wyrm Extract,Reagent,Extract,4,277.96,99,False,True,,,,,2
+126,Storm Greaves,Armor,Greaves,1,12.44,1,True,True,,,,,4
+127,Wyrm Ore of Embers,Material,Ore,4,174.03,99,False,True,Ice,,,,1
+128,Crystal Crossbow,Weapon,Crossbow,4,235.34,1,False,True,,,,,4
+129,Blessed Bow of Ruin,Weapon,Bow,3,45.72,1,True,True,,,,,4
+130,Ancient Leather of the Void,Material,Leather,2,92.06,99,False,True,Earth,,,,2
+131,Iron Scroll of Flame,Consumable,Scroll,2,225.05,20,False,True,,,,,3
+132,Phoenix Herb,Material,Herb,2,23.01,99,True,True,Water,,,,2
+133,Sun Wand,Weapon,Wand,2,71.91,1,False,True,,,,,4
+134,Ember Extract,Reagent,Extract,1,15.07,99,True,True,,,,,2
+135,Dawn Bone of the Forge,Material,Bone,4,373.71,99,False,True,Dark,,,,1
+136,Cursed Resin of Embers,Reagent,Resin,2,262.98,99,False,True,,,,,3
+137,Drake Sword,Weapon,Sword,3,184.9,1,False,True,,,,,4
+138,Verdant Tonic of Echoes,Consumable,Tonic,1,2.39,20,False,True,,,,,4
+139,Ember Tonic,Consumable,Tonic,1,34.63,20,True,True,,,,,4
+140,Ember Cloth,Material,Cloth,2,176.37,99,False,True,Earth,,,,1
+141,Crystal Gauntlets of Dawn,Armor,Gauntlets,2,30.79,1,False,True,,,,,4
+142,Moon Axe,Weapon,Axe,1,66.34,1,True,True,,,,,4
+143,Phoenix Tonic,Consumable,Tonic,1,8.77,20,True,True,,,,,3
+144,Storm Gauntlets,Armor,Gauntlets,1,3.38,1,False,True,,,,,4
+145,Drake Food,Consumable,Food,2,47.59,20,True,True,,,,,4
+146,Sun Gauntlets,Armor,Gauntlets,1,2.44,1,True,True,,,,,4
+147,Storm Robe of Whispers,Armor,Robe,5,602.54,1,False,True,,,,,4
+148,Iron Bar,Material,Bar,1,94.09,99,True,True,Water,,,,1
+149,Shadow Scroll of Echoes,Consumable,Scroll,1,2.03,20,False,False,,,,,3
+150,Obsidian Tonic,Consumable,Tonic,1,4.33,20,False,True,,,,,3
+151,Mithril Ore,Material,Ore,2,11.64,99,False,True,Lightning,,,,2
+152,Hollow Crystal,Crystal,Crystal,1,18.62,99,False,True,Wind,42.11,3.73,0.175,1
+153,Hollow Food,Consumable,Food,2,25.9,20,True,True,,,,,4
+154,Ember Bone,Material,Bone,4,1291.9,99,False,True,Ice,,,,2
+155,Storm Charm of Stars,Misc,Charm,1,63.13,99,False,True,,,,,2
+156,Shadow Leather of Lightning,Material,Leather,2,72.78,99,True,True,Earth,,,,1
+157,Sun Resin of the Forge,Reagent,Resin,1,23.92,99,True,False,,,,,2
+158,Storm Crystal,Crystal,Crystal,1,32.2,99,False,True,Lightning,2.99,5.61,0.746,2
+159,Iron Axe of Frost,Weapon,Axe,1,7.14,1,True,True,,,,,4
+160,Ancient Food of the Forge,Consumable,Food,1,56.19,20,False,True,,,,,4
+161,Iron Hide,Material,Hide,2,10.58,99,False,True,Dark,,,,1
+162,Mithril Fragment of Dawn,Misc,Fragment,2,109.46,99,False,True,,,,,2
+163,Verdant Potion of Embers,Consumable,Potion,2,166.75,20,True,True,,,,,4
+164,Ancient Staff of Lightning,Weapon,Staff,2,51.74,1,False,True,,,,,4
+165,Mithril Plank of Dawn,Material,Plank,2,32.51,99,False,True,Wind,,,,1
+166,Sun Bow,Weapon,Bow,1,32.47,1,False,True,,,,,4
+167,Crystal Essence of Valor,Crystal,Essence,1,1.0,99,False,True,Ice,7.1,0.91,0.113,1
+168,Ember Ore of Dawn,Material,Ore,1,28.87,99,False,True,Ice,,,,1
+169,Verdant Ingot,Material,Ingot,2,35.06,99,False,True,Fire,,,,2
+170,Phoenix Powder,Reagent,Powder,6,2835.24,99,False,True,,,,,2
+171,Obsidian Bar,Material,Bar,1,46.89,99,True,True,Dark,,,,1
+172,Storm Herb,Material,Herb,2,36.72,99,False,True,Water,,,,1
+173,Twilight Shard,Crystal,Shard,3,25.56,99,False,True,Water,84.25,7.35,0.685,2
+174,Storm Sliver of Whispers,Crystal,Sliver,3,84.75,99,False,True,Light,77.08,2.61,0.182,1
+175,Sun Extract,Reagent,Extract,2,43.56,99,True,True,,,,,2
+176,Shadow Sword,Weapon,Sword,2,46.11,1,True,True,,,,,4
+177,Drake Plank of the Forge,Material,Plank,2,48.79,99,False,True,Water,,,,1
+178,Spectral Cloak of Tides,Armor,Cloak,3,349.56,1,False,True,,,,,4
+179,Ancient Powder of Ruin,Reagent,Powder,1,5.46,99,False,True,,,,,2
+180,Cursed Ore,Material,Ore,4,297.6,99,True,True,Water,,,,1
+181,Blessed Scroll,Consumable,Scroll,1,94.44,20,True,True,,,,,4
+182,Cursed Boots,Armor,Boots,3,12.53,1,True,True,,,,,4
+183,Hollow Tonic of Glass,Consumable,Tonic,1,24.92,20,False,True,,,,,3
+184,Spectral Herb of Embers,Material,Herb,1,9.95,99,True,True,Lightning,,,,1
+185,Dawn Robe,Armor,Robe,1,12.87,1,True,True,,,,,4
+186,Frost Dagger,Weapon,Dagger,1,6.78,1,True,True,,,,,4
+187,Obsidian Resin,Reagent,Resin,1,16.39,99,True,True,,,,,3
+188,Spectral Crystal,Crystal,Crystal,1,183.0,99,True,True,Wind,29.74,1.68,0.067,2
+189,Obsidian Gauntlets,Armor,Gauntlets,1,4.4,1,False,True,,,,,4
+190,Sun Boots,Armor,Boots,1,4.94,1,True,True,,,,,4
+191,Drake Trinket,Misc,Trinket,3,21.05,99,False,True,,,,,2
+192,Cursed Hide,Material,Hide,4,1915.64,99,True,True,Fire,,,,1
+193,Ancient Hide of Dawn,Material,Hide,2,23.07,99,False,True,Light,,,,1
+194,Crystal Elixir of Whispers,Consumable,Elixir,1,19.48,20,False,True,,,,,3
+195,Storm Greaves of Frost,Armor,Greaves,1,12.39,1,True,True,,,,,4
+196,Obsidian Bow of Ruin,Weapon,Bow,4,77.6,1,False,True,,,,,4
+197,Crystal Cloth of the Wild,Material,Cloth,1,15.15,99,True,True,Fire,,,,2
+198,Phoenix Bow,Weapon,Bow,1,383.71,1,False,True,,,,,4
+199,Iron Dagger of Dawn,Weapon,Dagger,4,1280.99,1,False,True,,,,,4
+200,Shadow Cloth,Material,Cloth,4,86.61,99,False,True,Lightning,,,,1

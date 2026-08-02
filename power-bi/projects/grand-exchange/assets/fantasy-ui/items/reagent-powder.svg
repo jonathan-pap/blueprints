@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='64' height='64'>
+<path d='M20 18 L44 18 L48 26 L46 54 L18 54 L16 26 Z' fill='none' stroke='#E8C24A' stroke-width='2' stroke-linejoin='round'/><path d='M20 18 Q22 12 26 12 Q28 16 30 16 Q32 12 34 12 Q36 16 38 16 Q40 12 44 18' fill='none' stroke='#E8C24A' stroke-width='2'/><line x1='16' y1='26' x2='48' y2='26' stroke='#E8C24A' stroke-width='1.5'/><text x='32' y='42' text-anchor='middle' font-size='10' fill='#E8C24A' font-family='serif' font-style='italic'>~</text>
+</svg>

@@ -1,0 +1,7 @@
+RarityKey,RarityName,RarityRank,DropWeight,ValueMultiplier,ColorHex
+1,Common,1,50,1.0,#9E9E9E
+2,Uncommon,2,25,2.0,#4CAF50
+3,Rare,3,14,5.0,#2196F3
+4,Epic,4,7,12.0,#9C27B0
+5,Legendary,5,3,40.0,#FF9800
+6,Mythic,6,1,150.0,#F44336

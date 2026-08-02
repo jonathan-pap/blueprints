@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 50" width="200" height="50">
+<path d='M 15,25 Q 15,8 30,8 L 170,8 Q 185,8 185,25 Q 185,42 170,42 L 30,42 Q 15,42 15,25 Z' fill='none' stroke='#E8C24A' stroke-width='1.4'/>
+<path d='M 22,25 Q 22,15 32,15 L 168,15 Q 178,15 178,25 Q 178,35 168,35 L 32,35 Q 22,35 22,25 Z' fill='none' stroke='#E8C24A' stroke-width='0.4' opacity='0.6'/>
+<circle cx='15' cy='25' r='3' fill='#E8C24A'/>
+<circle cx='185' cy='25' r='3' fill='#E8C24A'/>
+</svg>

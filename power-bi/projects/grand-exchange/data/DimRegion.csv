@@ -1,0 +1,13 @@
+RegionKey,RegionName,Biome,LevelMin,LevelMax
+1,Forest of Ember,Forest,44,65
+2,Mountains of Frost,Mountains,45,64
+3,Swamp of Storm,Swamp,43,59
+4,Volcanic of Shadow,Volcanic,47,69
+5,Volcanic of Sun,Volcanic,31,49
+6,Mountains of Moon,Mountains,8,24
+7,Forest of Iron,Forest,50,66
+8,Swamp of Mithril,Swamp,27,40
+9,Desert of Obsidian,Desert,30,41
+10,Forest of Crystal,Forest,22,40
+11,Coastal of Verdant,Coastal,11,34
+12,Plains of Hollow,Plains,55,65
