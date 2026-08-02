@@ -18,6 +18,7 @@ Workspace-Blueprint/
 │   ├── 02-build/            edit room — report, model (+DAX, Power Query, naming), theme, visuals (~490 atomic files)
 │   ├── 03-bind/             live model — Power BI MCP or PowerShell TOM + Enhanced Refresh (~50 atomic files)
 │   ├── 04-review/           validate, audit, model-audit, usage, lineage, reviewers (~45 atomic files + hooks + scripts)
+│   ├── tabular-editor/      tool room — bulk model ops via C# scripts, portable across TE2 + TE3
 │   ├── projects/            raw layer — actual <name>.Report / <name>.SemanticModel projects
 │   ├── outputs/             output layer — dated artifacts YYYY-MM-DD-<project>-<type>.<ext>
 │   └── _examples/           provenance snapshot (do not load unless asked)
