@@ -10,7 +10,8 @@
 - [`authoring.md`](authoring.md) — the rule JSON shape, scopes, `Expression` (Dynamic LINQ) + optional
   `FixExpression` (C#), and where rule sets live (local / model annotation / shared file or URL)
 - [`rules/`](rules/) — the rule-set JSON files
-  - [`rules/custom-rules.json`](rules/custom-rules.json) — starter house rules (naming + format + hygiene)
+  - [`rules/BPARules-PowerBI.json`](rules/BPARules-PowerBI.json) — **the standard set** (26 rules: Model Layout, Naming, DAX, Performance, Formatting, Metadata) from Tabular Editor's [BestPracticeRules](https://github.com/TabularEditor/BestPracticeRules) repo. Start here.
+  - [`rules/custom-rules.json`](rules/custom-rules.json) — house additions/overrides on top of the standard set (naming + format + hygiene)
 
 ## Run a rule set
 
@@ -19,17 +20,29 @@
 
   ```bash
   # TE2 (free) — analyze, non-zero exit on violations = CI gate
-  TabularEditor.exe "<model.bim | conn>" -A "tabular-editor/bpa/rules/custom-rules.json"
+  TabularEditor.exe "<model.bim | conn>" -A "tabular-editor/bpa/rules/BPARules-PowerBI.json"
 
-  # TE3
-  TabularEditor3.exe "<model | PBIP folder>" -A "tabular-editor/bpa/rules/custom-rules.json"
+  # TE3 — run the standard set + your house rules together
+  TabularEditor3.exe "<model | PBIP folder>" -A "tabular-editor/bpa/rules/BPARules-PowerBI.json" -A "tabular-editor/bpa/rules/custom-rules.json"
   ```
 
   For Power BI, `pbir bpa run` is an alternative execution path — see
   [`../../power-bi/04-review/bpa/`](../../power-bi/04-review/bpa/). This blueprint owns the **rule library**;
   run it via TE *or* `pbir`.
 
-## Get Microsoft's default set as a starting point
+## The standard set (included) + your house rules
 
-The community/Microsoft default `BPARules.json` is the canonical base — copy it, then add/override with
-your house rules in [`rules/`](rules/). (In TE: *Tools → Manage BPA Rules → Import*.)
+The canonical base — [`rules/BPARules-PowerBI.json`](rules/BPARules-PowerBI.json) — is vendored here from
+Tabular Editor's [BestPracticeRules](https://github.com/TabularEditor/BestPracticeRules) repo (the
+`BPARules-PowerBI.json` variant, tuned for Power BI models). Apply it first; layer your own rules via
+[`rules/custom-rules.json`](rules/custom-rules.json).
+
+Refresh the standard set any time:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/TabularEditor/BestPracticeRules/master/BPARules-PowerBI.json \
+  -o tabular-editor/bpa/rules/BPARules-PowerBI.json
+```
+
+In the TE UI: *Tools → Manage BPA Rules → Import* the file (or point the CLI `-A` at it). To run **both**
+sets at once, pass each with its own `-A`, or merge the JSON arrays into one file.
