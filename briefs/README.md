@@ -24,9 +24,13 @@ discovery questions.
 | [Power BI report](../power-bi/01-brief/brief-template.md) | a report / dashboard | `power-bi/01-brief/` |
 | [Power BI theme](../power-bi/02-build/theme/create/brief-template.md) | a theme JSON | `power-bi/02-build/theme/create/` |
 | [Synthetic-data job](../synthetic-data/01-brief/brief-template.md) | a dummy-data generation job | `synthetic-data/01-brief/` |
+| [**Model context**](model-context-brief.md) | describing an **existing** model so the agent can work on it when it **can't read it** (no MCP / live connection / readable TMDL) | **`briefs/` (cross-cutting)** |
 
-The template stays canonical in its blueprint so a zipped blueprint still works standalone. This
-hub links to it rather than keeping a second copy that could drift.
+Blueprint-specific templates stay canonical **in their blueprint** so a zipped blueprint still works
+standalone; this hub links to them. The **Model context** brief is the exception — it describes an
+existing model for *any* blueprint (Power BI report work, Tabular Editor scripts/BPA), so it lives here
+in the shared hub rather than being tied to one. Save your filled copy next to the work
+(`<blueprint>/projects/<name>/model-context.md`) and point the agent at it.
 
 ## Examples (filled — what "good" looks like)
 

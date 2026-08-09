@@ -42,6 +42,9 @@ Match intent; load only what's listed.
 - **Test in TE2 first.** TE2 is the stricter compiler + smaller API — if it runs there, TE3 is fine.
 - **Model-source-agnostic.** Scripts touch objects, not files; the same `.cs` runs whether the model was
   opened as PBIP/TMDL, `.bim`, or a live connection.
+- **Can't read the model? Get a brief.** With no MCP, no live connection, and no readable TMDL, do **not**
+  guess table/column/measure names — have the user fill the [Model Context Brief](../briefs/model-context-brief.md)
+  and treat it as the source of truth. Missing detail → ask, don't invent.
 
 ## Working on a Power BI model
 

@@ -7,6 +7,7 @@
 1. **First** — `pbir model -d` on the on-disk TMDL. Works for thick PBIP projects. No connection. → `../02-build/report/bind/find-canonical-name.md`
 2. **Second** — **Power BI MCP** for everything live: querying values, validating DAX live, modifying the model, refreshing. → `via-mcp/_index.md`
 3. **Third** — **`connect-pbid`** (PowerShell / TOM / ADOMD) as alternative when MCP is unavailable, plus leverage points where MCP doesn't cover: field parameters, daxlib package mgmt, query traces, VertiPaq stats, Parallels-on-Mac. → `via-powershell/_index.md`
+4. **Last resort — none of the above reachable** (no readable TMDL, no MCP, no live connection): don't guess. Have the user fill the [Model Context Brief](../../briefs/model-context-brief.md) and work from it as the source of truth.
 
 **Orthogonal (not model edits):** the **Desktop Bridge** (`desktop-bridge.md`, preview) drives a *running*
 Desktop to **reload the report from disk** and **screenshot pages** — the verify half of the loop, distinct
