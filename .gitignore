@@ -33,8 +33,8 @@ __pycache__/
 *.pyc
 node_modules/
 
-# Local-only sandbox (kept on disk, not synced to remote)
-power-bi/projects/test/
+# Office / editor temp lock files
+~$*
 
 # candlestick (OHLC + volume-overlay) recipe — not validated, not ready to ship (see BACKLOG.md).
 power-bi/02-build/recipes/candlestick/

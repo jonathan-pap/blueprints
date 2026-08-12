@@ -1,0 +1,18 @@
+/// Disconnected selection table (recipe: category-spotlight). VALUES of financials[Product], NO relationships. Drives emphasis (color), not filtering.
+table 'Product Slicer'
+	lineageTag: 2871d590-2cdd-4fc0-94a3-4bbfc0c0dbea
+
+	column Product
+		lineageTag: 5c38c3c3-0ad6-4253-b83b-965eca645125
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: financials[Product]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Product Slicer' = calculated
+		mode: import
+		source = VALUES( financials[Product] )
+
+	annotation PBI_Id = cc96a2d026d64880bd9d199b8d0488ff
+

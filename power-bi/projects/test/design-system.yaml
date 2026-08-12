@@ -1,0 +1,56 @@
+# Design system — projects/test layout tokens (gallery test report)
+# Layout counterpart to the theme. Claude reads this BEFORE every `pbir add visual`.
+# Power BI never sees this file. See ../../02-build/report/layout/design-system.md.
+
+meta:
+  page: { width: 1280, height: 720 }
+  theme: Verdigris Arcanum (Dark)            # appearance lives in the theme, not here
+  units: px
+
+grid:
+  unit: 8
+  snap_to: 8                                 # positions/sizes are multiples of this (audited)
+margins: { top: 24, right: 24, bottom: 24, left: 24 }
+gaps: { horizontal: 16, vertical: 16 }
+
+zones:
+  summary:  { y: 24,  height: 144 }          # KPIs, slicers
+  analysis: { y: 184, height: 320 }          # charts, maps
+  detail:   { y: 520, height: 176 }          # tables, matrices
+
+defaults:
+  slicer:
+    type: slicer
+    size: { width: 240, height: 40 }
+    zone: summary
+  card:
+    type: cardVisual
+    size: { width: 296, height: 120 }
+    zone: summary
+  chart_small:  { width: 400, height: 304 }
+  chart_medium: { width: 608, height: 304 }
+  chart_wide:   { width: 1232, height: 320 }
+  table:        { width: 1232, height: 176 }
+  matrix:       { width: 1232, height: 176 }
+  title:        { type: textbox, width: 1232, height: 40 }
+
+# Equal-gap math: width = (page - 2*margin - gap*(n-1)) / n
+layouts:
+  kpi_row_4: { width: 296, height: 120, y: 80,  x: [24, 336, 648, 960] }
+  charts_2up: { width: 608, height: 288, y: 216, x: [24, 648] }
+  charts_3up: { width: 394, height: 288, y: 216, x: [24, 442, 860] }
+  # gallery grid — 4 columns x 3 rows of small tiles (for the native-visual showcase)
+  gallery_4x3:
+    width: 296
+    height: 168
+    x: [24, 336, 648, 960]
+    y: [80, 264, 448]
+
+# Header band reserved above zone1 for the page title (y24 h40); zone1 cards start y80.
+# visuals intentionally off a token (gallery tiles):
+overrides:
+  - visual: "nv15"
+    reason: "gallery slicer tile — sized to the native-visual grid, not the 240x40 default"
+  - visual: "rcps"
+    reason: "disconnected Product Slicer — sized to the recipe page column"
+

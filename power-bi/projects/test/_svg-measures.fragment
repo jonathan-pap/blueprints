@@ -1,0 +1,228 @@
+	/// Flat per-product target for the SVG gallery — average Total Sales across products.
+	measure 'Product Target' = AVERAGEX ( ALLSELECTED ( financials[Product] ), [Total Sales] )
+		formatString: $#,##0
+		displayFolder: 7. SVG gallery
+		lineageTag: 6badf6b8-6846-428d-af0f-36d3efdb2787
+
+	/// SVG sparkline — Total Sales monthly trend for the current product.
+	measure 'Sales Sparkline SVG' =
+			VAR _m = ADDCOLUMNS ( SUMMARIZE ( financials, financials[Year], financials[Month Number] ), "@idx", financials[Year] * 12 + financials[Month Number], "@v", [Total Sales] )
+			VAR _xmin = MINX ( _m, [@idx] )
+			VAR _xmax = MAXX ( _m, [@idx] )
+			VAR _ymin = MINX ( _m, [@v] )
+			VAR _ymax = MAXX ( _m, [@v] )
+			VAR _pts = CONCATENATEX ( _m, INT ( 100 * DIVIDE ( [@idx] - _xmin, _xmax - _xmin ) ) & "," & ( 30 - INT ( 30 * DIVIDE ( [@v] - _ymin, _ymax - _ymin ) ) ), " ", [@idx], ASC )
+			RETURN
+				IF ( HASONEVALUE ( financials[Product] ),
+					"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 30'><polyline fill='none' stroke='#5B8DBE' stroke-width='2' points='" & _pts & "'/></svg>" )
+		displayFolder: 7. SVG gallery
+		lineageTag: ffe1761c-88d1-4215-a8b1-d61b8c0f39eb
+		dataCategory: ImageUrl
+
+	/// SVG bullet — Total Sales bar, target line, sentiment dot vs Product Target.
+	measure 'Sales Bullet SVG' =
+			VAR _Actual = [Total Sales]
+			VAR _Target = [Product Target]
+			VAR _Perf = DIVIDE ( _Actual - _Target, _Target )
+			VAR _BarMax = 100
+			VAR _BarMin = 20
+			VAR _Scope = ALLSELECTED ( financials[Product] )
+			VAR _Dot = SWITCH ( TRUE (), _Perf < -0.05, "#f4ae4c", _Perf < -0.025, "#ffe075", _Perf > 0.05, "#2D6390", _Perf > 0.025, "#74B2FF", "#FFFFFF00" )
+			VAR _AxisMax = CALCULATE ( MAXX ( _Scope, [Total Sales] ), REMOVEFILTERS ( financials[Product] ) ) * 1.1
+			VAR _Range = _BarMax - _BarMin
+			VAR _AN = DIVIDE ( _Actual, _AxisMax ) * _Range
+			VAR _TN = ( DIVIDE ( _Target, _AxisMax ) * _Range ) + _BarMin - 1
+			RETURN
+				IF ( HASONEVALUE ( financials[Product] ),
+					"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'>" &
+					"<circle cx='10' cy='11' r='5' fill='" & _Dot & "'/>" &
+					"<rect x='" & _BarMin & "' y='2' width='" & _BarMax & "' height='80%' fill='#F5F5F5'/>" &
+					"<rect x='" & _BarMin & "' y='5' width='" & _AN & "' height='50%' fill='#CFCFCF'/>" &
+					"<rect x='" & _BarMin & "' y='4' width='1' height='60%' fill='#737373'/>" &
+					"<rect x='" & _TN & "' y='2' width='2' height='80%' fill='#000000'/></svg>" )
+		displayFolder: 7. SVG gallery
+		lineageTag: 9104b68e-d815-419c-9795-e11c82f1f2cc
+		dataCategory: ImageUrl
+
+	/// SVG dumbbell — Total Sales vs Product Target as connected dots.
+	measure 'Sales Dumbbell SVG' =
+			VAR _Actual = [Total Sales]
+			VAR _Target = [Product Target]
+			VAR _Scope = ALLSELECTED ( financials[Product] )
+			VAR _AxisMax = CALCULATE ( MAXX ( _Scope, [Total Sales] ), REMOVEFILTERS ( financials[Product] ) ) * 1.1
+			VAR _AN = DIVIDE ( _Actual, _AxisMax ) * 100
+			VAR _TN = DIVIDE ( _Target, _AxisMax ) * 100
+			VAR _Fill = IF ( _Actual > _Target, "#448FD6", "#D64444" )
+			VAR _Stroke = IF ( _Actual > _Target, "#2F6698", "#982F2F" )
+			RETURN
+				IF ( HASONEVALUE ( financials[Product] ),
+					"data:image/svg+xml;utf8,<svg width='100' height='25' xmlns='http://www.w3.org/2000/svg'>" &
+					"<line x1='0' y1='12.5' x2='100' y2='12.5' stroke='#C7C7C7'/>" &
+					"<line x1='" & _AN & "' y1='12.5' x2='" & _TN & "' y2='12.5' stroke='" & _Fill & "' stroke-width='3'/>" &
+					"<circle cx='" & _TN & "' cy='12.5' r='4' fill='#F5F5F5' stroke='#C7C7C7' stroke-width='1.5'/>" &
+					"<circle cx='" & _AN & "' cy='12.5' r='4' fill='" & _Fill & "' stroke='" & _Stroke & "' stroke-width='1.5'/></svg>" )
+		displayFolder: 7. SVG gallery
+		lineageTag: 3fba2a89-3445-48a4-8bee-48fa3551e8fb
+		dataCategory: ImageUrl
+
+	/// SVG IBCS bar — AC (Total Sales, dark) vs PY (outlined), colored delta extension.
+	measure 'Sales IBCS Bar SVG' =
+			VAR _AC = [Total Sales]
+			VAR _PY = [Sales PY]
+			VAR _Delta = _AC - _PY
+			VAR _BarMax = 110
+			VAR _BarMin = 40
+			VAR _H = 22
+			VAR _BarH = 10
+			VAR _BarY = ( _H - _BarH ) / 2
+			VAR _Scope = ALLSELECTED ( financials[Product] )
+			VAR _DeltaColor = IF ( _Delta >= 0, "#006600", "#CC0000" )
+			VAR _MaxAC = CALCULATE ( MAXX ( _Scope, [Total Sales] ), REMOVEFILTERS ( financials[Product] ) )
+			VAR _MaxPY = CALCULATE ( MAXX ( _Scope, [Sales PY] ), REMOVEFILTERS ( financials[Product] ) )
+			VAR _AxisMax = MAX ( _MaxAC, _MaxPY ) * 1.1
+			VAR _Range = _BarMax - _BarMin
+			VAR _ACw = DIVIDE ( _AC, _AxisMax ) * _Range
+			VAR _PYw = DIVIDE ( _PY, _AxisMax ) * _Range
+			VAR _Dx = _BarMin + MIN ( _ACw, _PYw )
+			VAR _Dw = ABS ( _ACw - _PYw )
+			RETURN
+				IF ( HASONEVALUE ( financials[Product] ) && NOT ISBLANK ( _PY ),
+					"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 22'>" &
+					"<rect x='" & _BarMin & "' y='" & ( _BarY - 1 ) & "' width='" & _PYw & "' height='" & ( _BarH + 2 ) & "' fill='none' stroke='#C6C6C6' stroke-width='1'/>" &
+					"<rect x='" & _BarMin & "' y='" & _BarY & "' width='" & _ACw & "' height='" & _BarH & "' fill='#404040'/>" &
+					"<rect x='" & _Dx & "' y='" & ( _BarY + 2 ) & "' width='" & _Dw & "' height='" & ( _BarH - 4 ) & "' fill='" & _DeltaColor & "'/></svg>" )
+		displayFolder: 7. SVG gallery
+		lineageTag: 928e12da-f32b-4056-b3d3-3bf8175d893f
+		dataCategory: ImageUrl
+
+	/// SVG overlapping bars — Total Sales over Product Target with variance bar + label.
+	measure 'Sales Overlapping Bars SVG' =
+			VAR _Actual = [Total Sales]
+			VAR _Target = [Product Target]
+			VAR _Perf = DIVIDE ( _Actual - _Target, _Target )
+			VAR _BarMax = 100
+			VAR _BarMin = 30
+			VAR _Scope = ALLSELECTED ( financials[Product] )
+			VAR _VarColor = IF ( _Perf < 0, "#fab005", "#2094ff" )
+			VAR _MaxA = CALCULATE ( MAXX ( _Scope, [Total Sales] ), REMOVEFILTERS ( financials[Product] ) )
+			VAR _AxisMax = MAX ( _MaxA, _Target ) * 1.1
+			VAR _Range = _BarMax - _BarMin
+			VAR _AN = DIVIDE ( _Actual, _AxisMax ) * _Range
+			VAR _TN = DIVIDE ( _Target, _AxisMax ) * _Range
+			VAR _Vx = _BarMin + MIN ( _AN, _TN ) + 1
+			VAR _Vy = IF ( _Target > _Actual, 2.9, 9 )
+			VAR _Vw = ABS ( _AN - _TN ) - 1
+			RETURN
+				IF ( HASONEVALUE ( financials[Product] ),
+					"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'>" &
+					"<text x='" & ( _BarMin - 10 ) & "' y='15' font-family='Segoe UI' font-size='10' font-weight='600' text-anchor='end' fill='" & _VarColor & "'>" & FORMAT ( _Perf, "#,##0%;#,##0%;#,##0%" ) & "</text>" &
+					"<rect x='" & _BarMin & "' y='10' width='" & _TN & "' height='12' stroke='#686868' fill='#e1dfdd'/>" &
+					"<rect x='" & _BarMin & "' y='3' width='" & _AN & "' height='12' stroke='#686868' fill='#686868'/>" &
+					"<rect x='" & _Vx & "' y='" & _Vy & "' width='" & _Vw & "' height='6' fill='" & _VarColor & "'/></svg>" )
+		displayFolder: 7. SVG gallery
+		lineageTag: 4e86c82b-f310-42a0-8f8f-59cd3302ac46
+		dataCategory: ImageUrl
+
+	/// SVG lollipop — Total Sales bar+dot, conditional color vs Product Target.
+	measure 'Sales Lollipop SVG' =
+			VAR _Actual = [Total Sales]
+			VAR _Target = [Product Target]
+			VAR _Perf = DIVIDE ( _Actual - _Target, _Target )
+			VAR _BarColor = SWITCH ( TRUE (), _Perf < 0, "#ffd43b", _Perf > 0, "#a5d8ff", "#CACACA" )
+			VAR _LabelColor = SWITCH ( TRUE (), _Perf < 0, "#c68c03", _Perf > 0, "#1971c2", "#CACACA" )
+			VAR _Num = SWITCH ( TRUE (), _Actual <= 1E3, FORMAT ( _Actual, "#,0." ), _Actual <= 1E6, FORMAT ( _Actual, "#,0,.0 K" ), _Actual <= 1E9, FORMAT ( _Actual, "#,0,,.0 M" ), FORMAT ( _Actual, "#,0,,,.0 bn" ) )
+			VAR _BarMax = 95
+			VAR _BarMin = 44
+			VAR _Scope = ALLSELECTED ( financials[Product] )
+			VAR _AxisMax = CALCULATE ( MAXX ( _Scope, [Total Sales] ), REMOVEFILTERS ( financials[Product] ) ) * 1.1
+			VAR _Range = _BarMax - _BarMin
+			VAR _AN = DIVIDE ( _Actual, _AxisMax ) * _Range
+			RETURN
+				IF ( HASONEVALUE ( financials[Product] ),
+					"data:image/svg+xml;utf8, <svg xmlns='http://www.w3.org/2000/svg'>" &
+					"<rect x='" & _BarMin & "' y='10' width='" & _AN & "' height='15%' fill='" & _BarColor & "'/>" &
+					"<circle cx='" & ( _AN + _BarMin ) & "' cy='11.75' r='" & MAX ( DIVIDE ( _Actual, _AxisMax ) * 7.5, 3.5 ) & "' fill='" & _BarColor & "'/>" &
+					"<text x='40' y='16' font-family='Segoe UI' font-size='11' font-weight='600' text-anchor='end' fill='" & _LabelColor & "'>" & _Num & "</text></svg>" )
+		displayFolder: 7. SVG gallery
+		lineageTag: 1d8c3e55-46bb-4784-b67d-a74a9039a440
+		dataCategory: ImageUrl
+
+	/// SVG target bar (linear gauge) — Profit % with red/amber/green zones + needle.
+	measure 'Profit Target Bar SVG' =
+			VAR _ratio = [Profit %]
+			VAR _pct = MIN ( MAX ( _ratio, 0 ), 1 ) * 100
+			VAR _x0 = 10
+			VAR _x1 = 300
+			VAR _trackW = _x1 - _x0
+			VAR _needleX = _x0 + _trackW * _pct / 100
+			RETURN
+				"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 60' font-family='Segoe UI, Arial, sans-serif'>" &
+				"<rect x='" & _x0 & "' y='28' width='" & ( _trackW * 0.30 ) & "' height='10' fill='#f4d4d0'/>" &
+				"<rect x='" & ( _x0 + _trackW * 0.30 ) & "' y='28' width='" & ( _trackW * 0.40 ) & "' height='10' fill='#f5e1c8'/>" &
+				"<rect x='" & ( _x0 + _trackW * 0.70 ) & "' y='28' width='" & ( _trackW * 0.30 ) & "' height='10' fill='#d6e7d3'/>" &
+				"<line x1='" & _x0 & "' y1='32' x2='" & _x1 & "' y2='32' stroke='#222' stroke-width='1'/>" &
+				"<line x1='" & _needleX & "' y1='18' x2='" & _needleX & "' y2='42' stroke='#c97a3a' stroke-width='1.5'/>" &
+				"<polygon points='" & _needleX & ",14 " & ( _needleX + 5 ) & ",19 " & _needleX & ",24 " & ( _needleX - 5 ) & ",19' fill='#c97a3a'/></svg>"
+		displayFolder: 7. SVG gallery
+		lineageTag: 548d07dc-163f-47aa-9303-2782b8fbb060
+		dataCategory: ImageUrl
+
+	/// SVG boxplot — distribution of Total Sales across products (per Segment row).
+	measure 'Sales Boxplot SVG' =
+			VAR _Scope = ALLSELECTED ( financials[Product] )
+			VAR _Data = ADDCOLUMNS ( _Scope, "@Val", [Total Sales] )
+			VAR _Q1 = PERCENTILEX.INC ( _Data, [@Val], 0.25 )
+			VAR _Median = PERCENTILEX.INC ( _Data, [@Val], 0.5 )
+			VAR _Q3 = PERCENTILEX.INC ( _Data, [@Val], 0.75 )
+			VAR _IQR = _Q3 - _Q1
+			VAR _Min = MINX ( _Data, [@Val] )
+			VAR _Max = MAXX ( _Data, [@Val] )
+			VAR _WLo = MAX ( _Min, _Q1 - 1.5 * _IQR )
+			VAR _WHi = MIN ( _Max, _Q3 + 1.5 * _IQR )
+			VAR _Range = _Max - _Min
+			VAR _W = 96
+			VAR _H = 22
+			VAR _Pad = 2
+			VAR _BoxH = _H * 0.5
+			VAR _BoxY = ( _H - _BoxH ) / 2
+			VAR _MidY = _H / 2
+			VAR _Scale = DIVIDE ( _W - 2 * _Pad, _Range )
+			VAR _Q1x = ( _Q1 - _Min ) * _Scale + _Pad
+			VAR _Q3x = ( _Q3 - _Min ) * _Scale + _Pad
+			VAR _Mx = ( _Median - _Min ) * _Scale + _Pad
+			VAR _WLx = ( _WLo - _Min ) * _Scale + _Pad
+			VAR _WHx = ( _WHi - _Min ) * _Scale + _Pad
+			RETURN
+				IF ( HASONEVALUE ( financials[Segment] ),
+					"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 22'>" &
+					"<line x1='" & _WLx & "' y1='" & _MidY & "' x2='" & _Q1x & "' y2='" & _MidY & "' stroke='#999999' stroke-width='1'/>" &
+					"<line x1='" & _Q3x & "' y1='" & _MidY & "' x2='" & _WHx & "' y2='" & _MidY & "' stroke='#999999' stroke-width='1'/>" &
+					"<rect x='" & _Q1x & "' y='" & _BoxY & "' width='" & ( _Q3x - _Q1x ) & "' height='" & _BoxH & "' fill='#E8F0FE' stroke='#448FD6' stroke-width='1.5'/>" &
+					"<line x1='" & _Mx & "' y1='" & _BoxY & "' x2='" & _Mx & "' y2='" & ( _BoxY + _BoxH ) & "' stroke='#D64444' stroke-width='2'/></svg>" )
+		displayFolder: 7. SVG gallery
+		lineageTag: 8023866d-aa97-43b4-8b38-857e6db12553
+		dataCategory: ImageUrl
+
+	/// SVG jitter plot — Total Sales dots across products with average line (per Segment row).
+	measure 'Sales Jitter SVG' =
+			VAR _Scope = ALLSELECTED ( financials[Product] )
+			VAR _W = 96
+			VAR _H = 22
+			VAR _Pad = 4
+			VAR _DotR = 2.5
+			VAR _Data = ADDCOLUMNS ( _Scope, "@Val", [Total Sales], "@Idx", RANKX ( _Scope, [Total Sales], , ASC ) )
+			VAR _Min = MINX ( _Data, [@Val] )
+			VAR _Max = MAXX ( _Data, [@Val] )
+			VAR _Avg = AVERAGEX ( _Data, [@Val] )
+			VAR _Range = _Max - _Min
+			VAR _Scale = DIVIDE ( _W - 2 * _Pad, _Range )
+			VAR _AvgX = ( _Avg - _Min ) * _Scale + _Pad
+			VAR _Dots = CONCATENATEX ( _Data, VAR _X = ( [@Val] - _Min ) * _Scale + _Pad VAR _Seed = ABS ( [@Val] * 12345 + [@Idx] * 67890 ) VAR _J = MOD ( _Seed, 10000 ) / 10000 VAR _Y = _Pad + _J * ( _H - 2 * _Pad ) RETURN "<circle cx='" & _X & "' cy='" & _Y & "' r='" & _DotR & "' fill='#448FD6' opacity='0.6'/>", "", [@Idx], ASC )
+			RETURN
+				IF ( HASONEVALUE ( financials[Segment] ),
+					"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 22'>" & _Dots &
+					"<line x1='" & _AvgX & "' y1='1' x2='" & _AvgX & "' y2='21' stroke='#D64444' stroke-width='1.5' stroke-dasharray='3,2'/></svg>" )
+		displayFolder: 7. SVG gallery
+		lineageTag: 5a07fbe1-7453-4ffb-a379-be3a3b06500b
+		dataCategory: ImageUrl
+

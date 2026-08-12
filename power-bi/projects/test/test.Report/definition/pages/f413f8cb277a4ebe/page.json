@@ -1,0 +1,8 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "f413f8cb277a4ebe",
+  "displayName": "Native · Lines & Areas",
+  "width": 1280,
+  "height": 720,
+  "displayOption": "FitToPage"
+}

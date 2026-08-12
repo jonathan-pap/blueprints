@@ -1,0 +1,19 @@
+/// Disconnected selection table (recipe: comparison-period-shading). VALUES of financials[Year], NO relationships. Single-select expected.
+table 'Year Slicer'
+	lineageTag: 46751f41-0225-4968-8fce-415387e15b1c
+
+	column Year
+		formatString: 0
+		lineageTag: 2667584a-9e26-4e31-9957-ba9740dca3c3
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: financials[Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Year Slicer' = calculated
+		mode: import
+		source = VALUES( financials[Year] )
+
+	annotation PBI_Id = 67f9c81b89964b6f91a9ca79afbea1e4
+

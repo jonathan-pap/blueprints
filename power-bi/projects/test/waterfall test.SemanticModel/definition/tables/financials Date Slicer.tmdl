@@ -1,0 +1,19 @@
+/// Disconnected selection table (recipe: disconnected-selection-emphasis). VALUES of financials[Date], NO relationships — drives the time-window slicer without filtering the data.
+table 'financials Date Slicer'
+	lineageTag: e68516bd-4b8b-4f63-bcef-7b76754685b2
+
+	column Date
+		formatString: Short Date
+		lineageTag: 6c2fcfff-2f7b-4fa7-8ec0-d9e2642f61ea
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: financials[Date]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'financials Date Slicer' = calculated
+		mode: import
+		source = VALUES( financials[Date] )
+
+	annotation PBI_Id = dba23cc1745141078111eadd17575eb9
+
