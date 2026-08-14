@@ -11,6 +11,10 @@ Use this for broad "plan then build a report/dashboard" asks. For a small edit t
 an existing report, skip this and go straight to `02-build/report/`. For design-only
 critique, use `02-build/report/references/` (design-identity + archetypes).
 
+> **Story + wireframes:** the spec's **Narrative** and **Page plan** sections are exactly what the
+> [`wireframes/`](wireframes/context.md) room produces — a data-story arc + low-fi page sketches, AI-drafted
+> and reviewed before build. Run it during **Spec** and drop its `story.md` / `wireframe.md` into the spec.
+
 ## Operating rules
 
 1. **Ask one question at a time**, 3–5 rounds max. One primary question per round;

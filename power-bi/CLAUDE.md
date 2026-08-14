@@ -142,6 +142,7 @@ Match the user's intent. Load only what's listed.
 
 - **New report from scratch** → `01-brief/context.md` → `02-build/context.md` → `02-build/report/context.md`
 - **Plan + build a new report (guided, with approval gate)** → `01-brief/report-planning-workflow.md` (Rounds → locked `report-spec.md` → approve → build)
+- **Wireframe / storyboard a report before building (story arc + low-fi page layouts, AI-drafted)** → `01-brief/wireframes/context.md` (brief → story → wireframe → review → handoff; prompts + ASCII notation)
 - **How to configure a specific visual (design rules per type)** → `02-build/report/references/visual-cookbook.md`
 - **Add or rearrange visuals** → `02-build/report/context.md` → `add-visual/_index.md` (read `projects/<name>/design-system.yaml` first for sizes)
 - **Set up / change layout tokens (consistent sizes, grid, gaps)** → `02-build/report/layout/design-system.md`

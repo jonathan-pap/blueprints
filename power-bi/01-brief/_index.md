@@ -4,6 +4,14 @@
 
 - `report-planning-workflow.md` — full lifecycle for a NEW report: Rounds 0–4 (audience → model inventory → page plan → identity/delivery), design-contract gate, locked `projects/<name>/report-spec.md`, approval gate, then build. Use for "plan then build a dashboard"; skip for small edits.
 
+## Wireframes & story (brief → layout skeleton + narrative)
+
+- `wireframes/context.md` — turn a brief into a **data-story arc** + low-fi **page wireframes** before building (text-first, cheap to iterate)
+- `wireframes/workflow.md` — the 4-phase flow: story → wireframe → review → handoff
+- `wireframes/brief-template.md` — the Wireframe & Story Brief (inputs)
+- `wireframes/prompts.md` — copy-paste AI prompts (derive story, wireframe a page, critique)
+- `wireframes/notation.md` — ASCII zone/visual notation mapped to the 1280×720 canvas + design-system zones
+
 ## Brief-as-file (preferred)
 
 - `brief-template.md` — copy-paste template for `projects/<name>/brief.md`
