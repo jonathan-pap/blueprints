@@ -40,6 +40,8 @@ Brief ─▶ 1. STORY ─▶ 2. WIREFRAME ─▶ 3. REVIEW ─▶ 4. HANDOFF ─
 - [`prompts.md`](prompts.md) — copy-paste AI prompts: derive the story, wireframe a page, critique it
 - [`notation.md`](notation.md) — how to render a text wireframe (ASCII grid + zone/visual notation) that maps
   to the 1280×720 canvas and the design-system zones
+- [`handoff.md`](handoff.md) — **generate it outside here**: the portable JSON spec + how to turn it into a
+  Claude HTML/SVG mockup, **Figma** frames (via a Figma MCP), or hand it to any design AI
 
 ## How it connects
 

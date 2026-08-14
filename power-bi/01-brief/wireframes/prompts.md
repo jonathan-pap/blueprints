@@ -68,6 +68,18 @@ Output: a per-page table [visual | type | fields | x/y/w/h | zone], ready for pb
 Also save the story (arc + page purposes) to projects/<name>/story.md.
 ```
 
+## E · Export a portable spec (for Figma / Claude / other AI)
+
+```
+Emit the approved wireframe as the portable JSON spec in handoff.md — one object per page:
+canvas {w,h,margin,grid}, and zones with x/y/w/h + typed placeholder items
+(type ∈ kpi/card/bar/line/donut/map/table/slicer/title/text; hero:true on the page's hero).
+No prose — just the JSON. This is the interchange other tools generate from.
+```
+
+Then follow [`handoff.md`](handoff.md) to turn the spec into an HTML/SVG mockup (Claude), Figma frames
+(Figma MCP), or hand it to any design AI.
+
 ---
 
 ## Tips

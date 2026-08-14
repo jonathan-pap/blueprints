@@ -11,6 +11,7 @@
 - `wireframes/brief-template.md` — the Wireframe & Story Brief (inputs)
 - `wireframes/prompts.md` — copy-paste AI prompts (derive story, wireframe a page, critique)
 - `wireframes/notation.md` — ASCII zone/visual notation mapped to the 1280×720 canvas + design-system zones
+- `wireframes/handoff.md` — **generate outside here**: portable JSON spec → Claude HTML/SVG mockup, Figma frames (Figma MCP), or any design AI
 
 ## Brief-as-file (preferred)
 
