@@ -42,8 +42,8 @@ Brief ─▶ 1. STORY ─▶ 2. WIREFRAME ─▶ 3. REVIEW ─▶ 4. HANDOFF ─
   to the 1280×720 canvas and the design-system zones
 - [`handoff.md`](handoff.md) — **generate it outside here**: the portable JSON spec + how to turn it into a
   Claude HTML/SVG mockup, **Figma** frames (via a Figma MCP), or hand it to any design AI
-- [`example-retail-sales.md`](example-retail-sales.md) — a **filled** Wireframe & Story Brief (a retail Sales
-  star), showing what "good" looks like before drafting
+- **Worked example** — a **filled** Wireframe & Story Brief (retail Sales star) lives in the briefs hub:
+  [`../../../briefs/examples/power-bi-wireframe-retail-sales.md`](../../../briefs/examples/power-bi-wireframe-retail-sales.md)
 
 ## How it connects
 

@@ -38,6 +38,8 @@ in the shared hub rather than being tied to one. Save your filled copy next to t
 |---|---|
 | [Power BI — Sales Overview](examples/power-bi-sales-overview.md) | a complete report brief (audience, KPIs, pages, theme, constraints) |
 | [Synthetic-data — demo financials](examples/synthetic-data-demo-financials.md) | a generation job that produces the data the report above runs on |
+| [Power BI — Wireframe (retail sales)](examples/power-bi-wireframe-retail-sales.md) | a filled Wireframe & Story Brief — story arc + page plan from a Sales-star schema |
+| [Power BI — Model context (example reports)](examples/power-bi-model-context-example-reports.md) | a filled Model Context Brief mapping an existing model (tables, measures, relationships) |
 
 The two examples are a **paired set**: the synthetic-data job generates a `financials` table; the
 Power BI brief builds the report on it — the same cross-blueprint hand-off the blueprints support.

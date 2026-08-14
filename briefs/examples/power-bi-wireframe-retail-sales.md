@@ -1,9 +1,9 @@
 # Example — Wireframe & Story Brief: Retail Sales
 
-> A **filled example** of [`brief-template.md`](brief-template.md), to show what "good" looks like before
+> A **filled example** of [`brief-template.md`](../../power-bi/01-brief/wireframes/brief-template.md), to show what "good" looks like before
 > you draft a story + wireframe. Built from a **provided model diagram** (a Sales star — see §6); the model
 > doesn't need to exist yet — describing it is enough to brief the wireframe. Feeds prompts **A→E** in
-> [`prompts.md`](prompts.md).
+> [`prompts.md`](../../power-bi/01-brief/wireframes/prompts.md).
 
 ## 1. The decision (why this report exists)
 
@@ -44,7 +44,7 @@
 - **Canvas:** 1280×720 (16:9). **Device:** desktop primary; a phone layout for the summary later.
 - **Navigation:** page tabs; **drill-through** from Stores/Products into Sales Detail.
 - **Must-fit elements:** company logo, **currency selector**, global **date slicer**, last-refresh stamp.
-- **Branding/tone:** TBD — neutral corporate; decide in `../../02-build/report/references/` before build.
+- **Branding/tone:** TBD — neutral corporate; decide in `../../power-bi/02-build/report/references/` before build.
 - **Filters:** global rail — Date, Region/Store, Product Category, Reporting Currency.
 
 ## 6. Data reality (the provided model)
@@ -64,7 +64,7 @@ _Provided as a schema diagram — a **Sales star**. Illustrative; not a live mod
 
 ## 7. Output & review
 
-- **Fidelity:** text wireframe + an **HTML/SVG mockup** ([`handoff.md`](handoff.md)) for sign-off.
+- **Fidelity:** text wireframe + an **HTML/SVG mockup** ([`handoff.md`](../../power-bi/01-brief/wireframes/handoff.md)) for sign-off.
 - **Who signs off:** commercial lead + one store manager.
 - **Definition of done:** every page answers one of the §2 questions; the two data gaps (margin, target) are
   resolved or explicitly deferred; wireframe signed off before any PBIR is written.
@@ -79,4 +79,4 @@ _Provided as a schema diagram — a **Sales star**. Illustrative; not a live mod
 3. **Prompt C** → critique vs this brief (does each page answer its question? are the margin/target gaps
    handled?).
 4. **Prompt E** → the portable JSON spec → **Claude HTML mockup** or **Figma frames** via
-   [`handoff.md`](handoff.md).
+   [`handoff.md`](../../power-bi/01-brief/wireframes/handoff.md).
