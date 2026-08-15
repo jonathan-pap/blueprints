@@ -10,6 +10,7 @@ and works from the UI, CLI, or CI (see [`../run.md`](../run.md)). Each starts wi
 | [`create-time-intelligence.cs`](create-time-intelligence.cs) | Add `PY`, `YTD`, `YoY %` for each base measure | selection → whole model | set the date column; skips existing + the folder itself |
 | [`document-model.cs`](document-model.cs) | Export all measures to a Markdown table | whole model | edit the output `path` |
 | [`hide-technical-columns.cs`](hide-technical-columns.cs) | Hide `*Key`/`*Id`/`_*` columns; `SummarizeBy=None` on numeric keys | whole model | tune the key heuristic |
+| [`add-measure-metadata-tags.cs`](add-measure-metadata-tags.cs) | Append `[Type, Created on, Created by]` to each measure's Description; **idempotent** (skips already-tagged) | selection → whole model | set `createdBy`; Type auto-derives from display folder |
 
 ## Adding a script
 
