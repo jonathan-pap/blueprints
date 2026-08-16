@@ -8,8 +8,47 @@
 // ---- config ----------------------------------------------------------------
 string createdBy = "JPA";                                   // developer code (3 chars)
 string createdOn = DateTime.Today.ToString("yyyy-MM-dd");   // today's date, ISO
-// "Type": default = the measure's TOP display folder (auto-classify).
-//   To use a FIXED type for all, replace the two "type" lines in the loop with:  var type = "Base";
+
+// "Type" is CLASSIFIED from the measure's DAX + format + name into one of:
+//   technical · date reference · percent · average · count · sum · other
+// Heuristic + first-match-wins (order matters). Tune the keyword lists to taste.
+Func<Measure, string> classify = m =>
+{
+    var dax  = (m.Expression   ?? "").ToUpperInvariant();
+    var name = (m.Name         ?? "").ToUpperInvariant();
+    var fmt  =  m.FormatString ?? "";
+
+    // 1) technical — helpers / non-analytical output (colours, SVG, tooltips, sort, hidden)
+    if (m.IsHidden || dax.Contains("DATA:IMAGE/SVG") || dax.Contains("UNICHAR(")
+        || name.Contains("COLOR") || name.Contains("SVG") || name.Contains("TOOLTIP") || name.Contains("SORT"))
+        return "technical";
+
+    // 2) date reference — time-intelligence
+    if (dax.Contains("DATEADD") || dax.Contains("YTD") || dax.Contains("QTD") || dax.Contains("MTD")
+        || dax.Contains("SAMEPERIODLASTYEAR") || dax.Contains("DATESINPERIOD") || dax.Contains("PARALLELPERIOD")
+        || dax.Contains("PREVIOUS") || dax.Contains("LASTDATE") || dax.Contains("FIRSTDATE")
+        || dax.Contains("STARTOF") || dax.Contains("ENDOF") || dax.Contains("DATESBETWEEN"))
+        return "date reference";
+
+    // 3) percent — % format string or % in the name
+    if (fmt.Contains("%") || name.Contains("%") || name.Contains(" PCT"))
+        return "percent";
+
+    // 4) average — AVERAGE(x), or a DIVIDE rate (per-unit)
+    if (dax.Contains("AVERAGE") || dax.Contains("DIVIDE("))
+        return "average";
+
+    // 5) count
+    if (dax.Contains("COUNTROWS") || dax.Contains("DISTINCTCOUNT") || dax.Contains("COUNTX")
+        || dax.Contains("COUNTA") || dax.Contains("COUNT("))
+        return "count";
+
+    // 6) sum — additive default
+    if (dax.Contains("SUMX") || dax.Contains("SUM("))
+        return "sum";
+
+    return "other";
+};
 // ----------------------------------------------------------------------------
 
 var targets = Selected.Measures.Any()
@@ -29,9 +68,7 @@ foreach (var m in targets)
         continue;
     }
 
-    // derive the type from the top-level display folder; fall back to "General"
-    var folder = (m.DisplayFolder ?? "").Split('\\')[0].Trim();
-    var type = string.IsNullOrEmpty(folder) ? "General" : folder;
+    var type = classify(m);   // technical / date reference / percent / average / count / sum / other
 
     var tag = "[Type: " + type + ", Created on: " + createdOn + ", Created by: " + createdBy + "]";
 
