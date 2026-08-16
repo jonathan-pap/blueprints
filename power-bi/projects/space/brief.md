@@ -185,8 +185,15 @@ separation does not buy you a label back.** With ~17px per category on a 66-year
 labels fit per ~50px cluster. 1958 is the only casualty in the whole series, and the canvas tooltip
 carries its full detail. Don't spend more time on it; the ceiling is in the visual, not the config.
 
-The shortened `"+N"` form was tried and **reverted** on request — the label now joins every
-`EventShort` for the year with `" · "`.
+**Final form: one name per marker.** The label shows the `EventShort` of the year's **earliest**
+event by `Events[EventDate]` — nothing joined, no `"+N"`. Both of those were tried and rejected:
+joining made multi-event years two to three times wider than their neighbours, which is precisely
+what got them culled. A single name puts every marker in the same width class (~90–110px), so a
+3-event year is no longer the odd one out.
+
+`Events[EventDate]` exists for this: the real first-launch date for a debut, 31 Dec for a record.
+That makes the pick deterministic and sensible — 1958 resolves to **US Air Force** (17 Aug) ahead of
+NASA (11 Oct) and the year's failure-rate record. Full detail stays in the canvas tooltip.
 
 ### ⚠️ `reload` does not re-read `formatStringDefinition`
 

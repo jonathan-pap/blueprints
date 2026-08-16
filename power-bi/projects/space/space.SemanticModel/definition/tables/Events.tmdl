@@ -22,6 +22,11 @@ table Events
 		isNameInferred
 		sourceColumn: [EventDecade]
 
+	column EventDate
+		formatString: yyyy-mm-dd
+		isNameInferred
+		sourceColumn: [EventDate]
+
 	column EventShort
 		lineageTag: 7c2f1a90-4d55-4e21-9f13-0a5b6c8e4411
 		isNameInferred
@@ -31,11 +36,11 @@ table Events
 		mode: import
 		source =
 				VAR _big = FILTER ( ADDCOLUMNS ( VALUES ( space_missions[Company] ), "@n", CALCULATE ( COUNTROWS ( space_missions ) ) ), [@n] >= 50 )
-				VAR _debuts = SELECTCOLUMNS ( ADDCOLUMNS ( _big, "@first", CALCULATE ( MIN ( space_missions[Date] ) ) ), "EventYear", YEAR ( [@first] ) + 0, "EventLabel", "First " & space_missions[Company] & " launch", "EventShort", space_missions[Company] & "", "EventType", "Operator debut" )
+				VAR _debuts = SELECTCOLUMNS ( ADDCOLUMNS ( _big, "@first", CALCULATE ( MIN ( space_missions[Date] ) ) ), "EventYear", YEAR ( [@first] ) + 0, "EventDate", [@first] + 0, "EventLabel", "First " & space_missions[Company] & " launch", "EventShort", space_missions[Company] & "", "EventType", "Operator debut" )
 				VAR _years = ADDCOLUMNS ( VALUES ( space_missions[Year] ), "@n", CALCULATE ( COUNTROWS ( space_missions ) ), "@f", CALCULATE ( COUNTROWS ( space_missions ), space_missions[MissionStatus] IN { "Failure", "Prelaunch Failure" } ) )
-				VAR _peak = SELECTCOLUMNS ( TOPN ( 1, _years, [@n], DESC ), "EventYear", space_missions[Year] + 0, "EventLabel", "Record year — " & [@n] & " launches", "EventShort", "Record year", "EventType", "Record" )
-				VAR _worst = SELECTCOLUMNS ( TOPN ( 1, FILTER ( _years, [@n] >= 20 ), DIVIDE ( [@f], [@n] ), DESC ), "EventYear", space_missions[Year] + 0, "EventLabel", "Worst failure rate — " & FORMAT ( DIVIDE ( [@f], [@n] ), "0.0%" ), "EventShort", "Worst failures", "EventType", "Record" )
-				VAR _firstEver = SELECTCOLUMNS ( TOPN ( 1, _years, space_missions[Year], ASC ), "EventYear", space_missions[Year] + 0, "EventLabel", "First orbital launch attempt", "EventShort", "First launch", "EventType", "Record" )
+				VAR _peak = SELECTCOLUMNS ( TOPN ( 1, _years, [@n], DESC ), "EventYear", space_missions[Year] + 0, "EventDate", DATE ( space_missions[Year], 12, 31 ) + 0, "EventLabel", "Record year — " & [@n] & " launches", "EventShort", "Record year", "EventType", "Record" )
+				VAR _worst = SELECTCOLUMNS ( TOPN ( 1, FILTER ( _years, [@n] >= 20 ), DIVIDE ( [@f], [@n] ), DESC ), "EventYear", space_missions[Year] + 0, "EventDate", DATE ( space_missions[Year], 12, 31 ) + 0, "EventLabel", "Worst failure rate — " & FORMAT ( DIVIDE ( [@f], [@n] ), "0.0%" ), "EventShort", "Worst failures", "EventType", "Record" )
+				VAR _firstEver = SELECTCOLUMNS ( TOPN ( 1, _years, space_missions[Year], ASC ), "EventYear", space_missions[Year] + 0, "EventDate", DATE ( space_missions[Year], 12, 31 ) + 0, "EventLabel", "First orbital launch attempt", "EventShort", "First launch", "EventType", "Record" )
 				VAR _all = UNION ( _debuts, _peak, _worst, _firstEver )
 				RETURN ADDCOLUMNS ( _all, "EventDecade", INT ( [EventYear] / 10 ) * 10 )
 
