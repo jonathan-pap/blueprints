@@ -142,28 +142,6 @@
                   "Value": "true"
                 }
               }
-            },
-            "backColorPrimary": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#0F1528'"
-                    }
-                  }
-                }
-              }
-            },
-            "backColorSecondary": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#0F1528'"
-                    }
-                  }
-                }
-              }
             }
           }
         }

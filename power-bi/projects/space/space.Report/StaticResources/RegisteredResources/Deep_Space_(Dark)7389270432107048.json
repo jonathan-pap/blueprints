@@ -562,11 +562,6 @@
                 "color": "#E8ECF8"
               }
             },
-            "background": {
-              "solid": {
-                "color": "#0F1528"
-              }
-            },
             "fontFamily": "Segoe UI Semibold",
             "fontSize": 12,
             "alignment": "left"
