@@ -12,6 +12,7 @@ and works from the UI, CLI, or CI (see [`../run.md`](../run.md)). Each starts wi
 | [`hide-technical-columns.cs`](hide-technical-columns.cs) | Hide `*Key`/`*Id`/`_*` columns; `SummarizeBy=None` on numeric keys | whole model | tune the key heuristic |
 | [`add-measure-metadata-tags.cs`](add-measure-metadata-tags.cs) | Append `[Type, Created on, Created by]` to each measure's Description; **idempotent** (skips already-tagged) | selection → whole model | set `createdBy`; **Type classified from DAX** (sum/average/count/percent/technical/date reference/other) |
 | [`check-measure-variables.cs`](check-measure-variables.cs) | Report measures whose DAX `VAR`s don't start with `_` | selection → whole model | report-only; pairs with the `MEASURE_VAR_UNDERSCORE_PREFIX` BPA rule |
+| [`fix-measure-variables.cs`](fix-measure-variables.cs) | **Fix** the above — rename `VAR`s to `_`-prefixed (declaration + references) | selection → whole model | **dry-run by default**; set `apply=true` to write |
 
 ## Adding a script
 

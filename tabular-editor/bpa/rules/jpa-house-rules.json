@@ -3,10 +3,11 @@
     "ID": "MEASURE_VAR_UNDERSCORE_PREFIX",
     "Name": "Measure DAX variables should start with '_'",
     "Category": "Naming Conventions",
-    "Description": "VAR names in measures should be prefixed with '_' (e.g. VAR _sales) to tell variables apart from columns and measures. Heuristic — assumes space-separated 'VAR name'.",
+    "Description": "VAR names in measures should be prefixed with '_' (e.g. VAR _sales) to tell variables apart from columns and measures. Heuristic — assumes space-separated 'VAR name'. Fix: run scripts/fix-measure-variables.cs (renames declaration + references; dry-run first).",
     "Severity": 2,
     "Scope": "Measure",
-    "Expression": "RegEx.IsMatch(Expression, \"(?i)VAR +[A-Za-z]\")"
+    "Expression": "RegEx.IsMatch(Expression, \"(?i)VAR +[A-Za-z]\")",
+    "CompatibilityLevel": 0
   },
   {
     "ID": "MEASURE_MISSING_METADATA_TAG",
@@ -15,6 +16,7 @@
     "Description": "Every measure should carry a [Type: ..., Created on: ..., Created by: ...] tag at the end of its Description (stamp it with scripts/add-measure-metadata-tags.cs).",
     "Severity": 1,
     "Scope": "Measure",
-    "Expression": "string.IsNullOrEmpty(Description) || !(Description.Contains(\"[Type:\") && Description.Contains(\"Created by:\"))"
+    "Expression": "string.IsNullOrEmpty(Description) || !(Description.Contains(\"[Type:\") && Description.Contains(\"Created by:\"))",
+    "CompatibilityLevel": 0
   }
 ]
