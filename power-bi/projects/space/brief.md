@@ -312,12 +312,12 @@ so a node click filters through the existing date path; `Decades` stays disconne
 ### The alignment problem, and how it was solved
 
 Power BI **insets a chart's plot area** inside its container by an amount that depends on the
-axis and data labels — so an image sized to the same rectangle does *not* line up. Measured
-from a screenshot by locating the node centres and inverting the pinned axis window:
+axis labels, the data labels **and the bubble size** — so an image sized to the same rectangle
+does *not* line up. Final measured values:
 
-| | container | actual plot rect |
+| | scatter container | ribbon = actual plot rect |
 |---|---|---|
-| x / width | 40 / 1200 | **125 / 1095** (≈85px reserved for the hidden y-axis) |
+| x / width | 40 / 1200 | **55 / 1175** |
 | y / height | 150 / 560 | **173 / 520** |
 
 The ribbon image is positioned to the **plot rect**, not the container. Do not "tidy" the two
@@ -325,24 +325,47 @@ visuals onto the same rectangle — that is the bug, not the fix.
 
 ### Gotchas found building the timeline
 
-1. **The SVG viewBox must equal the ribbon rect in page units.** With
-   `preserveAspectRatio='none'` the drawing stretches to its container, so a viewBox whose
-   aspect differs turns the U-turn arcs into tall thin loops. `_W`/`_H` in `[Timeline Ribbon]`
-   are therefore `1095 × 520` — the same numbers as the visual's position. **Three things move
-   together:** the ribbon rect, `_W`/`_H`, and the scatter's pinned axis window.
-2. **Locale decimal separator will silently corrupt the path data.** `FORMAT(x,"0.0")` on a
+1. **The plot rect depends on `bubbleSize`.** This cost the most time. Alignment was measured
+   with big bubbles (`-5`), then the bubbles were shrunk to `-18` — which shrank the inset and
+   moved every node outward, while the ribbon stayed pinned. The symptom was subtle and
+   misleading: the band appeared to *start one column inboard*, so the left U-turn looked like
+   it joined 1989→1992 instead of 1990→1991. **Align the ribbon LAST**, after the bubble size
+   and the layout are settled, and re-check after any change to either.
+2. **`powerbi-desktop reload` does NOT re-read the semantic model.** Editing a measure in TMDL
+   on disk and reloading leaves the *live* model on the old definition — verified by evaluating
+   `[Timeline Ribbon]` through MCP and getting the previous SVG back while the file on disk said
+   otherwise. This is the same failure class as the `formatStringDefinition` one. **Measure
+   edits go through MCP**; the disk is not the source of truth while Desktop is open. A silent
+   disk↔live divergence is also dangerous in the other direction — the next Ctrl+S writes the
+   live model over your file.
+3. **Locale decimal separator will silently corrupt the path data.** `FORMAT(x,"0.0")` on a
    European locale emits `1110,6`, which is invalid SVG that fails *without an error* — the
    image just doesn't draw. Every coordinate goes through `FORMAT(ROUND(x,0),"0")`.
-3. **`bubbleSize` is roughly exponential, and rescales with the plot area.** `-35` → invisible
-   specks, `40` → one solid mass of overlapping circles, `-18` → correct. Resizing the chart
-   changes the rendered bubble size, so re-check it after any layout change.
-4. **`pbir pages rename` renames the folder only.** It left `page.json`'s `name` and the
+4. **`bubbleSize` is roughly exponential.** `-35` → invisible specks, `40` → one solid mass of
+   overlapping circles, `-18` → correct.
+5. **The viewBox aspect does not affect positions.** Everything the SVG draws is a fraction of
+   `_W`/`_H`, and `preserveAspectRatio='none'` stretches those fractions onto the rect — so
+   `1200 × 430` in a `1175 × 520` box still lands correctly. Only the **arc radii** feel the
+   aspect (`_rx` is a constant, so it renders as `46 × 1175/1200 ≈ 45` page units). Changing
+   `_W`/`_H` to "match" the rect is therefore cosmetic, not a fix.
+6. **`pbir pages rename` renames the folder only.** It left `page.json`'s `name` and the
    `pages.json` entry as the original hash (`1ea4852a6657b623`) while the folder became
    `Mission_Timeline`. Aligned by hand to match `Launch_Cadence`, where all three agree.
-5. **MCP model edits are live-only until Ctrl+S**, and `powerbi-desktop reload` re-reads from
-   disk — so reloading before saving *discards* them. Order matters: save the model first,
-   then edit report JSON, then reload. (The reverse also bites: edit report JSON first and a
-   later Ctrl+S rewrites `pages.json` from Desktop's copy, deleting the new page.)
+7. **MCP model edits are live-only until Ctrl+S.** Order matters: save the model first, then
+   edit report JSON, then reload. (The reverse also bites: edit report JSON first and a later
+   Ctrl+S rewrites `pages.json` from Desktop's copy, deleting the new page.)
+
+### Measuring alignment from a screenshot
+
+**Do not calibrate against the page canvas.** The nebula's own fill (`#070B18`) is nearly
+identical to Desktop's chrome, so the canvas edges cannot be detected reliably — and the
+screenshot scale *changes between captures* when the window or the Filters pane resizes
+(observed 3330px wide, then 2968px). Calibrate against the **ribbon** instead: its rect is
+known in page units and its bands sit at known fractions of it, which gives the raw-px ↔
+page-unit mapping for free. Then convert node centres and invert the pinned axis window.
+`solve_plot.py` (in this folder) does this. Detect the dotted bands as *thin* horizontal features
+(brighter than the pixels 9px above **and** below) — a colour match alone picks up nebula
+gradients and stars.
 
 ### When the LL2 data lands
 

@@ -368,8 +368,8 @@ table _Measures
 	measure 'Timeline Ribbon' =
 			VAR _rows = MAXX ( ALL ( TimelineNodes ), TimelineNodes[RowCount] )
 			VAR _perRow = MAXX ( ALL ( TimelineNodes ), TimelineNodes[PerRow] )
-			VAR _W = 1095
-			VAR _H = 520
+			VAR _W = 1200
+			VAR _H = 430
 			VAR _xMin = -1.4
 			VAR _xMax = _perRow - 1 + 1.4
 			VAR _yMax = 0.6
@@ -408,7 +408,7 @@ table _Measures
 			        ""
 			    )
 			RETURN
-			    "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1095 520' preserveAspectRatio='none'>"
+			    "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 430' preserveAspectRatio='none'>"
 			        & "<g fill='none' stroke='#7C87A6' stroke-width='2' stroke-opacity='0.45' stroke-linecap='round' stroke-dasharray='1 6'>"
 			        & _lines & _turns
 			        & "</g></svg>"

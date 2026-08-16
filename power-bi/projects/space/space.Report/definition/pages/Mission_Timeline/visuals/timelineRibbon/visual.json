@@ -2,9 +2,9 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
   "name": "timelineRibbon",
   "position": {
-    "x": 125,
+    "x": 55,
     "y": 173,
-    "width": 1095,
+    "width": 1175,
     "height": 520,
     "z": 100,
     "tabOrder": 1
