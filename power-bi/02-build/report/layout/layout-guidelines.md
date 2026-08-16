@@ -21,6 +21,36 @@ Query before placing — never assume → [page-dimensions.md](page-dimensions.m
 - Gap between visuals: 16px minimum, 24px recommended — **equal everywhere** (horizontal set equal; vertical set equal).
 - Snap to an 8px/16px grid: positions 0,16,32,48… ; sizes 200,300,400…
 
+## Whitespace tiers
+
+Pick **one** tier for intra-group spacing and **one** for inter-group; never mix three spacing values in a single row.
+
+| Tier | px | Use |
+|---|---|---|
+| Tight | 16 | between visuals in the same group (proximity = "these belong together") |
+| Normal | 24 | between groups + page edge margins |
+| Section | 32 | between major sections (header/body) |
+
+Proximity is grouping: ≤16px apart reads as one group; ≥32px apart reads as separate — cheaper and cleaner than boxes/borders.
+
+## Reading patterns (where the eye lands)
+
+| Pattern | Path | Use for | Archetype |
+|---|---|---|---|
+| **F** | left-anchored, top-heavy scan | dense analytical/operational pages, tables, filter rails | Analytical, Operational |
+| **Z** | top-left → top-right → bottom-left → bottom-right | sparse executive/narrative pages: headline + hero + a few supports | Executive, Narrative |
+
+**Top-left carries the heaviest message** — put the insight title, primary KPI, or hero there. Set each visual's `tabOrder` to match the reading order (accessibility).
+
+## Slicer placement by count
+
+| Slicers | Placement | Width impact |
+|---|---|---|
+| **1–3** | inline, right of the title row (~10–12% page width each) | none — cards/charts keep full content width |
+| **4+** | vertical filter rail (≈2 grid columns: ~206px on 1280, ~310px on FHD) | F-pattern; content takes the remaining width |
+
+A vertical rail is only justified when the slicers fill **≥50%** of the rail height — three dropdowns leave a dead column, so keep them inline. Reserve the title/slicer band first; **no data visual starts under a slicer** (z-order can't fix a bad layout).
+
 ## Zones (detail gradient)
 
 | Zone | Purpose | Height | Visual types |

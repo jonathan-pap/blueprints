@@ -162,6 +162,12 @@ The contract must account for the **whole page**, not just avoid overlaps:
   oversized card starves richer visuals. The hero is the trend / driver / variance / map / table. A
   card-like hero is allowed **only** as a composite KPI treatment (value + Δ/reference + sparkline or
   threshold band) with a `balance_rationale` — see [S9](../references/signatures.md#s9-composite-kpi-focus).
+- **Balance the whole page (quantitative check).** Beyond "no empty zone": a single **non-hero** data
+  zone shouldn't exceed **~45%** of the content area (below the header band) on a page with 4+ data
+  visuals — if it does, it's the hero and `balance_rationale` must say why the rest stays readable. Page
+  emptiness stays **≤15%** for analytical / operational / comparative pages, **≤20%** for executive /
+  narrative (whitespace serving the story). No contiguous empty band taller than one zone — widen a gap,
+  don't reserve an empty zone.
 - **Every callout/context tile earns its space.** It needs `context:` / `insight_basis` tied to a derived
   value (Δ, variance %, rank shift, gap-to-benchmark, threshold, narrative). If the only available value
   is the same absolute measure plotted next to it, remove it.
