@@ -373,6 +373,82 @@ gradients and stars.
 `PerRow = 18`, not 17. The **pinned axis window does not follow**. Update together:
 `categoryAxis` end `17.4` → `18.4`, and re-measure the plot rect.
 
+## 5d. Node Tooltip page (added 2026-08-16)
+
+A canvas tooltip on the timeline nodes — `Node_Tooltip`, 340 × 320, `type: "Tooltip"`, one
+`tableEx` bound to `[Timeline Tooltip]` with the column header painted out. Same shape as the
+existing `Year Tooltip`; the scatter points at it through `visualContainerObjects.visualTooltip`
+(`type: 'Canvas'`, `section: 'Node_Tooltip'`).
+
+```text
+2021
+
+Launches        157 · +38 vs 2020
+Rank            1st busiest of 66
+Success         143 of 157 (91.1%)
+Failures        11
+Operators       23 · most CASC (48)
+Rockets         51 · most Falcon 9 Block 5 (31)
+Launched from   10 countries · most USA (57)
+Debuts          GK LS, Firefly
+
+• Record year — 157 launches
+```
+
+### New data points, and one new dimension
+
+`Rank`, the year-on-year delta, and `Debuts` (operators whose **first launch anywhere** was that
+year) are new. So is `Launched from`, which comes from a column the brief had written off:
+
+**`space_missions[SiteCountry]`** — the last comma-segment of `Location`. 22 distinct values
+covering all 4,630 rows; only 11 rows need normalising (`New Mexico` → USA,
+`Pacific Missile Range Facility` → USA, `Gran Canaria` → Spain, `Shahrud Missile Test Site` →
+Iran) and the three sea ranges fold into `Sea launch` because they genuinely have no country.
+
+> **It is the launch-site country, not the operator's nationality.** Kazakhstan's 719 is Baikonur
+> flying Soviet/Russian missions; France's 318 is mostly Kourou flying ESA/Arianespace. Always
+> label it "launched from". A visual that reads it as "who launched" is simply wrong.
+
+### Gotchas found building the tooltip
+
+1. **`ALL()` will not take two tables** (`Multiple table arguments are not allowed`). The hovered
+   node filters `TimelineNodes`, which filters `DimDate`, so every "across all years" figure —
+   rank, prior year, an operator's first-ever launch — has to clear **both**. It has to be
+   `REMOVEFILTERS ( DimDate ), REMOVEFILTERS ( TimelineNodes )` per `CALCULATE`. Clearing only
+   `DimDate` leaves the calculation pinned to the hovered year and every rank comes out as 1st.
+2. **Never put literal words inside `FORMAT`.** `FORMAT ( x, "+#,##0;-#,##0;no change" )`
+   rendered as **`no chang`** — letters in a format string are read as specifiers and the `e` was
+   eaten as an exponent marker. It fails silently. Build the words with `&` outside `FORMAT`.
+3. **Tabs (`UNICHAR(9)`) collapse to a single space in a `tableEx` cell**, so label/value columns
+   cannot be aligned this way. Each line has to read as a phrase instead — hence
+   "10 countries · most USA (57)" rather than a bare "10". True of the older `Year Tooltip` too.
+4. **`TOPN` ties return several rows** and `CONCATENATEX` glues them into one string. Every
+   top-N carries a name tiebreaker.
+
+### Verifying a tooltip page without hovering
+
+The bridge cannot hover, and the page renders **empty** on its own (the measure returns `BLANK()`
+with no year in context — correct behaviour). To check layout, add a temporary page filter, then
+remove it:
+
+```json
+"filterConfig": { "filters": [ { "name": "tmpYearProbe",
+  "field": { "Column": { "Expression": { "SourceRef": { "Entity": "TimelineNodes" } },
+                         "Property": "Year" } },
+  "type": "Categorical",
+  "filter": { "Version": 2, "From": [ { "Name": "t", "Entity": "TimelineNodes", "Type": 0 } ],
+    "Where": [ { "Condition": { "In": {
+      "Expressions": [ { "Column": { "Expression": { "SourceRef": { "Source": "t" } },
+                                     "Property": "Year" } } ],
+      "Values": [ [ { "Literal": { "Value": "1969L" } } ] ] } } } ] },
+  "howCreated": "User" } ] }
+```
+
+**Do not read the colours off that screenshot.** Desktop renders a Tooltip-type page dimmed in
+the canvas — text measured `#4F5465`, i.e. `#E8ECF8` at ~30% alpha, about 2.3:1, which looks like
+an accessibility failure and is not one. The identical `tableEx` on `Launch_Cadence` samples
+exactly `#E8ECF8`. Check contrast on a normal page, never on the tooltip preview.
+
 ## 6. Constraints & non-goals
 
 - **No `Price` measure.** 73% of rows have no price. Any cost KPI would silently describe the 27%

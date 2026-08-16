@@ -18,6 +18,13 @@ cultureInfo en-US
 			        "ConceptualProperty": "Year Tooltip"
 			      },
 			      "State": "Generated"
+			    },
+			    "table_measures.timeline_tooltip": {
+			      "Binding": {
+			        "ConceptualEntity": "_Measures",
+			        "ConceptualProperty": "Timeline Tooltip"
+			      },
+			      "State": "Generated"
 			    }
 			  }
 			}

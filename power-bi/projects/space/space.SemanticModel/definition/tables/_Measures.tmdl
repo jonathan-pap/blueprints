@@ -415,6 +415,89 @@ table _Measures
 		lineageTag: be87d75b-c18f-4a51-a790-57684e5c9675
 		dataCategory: ImageUrl
 
+	/// Canvas-tooltip body for the Mission Timeline nodes. Reads the hovered year from TimelineNodes. NOTE: the hovered node filters TimelineNodes which filters DimDate, so every 'across all years' calculation (rank, prior year, an operator's first-ever launch) must clear BOTH tables - ALL(DimDate) alone leaves it pinned to the hovered year, and ALL() will not take two tables so it has to be REMOVEFILTERS per call. Every TOPN carries a name tiebreaker, otherwise a tie returns several rows and CONCATENATEX glues them together. Literal words are never put inside FORMAT - letters there are read as format specifiers, which silently turned 'no change' into 'no chang' (the 'e' was eaten as an exponent marker).
+	measure 'Timeline Tooltip' =
+			VAR _y = COALESCE ( SELECTEDVALUE ( TimelineNodes[Year] ), SELECTEDVALUE ( DimDate[Year] ) )
+			VAR _NL = UNICHAR ( 10 )
+			VAR _TB = UNICHAR ( 9 )
+			VAR _DOT = " " & UNICHAR ( 183 ) & " "
+			VAR _n = [Launches] + 0
+			VAR _prev =
+			    CALCULATE (
+			        COUNTROWS ( space_missions ),
+			        REMOVEFILTERS ( DimDate ), REMOVEFILTERS ( TimelineNodes ),
+			        DimDate[Year] = _y - 1
+			    ) + 0
+			VAR _minY = CALCULATE ( MIN ( DimDate[Year] ), REMOVEFILTERS ( DimDate ), REMOVEFILTERS ( TimelineNodes ) )
+			VAR _diff = _n - _prev
+			VAR _dTxt =
+			    SWITCH (
+			        TRUE (),
+			        _y = _minY, "first year",
+			        _diff = 0, "level with " & FORMAT ( _y - 1, "0" ),
+			        IF ( _diff > 0, "+", "-" ) & FORMAT ( ABS ( _diff ), "#,##0" ) & " vs " & FORMAT ( _y - 1, "0" )
+			    )
+			VAR _years =
+			    ADDCOLUMNS (
+			        CALCULATETABLE ( VALUES ( DimDate[Year] ), REMOVEFILTERS ( DimDate ), REMOVEFILTERS ( TimelineNodes ) ),
+			        "@n", CALCULATE ( COUNTROWS ( space_missions ), REMOVEFILTERS ( TimelineNodes ) )
+			    )
+			VAR _rank = COUNTROWS ( FILTER ( _years, [@n] > _n ) ) + 1
+			VAR _ord =
+			    SWITCH (
+			        TRUE (),
+			        MOD ( _rank, 100 ) IN { 11, 12, 13 }, "th",
+			        MOD ( _rank, 10 ) = 1, "st",
+			        MOD ( _rank, 10 ) = 2, "nd",
+			        MOD ( _rank, 10 ) = 3, "rd",
+			        "th"
+			    )
+			VAR _succ = CALCULATE ( COUNTROWS ( space_missions ), space_missions[MissionStatus] = "Success" ) + 0
+			VAR _fail = CALCULATE ( COUNTROWS ( space_missions ), space_missions[MissionStatus] IN { "Failure", "Prelaunch Failure" } ) + 0
+			VAR _nOp = DISTINCTCOUNT ( space_missions[Company] )
+			VAR _nRk = DISTINCTCOUNT ( space_missions[Rocket] )
+			VAR _nCn = DISTINCTCOUNT ( space_missions[SiteCountry] )
+			VAR _topO =
+			    CONCATENATEX (
+			        TOPN ( 1, ADDCOLUMNS ( VALUES ( space_missions[Company] ), "@c", CALCULATE ( COUNTROWS ( space_missions ) ) ), [@c], DESC, space_missions[Company], ASC ),
+			        space_missions[Company] & " (" & FORMAT ( [@c], "#,##0" ) & ")"
+			    )
+			VAR _topR =
+			    CONCATENATEX (
+			        TOPN ( 1, ADDCOLUMNS ( VALUES ( space_missions[Rocket] ), "@c", CALCULATE ( COUNTROWS ( space_missions ) ) ), [@c], DESC, space_missions[Rocket], ASC ),
+			        space_missions[Rocket] & " (" & FORMAT ( [@c], "#,##0" ) & ")"
+			    )
+			VAR _topC =
+			    CONCATENATEX (
+			        TOPN ( 1, ADDCOLUMNS ( VALUES ( space_missions[SiteCountry] ), "@c", CALCULATE ( COUNTROWS ( space_missions ) ) ), [@c], DESC, space_missions[SiteCountry], ASC ),
+			        space_missions[SiteCountry] & " (" & FORMAT ( [@c], "#,##0" ) & ")"
+			    )
+			VAR _firsts =
+			    ADDCOLUMNS (
+			        CALCULATETABLE ( VALUES ( space_missions[Company] ), REMOVEFILTERS ( DimDate ), REMOVEFILTERS ( TimelineNodes ) ),
+			        "@fy", CALCULATE ( YEAR ( MIN ( space_missions[Date] ) ), REMOVEFILTERS ( DimDate ), REMOVEFILTERS ( TimelineNodes ) )
+			    )
+			VAR _new = FILTER ( _firsts, [@fy] = _y )
+			VAR _newN = COUNTROWS ( _new ) + 0
+			VAR _newTxt =
+			    CONCATENATEX ( TOPN ( 3, _new, space_missions[Company], ASC ), space_missions[Company], ", " )
+			        & IF ( _newN > 3, " +" & FORMAT ( _newN - 3, "0" ) & " more", "" )
+			VAR _ev =
+			    CONCATENATEX ( FILTER ( ALL ( Events ), Events[EventYear] = _y ), UNICHAR ( 8226 ) & " " & Events[EventLabel], _NL )
+			VAR _head = FORMAT ( _y, "0" ) & IF ( _y = 2022, "   partial year", "" )
+			VAR _body =
+			    "Launches" & _TB & FORMAT ( _n, "#,##0" ) & _DOT & _dTxt & _NL
+			        & "Rank" & _TB & FORMAT ( _rank, "0" ) & _ord & " busiest of " & FORMAT ( COUNTROWS ( _years ), "0" ) & _NL
+			        & "Success" & _TB & FORMAT ( _succ, "#,##0" ) & " of " & FORMAT ( _n, "#,##0" ) & " (" & FORMAT ( DIVIDE ( _succ, _n ), "0.0%" ) & ")" & _NL
+			        & "Failures" & _TB & FORMAT ( _fail, "#,##0" ) & _NL
+			        & "Operators" & _TB & FORMAT ( _nOp, "0" ) & _DOT & "most " & _topO & _NL
+			        & "Rockets" & _TB & FORMAT ( _nRk, "0" ) & _DOT & "most " & _topR & _NL
+			        & "Launched from" & _TB & FORMAT ( _nCn, "0" ) & IF ( _nCn = 1, " country", " countries" ) & _DOT & "most " & _topC
+			        & IF ( _newN > 0, _NL & "Debuts" & _TB & _newTxt, "" )
+			RETURN
+			    IF ( ISBLANK ( _y ), BLANK (), _head & _NL & _NL & _body & IF ( NOT ISBLANK ( _ev ), _NL & _NL & _ev, "" ) )
+		lineageTag: 5e253caf-de09-404a-9848-868d73af4eee
+
 	column _
 		isHidden
 		lineageTag: 664b670f-5eba-42a4-a1b0-bd68e0351e73

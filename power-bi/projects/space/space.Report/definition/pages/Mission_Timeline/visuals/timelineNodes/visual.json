@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "timelineNodes",
   "position": {
     "x": 40,
     "y": 150,
-    "width": 1200,
-    "height": 560,
     "z": 200,
+    "height": 560,
+    "width": 1200,
     "tabOrder": 2
   },
   "visual": {
@@ -27,43 +27,8 @@
                 }
               },
               "queryRef": "TimelineNodes.Year",
-              "nativeQueryRef": "Year"
-            }
-          ]
-        },
-        "X": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Node X"
-                }
-              },
-              "queryRef": "_Measures.Node X",
-              "nativeQueryRef": "Node X"
-            }
-          ]
-        },
-        "Y": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Node Y"
-                }
-              },
-              "queryRef": "_Measures.Node Y",
-              "nativeQueryRef": "Node Y"
+              "nativeQueryRef": "Year",
+              "active": true
             }
           ]
         },
@@ -114,6 +79,43 @@
               },
               "queryRef": "_Measures.Event Label",
               "nativeQueryRef": "Event Label"
+            }
+          ]
+        },
+        "X": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Node X"
+                }
+              },
+              "queryRef": "_Measures.Node X",
+              "nativeQueryRef": "Node X",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Node Y"
+                }
+              },
+              "queryRef": "_Measures.Node Y",
+              "nativeQueryRef": "Node Y"
             }
           ]
         }
@@ -248,15 +250,7 @@
       ],
       "fillPoint": [
         {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            }
-          }
+          "properties": {}
         }
       ],
       "legend": [
@@ -343,8 +337,123 @@
             }
           }
         }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "type": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Canvas'"
+                }
+              }
+            },
+            "section": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Node_Tooltip'"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "1fc04dc8cd4652dd3b5e",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "TimelineNodes"
+              }
+            },
+            "Property": "Year"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "924a0cdf29581364e6f9",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Node X"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "d0ffc79f896b00f28821",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Node Y"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "395103911219c9f6889e",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Node Size"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "f7a265f51b893c46db0c",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Launches"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "684df7c0504c6abebc50",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Event Label"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }

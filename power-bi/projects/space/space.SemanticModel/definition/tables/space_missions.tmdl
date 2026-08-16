@@ -91,6 +91,26 @@ table space_missions
 		lineageTag: c48921d8-db86-43b2-b5ae-9799a072c611
 		summarizeBy: none
 
+	/// Launch-site country, parsed from the LAST comma-segment of Location. NOTE this is where the rocket left the ground, NOT who launched it - Kazakhstan (719) is Baikonur flying Soviet/Russian missions, France (318) is mostly Kourou flying ESA/Arianespace. Label it 'launched from' in any visual. 11 of 4,630 rows need normalising because their Location string has no country suffix; the three sea ranges are folded into 'Sea launch' because they genuinely have no country.
+	column SiteCountry =
+			VAR _p = SUBSTITUTE ( space_missions[Location], ", ", "|" )
+			VAR _last = TRIM ( PATHITEM ( _p, PATHLENGTH ( _p ) ) )
+			RETURN
+			    SWITCH (
+			        _last,
+			        "New Mexico", "USA",                     -- Spaceport America
+			        "Pacific Missile Range Facility", "USA", -- Kauai, Hawaii
+			        "Gran Canaria", "Spain",
+			        "Shahrud Missile Test Site", "Iran",
+			        "Pacific Ocean", "Sea launch",
+			        "Barents Sea", "Sea launch",
+			        "Yellow Sea", "Sea launch",
+			        _last
+			    )
+		dataType: string
+		lineageTag: 94f4468b-cf50-43eb-94ce-836360d1a275
+		summarizeBy: none
+
 	partition space_missions = m
 		mode: import
 		source =
