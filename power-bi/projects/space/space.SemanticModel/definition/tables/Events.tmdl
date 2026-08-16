@@ -1,4 +1,4 @@
-/// Events derived ENTIRELY from space_missions.csv. 16 operator debuts (companies with >= 50 launches) + 3 records. EventShort is the compact on-chart label (the operator name alone); EventLabel is the full sentence used in the hover tooltip - on a 66-category axis a full sentence collides with its neighbours and Power BI silently drops the loser.
+/// Events derived ENTIRELY from space_missions.csv. 16 operator debuts (companies with >= 50 launches) + 3 records. EventWeight = the operator's total launches in the dataset (0 for records), used to pick which single name a multi-event year shows on the chart - the most consequential debut wins. 1958 therefore surfaces NASA (203 launches) over US Air Force (161). EventDate is kept as the tie-breaker; EventLabel is the full sentence for the tooltip.
 table Events
 	lineageTag: 4ffaf063-88f1-4f0e-9fda-785f837dc10d
 
@@ -22,20 +22,20 @@ table Events
 		isNameInferred
 		sourceColumn: [EventDecade]
 
-	column EventDate
-		formatString: yyyy-mm-dd
-		isNameInferred
-		sourceColumn: [EventDate]
-
-	column EventWeight
-		formatString: 0
-		isNameInferred
-		sourceColumn: [EventWeight]
-
 	column EventShort
 		lineageTag: 7c2f1a90-4d55-4e21-9f13-0a5b6c8e4411
 		isNameInferred
 		sourceColumn: [EventShort]
+
+	column EventDate
+		lineageTag: 8d3e58d5-e17d-4db8-886b-f0875014919a
+		isNameInferred
+		sourceColumn: [EventDate]
+
+	column EventWeight
+		lineageTag: 2df85b84-5ead-44ea-8f04-15055ef2dae8
+		isNameInferred
+		sourceColumn: [EventWeight]
 
 	partition Events = calculated
 		mode: import

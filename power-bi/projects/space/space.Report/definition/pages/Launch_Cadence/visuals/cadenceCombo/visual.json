@@ -4,7 +4,7 @@
   "position": {
     "x": 32,
     "y": 156,
-    "z": 0,
+    "z": 1000,
     "height": 300,
     "width": 1216,
     "tabOrder": 0
@@ -168,7 +168,7 @@
             "markerSize": {
               "expr": {
                 "Literal": {
-                  "Value": "4D"
+                  "Value": "2D"
                 }
               }
             },
@@ -176,8 +176,9 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#C98A2E'"
+                    "ThemeDataColor": {
+                      "ColorId": 3,
+                      "Percent": 0.6
                     }
                   }
                 }
@@ -719,6 +720,13 @@
                   "Value": "1D"
                 }
               }
+            },
+            "barMatchSeriesColor": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
             }
           },
           "selector": {
@@ -774,6 +782,32 @@
             ],
             "metadata": "_Measures.Event Marker",
             "highlightMatching": 1
+          }
+        }
+      ],
+      "seriesLabels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "markers": [
+        {
+          "properties": {
+            "borderShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
           }
         }
       ]
@@ -841,5 +875,65 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "0705e1b82d39e68c4900",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimDate"
+              }
+            },
+            "Property": "Year"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "d4582f349d0bfd632585",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Event Label"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "7dca67c910b8419f6ede",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Launches"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "667a7dc19b2aac32e3e3",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Event Marker"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }

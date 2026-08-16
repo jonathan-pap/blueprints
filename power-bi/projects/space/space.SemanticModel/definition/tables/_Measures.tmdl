@@ -44,7 +44,7 @@ table _Measures
 		isHidden
 		lineageTag: d521adac-8cb5-4f6e-ae04-b8fc8deb1126
 
-	/// Marker Y-position, raised in three STAGGERED tiers (+14/+34/+54) cycling by the year's rank among event years, so adjacent event years sit at different heights. The dynamic format string joins every EventShort for the year with ' - '. NOTE: powerbi-desktop reload does NOT re-read formatStringDefinition; change it via MCP or the change appears to silently not take.
+	/// Marker Y on a FIXED tier ladder (110/136/162), lifted above the column when the column is taller - a stagger measured from [Launches] gets cancelled by falling launch counts, which is what culled labels before. The format string names EVERY operator debut that year, joined by ' - ' ordered by EventWeight: 1958 reads 'NASA - US Air Force'. A record only shows when the year has no debut (2021 'Record year'); record detail lives in the tooltip. Verified 1957/58/59 all render with the joined form.
 	measure 'Event Marker' =
 			VAR _y = SELECTEDVALUE ( DimDate[Year] )
 			VAR _has = COUNTROWS ( FILTER ( Events, Events[EventYear] = _y ) )
@@ -86,7 +86,7 @@ table _Measures
 			    IF ( [Is Selected Decade] = 1 && ISCROSSFILTERED ( Decades[Decade] ), _labels )
 		lineageTag: 3d8fc433-f5d8-47a9-8d2c-d745100e5f9d
 
-	/// Text block for the canvas tooltip page. Inherits the hovered year's filter context automatically. Carries the FULL event sentences, which is where the detail lives now that the on-chart label is shortened to fit.
+	/// Text block for the canvas tooltip page. Inherits the hovered year's filter context. The '+ 0' on each status count forces a zero instead of a blank - a year with no partial failures was rendering 'Partial' with nothing after it.
 	measure 'Year Tooltip' =
 			VAR _y = SELECTEDVALUE ( DimDate[Year] )
 			VAR _n = [Launches]
@@ -270,7 +270,7 @@ table _Measures
 			    IF ( NOT ISBLANK ( _prev ), IF ( _d >= 0, "▲ +", "▼ " ) & FORMAT ( _d, "0" ) & " vs " & FORMAT ( _p, "0" ) & "s" )
 		lineageTag: 7a6aa6c2-ff51-4942-abe5-f8d51d5722fd
 
-	/// Recipe primitive P5 - data-driven narrative sentence. Every number and name comes from the selection.
+	/// Recipe primitive P5 - data-driven narrative. Names the decade's THREE most significant operator debuts (by EventWeight) plus a '+N more' remainder, so the line stays inside the card. This is where debuts that lose the on-chart label fight are surfaced - NASA ranks 3rd in the 1950s and would otherwise be invisible, since 1958 can never be labelled next to 1957.
 	measure 'Decade Takeaway' =
 			VAR _sel = ISCROSSFILTERED ( Decades[Decade] )
 			VAR _lab = [Decade Scope Label]
@@ -297,6 +297,43 @@ table _Measures
 			        & " of them (" & FORMAT ( DIVIDE ( _topN, _n ), "0%" ) & "), and "
 			        & FORMAT ( _s, "0.0%" ) & " of missions succeeded." & _debutLine
 		lineageTag: cd6ab226-5a95-4f24-aff5-92e2f1652495
+
+	/// Decorative full-page nebula backdrop as an SVG data URI - static scenery, no data dependency. Four blurred radial-gradient clouds in the Deep Space palette, an feTurbulence veil for cloud texture, and a hand-scattered star field. Wired to an image visual with sourceType 'imageData'. NOTE the continuation style below: TMDL needs the & LEADING each line - a trailing & silently kills the whole measure and Desktop loads the model without it.
+	measure 'Nebula Backdrop' =
+			"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1280 720' preserveAspectRatio='xMidYMid slice'>"
+			    & "<defs>"
+			    & "<radialGradient id='a'><stop offset='0%' stop-color='#4CC9F0' stop-opacity='0.26'/><stop offset='55%' stop-color='#4CC9F0' stop-opacity='0.09'/><stop offset='100%' stop-color='#4CC9F0' stop-opacity='0'/></radialGradient>"
+			    & "<radialGradient id='b'><stop offset='0%' stop-color='#9D7BEA' stop-opacity='0.24'/><stop offset='55%' stop-color='#9D7BEA' stop-opacity='0.08'/><stop offset='100%' stop-color='#9D7BEA' stop-opacity='0'/></radialGradient>"
+			    & "<radialGradient id='c'><stop offset='0%' stop-color='#E05A8A' stop-opacity='0.16'/><stop offset='60%' stop-color='#E05A8A' stop-opacity='0.05'/><stop offset='100%' stop-color='#E05A8A' stop-opacity='0'/></radialGradient>"
+			    & "<radialGradient id='d'><stop offset='0%' stop-color='#2DC7A6' stop-opacity='0.13'/><stop offset='60%' stop-color='#2DC7A6' stop-opacity='0.04'/><stop offset='100%' stop-color='#2DC7A6' stop-opacity='0'/></radialGradient>"
+			    & "<filter id='v' x='-10%' y='-10%' width='120%' height='120%'><feTurbulence type='fractalNoise' baseFrequency='0.011' numOctaves='4' seed='7' result='n'/><feColorMatrix in='n' type='matrix' values='0 0 0 0 0.30 0 0 0 0 0.62 0 0 0 0 0.90 0 0 0 0.14 0'/></filter>"
+			    & "<filter id='s'><feGaussianBlur stdDeviation='40'/></filter>"
+			    & "</defs>"
+			    & "<rect width='1280' height='720' fill='#070B18'/>"
+			    & "<ellipse cx='360' cy='250' rx='430' ry='310' fill='url(#a)' filter='url(#s)'/>"
+			    & "<ellipse cx='900' cy='190' rx='470' ry='330' fill='url(#b)' filter='url(#s)'/>"
+			    & "<ellipse cx='1090' cy='530' rx='360' ry='260' fill='url(#c)' filter='url(#s)'/>"
+			    & "<ellipse cx='170' cy='610' rx='330' ry='240' fill='url(#d)' filter='url(#s)'/>"
+			    & "<rect width='1280' height='720' filter='url(#v)' opacity='0.6'/>"
+			    & "<g fill='#E8ECF8'>"
+			    & "<circle cx='58' cy='96' r='0.8' opacity='.45'/><circle cx='143' cy='612' r='1' opacity='.6'/><circle cx='207' cy='58' r='.7' opacity='.35'/><circle cx='268' cy='430' r='1.1' opacity='.55'/><circle cx='321' cy='176' r='.6' opacity='.3'/>"
+			    & "<circle cx='389' cy='667' r='.9' opacity='.5'/><circle cx='432' cy='302' r='.7' opacity='.4'/><circle cx='487' cy='81' r='1.2' opacity='.65'/><circle cx='534' cy='523' r='.6' opacity='.32'/><circle cx='596' cy='241' r='.9' opacity='.48'/>"
+			    & "<circle cx='641' cy='694' r='.8' opacity='.42'/><circle cx='702' cy='132' r='1' opacity='.58'/><circle cx='757' cy='389' r='.7' opacity='.36'/><circle cx='812' cy='605' r='1.1' opacity='.6'/><circle cx='868' cy='46' r='.6' opacity='.3'/>"
+			    & "<circle cx='914' cy='463' r='.9' opacity='.5'/><circle cx='977' cy='271' r='.8' opacity='.44'/><circle cx='1031' cy='648' r='1.2' opacity='.62'/><circle cx='1088' cy='118' r='.7' opacity='.38'/><circle cx='1142' cy='411' r='.9' opacity='.52'/>"
+			    & "<circle cx='1196' cy='560' r='.6' opacity='.33'/><circle cx='1243' cy='205' r='1' opacity='.57'/><circle cx='96' cy='341' r='.7' opacity='.37'/><circle cx='178' cy='489' r='.9' opacity='.46'/><circle cx='249' cy='693' r='.6' opacity='.31'/>"
+			    & "<circle cx='347' cy='547' r='1' opacity='.54'/><circle cx='418' cy='118' r='.8' opacity='.43'/><circle cx='509' cy='372' r='.7' opacity='.39'/><circle cx='571' cy='642' r='1.1' opacity='.59'/><circle cx='663' cy='288' r='.6' opacity='.34'/>"
+			    & "<circle cx='728' cy='512' r='.9' opacity='.49'/><circle cx='791' cy='163' r='.8' opacity='.41'/><circle cx='845' cy='352' r='1' opacity='.56'/><circle cx='933' cy='598' r='.7' opacity='.36'/><circle cx='1004' cy='89' r='.9' opacity='.51'/>"
+			    & "<circle cx='1063' cy='334' r='.6' opacity='.32'/><circle cx='1128' cy='682' r='1.1' opacity='.61'/><circle cx='1211' cy='447' r='.8' opacity='.44'/><circle cx='34' cy='523' r='.9' opacity='.47'/><circle cx='229' cy='247' r='.7' opacity='.38'/>"
+			    & "</g>"
+			    & "<g><circle cx='412' cy='214' r='2.6' fill='#9FC0E8' opacity='.18'/><circle cx='412' cy='214' r='1.2' fill='#FFFFFF' opacity='.85'/>"
+			    & "<circle cx='886' cy='452' r='2.6' fill='#9FC0E8' opacity='.18'/><circle cx='886' cy='452' r='1.2' fill='#FFFFFF' opacity='.85'/>"
+			    & "<circle cx='1157' cy='139' r='2.6' fill='#9FC0E8' opacity='.18'/><circle cx='1157' cy='139' r='1.2' fill='#FFFFFF' opacity='.85'/>"
+			    & "<circle cx='163' cy='398' r='2.6' fill='#9FC0E8' opacity='.18'/><circle cx='163' cy='398' r='1.2' fill='#FFFFFF' opacity='.85'/>"
+			    & "<circle cx='659' cy='576' r='2.6' fill='#9FC0E8' opacity='.18'/><circle cx='659' cy='576' r='1.2' fill='#FFFFFF' opacity='.85'/></g>"
+			    & "</svg>"
+		dataCategory: ImageUrl
+		isHidden
+		lineageTag: 5a1c7e30-2b44-4f88-9d61-0c3e7f2a91bb
 
 	column _
 		isHidden

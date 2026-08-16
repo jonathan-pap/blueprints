@@ -83,8 +83,14 @@ STATUS = {
 }
 
 
-def get(url, key=None, retries=4):
-    """GET with backoff. LL2 answers 429 when the hourly budget is spent."""
+def get(url, key=None, retries=40):
+    """GET with backoff.
+
+    LL2's free tier is an HOURLY quota (~15 requests), not a rate that recovers in
+    seconds. A short exponential backoff is useless here - it just burns its retries
+    inside the same dead hour. So a 429 waits a flat 16 minutes and we allow many
+    retries, which lets an unattended run trickle through the quota over several hours.
+    """
     # LL2 rejects the default python-urllib agent with 403; any real UA is accepted
     req = urllib.request.Request(url, headers={
         "Accept": "application/json",
@@ -98,8 +104,9 @@ def get(url, key=None, retries=4):
                 return json.loads(r.read().decode("utf-8"))
         except urllib.error.HTTPError as e:
             if e.code == 429:
-                wait = 60 * (attempt + 1)
-                print(f"    rate-limited; sleeping {wait}s", file=sys.stderr)
+                wait = 16 * 60 if not key else 60
+                print(f"    rate-limited (hourly quota); sleeping {wait//60} min "
+                      f"[retry {attempt + 1}/{retries}]", file=sys.stderr, flush=True)
                 time.sleep(wait)
                 continue
             raise
@@ -180,6 +187,8 @@ def fetch(out, key=None, limit=100, resume=False, pilot=None):
         if not pilot:
             json.dump({"rows": rows, "offset": offset}, open(cache, "w", encoding="utf-8"))
             time.sleep(2)
+    if not pilot and rows:
+        json.dump({"rows": rows, "offset": offset}, open(cache, "w", encoding="utf-8"))
 
     return rows, total, unmapped
 

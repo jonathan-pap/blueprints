@@ -5,6 +5,13 @@ cultureInfo en-US
 			  "Version": "1.0.0",
 			  "Language": "en-US",
 			  "Entities": {
+			    "table_measures.decade_takeaway": {
+			      "Binding": {
+			        "ConceptualEntity": "_Measures",
+			        "ConceptualProperty": "Decade Takeaway"
+			      },
+			      "State": "Generated"
+			    },
 			    "table_measures.year_tooltip": {
 			      "Binding": {
 			        "ConceptualEntity": "_Measures",
