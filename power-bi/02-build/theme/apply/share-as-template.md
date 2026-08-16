@@ -50,15 +50,25 @@ pbir cat "downloaded/<report>.Report/theme" > theme.json
 
 ### From the Power BI service UI
 
-`View → Themes → Save current theme` exports the active theme as JSON. Save locally, then `pbir theme apply-template "<target>.Report" --from-file <file>.json`.
+`View → Themes → Save current theme` exports the active theme as JSON. Save locally, then apply it with the round-trip below.
 
 ### From the community
 
 [deldersveld/PowerBI-ThemeTemplates](https://github.com/deldersveld/PowerBI-ThemeTemplates) — download a JSON, then:
 
 ```bash
-pbir theme apply-template "<target>.Report" --from-file <downloaded>.json
+pbir theme serialize <downloaded>.json -o /tmp/<slug>.Theme
+pbir theme build /tmp/<slug>.Theme -o "<target>.Report" -f --clean
 ```
+
+> **`apply-template` takes a registered template NAME, not a path.** There is no `--from-file` flag
+> (verified against pbir 0.9.25). To apply a standalone JSON, either round-trip it through
+> `serialize` → `build` as above, or register it once and then apply it by name:
+>
+> ```bash
+> pbir theme create-template --new-template <downloaded>.json --name <slug>
+> pbir theme apply-template "<target>.Report" <slug>
+> ```
 
 Or serialize it first for customization → `../serialize/split.md`.
 

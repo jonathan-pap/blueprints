@@ -1,0 +1,298 @@
+table _Measures
+	isHidden
+	lineageTag: cfff4bff-9707-4543-823b-798f2f9200bb
+
+	/// [Type: other, Created on: 2026-08-16, Created by: JPA]
+	measure _blank = ""
+		lineageTag: 863ebf9f-9c98-499d-b9fa-e9869f89a6c0
+
+	/// [Type: other, Created on: 2026-08-16, Created by: JPA]
+	measure test =
+			var _test = "test"
+			RETURN
+			_test
+		lineageTag: 50f5ee3d-1c94-4436-846a-df61a8d6ab39
+
+	/// Launch count - the column height on the cadence chart.
+	measure Launches = COUNTROWS ( space_missions )
+		formatString: #,##0
+		lineageTag: 1dab2b25-78bf-4bfa-982e-5bf90ca8bd5f
+
+	/// Recipe primitive P2 - harvests the disconnected Decades selection. Uses ISCROSSFILTERED, NOT ISFILTERED: the slicer binds Decades[DecadeLabel], so ISFILTERED(Decades[Decade]) stays FALSE and the spotlight never fires. Returns 1 when nothing is selected so the resting state is all-bright.
+	measure 'Is Selected Decade' =
+			VAR _sel = VALUES ( Decades[Decade] )
+			VAR _d = SELECTEDVALUE ( DimDate[Decade] )
+			RETURN
+			    INT ( NOT ISCROSSFILTERED ( Decades[Decade] ) || _d IN _sel )
+		formatString: 0
+		isHidden
+		lineageTag: c94bccff-78ea-4a99-9d81-5b7d5ae5c5c4
+
+	/// Recipe primitive P4 - spotlight colour bound to dataPoint.fill. Unselected decades sit at #5A6480, which still clears 3:1 against the card surface. MUST be bound with a dataViewWildcard selector or every column renders identically.
+	measure 'Column Color' =
+			VAR _sel = [Is Selected Decade]
+			VAR _y = SELECTEDVALUE ( DimDate[Year] )
+			VAR _partial = _y = 2022
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        _partial && _sel = 1, "#2A6F87",
+			        _partial, "#333B52",
+			        _sel = 1, "#4CC9F0",
+			        "#5A6480"
+			    )
+		isHidden
+		lineageTag: d521adac-8cb5-4f6e-ae04-b8fc8deb1126
+
+	/// Marker Y-position, raised in three STAGGERED tiers (+14/+34/+54) cycling by the year's rank among event years, so adjacent event years sit at different heights. The dynamic format string joins every EventShort for the year with ' - '. NOTE: powerbi-desktop reload does NOT re-read formatStringDefinition; change it via MCP or the change appears to silently not take.
+	measure 'Event Marker' =
+			VAR _y = SELECTEDVALUE ( DimDate[Year] )
+			VAR _has = COUNTROWS ( FILTER ( Events, Events[EventYear] = _y ) )
+			VAR _evYears = DISTINCT ( SELECTCOLUMNS ( ALL ( Events ), "@y", Events[EventYear] ) )
+			VAR _rank = COUNTROWS ( FILTER ( _evYears, [@y] <= _y ) )
+			VAR _tier = MOD ( _rank - 1, 3 )
+			RETURN
+			    IF ( NOT ISBLANK ( _has ), [Launches] + 14 + _tier * 20 )
+		lineageTag: a7c8f2b9-acc8-477a-ac3e-8697a4b49028
+
+		formatStringDefinition =
+				VAR _y = SELECTEDVALUE ( DimDate[Year] )
+				VAR _txt =
+				    CONCATENATEX (
+				        FILTER ( Events, Events[EventYear] = _y ),
+				        Events[EventShort],
+				        " · "
+				    )
+				RETURN
+				    IF (
+				        [Is Selected Decade] = 1 && ISCROSSFILTERED ( Decades[Decade] ),
+				        """" & _txt & """",
+				        """"""
+				    )
+
+	/// Event text for a year, blank unless a decade is actually selected. ISCROSSFILTERED for the same reason as [Is Selected Decade].
+	measure 'Event Label' =
+			VAR _y = SELECTEDVALUE ( DimDate[Year] )
+			VAR _labels =
+			    CONCATENATEX (
+			        FILTER ( Events, Events[EventYear] = _y ),
+			        Events[EventLabel],
+			        UNICHAR ( 10 )
+			    )
+			RETURN
+			    IF ( [Is Selected Decade] = 1 && ISCROSSFILTERED ( Decades[Decade] ), _labels )
+		lineageTag: 3d8fc433-f5d8-47a9-8d2c-d745100e5f9d
+
+	/// Text block for the canvas tooltip page. Inherits the hovered year's filter context automatically. Carries the FULL event sentences, which is where the detail lives now that the on-chart label is shortened to fit.
+	measure 'Year Tooltip' =
+			VAR _y = SELECTEDVALUE ( DimDate[Year] )
+			VAR _n = [Launches]
+			VAR _succ = CALCULATE ( COUNTROWS ( space_missions ), space_missions[MissionStatus] = "Success" )
+			VAR _part = CALCULATE ( COUNTROWS ( space_missions ), space_missions[MissionStatus] = "Partial Failure" )
+			VAR _fail = CALCULATE ( COUNTROWS ( space_missions ), space_missions[MissionStatus] IN { "Failure", "Prelaunch Failure" } )
+			VAR _top =
+			    CONCATENATEX (
+			        TOPN ( 1, ADDCOLUMNS ( VALUES ( space_missions[Company] ), "@n", CALCULATE ( COUNTROWS ( space_missions ) ) ), [@n], DESC ),
+			        space_missions[Company]
+			    )
+			VAR _ev =
+			    CONCATENATEX (
+			        FILTER ( Events, Events[EventYear] = _y ),
+			        UNICHAR ( 8226 ) & " " & Events[EventLabel],
+			        UNICHAR ( 10 )
+			    )
+			VAR _head = FORMAT ( _y, "0" ) & IF ( _y = 2022, "  (partial year)", "" )
+			VAR _body =
+			    "Launches" & UNICHAR ( 9 ) & FORMAT ( _n, "#,##0" ) & UNICHAR ( 10 )
+			        & "Success" & UNICHAR ( 9 ) & FORMAT ( _succ, "#,##0" ) & " (" & FORMAT ( DIVIDE ( _succ, _n ), "0%" ) & ")" & UNICHAR ( 10 )
+			        & "Partial" & UNICHAR ( 9 ) & FORMAT ( _part, "#,##0" ) & UNICHAR ( 10 )
+			        & "Failure" & UNICHAR ( 9 ) & FORMAT ( _fail, "#,##0" ) & UNICHAR ( 10 )
+			        & "Busiest" & UNICHAR ( 9 ) & _top
+			RETURN
+			    _head & UNICHAR ( 10 ) & UNICHAR ( 10 ) & _body
+			        & IF ( NOT ISBLANK ( _ev ), UNICHAR ( 10 ) & UNICHAR ( 10 ) & _ev, "" )
+		lineageTag: 8c41f0b2-6ad3-4f9e-b21c-77e5a1d33f02
+
+	/// Lower bound of the error-bar stem - the column top. Paired with [Event Marker] as the upper bound, the error bar draws the connector between column and floating marker.
+	measure 'Event Stem Base' =
+			VAR _y = SELECTEDVALUE ( DimDate[Year] )
+			VAR _has = COUNTROWS ( FILTER ( Events, Events[EventYear] = _y ) )
+			RETURN
+			    IF ( NOT ISBLANK ( _has ), [Launches] )
+		formatString: #,##0
+		isHidden
+		lineageTag: d0494cf9-5eb3-4bc3-8ea3-8a6a3b984f19
+
+	/// Recipe primitive P2 - left edge of the highlight band. MIN/MAX can only describe ONE contiguous band, so a gapped multi-select would tint the unselected decades between them; the _contiguous guard suppresses the band entirely in that case.
+	measure 'Band Start' =
+			VAR _n = COUNTROWS ( VALUES ( Decades[Decade] ) )
+			VAR _min = MIN ( Decades[Decade] )
+			VAR _max = MAX ( Decades[Decade] )
+			VAR _contiguous = ( _max - _min ) = ( _n - 1 ) * 10
+			RETURN
+			    IF ( ISCROSSFILTERED ( Decades[Decade] ) && _contiguous, _min - 0.5 )
+		formatString: 0
+		isHidden
+		lineageTag: fd251b20-5f5f-4589-8d3d-c3252ee4b913
+
+	/// Recipe primitive P2 - right edge of the highlight band, capped at the last year with data so the final decade's band does not run into the axis headroom reserved for labels.
+	measure 'Band End' =
+			VAR _n = COUNTROWS ( VALUES ( Decades[Decade] ) )
+			VAR _min = MIN ( Decades[Decade] )
+			VAR _max = MAX ( Decades[Decade] )
+			VAR _contiguous = ( _max - _min ) = ( _n - 1 ) * 10
+			VAR _dataEnd = MAX ( DimDate[Year] ) + 0.5
+			RETURN
+			    IF ( ISCROSSFILTERED ( Decades[Decade] ) && _contiguous, MIN ( _max + 9.5, _dataEnd ) )
+		formatString: 0
+		isHidden
+		lineageTag: 048b4e39-9b93-4bd0-82a8-71b1f4b0d687
+
+	/// Heading for the decade panel. Falls back to 'All decades' at rest.
+	measure 'Decade Scope Label' =
+			IF (
+			    ISCROSSFILTERED ( Decades[Decade] ),
+			    CONCATENATEX ( VALUES ( Decades[DecadeLabel] ), Decades[DecadeLabel], " + ", Decades[DecadeLabel], ASC ),
+			    "All decades"
+			)
+		lineageTag: 280af90b-8682-4d93-9e39-188b932bb0df
+
+	/// Launches scoped to the harvested decade selection. TREATAS is required because Decades is DISCONNECTED. At rest returns the all-time total.
+	measure 'Sel Launches' =
+			IF (
+			    ISCROSSFILTERED ( Decades[Decade] ),
+			    CALCULATE ( [Launches], TREATAS ( VALUES ( Decades[Decade] ), DimDate[Decade] ) ),
+			    [Launches]
+			)
+		formatString: #,##0
+		lineageTag: 0deddb88-a596-4b94-b5a8-4433e2698bb5
+
+	/// Share of missions with MissionStatus = Success, scoped to the selected decade.
+	measure 'Sel Success %' =
+			VAR _n = [Sel Launches]
+			VAR _s =
+			    IF (
+			        ISCROSSFILTERED ( Decades[Decade] ),
+			        CALCULATE ( COUNTROWS ( space_missions ), space_missions[MissionStatus] = "Success", TREATAS ( VALUES ( Decades[Decade] ), DimDate[Decade] ) ),
+			        CALCULATE ( COUNTROWS ( space_missions ), space_missions[MissionStatus] = "Success" )
+			    )
+			RETURN
+			    DIVIDE ( _s, _n )
+		formatString: 0.0%
+		lineageTag: e4d855d5-a1b0-4d4f-9100-66dfb04e54b0
+
+	/// Distinct operators active in the selected decade.
+	measure 'Sel Operators' =
+			IF (
+			    ISCROSSFILTERED ( Decades[Decade] ),
+			    CALCULATE ( DISTINCTCOUNT ( space_missions[Company] ), TREATAS ( VALUES ( Decades[Decade] ), DimDate[Decade] ) ),
+			    DISTINCTCOUNT ( space_missions[Company] )
+			)
+		formatString: #,##0
+		lineageTag: b57db9dc-6257-4dd6-b71c-f3b644d4bfed
+
+	/// Distinct rocket types flown in the selected decade.
+	measure 'Sel Rockets' =
+			IF (
+			    ISCROSSFILTERED ( Decades[Decade] ),
+			    CALCULATE ( DISTINCTCOUNT ( space_missions[Rocket] ), TREATAS ( VALUES ( Decades[Decade] ), DimDate[Decade] ) ),
+			    DISTINCTCOUNT ( space_missions[Rocket] )
+			)
+		formatString: #,##0
+		lineageTag: a6e56fc4-faa2-4d49-b997-4c1c53a224a7
+
+	/// The decade immediately before the selected one. Blank unless EXACTLY ONE decade is selected, so deltas hide for multi-decade spans.
+	measure 'Prv Decade' =
+			IF (
+			    ISCROSSFILTERED ( Decades[Decade] ) && COUNTROWS ( VALUES ( Decades[Decade] ) ) = 1,
+			    MIN ( Decades[Decade] ) - 10
+			)
+		formatString: 0
+		isHidden
+		lineageTag: 2ca0da4c-a9e9-4db6-9e59-662e410fa809
+
+	/// Busiest operator within the selected decade - feeds the narrative sentence.
+	measure 'Sel Top Operator' =
+			VAR _t =
+			    TOPN ( 1, ADDCOLUMNS ( VALUES ( space_missions[Company] ), "@n", [Sel Launches] ), [@n], DESC )
+			RETURN
+			    MAXX ( _t, space_missions[Company] )
+		isHidden
+		lineageTag: 44b61602-662f-434c-af15-9dd75bece07c
+
+	/// Launch-count delta vs the prior decade, as display text.
+	measure 'Delta Launches' =
+			VAR _p = [Prv Decade]
+			VAR _prev = IF ( NOT ISBLANK ( _p ), CALCULATE ( [Launches], DimDate[Decade] = _p ) )
+			VAR _d = [Sel Launches] - _prev
+			RETURN
+			    IF (
+			        NOT ISBLANK ( _prev ) && _prev > 0,
+			        IF ( _d >= 0, "▲ +", "▼ " ) & FORMAT ( _d, "#,##0" )
+			            & " (" & FORMAT ( DIVIDE ( _d, _prev ), "+0%;-0%" ) & ") vs " & FORMAT ( _p, "0" ) & "s"
+			    )
+		lineageTag: 4a621d3f-c8df-4330-88dc-616153c28193
+
+	/// Success-rate delta vs the prior decade in PERCENTAGE POINTS, as display text.
+	measure 'Delta Success' =
+			VAR _p = [Prv Decade]
+			VAR _prev =
+			    IF (
+			        NOT ISBLANK ( _p ),
+			        CALCULATE (
+			            DIVIDE ( CALCULATE ( COUNTROWS ( space_missions ), space_missions[MissionStatus] = "Success" ), COUNTROWS ( space_missions ) ),
+			            DimDate[Decade] = _p
+			        )
+			    )
+			VAR _d = ( [Sel Success %] - _prev ) * 100
+			RETURN
+			    IF ( NOT ISBLANK ( _prev ), IF ( _d >= 0, "▲ +", "▼ " ) & FORMAT ( _d, "0.0" ) & "pp vs " & FORMAT ( _p, "0" ) & "s" )
+		lineageTag: 7744a838-7106-4843-9379-3c04c94f7cd5
+
+	/// Operator-count delta vs the prior decade, as display text.
+	measure 'Delta Operators' =
+			VAR _p = [Prv Decade]
+			VAR _prev = IF ( NOT ISBLANK ( _p ), CALCULATE ( DISTINCTCOUNT ( space_missions[Company] ), DimDate[Decade] = _p ) )
+			VAR _d = [Sel Operators] - _prev
+			RETURN
+			    IF ( NOT ISBLANK ( _prev ), IF ( _d >= 0, "▲ +", "▼ " ) & FORMAT ( _d, "0" ) & " vs " & FORMAT ( _p, "0" ) & "s" )
+		lineageTag: 2207af16-ffef-41df-960b-15ab96fd3eee
+
+	/// Rocket-type delta vs the prior decade, as display text.
+	measure 'Delta Rockets' =
+			VAR _p = [Prv Decade]
+			VAR _prev = IF ( NOT ISBLANK ( _p ), CALCULATE ( DISTINCTCOUNT ( space_missions[Rocket] ), DimDate[Decade] = _p ) )
+			VAR _d = [Sel Rockets] - _prev
+			RETURN
+			    IF ( NOT ISBLANK ( _prev ), IF ( _d >= 0, "▲ +", "▼ " ) & FORMAT ( _d, "0" ) & " vs " & FORMAT ( _p, "0" ) & "s" )
+		lineageTag: 7a6aa6c2-ff51-4942-abe5-f8d51d5722fd
+
+	/// Recipe primitive P5 - data-driven narrative sentence. Every number and name comes from the selection.
+	measure 'Decade Takeaway' =
+			VAR _sel = ISCROSSFILTERED ( Decades[Decade] )
+			VAR _lab = [Decade Scope Label]
+			VAR _n = [Sel Launches]
+			VAR _ops = [Sel Operators]
+			VAR _s = [Sel Success %]
+			VAR _top = [Sel Top Operator]
+			VAR _topN = CALCULATE ( [Sel Launches], space_missions[Company] = _top )
+			VAR _lead = IF ( _sel, "The " & _lab & " saw ", "Across 1957–2022 there were " )
+			RETURN
+			    _lead & FORMAT ( _n, "#,##0" ) & " orbital launches from "
+			        & FORMAT ( _ops, "0" ) & " operators. " & _top & " accounted for " & FORMAT ( _topN, "#,##0" )
+			        & " of them (" & FORMAT ( DIVIDE ( _topN, _n ), "0%" ) & "), and "
+			        & FORMAT ( _s, "0.0%" ) & " of missions succeeded."
+		lineageTag: cd6ab226-5a95-4f24-aff5-92e2f1652495
+
+	column _
+		isHidden
+		lineageTag: 664b670f-5eba-42a4-a1b0-bd68e0351e73
+		isNameInferred
+		sourceColumn: [_]
+
+	partition _Measures = calculated
+		mode: import
+		source = ROW("_", "")
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,32 @@
+/// Events derived ENTIRELY from space_missions.csv (no external/curated data, per brief 2026-08-16). 16 operator debuts (companies with >= 50 launches) + 3 records (all-time peak year, worst failure rate over >= 20 launches, first launch). Lower the >= 50 threshold to add more debut markers.
+table Events
+	lineageTag: 4ffaf063-88f1-4f0e-9fda-785f837dc10d
+
+	column EventYear
+		isNameInferred
+		sourceColumn: [EventYear]
+
+	column EventLabel
+		isNameInferred
+		sourceColumn: [EventLabel]
+
+	column EventType
+		isNameInferred
+		sourceColumn: [EventType]
+
+	column EventDecade
+		isNameInferred
+		sourceColumn: [EventDecade]
+
+	partition Events = calculated
+		mode: import
+		source =
+				VAR _big = FILTER ( ADDCOLUMNS ( VALUES ( space_missions[Company] ), "@n", CALCULATE ( COUNTROWS ( space_missions ) ) ), [@n] >= 50 )
+				VAR _debuts = SELECTCOLUMNS ( ADDCOLUMNS ( _big, "@first", CALCULATE ( MIN ( space_missions[Date] ) ) ), "EventYear", YEAR ( [@first] ) + 0, "EventLabel", "First " & space_missions[Company] & " launch", "EventType", "Operator debut" )
+				VAR _years = ADDCOLUMNS ( VALUES ( space_missions[Year] ), "@n", CALCULATE ( COUNTROWS ( space_missions ) ), "@f", CALCULATE ( COUNTROWS ( space_missions ), space_missions[MissionStatus] IN { "Failure", "Prelaunch Failure" } ) )
+				VAR _peak = SELECTCOLUMNS ( TOPN ( 1, _years, [@n], DESC ), "EventYear", space_missions[Year] + 0, "EventLabel", "Record year — " & [@n] & " launches", "EventType", "Record" )
+				VAR _worst = SELECTCOLUMNS ( TOPN ( 1, FILTER ( _years, [@n] >= 20 ), DIVIDE ( [@f], [@n] ), DESC ), "EventYear", space_missions[Year] + 0, "EventLabel", "Worst failure rate — " & FORMAT ( DIVIDE ( [@f], [@n] ), "0.0%" ), "EventType", "Record" )
+				VAR _firstEver = SELECTCOLUMNS ( TOPN ( 1, _years, space_missions[Year], ASC ), "EventYear", space_missions[Year] + 0, "EventLabel", "First orbital launch attempt", "EventType", "Record" )
+				VAR _all = UNION ( _debuts, _peak, _worst, _firstEver )
+				RETURN ADDCOLUMNS ( _all, "EventDecade", INT ( [EventYear] / 10 ) * 10 )
+

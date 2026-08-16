@@ -1,0 +1,21 @@
+/// DISCONNECTED selection table (recipe primitive P1). Deliberately has NO relationship to any other table - the slicer over it is a pure input, harvested by [Is Selected Decade]. The '+ 0' breaks data lineage so it cannot filter the fact. Do NOT create a relationship from this table.
+table Decades
+	lineageTag: bb667a15-657a-4415-9464-cb662fe9ee6d
+
+	column Decade
+		lineageTag: 395e2ca1-083d-4e25-bd36-8fe8bd89b087
+		isNameInferred
+		sourceColumn: [Decade]
+
+	column DecadeLabel
+		lineageTag: 46f7c262-20ae-4b4d-b2c9-d0af0a6d0b3c
+		isNameInferred
+		sourceColumn: [DecadeLabel]
+
+	partition Decades = calculated
+		mode: import
+		source =
+				VAR _d = DISTINCT ( SELECTCOLUMNS ( space_missions, "@d", space_missions[Decade] ) )
+				RETURN
+				SELECTCOLUMNS ( _d, "Decade", [@d] + 0, "DecadeLabel", FORMAT ( [@d], "0" ) & "s" )
+

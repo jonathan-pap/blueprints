@@ -1,0 +1,103 @@
+table space_missions
+	lineageTag: ed87d998-0065-4a0d-8e06-d023275a6fbb
+
+	column Company
+		dataType: string
+		lineageTag: ef5a8bda-e264-4e79-82f0-80d425f5a2f8
+		summarizeBy: none
+		sourceColumn: Company
+
+		annotation SummarizationSetBy = Automatic
+
+	column Location
+		dataType: string
+		lineageTag: 85ea25c1-a7b3-4e67-bf61-99da9a0ac73d
+		summarizeBy: none
+		sourceColumn: Location
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 3387dd76-36c2-4b6f-a979-0d0e3dbd3a7a
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Time
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: 178628f3-094f-4269-85dc-188124e3e5fa
+		summarizeBy: none
+		sourceColumn: Time
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column Rocket
+		dataType: string
+		lineageTag: bb500b3d-9add-4aac-8085-d57633ed6e49
+		summarizeBy: none
+		sourceColumn: Rocket
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mission
+		dataType: string
+		lineageTag: a28730e0-08e1-4592-a0fa-2c5c3f3e6d22
+		summarizeBy: none
+		sourceColumn: Mission
+
+		annotation SummarizationSetBy = Automatic
+
+	column RocketStatus
+		dataType: string
+		lineageTag: 2935b6c4-cdcd-458e-810f-b490b223f93f
+		summarizeBy: none
+		sourceColumn: RocketStatus
+
+		annotation SummarizationSetBy = Automatic
+
+	column Price
+		dataType: string
+		lineageTag: 7f7a65bb-7d84-4ff3-822d-f18df8e30553
+		summarizeBy: none
+		sourceColumn: Price
+
+		annotation SummarizationSetBy = Automatic
+
+	column MissionStatus
+		dataType: string
+		lineageTag: 40dbbfb5-23db-48cb-a6e2-2e2689bfd845
+		summarizeBy: none
+		sourceColumn: MissionStatus
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year = YEAR ( space_missions[Date] )
+		dataType: int64
+		formatString: 0
+		lineageTag: d56382a7-a727-4768-836c-59abffd7de7a
+		summarizeBy: none
+
+	column Decade = INT ( YEAR ( space_missions[Date] ) / 10 ) * 10
+		dataType: int64
+		formatString: 0
+		lineageTag: c48921d8-db86-43b2-b5ae-9799a072c611
+		summarizeBy: none
+
+	partition space_missions = m
+		mode: import
+		source =
+				let
+				  Source = Csv.Document(File.Contents("E:\Workspace-Blueprint\power-bi\projects\space\data\space_missions_clean.csv"), [Delimiter = ",", Columns = 9, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				  #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				  #"Changed column type" = Table.TransformColumnTypes(#"Promoted headers", {{"Company", type text}, {"Location", type text}, {"Date", type date}, {"Time", type time}, {"Rocket", type text}, {"Mission", type text}, {"RocketStatus", type text}, {"Price", type text}, {"MissionStatus", type text}}, "en-US")
+				in
+				  #"Changed column type"
+

@@ -1,0 +1,18 @@
+cultureInfo en-US
+
+	linguisticMetadata =
+			{
+			  "Version": "1.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "table_measures.year_tooltip": {
+			      "Binding": {
+			        "ConceptualEntity": "_Measures",
+			        "ConceptualProperty": "Year Tooltip"
+			      },
+			      "State": "Generated"
+			    }
+			  }
+			}
+		contentType: json
+

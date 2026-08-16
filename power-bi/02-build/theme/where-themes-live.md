@@ -56,7 +56,7 @@ For themes shared across reports (corporate brand, design system):
 
 - **In this workspace**: store under `projects/themes/<slug>/<slug>-vX.Y.json`. See `projects/themes/README.md`.
 - **External source of truth**: Git repo (versioned, peer-reviewed), SharePoint, or a Fabric workspace
-- **Distribution**: apply via `pbir theme apply-template "<project>.Report" --from-file <theme>.json`
+- **Distribution**: `pbir theme serialize <theme>.json -o /tmp/<slug>.Theme` then `pbir theme build /tmp/<slug>.Theme -o "<project>.Report" -f --clean`. (`apply-template` takes a registered template *name*, not a path — there is no `--from-file` flag. See `apply/share-as-template.md`.)
 - **Template library**: `pbir theme create-template --new-template <theme>.json --name "<slug>"` registers it in `~/.pbir/templates/themes/` for reuse
 
 See `apply/copy-from-other.md` for copying a theme out of an existing report.

@@ -1,0 +1,41 @@
+/// Events derived ENTIRELY from space_missions.csv. 16 operator debuts (companies with >= 50 launches) + 3 records. EventShort is the compact on-chart label (the operator name alone); EventLabel is the full sentence used in the hover tooltip - on a 66-category axis a full sentence collides with its neighbours and Power BI silently drops the loser.
+table Events
+	lineageTag: 4ffaf063-88f1-4f0e-9fda-785f837dc10d
+
+	column EventYear
+		lineageTag: debe9ed7-537b-416a-86e9-056283bc78d0
+		isNameInferred
+		sourceColumn: [EventYear]
+
+	column EventLabel
+		lineageTag: aab2bf6a-a59c-4d4d-9c4f-ba5d72f938ca
+		isNameInferred
+		sourceColumn: [EventLabel]
+
+	column EventType
+		lineageTag: a545a4c1-a284-4ab8-b100-42f8f83da008
+		isNameInferred
+		sourceColumn: [EventType]
+
+	column EventDecade
+		lineageTag: 18409e13-bc46-44ed-92b8-9deb95b27e60
+		isNameInferred
+		sourceColumn: [EventDecade]
+
+	column EventShort
+		lineageTag: 7c2f1a90-4d55-4e21-9f13-0a5b6c8e4411
+		isNameInferred
+		sourceColumn: [EventShort]
+
+	partition Events = calculated
+		mode: import
+		source =
+				VAR _big = FILTER ( ADDCOLUMNS ( VALUES ( space_missions[Company] ), "@n", CALCULATE ( COUNTROWS ( space_missions ) ) ), [@n] >= 50 )
+				VAR _debuts = SELECTCOLUMNS ( ADDCOLUMNS ( _big, "@first", CALCULATE ( MIN ( space_missions[Date] ) ) ), "EventYear", YEAR ( [@first] ) + 0, "EventLabel", "First " & space_missions[Company] & " launch", "EventShort", space_missions[Company] & "", "EventType", "Operator debut" )
+				VAR _years = ADDCOLUMNS ( VALUES ( space_missions[Year] ), "@n", CALCULATE ( COUNTROWS ( space_missions ) ), "@f", CALCULATE ( COUNTROWS ( space_missions ), space_missions[MissionStatus] IN { "Failure", "Prelaunch Failure" } ) )
+				VAR _peak = SELECTCOLUMNS ( TOPN ( 1, _years, [@n], DESC ), "EventYear", space_missions[Year] + 0, "EventLabel", "Record year — " & [@n] & " launches", "EventShort", "Record year", "EventType", "Record" )
+				VAR _worst = SELECTCOLUMNS ( TOPN ( 1, FILTER ( _years, [@n] >= 20 ), DIVIDE ( [@f], [@n] ), DESC ), "EventYear", space_missions[Year] + 0, "EventLabel", "Worst failure rate — " & FORMAT ( DIVIDE ( [@f], [@n] ), "0.0%" ), "EventShort", "Worst failures", "EventType", "Record" )
+				VAR _firstEver = SELECTCOLUMNS ( TOPN ( 1, _years, space_missions[Year], ASC ), "EventYear", space_missions[Year] + 0, "EventLabel", "First orbital launch attempt", "EventShort", "First launch", "EventType", "Record" )
+				VAR _all = UNION ( _debuts, _peak, _worst, _firstEver )
+				RETURN ADDCOLUMNS ( _all, "EventDecade", INT ( [EventYear] / 10 ) * 10 )
+

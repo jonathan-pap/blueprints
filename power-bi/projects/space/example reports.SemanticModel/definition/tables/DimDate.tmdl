@@ -1,0 +1,32 @@
+/// Calendar over the fact date range 1957-2022. Rebuilt 2026-08-16 - the previous M partition pointed at the grand-exchange synthetic dataset and filtered to DateKey >= 20260101.
+table DimDate
+	lineageTag: 4c62f346-42fc-43d7-9328-a5d7f016f7b9
+	dataCategory: Time
+
+	column Date
+		isUnique
+		isNameInferred
+		sourceColumn: [Date]
+
+	column Year
+		isNameInferred
+		sourceColumn: [Year]
+
+	column Decade
+		isNameInferred
+		sourceColumn: [Decade]
+
+	column DecadeLabel
+		isNameInferred
+		sourceColumn: [DecadeLabel]
+
+	partition DimDate = calculated
+		mode: import
+		source =
+				ADDCOLUMNS (
+				    CALENDAR ( DATE ( 1957, 1, 1 ), DATE ( 2022, 12, 31 ) ),
+				    "Year", YEAR ( [Date] ),
+				    "Decade", INT ( YEAR ( [Date] ) / 10 ) * 10,
+				    "DecadeLabel", FORMAT ( INT ( YEAR ( [Date] ) / 10 ) * 10, "0" ) & "s"
+				)
+
