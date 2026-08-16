@@ -11,7 +11,8 @@
   `FixExpression` (C#), and where rule sets live (local / model annotation / shared file or URL)
 - [`rules/`](rules/) — the rule-set JSON files
   - [`rules/BPARules-PowerBI.json`](rules/BPARules-PowerBI.json) — **the standard set** (26 rules: Model Layout, Naming, DAX, Performance, Formatting, Metadata) from Tabular Editor's [BestPracticeRules](https://github.com/TabularEditor/BestPracticeRules) repo. Start here.
-  - [`rules/custom-rules.json`](rules/custom-rules.json) — house additions/overrides on top of the standard set (naming + format + hygiene)
+  - [`rules/custom-rules.json`](rules/custom-rules.json) — neutral **starter** house rules (naming + format + hygiene) to fork/keep
+  - [`rules/jpa-house-rules.json`](rules/jpa-house-rules.json) — **JPA personal namespace**: measure `VAR` must start with `_`; measure must carry the `[Type/Created on/Created by]` metadata tag
 
 ## Run a rule set
 
@@ -22,8 +23,8 @@
   # TE2 (free) — analyze, non-zero exit on violations = CI gate
   TabularEditor.exe "<model.bim | conn>" -A "tabular-editor/bpa/rules/BPARules-PowerBI.json"
 
-  # TE3 — run the standard set + your house rules together
-  TabularEditor3.exe "<model | PBIP folder>" -A "tabular-editor/bpa/rules/BPARules-PowerBI.json" -A "tabular-editor/bpa/rules/custom-rules.json"
+  # TE3 — run the standard set + your namespaced house rules together (stack -A per file)
+  TabularEditor3.exe "<model | PBIP folder>" -A "tabular-editor/bpa/rules/BPARules-PowerBI.json" -A "tabular-editor/bpa/rules/jpa-house-rules.json"
   ```
 
   For Power BI, `pbir bpa run` is an alternative execution path — see

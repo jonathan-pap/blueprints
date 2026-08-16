@@ -47,23 +47,5 @@
     "Severity": 1,
     "Scope": "Measure",
     "Expression": "!IsHidden && string.IsNullOrEmpty(Description)"
-  },
-  {
-    "ID": "MEASURE_VAR_UNDERSCORE_PREFIX",
-    "Name": "Measure DAX variables should start with '_'",
-    "Category": "Naming Conventions",
-    "Description": "VAR names in measures should be prefixed with '_' (e.g. VAR _sales) to tell variables apart from columns and measures. Heuristic — assumes space-separated 'VAR name'.",
-    "Severity": 2,
-    "Scope": "Measure",
-    "Expression": "RegEx.IsMatch(Expression, \"(?i)VAR +[A-Za-z]\")"
-  },
-  {
-    "ID": "MEASURE_MISSING_METADATA_TAG",
-    "Name": "Measure missing metadata tag",
-    "Category": "Metadata",
-    "Description": "Every measure should carry a [Type: ..., Created on: ..., Created by: ...] tag at the end of its Description (stamp it with scripts/add-measure-metadata-tags.cs).",
-    "Severity": 1,
-    "Scope": "Measure",
-    "Expression": "string.IsNullOrEmpty(Description) || !(Description.Contains(\"[Type:\") && Description.Contains(\"Created by:\"))"
   }
 ]
