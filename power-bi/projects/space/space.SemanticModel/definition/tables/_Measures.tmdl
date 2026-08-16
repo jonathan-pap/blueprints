@@ -59,10 +59,13 @@ table _Measures
 		formatStringDefinition =
 				VAR _y = SELECTEDVALUE ( DimDate[Year] )
 				VAR _rows = FILTER ( Events, Events[EventYear] = _y )
-				VAR _maxW = MAXX ( _rows, Events[EventWeight] )
-				VAR _top = FILTER ( _rows, Events[EventWeight] = _maxW )
-				VAR _minD = MINX ( _top, Events[EventDate] )
-				VAR _txt = MINX ( FILTER ( _top, Events[EventDate] = _minD ), Events[EventShort] )
+				VAR _debuts = FILTER ( _rows, Events[EventType] = "Operator debut" )
+				VAR _txt =
+				    IF (
+				        COUNTROWS ( _debuts ) > 0,
+				        CONCATENATEX ( _debuts, Events[EventShort], " · ", Events[EventWeight], DESC ),
+				        MINX ( _rows, Events[EventShort] )
+				    )
 				RETURN
 				    IF (
 				        [Is Selected Decade] = 1 && ISCROSSFILTERED ( Decades[Decade] ),
