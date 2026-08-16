@@ -180,20 +180,30 @@ Three consecutive event years (1957, 1958, 1959) can't all show a label. Three t
 | Shorten the label — lead with the most notable event (`Record` if present) + `"+N"` | Keep it. A 3-event year produced a ~250px label; now ~130px. |
 | Widen the stagger (step 20 → 28, axis → 230) | **Reverted — no effect.** 1958 still dropped, and the taller axis visibly compressed the columns. |
 
-**Conclusion: Power BI culls line-series data labels by horizontal proximity alone — vertical
-separation does not buy you a label back.**
+**Resolved — and the earlier conclusion here was wrong.** This section previously claimed Power BI
+culls by horizontal proximity and that adjacent years could never both be labelled. That was a
+misread. The real cause: **the stagger was added on top of `[Launches]`, so a fall in launches
+cancelled the tier gap.**
 
-Tested further: suppressing the 1959 label did **not** make 1958 appear, so it is not a
-"two per cluster" quota either. **Two *directly adjacent* event years can never both be labelled** —
-the category pitch is ~17px and the shortest label ("NASA") is ~50px, so the earlier year's label
-occupies its neighbour's slot and the neighbour is dropped regardless of width, height or tier.
-1957 beats 1958 every time.
+| | 1957 | 1958 | 1959 | gap 58→59 |
+|---|---|---|---|---|
+| `[Launches] + 14 + tier*20` | 3+14+0 = 17 | 28+14+20 = 62 | 20+14+40 = 74 | **12 — culled** |
+| Fixed ladder `MAX([Launches]+14, 110+tier*26)` | 110 | 136 | 162 | **26 — renders** |
 
-Consequence: **the chart cannot surface every debut, so the narrative does.** `[Decade Takeaway]`
-now ends with "First launches: …" naming the decade's three most significant operator debuts by
-`EventWeight` plus a `+N more` remainder. NASA (1958, weight 203) is invisible on the chart by
-construction and appears there instead. Don't spend more time fighting the labels — the ceiling is
-in the visual, and the narrative is the right home for what doesn't fit.
+The tell was a **cross-filter**: filtering to one operator flattens the columns, which accidentally
+evens out the tiers — and three labels appeared. Same categories, same widths, same pitch. So it was
+never horizontal proximity.
+
+**Fix: pin the tiers to a fixed ladder** (110 / 136 / 162), lifted above the column only when the
+column is taller. Separation is then guaranteed regardless of column height, and the error bar
+stretches to connect each marker back to its column. Verified: 1957/58/59 all render together.
+
+Two lessons worth keeping: a stagger measured from a *variable* baseline isn't a stagger; and when
+a rendering behaviour changes under cross-filter, the cause is geometry, not a hard visual limit.
+
+The narrative still names the decade's debuts (`[Decade Takeaway]` → "First launches: …", three most
+significant by `EventWeight` plus `+N more`). That is now belt-and-braces rather than the only
+channel, and it still earns its place when a decade has more debuts than markers.
 
 ### The narrative is a `tableEx`, not a card
 

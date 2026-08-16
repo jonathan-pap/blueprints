@@ -51,8 +51,9 @@ table _Measures
 			VAR _evYears = DISTINCT ( SELECTCOLUMNS ( ALL ( Events ), "@y", Events[EventYear] ) )
 			VAR _rank = COUNTROWS ( FILTER ( _evYears, [@y] <= _y ) )
 			VAR _tier = MOD ( _rank - 1, 3 )
+			VAR _ladder = 110 + _tier * 26
 			RETURN
-			    IF ( NOT ISBLANK ( _has ), [Launches] + 14 + _tier * 20 )
+			    IF ( NOT ISBLANK ( _has ), MAX ( [Launches] + 14, _ladder ) )
 		lineageTag: a7c8f2b9-acc8-477a-ac3e-8697a4b49028
 
 		formatStringDefinition =
