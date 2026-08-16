@@ -11,7 +11,7 @@
       "type": "SharedResources"
     },
     "customTheme": {
-      "name": "Deep_Space_(Dark)5698650874500891.json",
+      "name": "Deep_Space_(Dark)4464922929103708.json",
       "reportVersionAtImport": {
         "visual": "2.10.0",
         "report": "3.4.0",
@@ -65,8 +65,8 @@
       "type": "RegisteredResources",
       "items": [
         {
-          "name": "Deep_Space_(Dark)5698650874500891.json",
-          "path": "Deep_Space_(Dark)5698650874500891.json",
+          "name": "Deep_Space_(Dark)4464922929103708.json",
+          "path": "Deep_Space_(Dark)4464922929103708.json",
           "type": "CustomTheme"
         }
       ]

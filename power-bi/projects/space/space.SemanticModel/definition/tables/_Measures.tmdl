@@ -298,7 +298,13 @@ table _Measures
 			        & FORMAT ( _s, "0.0%" ) & " of missions succeeded." & _debutLine
 		lineageTag: cd6ab226-5a95-4f24-aff5-92e2f1652495
 
-	/// Decorative full-page nebula backdrop as an SVG data URI - static scenery, no data dependency. Four blurred radial-gradient clouds in the Deep Space palette, an feTurbulence veil for cloud texture, and a hand-scattered star field. Wired to an image visual with sourceType 'imageData'. NOTE the continuation style below: TMDL needs the & LEADING each line - a trailing & silently kills the whole measure and Desktop loads the model without it.
+	/// TEMP probe: minimal SVG to isolate whether the failure is TMDL parsing, dataCategory on a measure, or the image visual binding.
+	measure 'SVG Probe' = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100'><rect width='200' height='100' fill='#0F1528'/><circle cx='100' cy='50' r='34' fill='#4CC9F0'/></svg>"
+		isHidden
+		lineageTag: 308b4042-a2aa-4cac-b62d-e3180186a020
+		dataCategory: ImageUrl
+
+	/// Decorative full-page nebula backdrop as an SVG data URI - static scenery, no data dependency. Four blurred radial-gradient clouds in the Deep Space palette, an feTurbulence veil for cloud texture, and a hand-scattered star field. Wired to an image visual with sourceType 'imageData' ('imageUrl' is for real HTTP URLs and renders a black box). Requires dataCategory ImageUrl.
 	measure 'Nebula Backdrop' =
 			"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1280 720' preserveAspectRatio='xMidYMid slice'>"
 			    & "<defs>"
@@ -331,9 +337,9 @@ table _Measures
 			    & "<circle cx='163' cy='398' r='2.6' fill='#9FC0E8' opacity='.18'/><circle cx='163' cy='398' r='1.2' fill='#FFFFFF' opacity='.85'/>"
 			    & "<circle cx='659' cy='576' r='2.6' fill='#9FC0E8' opacity='.18'/><circle cx='659' cy='576' r='1.2' fill='#FFFFFF' opacity='.85'/></g>"
 			    & "</svg>"
-		dataCategory: ImageUrl
 		isHidden
-		lineageTag: 5a1c7e30-2b44-4f88-9d61-0c3e7f2a91bb
+		lineageTag: ada3276c-0aed-45c4-b019-f9a2dd72a834
+		dataCategory: ImageUrl
 
 	column _
 		isHidden

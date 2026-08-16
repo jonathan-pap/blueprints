@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/powerbi-desktop-samples/main/Report%20Theme%20JSON%20Schema/reportThemeSchema-2.152.json",
-  "name": "Deep Space (Dark)",
+  "name": "Deep Space (Dark) - Nebula",
   "dataColors": [
     "#4CC9F0",
     "#9D7BEA",
@@ -541,18 +541,12 @@
                 "color": "#0F1528"
               }
             },
-            "transparency": 0
+            "transparency": 45
           }
         ],
         "border": [
           {
-            "show": true,
-            "color": {
-              "solid": {
-                "color": "#26304F"
-              }
-            },
-            "radius": 5
+            "show": false
           }
         ],
         "dropShadow": [

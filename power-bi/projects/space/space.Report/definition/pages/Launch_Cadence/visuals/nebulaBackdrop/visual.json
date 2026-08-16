@@ -1,5 +1,14 @@
 {
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
   "name": "nebulaBackdrop",
+  "position": {
+    "x": 0,
+    "y": 0,
+    "z": 0,
+    "height": 720,
+    "width": 1280,
+    "tabOrder": 0
+  },
   "visual": {
     "visualType": "image",
     "objects": {
@@ -38,19 +47,11 @@
                   "Property": "Nebula Backdrop"
                 }
               }
-            },
-            "imageScalingType": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Fill'"
-                }
-              }
             }
           }
         }
       ]
     },
-    "drillFilterOtherVisuals": true,
     "visualContainerObjects": {
       "title": [
         {
@@ -91,15 +92,7 @@
           }
         }
       ]
-    }
-  },
-  "position": {
-    "x": 0,
-    "y": 0,
-    "z": 0,
-    "width": 1280,
-    "height": 720,
-    "tabOrder": 0
-  },
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json"
+    },
+    "drillFilterOtherVisuals": true
+  }
 }
