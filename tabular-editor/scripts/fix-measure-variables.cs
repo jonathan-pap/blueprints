@@ -3,12 +3,21 @@
 // and the MEASURE_VAR_UNDERSCORE_PREFIX BPA rule.
 //
 // DRY-RUN by default. Review the list, then set  apply = true  and re-run to write, then SAVE.
-// Each offending VAR name 'x' becomes '_x' wherever it appears as a BARE identifier — the rename
-// skips [columns], 'tables', and longer words via a word boundary.
-// CAVEAT: if a variable shares a name with something referenced bare, the dry-run will show it —
-// check before applying.
+// Renames each offending VAR name 'x' -> '_x' only where it appears as a BARE identifier in CODE —
+// it skips string literals "..." (incl. "" escapes), // and /* */ comments, [columns], and 'tables'.
+// CAVEAT: matching is case-sensitive; if a variable shares a name with something referenced bare,
+// the dry-run will show it — check before applying.
 
 bool apply = false;                    // <-- set true to actually rename
+
+// blank out strings + comments so VAR-name DETECTION never trips on text inside them
+Func<string, string> codeOnly = s =>
+{
+    s = System.Text.RegularExpressions.Regex.Replace(s, "\"(?:[^\"]|\"\")*\"", " ");  // "strings"
+    s = System.Text.RegularExpressions.Regex.Replace(s, "//[^\r\n]*", " ");           // // line comments
+    s = System.Text.RegularExpressions.Regex.Replace(s, "/\\*[\\s\\S]*?\\*/", " ");   // /* block comments */
+    return s;
+};
 
 var declRx = new System.Text.RegularExpressions.Regex(@"(?i)\bVAR\s+([A-Za-z][A-Za-z0-9_]*)");
 
@@ -23,9 +32,9 @@ foreach (var m in targets)
 {
     var expr = m.Expression ?? "";
 
-    // collect declared VAR names that don't start with '_'
+    // declared VAR names not starting with '_' (found in code only, not strings/comments)
     var names = new System.Collections.Generic.HashSet<string>();
-    foreach (System.Text.RegularExpressions.Match mt in declRx.Matches(expr))
+    foreach (System.Text.RegularExpressions.Match mt in declRx.Matches(codeOnly(expr)))
     {
         var n = mt.Groups[1].Value;
         if (!n.StartsWith("_")) names.Add(n);
@@ -35,9 +44,16 @@ foreach (var m in targets)
     var newExpr = expr;
     foreach (var n in names)
     {
-        // n -> _n, only as a whole token (not inside [..] / '..' / a longer identifier)
-        var pat = @"(?<![A-Za-z0-9_'\[])" + System.Text.RegularExpressions.Regex.Escape(n) + @"(?![A-Za-z0-9_])";
-        newExpr = System.Text.RegularExpressions.Regex.Replace(newExpr, pat, "_" + n);
+        var esc = System.Text.RegularExpressions.Regex.Escape(n);
+        // Alternation: a string literal OR a comment OR the bare identifier. Strings/comments are
+        // matched first and returned unchanged, so 'n' inside them is never renamed.
+        var pat = "\"(?:[^\"]|\"\")*\""                       // "string"
+                + "|//[^\r\n]*"                               // line comment
+                + "|/\\*[\\s\\S]*?\\*/"                       // block comment
+                + "|(?<![A-Za-z0-9_'\\[])" + esc + "(?![A-Za-z0-9_])";  // the identifier token
+
+        newExpr = System.Text.RegularExpressions.Regex.Replace(newExpr, pat,
+            mm => mm.Value == n ? "_" + n : mm.Value);       // only the identifier match equals n
     }
 
     if (newExpr != expr)
