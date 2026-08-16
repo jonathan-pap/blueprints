@@ -1,43 +1,50 @@
-# Design system — DEFAULT STARTER
+# Design system — DEFAULT STARTER (12×12 grid model)
 #
-# Copy to `projects/<name>/design-system.yaml` and adapt. Layout tokens Claude reads BEFORE
-# every `pbir add visual`. Power BI never sees this file — it's the layout counterpart to the
-# theme (theme = appearance, this = dimensions). See ../design-system.md for the full spec.
+# Copy to projects/<name>/design-system.yaml and adapt. Layout tokens Claude reads BEFORE every
+# `pbir add visual`. Power BI never sees this file — it's the layout counterpart to the theme
+# (theme = appearance, this = dimensions). Geometry is a 12-column × 12-row grid; tokens are
+# resolution-independent grid SPANS + region coords, not pixels — they resolve to pixels per canvas
+# via the cell math in ../layout-guidelines.md#grid-12x12. See ../design-system.md.
 
 meta:
-  page: { width: 1280, height: 720 }
-  theme: <theme-name>                       # appearance lives in the theme, not here
-  units: px
+  page: { width: 1280, height: 720 }          # cell size derives from this + grid below
+  theme: <theme-name>                          # appearance lives in the theme, not here
+  units: grid-cells                            # placements are grid spans/regions; authoring -> px
 
 grid:
-  unit: 8
-  snap_to: 8                                # positions/sizes are multiples of this (audited)
-margins: { top: 24, right: 24, bottom: 24, left: 24 }
-gaps: { horizontal: 16, vertical: 16 }
+  columns: 12
+  rows: 12
+  gutter: 16                                    # px between cells (24 on FHD 1920×1080)
+  margin: 24                                    # px page edge (32 on FHD)
+  snap: 8                                       # resolved-px snap (audited)
+  # Cell size is DERIVED, never stored:
+  #   colW = (page.width  - 2*margin - gutter*(columns-1)) / columns
+  #   rowH = (page.height - 2*margin - gutter*(rows-1))    / rows
+  # 1280×720 -> colW ≈ 88, rowH ≈ 41.   1920×1080 (margin 32, gutter 24) -> colW ≈ 132.7, rowH ≈ 62.7
 
-zones:
-  summary:  { y: 24,  height: 144 }         # KPIs, slicers
-  analysis: { y: 184, height: 320 }         # charts, maps
-  detail:   { y: 520, height: 176 }         # tables, matrices
+# Detail gradient = a SEMANTIC label on grid rows (storytelling), not the geometry.
+bands:
+  summary:  { rows: [1, 4]  }                   # KPIs, slicers    (rows 1-3)
+  analysis: { rows: [4, 10] }                   # charts, maps     (rows 4-9)
+  detail:   { rows: [10, 13] }                  # tables, matrices (rows 10-12)
 
+# Per-type DEFAULT spans [cols, rows]. Same type -> same span everywhere = no drift, any canvas.
 defaults:
-  slicer:
-    type: slicer                            # dropdown by default
-    size: { width: 240, height: 40 }
-    zone: summary
-  card:
-    type: card
-    size: { width: 296, height: 136 }       # 8-grid, >=130 min so value+label don't clip
-    zone: summary
-  chart_small:  { width: 400, height: 304 }
-  chart_medium: { width: 600, height: 320 }
-  chart_wide:   { width: 1232, height: 320 }
-  table:        { width: 1232, height: 176 }
-  matrix:       { width: 1232, height: 176 }
-  title:        { type: textbox, width: 1232, height: 40 }
+  title:      { span: [12, 1], band: summary }  # full-width header row
+  slicer:     { span: [2, 1],  band: summary }  # inline; 4+ slicers -> use the `rail` region instead
+  card:       { span: [3, 3],  band: summary }  # KPI / card (value + context)
+  chart:      { span: [6, 5],  band: analysis } # standard chart (half width)
+  chart_wide: { span: [12, 5], band: analysis } # hero / full-width chart
+  table:      { span: [12, 3], band: detail }   # table / matrix, full width
+  rail:       { span: [2, 12], band: summary }  # full-height filter rail (4+ slicers)
 
-# Equal-gap math decided once: width = (page - 2*margin - gap*(n-1)) / n
+# Region templates: named grid rectangles [col_start, row_start, col_end, row_end]
+# (1-indexed, end-EXCLUSIVE; e.g. [1,1,4,4] = cols 1-3, rows 1-3).
 layouts:
-  kpi_row_4: { width: 296, height: 136, y: 24,  x: [24, 336, 648, 960] }
-  charts_2up:{ width: 608, height: 320, y: 184, x: [24, 648] }
-  charts_3up:{ width: 400, height: 320, y: 184, x: [24, 440, 856] }
+  kpi_row_4:      [ [1,1,4,4], [4,1,7,4], [7,1,10,4], [10,1,13,4] ]   # 4 cards across, rows 1-3
+  charts_2up:     [ [1,4,7,10], [7,4,13,10] ]                          # two half-width charts
+  charts_3up:     [ [1,4,5,10], [5,4,9,10], [9,4,13,10] ]              # three thirds
+  hero_plus_rail: [ [1,1,3,13], [3,1,13,9], [3,9,13,13] ]             # rail + hero + detail (a 2D layout)
+
+# overrides: record any deliberate per-visual departure from the spans above (the audit hook keys on it)
+overrides: []

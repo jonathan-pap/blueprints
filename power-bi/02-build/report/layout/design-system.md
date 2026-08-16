@@ -31,30 +31,31 @@ theme-first, second axis.
 ## Workflow — read before every add
 
 1. Open `projects/<name>/design-system.yaml`.
-2. Map the requested visual to a token:
-   - "year slicer" → `defaults.slicer` → `type: slicer`, `240 × 40`, zone `summary`.
-   - "KPI row" → `layouts.kpi_row_4` → four `296 × 130` cards at x `[24, 336, 648, 960]`.
-3. Emit the `pbir` command with those exact numbers:
+2. Map the requested visual to a **span** (or a region template):
+   - "year slicer" → `defaults.slicer` → span `[2,1]`, band `summary`.
+   - "KPI row" → `layouts.kpi_row_4` → four card regions `[1,1,4,4] … [10,1,13,4]`.
+3. **Resolve span/region → pixels** with the cell math in [layout-guidelines.md](layout-guidelines.md):
+   on 1280×720, span `[2,1]` → 192×41; region `[1,1,4,4]` → 296×155 at x24 y24.
+4. Emit the `pbir` command with the resolved numbers:
    ```bash
    pbir add visual slicer "<...>.Report/Market Overview.Page" --title "Year" \
-     --x 24 --y 24 --width 240 --height 40
+     --x 24 --y 24 --width 192 --height 41
    ```
-4. Resolve the zone's `y` from `zones.<zone>` unless the layout token already pins `y`.
 
-No restating dimensions per request — they're decided once in the yaml.
+Spans/regions are decided once in the yaml and **resolve per canvas** — no restating dimensions per
+request, and the same contract renders on 720p or 1080p.
 
 ## Token reference
 
 | Key | Meaning |
 |---|---|
-| `meta.page` | page size; every page uses it (query before placing — [page-dimensions.md](page-dimensions.md)) |
+| `meta.page` | page size; **cell size derives from it** (query before placing — [page-dimensions.md](page-dimensions.md)) |
 | `meta.theme` | the theme that owns appearance (this file owns only dimensions) |
-| `grid.unit` / `grid.snap_to` | positions and sizes snap to multiples of these |
-| `margins` / `gaps` | equal edge margins + equal gaps — the [layout-guidelines.md](layout-guidelines.md) golden rules |
-| `zones` | detail-gradient bands ([detail-gradient.md](detail-gradient.md)); each gives a `y` + `height` |
-| `defaults.<type>` | per-visual-type size (+ `type:` pin for slicers, `zone:` hint) |
-| `layouts.<name>` | pre-computed multi-visual placements (equal-gap math done once) |
-| `pages` | the report's pages and which tokens each uses |
+| `grid` | the **12×12 grid**: `columns`/`rows`/`gutter`/`margin`/`snap` — cell math in [layout-guidelines.md](layout-guidelines.md) |
+| `bands` | detail-gradient **row bands** ([detail-gradient.md](detail-gradient.md)) — a semantic label on rows, not geometry |
+| `defaults.<type>` | per-type default **span** `[cols,rows]` (+ `band:` hint, `type:` pin for slicers) |
+| `layouts.<name>` | named multi-visual **region templates** — `[col,row,col,row]` rectangles |
+| `pages` | the report's pages and which tokens/regions each uses |
 | `overrides` | intentional deviations, with a reason (the audit hook treats these as allowed) |
 
 ## Enforcement is two-tier
