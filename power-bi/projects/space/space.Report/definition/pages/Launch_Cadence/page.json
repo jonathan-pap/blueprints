@@ -23,5 +23,42 @@
         "howCreated": "User"
       }
     ]
-  }
+  },
+  "visualInteractions": [
+    {
+      "source": "cadenceCombo",
+      "target": "topRockets",
+      "type": "NoFilter"
+    },
+    {
+      "source": "cadenceCombo",
+      "target": "topOperators",
+      "type": "NoFilter"
+    },
+    {
+      "source": "cadenceCombo",
+      "target": "kpiOperators",
+      "type": "NoFilter"
+    },
+    {
+      "source": "cadenceCombo",
+      "target": "kpiRockets",
+      "type": "NoFilter"
+    },
+    {
+      "source": "cadenceCombo",
+      "target": "kpiSuccess",
+      "type": "NoFilter"
+    },
+    {
+      "source": "cadenceCombo",
+      "target": "kpiLaunches",
+      "type": "NoFilter"
+    },
+    {
+      "source": "cadenceCombo",
+      "target": "narrativeText",
+      "type": "NoFilter"
+    }
+  ]
 }

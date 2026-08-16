@@ -23,6 +23,7 @@ ref table space_missions
 ref table DimDate
 ref table Decades
 ref table Events
+ref table TimelineNodes
 
 ref cultureInfo en-US
 

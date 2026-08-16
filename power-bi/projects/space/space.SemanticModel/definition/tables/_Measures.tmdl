@@ -106,11 +106,11 @@ table _Measures
 			    )
 			VAR _head = FORMAT ( _y, "0" ) & IF ( _y = 2022, "  (partial year)", "" )
 			VAR _body =
-			    "Launches" & UNICHAR ( 9 ) & FORMAT ( _n, "#,##0" ) & UNICHAR ( 10 )
-			        & "Success" & UNICHAR ( 9 ) & FORMAT ( _succ, "#,##0" ) & " (" & FORMAT ( DIVIDE ( _succ, _n ), "0%" ) & ")" & UNICHAR ( 10 )
-			        & "Partial" & UNICHAR ( 9 ) & FORMAT ( _part, "#,##0" ) & UNICHAR ( 10 )
-			        & "Failure" & UNICHAR ( 9 ) & FORMAT ( _fail, "#,##0" ) & UNICHAR ( 10 )
-			        & "Busiest" & UNICHAR ( 9 ) & _top
+			    "Launches: " & UNICHAR ( 9 ) & FORMAT ( _n, "#,##0" ) & UNICHAR ( 10 )
+			        & "Success: " & UNICHAR ( 9 ) & FORMAT ( _succ, "#,##0" ) & " (" & FORMAT ( DIVIDE ( _succ, _n ), "0%" ) & ")" & UNICHAR ( 10 )
+			        & "Partial: " & UNICHAR ( 9 ) & FORMAT ( _part, "#,##0" ) & UNICHAR ( 10 )
+			        & "Failure: " & UNICHAR ( 9 ) & FORMAT ( _fail, "#,##0" ) & UNICHAR ( 10 )
+			        & "Busiest: " & UNICHAR ( 9 ) & _top
 			RETURN
 			    _head & UNICHAR ( 10 ) & UNICHAR ( 10 ) & _body
 			        & IF ( NOT ISBLANK ( _ev ), UNICHAR ( 10 ) & UNICHAR ( 10 ) & _ev, "" )
@@ -339,6 +339,80 @@ table _Measures
 			    & "</svg>"
 		isHidden
 		lineageTag: ada3276c-0aed-45c4-b019-f9a2dd72a834
+		dataCategory: ImageUrl
+
+	/// Serpentine X position for the timeline scatter. Pairs with [Node Y]. The scatter's categoryAxis MUST stay pinned to the window -1.4 .. (PerRow-1)+1.4 or the nodes will not sit on the [Timeline Ribbon] path behind them.
+	measure 'Node X' = SELECTEDVALUE ( TimelineNodes[NodeCol] )
+		formatString: 0.0
+		lineageTag: f70e0209-fdc7-474a-b776-52baa796db80
+
+	/// Serpentine Y position (negated so row 0 is the TOP band). The scatter's valueAxis MUST stay pinned to -(RowCount-1)-0.6 .. 0.6 to match [Timeline Ribbon].
+	measure 'Node Y' = -1 * SELECTEDVALUE ( TimelineNodes[NodeRow] )
+		formatString: 0.0
+		lineageTag: d9153a87-6245-4d8d-a984-81afd506c68f
+
+	/// Bubble size for the timeline scatter - launches in that year. The '+ 0' keeps a node visible for a year with no launches instead of dropping the point.
+	measure 'Node Size' = [Launches] + 0
+		formatString: #,0
+		lineageTag: 304a1954-caca-4297-8da5-91a5e772c28c
+
+	/// Per-node fill for the timeline scatter - amber on a milestone year, cyan otherwise. Bind through dataPoint.fill with a dataViewWildcard selector (same pattern as the cadence chart's [Column Color]).
+	measure 'Node Color' =
+			VAR _y = SELECTEDVALUE ( TimelineNodes[Year] )
+			VAR _isEvent = _y IN DISTINCT ( ALL ( Events[EventYear] ) )
+			RETURN
+			    IF ( _isEvent, "#F2A93B", "#4CC9F0" )
+		lineageTag: f2f21381-0496-4849-a6fe-e88c1aa498ce
+
+	/// Static SVG connector for the serpentine timeline - the horizontal band lines plus the U-turn arcs that no native Power BI visual can draw. Rendered in an image visual (sourceType 'imageData') sitting BEHIND the node scatter. Geometry is expressed in the image visual's own pixel space (viewBox 0 0 1200 430, preserveAspectRatio 'none'), and is mapped from the SAME axis window the scatter is pinned to - change one and you must change the other. NOTE: every coordinate goes through FORMAT(ROUND(x,0),"0") because a locale that uses a comma as the decimal separator would otherwise emit '1110,6' into the path data and silently break the SVG.
+	measure 'Timeline Ribbon' =
+			VAR _rows = MAXX ( ALL ( TimelineNodes ), TimelineNodes[RowCount] )
+			VAR _perRow = MAXX ( ALL ( TimelineNodes ), TimelineNodes[PerRow] )
+			VAR _W = 1095
+			VAR _H = 520
+			VAR _xMin = -1.4
+			VAR _xMax = _perRow - 1 + 1.4
+			VAR _yMax = 0.6
+			VAR _yMin = - ( _rows - 1 ) - 0.6
+			VAR _sx = DIVIDE ( _W, _xMax - _xMin )
+			VAR _sy = DIVIDE ( _H, _yMax - _yMin )
+			VAR _rx = 46
+			VAR _ry = _sy / 2
+			VAR _bands =
+			    GROUPBY (
+			        ALL ( TimelineNodes ),
+			        TimelineNodes[NodeRow],
+			        "@lo", MINX ( CURRENTGROUP (), TimelineNodes[NodeCol] ),
+			        "@hi", MAXX ( CURRENTGROUP (), TimelineNodes[NodeCol] )
+			    )
+			VAR _lines =
+			    CONCATENATEX (
+			        _bands,
+			        VAR _y = FORMAT ( ROUND ( ( _yMax + TimelineNodes[NodeRow] ) * _sy, 0 ), "0" )
+			        RETURN
+			            "<path d='M " & FORMAT ( ROUND ( ( [@lo] - _xMin ) * _sx, 0 ), "0" ) & "," & _y
+			                & " L " & FORMAT ( ROUND ( ( [@hi] - _xMin ) * _sx, 0 ), "0" ) & "," & _y & "'/>",
+			        ""
+			    )
+			VAR _turns =
+			    CONCATENATEX (
+			        FILTER ( _bands, TimelineNodes[NodeRow] < _rows - 1 ),
+			        VAR _r = TimelineNodes[NodeRow]
+			        VAR _right = MOD ( _r, 2 ) = 0
+			        VAR _x = FORMAT ( ROUND ( ( IF ( _right, _perRow - 1, 0 ) - _xMin ) * _sx, 0 ), "0" )
+			        RETURN
+			            "<path d='M " & _x & "," & FORMAT ( ROUND ( ( _yMax + _r ) * _sy, 0 ), "0" )
+			                & " A " & _rx & " " & FORMAT ( ROUND ( _ry, 0 ), "0" ) & " 0 0 "
+			                & IF ( _right, "1", "0" ) & " "
+			                & _x & "," & FORMAT ( ROUND ( ( _yMax + _r + 1 ) * _sy, 0 ), "0" ) & "'/>",
+			        ""
+			    )
+			RETURN
+			    "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1095 520' preserveAspectRatio='none'>"
+			        & "<g fill='none' stroke='#7C87A6' stroke-width='2' stroke-opacity='0.45' stroke-linecap='round' stroke-dasharray='1 6'>"
+			        & _lines & _turns
+			        & "</g></svg>"
+		lineageTag: be87d75b-c18f-4a51-a790-57684e5c9675
 		dataCategory: ImageUrl
 
 	column _

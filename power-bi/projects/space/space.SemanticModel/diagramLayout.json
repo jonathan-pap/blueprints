@@ -11,7 +11,7 @@
         {
           "location": {
             "x": 2876.3857251328786,
-            "y": 129.16647684130612
+            "y": 171.78578208048611
           },
           "nodeIndex": "_Measures",
           "nodeLineageTag": "cfff4bff-9707-4543-823b-798f2f9200bb",
@@ -24,7 +24,7 @@
         {
           "location": {
             "x": 560.388762338649,
-            "y": 85.238610478360016
+            "y": 127.85791571754001
           },
           "nodeIndex": "space_missions",
           "nodeLineageTag": "ed87d998-0065-4a0d-8e06-d023275a6fbb",
@@ -37,7 +37,7 @@
         {
           "location": {
             "x": 2599.9969627942296,
-            "y": 143.94665907365231
+            "y": 186.56596431283231
           },
           "nodeIndex": "DimDate",
           "nodeLineageTag": "4c62f346-42fc-43d7-9328-a5d7f016f7b9",
@@ -50,7 +50,7 @@
         {
           "location": {
             "x": 2599.9969627942296,
-            "y": 155.31871678056194
+            "y": 197.93802201974194
           },
           "nodeIndex": "Decades",
           "nodeLineageTag": "bb667a15-657a-4415-9464-cb662fe9ee6d",
@@ -63,12 +63,25 @@
         {
           "location": {
             "x": 2599.9969627942296,
-            "y": 112.37680334092641
+            "y": 154.99610858010641
           },
           "nodeIndex": "Events",
           "nodeLineageTag": "4ffaf063-88f1-4f0e-9fda-785f837dc10d",
           "size": {
             "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 2599.9969627942296,
+            "y": 102.58323842065306
+          },
+          "nodeIndex": "TimelineNodes",
+          "nodeLineageTag": "ac76b7e0-e414-4ee3-b56f-2d15c8d4630a",
+          "size": {
+            "height": 224,
             "width": 234
           },
           "zIndex": 0

@@ -2,3 +2,7 @@ relationship DimDate_space_missions
 	fromColumn: space_missions.Date
 	toColumn: DimDate.Date
 
+relationship TimelineNodes_DimDate
+	fromColumn: DimDate.Year
+	toColumn: TimelineNodes.Year
+

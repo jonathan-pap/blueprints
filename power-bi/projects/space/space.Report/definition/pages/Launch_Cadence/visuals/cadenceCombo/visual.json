@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "cadenceCombo",
   "position": {
     "x": 32,
@@ -109,7 +109,15 @@
     "objects": {
       "dataPoint": [
         {
-          "properties": {}
+          "properties": {
+            "fillTransparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "45D"
+                }
+              }
+            }
+          }
         },
         {
           "properties": {
@@ -232,7 +240,7 @@
             "gridlineShow": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
+                  "Value": "false"
                 }
               }
             },
@@ -279,6 +287,13 @@
               "expr": {
                 "Literal": {
                   "Value": "false"
+                }
+              }
+            },
+            "gridlineTransparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "78D"
                 }
               }
             }
@@ -707,8 +722,9 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#C98A2E'"
+                    "ThemeDataColor": {
+                      "ColorId": 3,
+                      "Percent": 0.6
                     }
                   }
                 }

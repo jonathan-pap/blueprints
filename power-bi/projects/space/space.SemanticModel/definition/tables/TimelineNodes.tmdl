@@ -1,0 +1,74 @@
+/// Serpentine timeline geometry - one row per calendar year in the fact range, laid out boustrophedon (row 0 left-to-right, row 1 right-to-left, ...). NodeCol/NodeRow are consumed by [Node X]/[Node Y] to position a scatter chart, and by [Timeline Ribbon] to draw the connecting path behind it. _rows is FIXED at 4 and PerRow is derived, so the layout rebalances automatically if the fact date range changes - BUT the scatter's pinned axis window in visual.json does NOT, so if PerRow moves off 17 the categoryAxis/valueAxis start+end must be updated to match. See brief.md.
+table TimelineNodes
+	lineageTag: ac76b7e0-e414-4ee3-b56f-2d15c8d4630a
+
+	/// Calendar year - the node identity. formatString '0' (not the default) so the scatter's data labels read 1957, never 1,957.
+	column Year
+		isUnique
+		formatString: 0
+		lineageTag: 338d0fbb-abb3-4b58-a5d4-26c61774e9bc
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Year]
+
+	column Idx
+		isHidden
+		formatString: 0
+		lineageTag: eb6672dc-d369-4d33-bb84-2fb5f4365989
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Idx]
+
+	column NodeRow
+		isHidden
+		formatString: 0
+		lineageTag: c2468c65-d848-4f8a-946d-d37260499b03
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [NodeRow]
+
+	column NodeCol
+		isHidden
+		formatString: 0
+		lineageTag: 4470c6b0-6e64-4f00-8356-172967ea894b
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [NodeCol]
+
+	column PerRow
+		isHidden
+		formatString: 0
+		lineageTag: 7830c57b-4bd7-4f58-b0cd-c7af3fcd66c9
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [PerRow]
+
+	column RowCount
+		isHidden
+		formatString: 0
+		lineageTag: 04fbe096-6764-4fa7-bdd4-05ba75280374
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [RowCount]
+
+	partition TimelineNodes = calculated
+		mode: import
+		source =
+				VAR _min = MIN ( space_missions[Year] )
+				VAR _max = MAX ( space_missions[Year] )
+				VAR _cnt = _max - _min + 1
+				VAR _rows = 4
+				VAR _perRow = ROUNDUP ( DIVIDE ( _cnt, _rows ), 0 )
+				RETURN
+				ADDCOLUMNS (
+				    SELECTCOLUMNS ( GENERATESERIES ( _min, _max, 1 ), "Year", [Value] ),
+				    "Idx", [Year] - _min,
+				    "NodeRow", INT ( DIVIDE ( [Year] - _min, _perRow ) ),
+				    "NodeCol",
+				        VAR _r = INT ( DIVIDE ( [Year] - _min, _perRow ) )
+				        VAR _c = MOD ( [Year] - _min, _perRow )
+				        RETURN IF ( MOD ( _r, 2 ) = 0, _c, _perRow - 1 - _c ),
+				    "PerRow", _perRow,
+				    "RowCount", _rows
+				)
+

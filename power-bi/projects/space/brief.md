@@ -288,6 +288,68 @@ a multi-decade span has no clean meaning, so the deltas simply hide. Success rat
    (`"Sel Launches by Company"`). Set `text` explicitly whenever you touch that object.
 3. A card needs ~104px height for title + subtitle + a 19pt value; at 100px/24pt the number clips.
 
+## 5c. Mission Timeline page — serpentine (added 2026-08-16)
+
+A second page, requested after v1 shipped. **This supersedes the "don't build: extra pages"
+line in §6** — recorded here rather than silently deleted, because the reasoning in §6 (one
+page, one story) still holds for everything else.
+
+One node per calendar year 1957–2022, laid out **boustrophedon**: row 0 left→right, row 1
+right→left, and so on, with the bands joined by U-turn arcs. Power BI has no wrapping axis,
+so this is a **hybrid**: the connector is SVG, the nodes are a real chart.
+
+| Layer | Visual | Why |
+|---|---|---|
+| Backdrop | `image` ← `[Nebula Backdrop]` | page scenery |
+| Ribbon | `image` ← `[Timeline Ribbon]` | the bands + U-turns — SVG can draw them, no native visual can |
+| Nodes | `scatterChart` | **real** points: tooltips, hover, cross-filter. Not a picture |
+
+`TimelineNodes` is a calculated table (one row per year) carrying `NodeRow`/`NodeCol`;
+`[Node X]`/`[Node Y]` read them, `[Node Size]` = launches, `[Node Color]` paints milestone
+years amber via a `dataViewWildcard` selector. `TimelineNodes[Year] → DimDate[Year]` (1:*)
+so a node click filters through the existing date path; `Decades` stays disconnected.
+
+### The alignment problem, and how it was solved
+
+Power BI **insets a chart's plot area** inside its container by an amount that depends on the
+axis and data labels — so an image sized to the same rectangle does *not* line up. Measured
+from a screenshot by locating the node centres and inverting the pinned axis window:
+
+| | container | actual plot rect |
+|---|---|---|
+| x / width | 40 / 1200 | **125 / 1095** (≈85px reserved for the hidden y-axis) |
+| y / height | 150 / 560 | **173 / 520** |
+
+The ribbon image is positioned to the **plot rect**, not the container. Do not "tidy" the two
+visuals onto the same rectangle — that is the bug, not the fix.
+
+### Gotchas found building the timeline
+
+1. **The SVG viewBox must equal the ribbon rect in page units.** With
+   `preserveAspectRatio='none'` the drawing stretches to its container, so a viewBox whose
+   aspect differs turns the U-turn arcs into tall thin loops. `_W`/`_H` in `[Timeline Ribbon]`
+   are therefore `1095 × 520` — the same numbers as the visual's position. **Three things move
+   together:** the ribbon rect, `_W`/`_H`, and the scatter's pinned axis window.
+2. **Locale decimal separator will silently corrupt the path data.** `FORMAT(x,"0.0")` on a
+   European locale emits `1110,6`, which is invalid SVG that fails *without an error* — the
+   image just doesn't draw. Every coordinate goes through `FORMAT(ROUND(x,0),"0")`.
+3. **`bubbleSize` is roughly exponential, and rescales with the plot area.** `-35` → invisible
+   specks, `40` → one solid mass of overlapping circles, `-18` → correct. Resizing the chart
+   changes the rendered bubble size, so re-check it after any layout change.
+4. **`pbir pages rename` renames the folder only.** It left `page.json`'s `name` and the
+   `pages.json` entry as the original hash (`1ea4852a6657b623`) while the folder became
+   `Mission_Timeline`. Aligned by hand to match `Launch_Cadence`, where all three agree.
+5. **MCP model edits are live-only until Ctrl+S**, and `powerbi-desktop reload` re-reads from
+   disk — so reloading before saving *discards* them. Order matters: save the model first,
+   then edit report JSON, then reload. (The reverse also bites: edit report JSON first and a
+   later Ctrl+S rewrites `pages.json` from Desktop's copy, deleting the new page.)
+
+### When the LL2 data lands
+
+`_rows` is fixed at 4 and `PerRow` is derived, so the table rebalances itself — 1957–2026 gives
+`PerRow = 18`, not 17. The **pinned axis window does not follow**. Update together:
+`categoryAxis` end `17.4` → `18.4`, and re-measure the plot rect.
+
 ## 6. Constraints & non-goals
 
 - **No `Price` measure.** 73% of rows have no price. Any cost KPI would silently describe the 27%
