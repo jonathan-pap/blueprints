@@ -54,6 +54,58 @@ Last updated: 2026-08-16
    launches vs 157 in 2021. The final column is **not** a real decline — it must be visually
    distinguished (hatched / lower opacity) or the chart tells a lie.
 
+## 2b. LL2 replacement dataset — landed & verified 2026-08-17
+
+`data/space_missions_ll2.csv` — **7,591 rows, 1957-10-04 → 2026-08-16**, the exact same nine
+columns, no blank dates. Pulled by `data/fetch_ll2.py` off the free (unauthenticated) tier over
+~5½ hours at ~15 requests/hour. **Not yet swapped in.**
+
+### The finding that matters: the current dataset is materially incomplete
+
+This is not just "more years". Over the **same 1957–2022 window** LL2 has **6,543 rows against
+our 4,630 — +1,913, and more in every single year**:
+
+| 1982 | old | LL2 | reality |
+|---|---|---|---|
+| RVSN USSR | 53 | 108 | USSR flew ~101 orbital launches in 1982 |
+| year total | 67 | 129 | world total ~121 |
+
+The old file is missing roughly **half the Soviet launches**. Every "cadence" statement the report
+currently makes about the Cold War is therefore understated: the 1980s were the real peak
+(~125/yr), not the plateau (~65/yr) the chart shows today. Swapping the data **changes the shape
+of the story**, it does not merely extend it.
+
+### Operator attribution is different, and NOT comparable
+
+LL2 credits the **launch service provider**. For 1982 US flights it says US Air Force (15) and
+Rockwell International (3); our file spread the same flights across Martin Marietta (4), General
+Dynamics (3) and NASA (3). Consequences:
+
+- All-time Top-5 changes from `RVSN USSR · CASC · Arianespace · General Dynamics · VKS RF`
+  to `RVSN USSR (2,468) · US Air Force (1,078) · SpaceX (718) · CASC (610) · Roscosmos (343)`.
+- **39 operator names are >18 characters** ("Lockheed Space Operations Company",
+  "Production Corporation Polyot", …). `PROVIDER` in `fetch_ll2.py` needs extending or the
+  Top-5 bar lists become unreadable.
+- The `Events` table re-derives itself from the data, so operator debuts will move.
+
+### Everything else the swap breaks
+
+| Thing | Now | After |
+|---|---|---|
+| Record year | 2021 (157) | **2025 (341)** |
+| `valueAxis` / `secEnd` | 0–200 | ~0–360 |
+| Event-marker ladder | 110 / 136 / 162 | rescale to the taller axis |
+| Partial year | 2022 | **2026** (200 rows to 16 Aug) |
+| Success rate | 89.9% | 92.7% |
+| `MissionStatus` | 4 values | **3** — LL2 has no "Prelaunch Failure" (measures referencing it return 0, harmless) |
+| `DimDate` | `CALENDAR(1957, 2022)` | 1957–2026 |
+| `categoryAxis` | 1953.5–2024.5 | ~1953.5–2028.5 |
+| `TimelineNodes` `PerRow` | 17 | **18** → axis window and ribbon rect must be re-measured (§5c) |
+| Subtitle | "4,630 launches · 1957–2022" | 7,591 · 1957–2026 |
+
+Keep the old file as `space_missions_2022.csv` for reproducibility — the two are **not**
+interchangeable at operator level, so any saved analysis built on it should say which it used.
+
 ## 3. Measures
 
 No KPI cards — this is a single-chart page by request. The measures exist to drive the one visual.

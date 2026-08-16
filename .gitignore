@@ -41,3 +41,6 @@ power-bi/02-build/recipes/candlestick/
 
 # Local restore points / scratch (per-user, not synced to remote)
 .scratch/
+
+# LL2 pull resume cache - regenerated on every run, not a deliverable
+power-bi/projects/space/data/*.partial.json
