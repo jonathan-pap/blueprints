@@ -58,8 +58,10 @@ table _Measures
 		formatStringDefinition =
 				VAR _y = SELECTEDVALUE ( DimDate[Year] )
 				VAR _rows = FILTER ( Events, Events[EventYear] = _y )
-				VAR _minD = MINX ( _rows, Events[EventDate] )
-				VAR _txt = MINX ( FILTER ( _rows, Events[EventDate] = _minD ), Events[EventShort] )
+				VAR _maxW = MAXX ( _rows, Events[EventWeight] )
+				VAR _top = FILTER ( _rows, Events[EventWeight] = _maxW )
+				VAR _minD = MINX ( _top, Events[EventDate] )
+				VAR _txt = MINX ( FILTER ( _top, Events[EventDate] = _minD ), Events[EventShort] )
 				RETURN
 				    IF (
 				        [Is Selected Decade] = 1 && ISCROSSFILTERED ( Decades[Decade] ),
@@ -84,9 +86,9 @@ table _Measures
 	measure 'Year Tooltip' =
 			VAR _y = SELECTEDVALUE ( DimDate[Year] )
 			VAR _n = [Launches]
-			VAR _succ = CALCULATE ( COUNTROWS ( space_missions ), space_missions[MissionStatus] = "Success" )
-			VAR _part = CALCULATE ( COUNTROWS ( space_missions ), space_missions[MissionStatus] = "Partial Failure" )
-			VAR _fail = CALCULATE ( COUNTROWS ( space_missions ), space_missions[MissionStatus] IN { "Failure", "Prelaunch Failure" } )
+			VAR _succ = CALCULATE ( COUNTROWS ( space_missions ), space_missions[MissionStatus] = "Success" ) + 0
+			VAR _part = CALCULATE ( COUNTROWS ( space_missions ), space_missions[MissionStatus] = "Partial Failure" ) + 0
+			VAR _fail = CALCULATE ( COUNTROWS ( space_missions ), space_missions[MissionStatus] IN { "Failure", "Prelaunch Failure" } ) + 0
 			VAR _top =
 			    CONCATENATEX (
 			        TOPN ( 1, ADDCOLUMNS ( VALUES ( space_missions[Company] ), "@n", CALCULATE ( COUNTROWS ( space_missions ) ) ), [@n], DESC ),
@@ -274,11 +276,22 @@ table _Measures
 			VAR _top = [Sel Top Operator]
 			VAR _topN = CALCULATE ( [Sel Launches], space_missions[Company] = _top )
 			VAR _lead = IF ( _sel, "The " & _lab & " saw ", "Across 1957–2022 there were " )
+			VAR _allDebuts =
+			    FILTER (
+			        ALL ( Events ),
+			        Events[EventType] = "Operator debut"
+			            && Events[EventDecade] IN VALUES ( Decades[Decade] )
+			    )
+			VAR _cnt = COUNTROWS ( _allDebuts )
+			VAR _first3 = TOPN ( 3, _allDebuts, Events[EventWeight], DESC )
+			VAR _names = CONCATENATEX ( _first3, Events[EventShort], ", ", Events[EventWeight], DESC )
+			VAR _more = IF ( _cnt > 3, " +" & ( _cnt - 3 ) & " more", "" )
+			VAR _debutLine = IF ( _sel && _cnt > 0, " First launches: " & _names & _more & ".", "" )
 			RETURN
 			    _lead & FORMAT ( _n, "#,##0" ) & " orbital launches from "
 			        & FORMAT ( _ops, "0" ) & " operators. " & _top & " accounted for " & FORMAT ( _topN, "#,##0" )
 			        & " of them (" & FORMAT ( DIVIDE ( _topN, _n ), "0%" ) & "), and "
-			        & FORMAT ( _s, "0.0%" ) & " of missions succeeded."
+			        & FORMAT ( _s, "0.0%" ) & " of missions succeeded." & _debutLine
 		lineageTag: cd6ab226-5a95-4f24-aff5-92e2f1652495
 
 	column _

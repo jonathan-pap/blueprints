@@ -181,9 +181,28 @@ Three consecutive event years (1957, 1958, 1959) can't all show a label. Three t
 | Widen the stagger (step 20 → 28, axis → 230) | **Reverted — no effect.** 1958 still dropped, and the taller axis visibly compressed the columns. |
 
 **Conclusion: Power BI culls line-series data labels by horizontal proximity alone — vertical
-separation does not buy you a label back.** With ~17px per category on a 66-year axis, roughly two
-labels fit per ~50px cluster. 1958 is the only casualty in the whole series, and the canvas tooltip
-carries its full detail. Don't spend more time on it; the ceiling is in the visual, not the config.
+separation does not buy you a label back.**
+
+Tested further: suppressing the 1959 label did **not** make 1958 appear, so it is not a
+"two per cluster" quota either. **Two *directly adjacent* event years can never both be labelled** —
+the category pitch is ~17px and the shortest label ("NASA") is ~50px, so the earlier year's label
+occupies its neighbour's slot and the neighbour is dropped regardless of width, height or tier.
+1957 beats 1958 every time.
+
+Consequence: **the chart cannot surface every debut, so the narrative does.** `[Decade Takeaway]`
+now ends with "First launches: …" naming the decade's three most significant operator debuts by
+`EventWeight` plus a `+N more` remainder. NASA (1958, weight 203) is invisible on the chart by
+construction and appears there instead. Don't spend more time fighting the labels — the ceiling is
+in the visual, and the narrative is the right home for what doesn't fit.
+
+### The narrative is a `tableEx`, not a card
+
+`cardVisual` renders its subtitle in a fixed-height header and leaves the body empty, so a long
+sentence truncates ("…succeeded. First lau…") while most of the card sits unused. The narrative is
+therefore a **`tableEx`** bound to `[Decade Takeaway]` with `wordWrap: true`, header blanked the same
+way as the tooltip (`displayName " "` + header painted into the background), `grid` off and
+`stylePreset: 'None'`. It wraps and uses the full area. The decade heading rides the visual title
+as a measure (`[Decade Scope Label]`).
 
 **Final form: one name per marker.** The label shows the `EventShort` of the year's **earliest**
 event by `Events[EventDate]` — nothing joined, no `"+N"`. Both of those were tried and rejected:
