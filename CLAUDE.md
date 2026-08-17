@@ -43,6 +43,8 @@ Workspace-Blueprint/
 
 ## Available blueprints
 
+> **New machine?** Install a blueprint's prerequisites before your first edit — each has its own `00-setup.md` (e.g. [`power-bi/00-setup.md`](power-bi/00-setup.md) → `pwsh power-bi/setup.ps1`).
+
 - **[power-bi/](power-bi/)** — Power BI Desktop projects (PBIP format). Reports, semantic models, themes, custom visuals, live-model bridge (MCP-first, PowerShell alternative), audit + validation hooks. Entry point: [power-bi/CLAUDE.md](power-bi/CLAUDE.md) (has its own detailed folder map).
 - **[synthetic-data/](synthetic-data/)** — synthetic / dummy data creation (Python-first: Faker, numpy/scipy, SDV). Schema-faithful, privacy-safe fake datasets for demos, testing, ML fixtures, or to populate a BI model. Includes a Power BI hand-off that writes generated data into a `power-bi/` semantic model. Entry point: [synthetic-data/CLAUDE.md](synthetic-data/CLAUDE.md). *(Skeleton — rooms grow per job.)*
 - **[tabular-editor/](tabular-editor/)** — Tabular Editor toolkit: reusable **C# scripts**, **BPA rule sets**, and **TE3 macros** for bulk semantic-model operations, all portable across **Tabular Editor 2 (free) and 3**. Works on any tabular model (Power BI PBIP/TMDL or live, Azure AS, SSAS, Fabric). Cross-referenced by `power-bi/` for the PBIP workflow. Entry point: [tabular-editor/CLAUDE.md](tabular-editor/CLAUDE.md).
