@@ -1,4 +1,4 @@
-/// Calendar over the fact date range. The end date is DERIVED from the fact table, not hardcoded - a calendar that runs past the data puts empty years on every axis and inflates any 'of N years' denominator (the tooltip's rank line read 'of 74' while only 70 years have launches). Currently 1957-2026.
+/// Calendar over the fact date range. The end date is DERIVED from the fact table, not hardcoded - a calendar that runs past the data puts empty years on every axis and inflates any 'of N years' denominator (the tooltip's rank line read 'of 74' while only 70 years have launches). Currently 1957-2026. The COALESCE is load-bearing: mid-refresh MAX(Date) can be blank, YEAR(BLANK) is 1899, and CALENDAR would then be asked for a range that ends before it starts.
 table DimDate
 	lineageTag: 4c62f346-42fc-43d7-9328-a5d7f016f7b9
 	dataCategory: Time
@@ -42,10 +42,11 @@ table DimDate
 	partition DimDate = calculated
 		mode: import
 		source =
-				VAR _maxY = YEAR ( MAX ( space_missions[Date] ) )
+				VAR _maxY = COALESCE ( YEAR ( MAX ( space_missions[Date] ) ), 1957 )
+				VAR _endY = MAX ( _maxY, 1957 )
 				RETURN
 				ADDCOLUMNS (
-				    CALENDAR ( DATE ( 1957, 1, 1 ), DATE ( _maxY, 12, 31 ) ),
+				    CALENDAR ( DATE ( 1957, 1, 1 ), DATE ( _endY, 12, 31 ) ),
 				    "Year", YEAR ( [Date] ),
 				    "Decade", INT ( YEAR ( [Date] ) / 10 ) * 10,
 				    "DecadeLabel", FORMAT ( INT ( YEAR ( [Date] ) / 10 ) * 10, "0" ) & "s"

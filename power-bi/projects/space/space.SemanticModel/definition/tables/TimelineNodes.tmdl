@@ -1,4 +1,4 @@
-/// Serpentine timeline geometry - one row per calendar year in the fact range, laid out boustrophedon (row 0 left-to-right, row 1 right-to-left, ...). NodeCol/NodeRow are consumed by [Node X]/[Node Y] to position a scatter chart, and by [Timeline Ribbon] to draw the connecting path behind it. _rows is FIXED at 4 and PerRow is derived, so the layout rebalances automatically if the fact date range changes - BUT the scatter's pinned axis window in visual.json does NOT, so if PerRow moves off 17 the categoryAxis/valueAxis start+end must be updated to match. See brief.md.
+/// Serpentine timeline geometry - one row per calendar year in the fact range, laid out boustrophedon (row 0 left-to-right, row 1 right-to-left, ...). NodeCol/NodeRow are consumed by [Node X]/[Node Y] to position a scatter chart, and by [Timeline Ribbon] to draw the connecting path behind it. _rows is FIXED at 4 and PerRow is derived, so the layout rebalances automatically if the fact date range changes - BUT the scatter's pinned axis window in visual.json does NOT, so if PerRow moves off 18 the categoryAxis start+end must be updated to match. THE COALESCE IS LOad-BEARING: during a refresh Desktop can evaluate this table while space_missions is cleared, MIN/MAX come back blank, and GENERATESERIES hard-fails with 'The arguments in GenerateSeries function cannot be blank', rolling back the whole transaction.
 table TimelineNodes
 	lineageTag: ac76b7e0-e414-4ee3-b56f-2d15c8d4630a
 
@@ -66,11 +66,11 @@ table TimelineNodes
 	partition TimelineNodes = calculated
 		mode: import
 		source =
-				VAR _min = MIN ( space_missions[Year] )
-				VAR _max = MAX ( space_missions[Year] )
+				VAR _min = COALESCE ( MIN ( space_missions[Year] ), 1957 )
+				VAR _max = COALESCE ( MAX ( space_missions[Year] ), _min )
 				VAR _cnt = _max - _min + 1
 				VAR _rows = 4
-				VAR _perRow = ROUNDUP ( DIVIDE ( _cnt, _rows ), 0 )
+				VAR _perRow = MAX ( 1, ROUNDUP ( DIVIDE ( _cnt, _rows ), 0 ) )
 				RETURN
 				ADDCOLUMNS (
 				    SELECTCOLUMNS ( GENERATESERIES ( _min, _max, 1 ), "Year", [Value] ),
