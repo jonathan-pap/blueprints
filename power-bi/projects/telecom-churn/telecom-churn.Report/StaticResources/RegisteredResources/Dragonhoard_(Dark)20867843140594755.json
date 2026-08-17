@@ -1,15 +1,15 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/powerbi-desktop-samples/main/Report%20Theme%20JSON%20Schema/reportThemeSchema-2.152.json",
-  "name": "Deep Space (Dark)",
+  "name": "Dragonhoard (Dark)",
   "dataColors": [
-    "#4CC9F0",
-    "#9D7BEA",
-    "#F2A93B",
-    "#E05A8A",
-    "#2DC7A6",
-    "#4F7BE0",
-    "#9FC0E8",
-    "#C96A45",
+    "#E0A100",
+    "#E8662A",
+    "#D1344B",
+    "#2BA56B",
+    "#3E84D6",
+    "#9B5FD0",
+    "#FE9666",
+    "#A66999",
     "#3599B8",
     "#DFBFBF",
     "#4AC5BB",
@@ -483,51 +483,46 @@
     "#0D2E25",
     "#54484E"
   ],
-  "good": "#2DC7A6",
-  "neutral": "#7C87A6",
-  "bad": "#E0555F",
-  "maximum": "#4CC9F0",
-  "center": "#1A2340",
-  "minimum": "#E0555F",
-  "null": "#6E7896",
-  "foreground": "#E8ECF8",
-  "foregroundNeutralSecondary": "#B9C2DA",
-  "foregroundLight": "#8892AE",
-  "foregroundNeutralTertiary": "#6E7896",
-  "foregroundDark": "#E8ECF8",
-  "background": "#0F1528",
-  "backgroundLight": "#070B18",
-  "backgroundNeutral": "#1A2340",
-  "backgroundDark": "#04070F",
-  "tableAccent": "#4CC9F0",
-  "hyperlink": "#4CC9F0",
-  "shapeStroke": "#26304F",
-  "accent": "#4CC9F0",
+  "good": "#2BA56B",
+  "neutral": "#897B5E",
+  "bad": "#D1344B",
+  "maximum": "#E0A100",
+  "center": "#262019",
+  "minimum": "#D1344B",
+  "null": "#897B5E",
+  "foreground": "#F5ECD8",
+  "foregroundNeutralSecondary": "#D8C9A8",
+  "foregroundLight": "#A89878",
+  "foregroundNeutralTertiary": "#897B5E",
+  "foregroundDark": "#F5ECD8",
+  "background": "#1C1812",
+  "backgroundLight": "#15110C",
+  "backgroundNeutral": "#262019",
+  "backgroundDark": "#100D09",
+  "tableAccent": "#E0A100",
+  "hyperlink": "#E0A100",
+  "shapeStroke": "#3A3024",
+  "accent": "#E0A100",
   "textClasses": {
     "callout": {
-      "color": "#E8ECF8",
+      "color": "#F5ECD8",
       "fontFace": "Segoe UI",
       "fontSize": 28
     },
     "title": {
-      "color": "#E8ECF8",
+      "color": "#F5ECD8",
       "fontFace": "Segoe UI Semibold",
       "fontSize": 12
     },
     "header": {
-      "color": "#E8ECF8",
+      "color": "#F5ECD8",
       "fontFace": "Segoe UI Semibold",
       "fontSize": 10
     },
     "label": {
-      "color": "#B9C2DA",
+      "color": "#D8C9A8",
       "fontFace": "Segoe UI",
       "fontSize": 9
-    },
-    "dataTitle": {
-      "color": "#8892AE",
-      "fontFace": "Segoe UI",
-      "fontSize": 10
     }
   },
   "visualStyles": {
@@ -538,7 +533,7 @@
             "show": true,
             "color": {
               "solid": {
-                "color": "#0F1528"
+                "color": "#1C1812"
               }
             },
             "transparency": 0
@@ -549,7 +544,7 @@
             "show": true,
             "color": {
               "solid": {
-                "color": "#26304F"
+                "color": "#3A3024"
               }
             },
             "radius": 5
@@ -565,12 +560,12 @@
             "show": true,
             "fontColor": {
               "solid": {
-                "color": "#E8ECF8"
+                "color": "#F5ECD8"
               }
             },
             "background": {
               "solid": {
-                "color": "#0F1528"
+                "color": "#1C1812"
               }
             },
             "fontFamily": "Segoe UI Semibold",
@@ -582,19 +577,19 @@
           {
             "backgroundColor": {
               "solid": {
-                "color": "#070B18"
+                "color": "#15110C"
               }
             },
             "foregroundColor": {
               "solid": {
-                "color": "#E8ECF8"
+                "color": "#F5ECD8"
               }
             },
             "transparency": 0,
             "border": true,
             "borderColor": {
               "solid": {
-                "color": "#26304F"
+                "color": "#3A3024"
               }
             },
             "titleSize": 13,
@@ -602,162 +597,14 @@
             "fontFamily": "Segoe UI",
             "checkboxAndApplyColor": {
               "solid": {
-                "color": "#4CC9F0"
+                "color": "#E0A100"
               }
             },
             "inputBoxColor": {
               "solid": {
-                "color": "#1A2340"
+                "color": "#262019"
               }
             }
-          }
-        ],
-        "filterCard": [
-          {
-            "$id": "Applied",
-            "foregroundColor": {
-              "solid": {
-                "color": "#E8ECF8"
-              }
-            },
-            "backgroundColor": {
-              "solid": {
-                "color": "#1A2340"
-              }
-            },
-            "borderColor": {
-              "solid": {
-                "color": "#26304F"
-              }
-            },
-            "transparency": 0,
-            "inputBoxColor": {
-              "solid": {
-                "color": "#0F1528"
-              }
-            },
-            "fontFamily": "Segoe UI"
-          },
-          {
-            "$id": "Available",
-            "foregroundColor": {
-              "solid": {
-                "color": "#B9C2DA"
-              }
-            },
-            "backgroundColor": {
-              "solid": {
-                "color": "#0F1528"
-              }
-            },
-            "borderColor": {
-              "solid": {
-                "color": "#26304F"
-              }
-            },
-            "transparency": 0,
-            "inputBoxColor": {
-              "solid": {
-                "color": "#1A2340"
-              }
-            },
-            "fontFamily": "Segoe UI"
-          }
-        ]
-      }
-    },
-    "textbox": {
-      "*": {
-        "title": [
-          {
-            "show": false
-          }
-        ],
-        "background": [
-          {
-            "show": false
-          }
-        ],
-        "border": [
-          {
-            "show": false
-          }
-        ],
-        "dropShadow": [
-          {
-            "show": false
-          }
-        ]
-      }
-    },
-    "image": {
-      "*": {
-        "title": [
-          {
-            "show": false
-          }
-        ],
-        "background": [
-          {
-            "show": false
-          }
-        ],
-        "border": [
-          {
-            "show": false
-          }
-        ],
-        "dropShadow": [
-          {
-            "show": false
-          }
-        ]
-      }
-    },
-    "shape": {
-      "*": {
-        "title": [
-          {
-            "show": false
-          }
-        ],
-        "background": [
-          {
-            "show": false
-          }
-        ],
-        "border": [
-          {
-            "show": false
-          }
-        ],
-        "dropShadow": [
-          {
-            "show": false
-          }
-        ]
-      }
-    },
-    "actionButton": {
-      "*": {
-        "title": [
-          {
-            "show": false
-          }
-        ],
-        "background": [
-          {
-            "show": false
-          }
-        ],
-        "border": [
-          {
-            "show": false
-          }
-        ],
-        "dropShadow": [
-          {
-            "show": false
           }
         ]
       }
@@ -768,7 +615,7 @@
           {
             "color": {
               "solid": {
-                "color": "#070B18"
+                "color": "#15110C"
               }
             },
             "transparency": 0
@@ -778,7 +625,7 @@
           {
             "color": {
               "solid": {
-                "color": "#070B18"
+                "color": "#15110C"
               }
             },
             "transparency": 0

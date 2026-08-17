@@ -1,4 +1,0 @@
-relationship DimDate_space_missions
-	fromColumn: space_missions.Date
-	toColumn: DimDate.Date
-

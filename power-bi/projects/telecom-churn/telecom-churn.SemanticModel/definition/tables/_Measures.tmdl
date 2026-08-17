@@ -1,0 +1,19 @@
+table _Measures
+	isHidden
+	lineageTag: cfff4bff-9707-4543-823b-798f2f9200bb
+
+	measure _blank = ""
+		lineageTag: 863ebf9f-9c98-499d-b9fa-e9869f89a6c0
+
+	column _
+		isHidden
+		lineageTag: 664b670f-5eba-42a4-a1b0-bd68e0351e73
+		isNameInferred
+		sourceColumn: [_]
+
+	partition _Measures = calculated
+		mode: import
+		source = ROW("_", "")
+
+	annotation PBI_ResultType = Table
+

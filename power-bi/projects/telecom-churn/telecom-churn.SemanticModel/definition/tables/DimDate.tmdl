@@ -1,0 +1,61 @@
+table DimDate
+	lineageTag: f723e1c6-130c-4996-bdfa-45d11ddeda2e
+	dataCategory: Time
+
+	column DateKey
+		dataType: int64
+		lineageTag: 73cc6b31-02cb-4aac-946a-4e820e606ec3
+		summarizeBy: count
+		sourceColumn: DateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		isUnique
+		lineageTag: 869cc861-c6a9-48c6-b4dd-e2592bcf2b82
+		summarizeBy: none
+		sourceColumn: Date
+
+	column Year
+		dataType: int64
+		lineageTag: c1b1ce9f-68bf-4e9c-ac55-fdac212c71a7
+		summarizeBy: sum
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		dataType: int64
+		lineageTag: e8906134-7c10-47b7-ad60-176efeed4c23
+		summarizeBy: sum
+		sourceColumn: Month
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthName
+		dataType: string
+		lineageTag: ab60aab1-a6f9-4100-b340-55cb61595121
+		summarizeBy: none
+		sourceColumn: MonthName
+
+	column Day
+		dataType: int64
+		lineageTag: 005dc0f0-12d4-4c41-a83f-528d8bd157af
+		summarizeBy: sum
+		sourceColumn: Day
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimDate = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("E:\Workspace-Blueprint\synthetic-data\outputs\grand-exchange\latest\DimDate.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"DateKey", Int64.Type}, {"Date", type date}, {"Year", Int64.Type}, {"Month", Int64.Type}, {"MonthName", type text}, {"Day", Int64.Type}}),
+				    Filtered = Table.SelectRows(Typed, each [DateKey] >= 20260101),
+				    Kept = Table.SelectColumns(Filtered, {"DateKey", "Date", "Year", "Month", "MonthName", "Day"})
+				in
+				    Kept
+

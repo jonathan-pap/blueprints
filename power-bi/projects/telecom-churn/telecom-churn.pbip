@@ -4,7 +4,7 @@
   "artifacts": [
     {
       "report": {
-        "path": "example reports.Report"
+        "path": "telecom-churn.Report"
       }
     }
   ],

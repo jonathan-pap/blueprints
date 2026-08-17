@@ -11,7 +11,7 @@
       "type": "SharedResources"
     },
     "customTheme": {
-      "name": "Deep_Space_(Dark)5592057721149452.json",
+      "name": "Dragonhoard_(Dark)20867843140594755.json",
       "reportVersionAtImport": {
         "visual": "2.11.0",
         "report": "3.4.0",
@@ -65,8 +65,8 @@
       "type": "RegisteredResources",
       "items": [
         {
-          "name": "Deep_Space_(Dark)5592057721149452.json",
-          "path": "Deep_Space_(Dark)5592057721149452.json",
+          "name": "Dragonhoard_(Dark)20867843140594755.json",
+          "path": "Dragonhoard_(Dark)20867843140594755.json",
           "type": "CustomTheme"
         }
       ]
@@ -78,9 +78,6 @@
     "defaultDrillFilterOtherVisuals": true,
     "allowChangeFilterTypes": true,
     "useEnhancedTooltips": true,
-    "useDefaultAggregateDisplayName": true,
-    "queryLimitOption": "None",
-    "customMemoryLimit": "1048576",
-    "customTimeoutLimit": "225"
+    "useDefaultAggregateDisplayName": true
   }
 }

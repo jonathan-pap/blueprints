@@ -3,7 +3,7 @@
   "version": "4.0",
   "datasetReference": {
     "byPath": {
-      "path": "../example reports.SemanticModel"
+      "path": "../telecom-churn.SemanticModel"
     }
   }
 }
