@@ -122,9 +122,10 @@ table space_missions
 				let
 				  Source = Csv.Document(File.Contents("E:\Workspace-Blueprint\power-bi\projects\space\data\space_missions_ll2.csv"), [Delimiter = ",", Columns = 9, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
 				  #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
-				  #"Changed column type" = Table.TransformColumnTypes(#"Promoted headers", {{"Company", type text}, {"Location", type text}, {"Date", type date}, {"Time", type time}, {"Rocket", type text}, {"Mission", type text}, {"RocketStatus", type text}, {"Price", type text}, {"MissionStatus", type text}}, "en-US")
+				  #"Changed column type" = Table.TransformColumnTypes(#"Promoted headers", {{"Company", type text}, {"Location", type text}, {"Date", type date}, {"Time", type time}, {"Rocket", type text}, {"Mission", type text}, {"RocketStatus", type text}, {"Price", type text}, {"MissionStatus", type text}}, "en-US"),
+				  #"Removed suborbital" = Table.SelectRows(#"Changed column type", each not List.Contains({"SpaceShipTwo", "New Shepard"}, [Rocket]))
 				in
-				  #"Changed column type"
+				  #"Removed suborbital"
 
 	annotation PBI_NavigationStepName = Navigation
 

@@ -143,6 +143,33 @@ exists under a different source name aborts the run. That mattered — the obvio
 "Northrop Grumman Space Systems" is "Northrop", which already exists separately, and the counts
 would have silently fused.
 
+### The partial-year test must be DERIVED, not named
+
+Four measures hardcoded `_y = 2022` — correct for the old file (which ended 29 Jul 2022) and
+**silently wrong the moment the data changed**: LL2 has 2022 complete (06 Jan – 30 Dec, 189
+launches) and **2026** partial (to 16 Aug). `Column Color` was painting 2022 in the muted
+"partial" fill and 2026 as if it were finished; both tooltips labelled the wrong year; the
+all-time narrative read "Across 1957–2022". All four now derive it:
+
+```dax
+VAR _lastDate = CALCULATE ( MAX ( space_missions[Date] ),
+                            REMOVEFILTERS ( DimDate ), REMOVEFILTERS ( TimelineNodes ) )
+VAR _partial  = _y = YEAR ( _lastDate ) && _lastDate < DATE ( YEAR ( _lastDate ), 12, 31 )
+```
+
+### ⚠️ MCP model edits do not survive on their own — verify them on DISK
+
+The suborbital filter was applied through MCP, confirmed live (7,486 rows), and **still ended up
+missing from both disk and git**. Desktop re-read the model from disk and discarded it, and a
+`grep` that appeared to confirm it in the commit was actually matching `SiteCountry` on the same
+lines. The partition's *description* persisted while its *expression* reverted — a partial revert
+that is very easy to miss.
+
+**The rule this earns:** after any MCP model change and save, `grep the TMDL on disk for a string
+unique to the change` before claiming it is done. A live-model query is not evidence — it only
+proves Desktop's memory, which is the thing that keeps getting rolled back. Where Desktop can be
+closed, edit the TMDL directly instead; that is the documented order and it does not race.
+
 ### Final state, verified
 
 | | value |
