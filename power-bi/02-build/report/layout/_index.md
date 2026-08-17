@@ -1,7 +1,7 @@
 # layout/ — atomic files
 
-- `design-contract.md` — the `Design Brief:` handoff schema (from [`../design/`](../references/design-identity.md)) — zones, placements, space rules + the handoff validation checklist. The spec the steps below implement.
-- `design-system.md` — **read first** — project layout tokens (`design-system.yaml`): per-type sizes, grid, gaps, zones. The dimension counterpart to the theme.
+- `design-contract.md` — the `Design Brief:` handoff schema (from [`../design/`](../references/design-identity.md)) — grid regions, bands, placements, space rules + the handoff validation checklist. The spec the steps below implement.
+- `design-system.md` — **read first** — project layout tokens (`design-system.yaml`): the 12×12 grid, per-type spans, bands, gaps. The dimension counterpart to the theme.
 - `design-system-default.yaml` — copyable starter tokens for a new project
 - `page-dimensions.md` — query and choose page size
 - `position-visual.md` — set x, y

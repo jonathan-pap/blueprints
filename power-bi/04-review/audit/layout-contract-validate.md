@@ -29,10 +29,11 @@ fix the report (not the brief) unless the brief itself was wrong.
 - [ ] Each built page's visual set matches its `layout_contract` placements (no orphan visuals, none dropped).
 
 ### Per-page structure
-- [ ] Exactly one `page_title` textbox per page, text = the brief's **insight** title (not "Overview"/"Dashboard").
-- [ ] Every contract zone has its placements built; `space_budget.empty_zones` is `[]` and no built zone is empty.
-- [ ] `largest_zone` in the build is not a bare single-value `cardVisual` (composite KPI hero must carry value + Δ/spark/threshold).
-- [ ] Slicers sit in the header band (right of title) or a side rail; **no data visual starts under a slicer region**.
+- [ ] Exactly one `page_title` textbox per page (row-1 region), text = the brief's **insight** title (not "Overview"/"Dashboard").
+- [ ] Every contract placement is built at its grid `region`; the built visual's x/y/w/h matches the region resolved through the cell math (snapped to 8); no two regions overlap.
+- [ ] Every `band` in `space_budget.bands_used` has its placements built; the built page's grid emptiness is within tier (`space_budget.emptiness_pct` ≤15% analytical / ≤20% executive) — no whole band left empty.
+- [ ] `largest_region` in the build is not a bare single-value `cardVisual` (composite KPI hero must carry value + Δ/spark/threshold).
+- [ ] Slicers sit in the summary band (right of title) or a side rail; **no data-visual region starts under a slicer**.
 - [ ] Data-visual count per page within the [perf budget](../../02-build/report/layout/layout-guidelines.md#visual-count-vs-performance) (6–8 where the archetype allows).
 
 ### Bindings & encoding

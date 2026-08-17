@@ -65,8 +65,8 @@ blunt `visualStyles["*"]["*"]` ([`../theme/modify/wildcard.md`](../theme/modify/
 Produce the `Design Brief:` YAML — full schema + validation checklist in
 [`layout/design-contract.md`](layout/design-contract.md). Must carry
 `generated_by: powerbi-report-design-room`, one `pages[]` per page (each with `archetype`,
-`layout_variant`, `variant_rationale`, insight `page_title`), a per-page `layout_contract`, and a
-`space_budget` with no dead zones. Review it against
+`layout_variant`, `variant_rationale`, insight `page_title`), a per-page `layout_contract` (grid
+regions + bands), and a `space_budget` with no dead cells. Review it against
 [`references/anti-patterns.md`](references/anti-patterns.md) and
 [`references/accessibility.md`](references/accessibility.md) **before** authoring — layout gaps,
 missing slicers, monochrome charts, raw field names, failed contrast are cheapest to fix on the

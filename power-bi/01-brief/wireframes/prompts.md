@@ -62,9 +62,10 @@ Return a revised page list + revised wireframes, and a short list of what you ch
 The wireframe is approved. Turn it into a build plan for the 02-build room.
 For each page and each placeholder visual:
 - Pick the concrete Power BI visual type (use the visual-cookbook rules).
-- Give position + size on the 1280×720 canvas as design-system.yaml zones/tokens.
+- Place it on the 12×12 grid as a region [col,row,col,row] + band, or a design-system.yaml span/template token.
 - Bind it to the real measure/field (canonical names — verify, don't guess).
-Output: a per-page table [visual | type | fields | x/y/w/h | zone], ready for pbir add visual.
+Output: a per-page table [visual | type | fields | region | band], ready for pbir add visual
+(resolve region → x/y/w/h with the layout-guidelines cell math). This is the layout_contract for a design brief.
 Also save the story (arc + page purposes) to projects/<name>/story.md.
 ```
 
@@ -72,9 +73,11 @@ Also save the story (arc + page purposes) to projects/<name>/story.md.
 
 ```
 Emit the approved wireframe as the portable JSON spec in handoff.md — one object per page:
-canvas {w,h,margin,grid}, and zones with x/y/w/h + typed placeholder items
-(type ∈ kpi/card/bar/line/donut/map/table/slicer/title/text; hero:true on the page's hero).
-No prose — just the JSON. This is the interchange other tools generate from.
+canvas {w,h,margin,gutter,grid:{columns:12,rows:12}}, and placements each with a grid
+region [col,row,col,row] (1-indexed, end-exclusive) + band (summary|analysis|detail) + typed
+placeholder items (type ∈ kpi/card/bar/line/donut/map/table/slicer/title/text; hero:true on the
+page's hero). No prose — just the JSON. This is the interchange other tools generate from, and it
+maps one-to-one onto a design-contract layout_contract.
 ```
 
 Then follow [`handoff.md`](handoff.md) to turn the spec into an HTML/SVG mockup (Claude), Figma frames
@@ -89,6 +92,6 @@ Then follow [`handoff.md`](handoff.md) to turn the spec into an HTML/SVG mockup 
 - **Iterate on text, not PBIR.** Re-run B/C until the wireframe is agreed — changing an ASCII box is free;
   changing a built page is not.
 - **Stakeholder mockup (optional).** Ask for the approved wireframe as an HTML/SVG artifact for sign-off —
-  same zones, still no real data.
+  same grid regions, still no real data.
 - **After build, compare.** Screenshot the built pages via the Desktop Bridge
   (`../../03-bind/desktop-bridge.md`) and check them back against the wireframe.

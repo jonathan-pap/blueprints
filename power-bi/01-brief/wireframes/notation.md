@@ -6,8 +6,10 @@ real data.
 
 ## The canvas
 
-- Default **1280 × 720** (16:9), **24px margins**, **16px gaps**, 8-grid snap.
-- A page is a stack of **zones**; each zone holds one or more **placeholder visuals**.
+- Default **1280 × 720** (16:9), **24px margins**, **16px gaps**, 8px snap — the same **12×12 grid** the
+  build uses ([layout-guidelines](../../02-build/report/layout/layout-guidelines.md#grid-12x12)).
+- A page is a stack of **zones**; each zone holds one or more **placeholder visuals**. A zone is a low-fi
+  sketching device — it resolves to one or more **grid regions** at build (see "Map to the build" below).
 - Standard zones (use the ones the page needs):
 
 | Zone | Typical y-band | Holds |
@@ -53,20 +55,25 @@ Keep boxes roughly proportional to real size — a hero is visibly bigger than a
 
 ## Map to the build
 
-Each zone/placeholder becomes a real position + visual:
+Each wireframe zone becomes a **grid region + band** on the 12×12 grid, then a real visual. A sketch zone
+is a loose sketching device; the build speaks grid regions `[col_start,row_start,col_end,row_end]`
+(1-indexed, end-exclusive) and per-type spans from `design-system.yaml`:
 
-| Wireframe | → design-system.yaml zone | → build |
-|---|---|---|
-| `header` band | `zones.header` (y 24, h 40) | textbox / page title |
-| `KPI row` × 4 | `zones.kpiRow`, per-type card size | `pbir add visual card` × 4 |
-| `★ main` | `zones.main` (largest slot) | the hero chart (cookbook picks the type) |
-| `detail` table | `zones.detail` | `tableEx` / `pivotTable` |
-| `filter rail` | `zones.filterRail` (left 240) | slicers |
+| Wireframe | → grid band | → region / token | → build |
+|---|---|---|---|
+| `header` band | `summary` (row 1) | `[1,1,13,2]` | textbox / page title |
+| `KPI row` × 4 | `summary` (rows 2–3) | `layouts.kpi_row_4` | `pbir add visual card` × 4 |
+| `★ main` | `analysis` (rows 4–9) | largest region, e.g. `[1,4,7,10]` | the hero chart (cookbook picks the type) |
+| `detail` table | `detail` (rows 10–12) | `[1,10,13,13]` / `defaults.table` | `tableEx` / `pivotTable` |
+| `filter rail` | crosses all bands | `defaults.rail` `[1,1,3,13]` | slicers |
 
-So the wireframe's zones drive [`design-system.yaml`](../../02-build/report/layout/design-system.md) sizes,
-and each `[Type ▸ label]` becomes a real visual via
+So the wireframe's zones resolve to grid regions in
+[`design-system.yaml`](../../02-build/report/layout/design-system.md) (cell math in
+[layout-guidelines](../../02-build/report/layout/layout-guidelines.md#grid-12x12)), and each
+`[Type ▸ label]` becomes a real visual via
 [`visual-cookbook.md`](../../02-build/report/references/visual-cookbook.md). Save the finished sketch to
-`projects/<name>/wireframe.md`.
+`projects/<name>/wireframe.md`. When you emit the portable spec ([`handoff.md`](handoff.md)) it carries
+these same regions + bands, so it drops straight into a [design contract](../../02-build/report/layout/design-contract.md) `layout_contract`.
 
 ## If you need a picture
 
