@@ -18,5 +18,26 @@
     "Scope": "Measure",
     "Expression": "string.IsNullOrEmpty(Description) || !(Description.Contains(\"[Type:\") && Description.Contains(\"Created by:\"))",
     "CompatibilityLevel": 0
+  },
+  {
+    "ID": "COLUMN_MISSING_DESCRIPTION",
+    "Name": "Visible column has no description",
+    "Category": "Metadata",
+    "Description": "Every visible column should carry a description so report authors and consumers know what it means. Hidden/technical columns (keys, underscore-prefixed) are exempt.",
+    "Severity": 2,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "!IsHidden && string.IsNullOrEmpty(Description)",
+    "CompatibilityLevel": 0
+  },
+  {
+    "ID": "NUMERIC_MISSING_FORMAT_STRING",
+    "Name": "Numeric column/measure has no format string",
+    "Category": "Formatting",
+    "Description": "Numeric columns and measures must set a FormatString so values render consistently (thousands separators, decimals, %). Non-key numeric columns and all measures are checked.",
+    "Severity": 2,
+    "Scope": "Measure, DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "string.IsNullOrEmpty(FormatString) && (ObjectType == \"Measure\" || ((DataType == \"Int64\" || DataType == \"Decimal\" || DataType == \"Double\") && !(Name.EndsWith(\"Key\") || Name.EndsWith(\"Id\") || Name.EndsWith(\"ID\"))))",
+    "FixExpression": "FormatString = \"#,##0\"",
+    "CompatibilityLevel": 0
   }
 ]
