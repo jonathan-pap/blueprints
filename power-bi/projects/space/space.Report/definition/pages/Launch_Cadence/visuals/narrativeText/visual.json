@@ -4,10 +4,10 @@
   "position": {
     "x": 32,
     "y": 472,
-    "z": 1000,
+    "z": 7000,
     "height": 216,
     "width": 300,
-    "tabOrder": 0
+    "tabOrder": 6000
   },
   "visual": {
     "visualType": "tableEx",
@@ -205,23 +205,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "3fc6fb8fe66f25182f79",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "Decade Takeaway"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

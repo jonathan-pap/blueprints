@@ -1,5 +1,14 @@
 {
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "kpiLaunches",
+  "position": {
+    "x": 348,
+    "y": 472,
+    "z": 3000,
+    "height": 104,
+    "width": 152,
+    "tabOrder": 2000
+  },
   "visual": {
     "visualType": "card",
     "query": {
@@ -7,7 +16,6 @@
         "Values": {
           "projections": [
             {
-              "queryRef": "_Measures.Sel Launches",
               "field": {
                 "Measure": {
                   "Expression": {
@@ -18,6 +26,7 @@
                   "Property": "Sel Launches"
                 }
               },
+              "queryRef": "_Measures.Sel Launches",
               "nativeQueryRef": "Sel Launches"
             }
           ]
@@ -88,7 +97,6 @@
         }
       ]
     },
-    "drillFilterOtherVisuals": true,
     "visualContainerObjects": {
       "title": [
         {
@@ -233,15 +241,7 @@
           }
         }
       ]
-    }
-  },
-  "position": {
-    "x": 348,
-    "y": 472,
-    "z": 1000,
-    "width": 152,
-    "height": 104,
-    "tabOrder": 0
-  },
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json"
+    },
+    "drillFilterOtherVisuals": true
+  }
 }

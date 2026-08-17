@@ -28,11 +28,12 @@ table _Measures
 		isHidden
 		lineageTag: c94bccff-78ea-4a99-9d81-5b7d5ae5c5c4
 
-	/// Recipe primitive P4 - spotlight colour bound to dataPoint.fill. Unselected decades sit at #5A6480, which still clears 3:1 against the card surface. MUST be bound with a dataViewWildcard selector or every column renders identically.
+	/// Recipe primitive P4 - spotlight colour bound to dataPoint.fill. Unselected decades sit at #5A6480, which still clears 3:1 against the card surface. MUST be bound with a dataViewWildcard selector or every column renders identically. The partial-year test is DERIVED from the data, not hardcoded: it was '_y = 2022', which silently became wrong the moment the LL2 swap made 2022 a complete year and 2026 the partial one.
 	measure 'Column Color' =
 			VAR _sel = [Is Selected Decade]
 			VAR _y = SELECTEDVALUE ( DimDate[Year] )
-			VAR _partial = _y = 2022
+			VAR _lastDate = CALCULATE ( MAX ( space_missions[Date] ), REMOVEFILTERS ( DimDate ), REMOVEFILTERS ( TimelineNodes ) )
+			VAR _partial = _y = YEAR ( _lastDate ) && _lastDate < DATE ( YEAR ( _lastDate ), 12, 31 )
 			RETURN
 			    SWITCH (
 			        TRUE (),
@@ -90,12 +91,13 @@ table _Measures
 	measure 'Year Tooltip' =
 			VAR _y = SELECTEDVALUE ( DimDate[Year] )
 			VAR _n = [Launches]
+			VAR _lastDate = CALCULATE ( MAX ( space_missions[Date] ), REMOVEFILTERS ( DimDate ), REMOVEFILTERS ( TimelineNodes ) )
 			VAR _succ = CALCULATE ( COUNTROWS ( space_missions ), space_missions[MissionStatus] = "Success" ) + 0
 			VAR _part = CALCULATE ( COUNTROWS ( space_missions ), space_missions[MissionStatus] = "Partial Failure" ) + 0
 			VAR _fail = CALCULATE ( COUNTROWS ( space_missions ), space_missions[MissionStatus] IN { "Failure", "Prelaunch Failure" } ) + 0
 			VAR _top =
 			    CONCATENATEX (
-			        TOPN ( 1, ADDCOLUMNS ( VALUES ( space_missions[Company] ), "@n", CALCULATE ( COUNTROWS ( space_missions ) ) ), [@n], DESC ),
+			        TOPN ( 1, ADDCOLUMNS ( VALUES ( space_missions[Company] ), "@n", CALCULATE ( COUNTROWS ( space_missions ) ) ), [@n], DESC, space_missions[Company], ASC ),
 			        space_missions[Company]
 			    )
 			VAR _ev =
@@ -104,7 +106,9 @@ table _Measures
 			        UNICHAR ( 8226 ) & " " & Events[EventLabel],
 			        UNICHAR ( 10 )
 			    )
-			VAR _head = FORMAT ( _y, "0" ) & IF ( _y = 2022, "  (partial year)", "" )
+			VAR _head =
+			    FORMAT ( _y, "0" )
+			        & IF ( _y = YEAR ( _lastDate ) && _lastDate < DATE ( YEAR ( _lastDate ), 12, 31 ), "  (partial year)", "" )
 			VAR _body =
 			    "Launches: " & UNICHAR ( 9 ) & FORMAT ( _n, "#,##0" ) & UNICHAR ( 10 )
 			        & "Success: " & UNICHAR ( 9 ) & FORMAT ( _succ, "#,##0" ) & " (" & FORMAT ( DIVIDE ( _succ, _n ), "0%" ) & ")" & UNICHAR ( 10 )
@@ -279,7 +283,14 @@ table _Measures
 			VAR _s = [Sel Success %]
 			VAR _top = [Sel Top Operator]
 			VAR _topN = CALCULATE ( [Sel Launches], space_missions[Company] = _top )
-			VAR _lead = IF ( _sel, "The " & _lab & " saw ", "Across 1957–2022 there were " )
+			VAR _minY = CALCULATE ( MIN ( space_missions[Year] ), REMOVEFILTERS ( DimDate ), REMOVEFILTERS ( TimelineNodes ) )
+			VAR _maxY = CALCULATE ( MAX ( space_missions[Year] ), REMOVEFILTERS ( DimDate ), REMOVEFILTERS ( TimelineNodes ) )
+			VAR _lead =
+			    IF (
+			        _sel,
+			        "The " & _lab & " saw ",
+			        "Across " & FORMAT ( _minY, "0" ) & UNICHAR ( 8211 ) & FORMAT ( _maxY, "0" ) & " there were "
+			    )
 			VAR _allDebuts =
 			    FILTER (
 			        ALL ( Events ),
@@ -295,7 +306,7 @@ table _Measures
 			    _lead & FORMAT ( _n, "#,##0" ) & " orbital launches from "
 			        & FORMAT ( _ops, "0" ) & " operators. " & _top & " accounted for " & FORMAT ( _topN, "#,##0" )
 			        & " of them (" & FORMAT ( DIVIDE ( _topN, _n ), "0%" ) & "), and "
-			        & FORMAT ( _s, "0.0%" ) & " of missions succeeded." & _debutLine
+			        & FORMAT ( _s, "0.0%" ) & " of missions succeeded."
 		lineageTag: cd6ab226-5a95-4f24-aff5-92e2f1652495
 
 	/// TEMP probe: minimal SVG to isolate whether the failure is TMDL parsing, dataCategory on a measure, or the image visual binding.
@@ -422,6 +433,7 @@ table _Measures
 			VAR _TB = UNICHAR ( 9 )
 			VAR _DOT = " " & UNICHAR ( 183 ) & " "
 			VAR _n = [Launches] + 0
+			VAR _lastDate = CALCULATE ( MAX ( space_missions[Date] ), REMOVEFILTERS ( DimDate ), REMOVEFILTERS ( TimelineNodes ) )
 			VAR _prev =
 			    CALCULATE (
 			        COUNTROWS ( space_missions ),
@@ -484,7 +496,9 @@ table _Measures
 			        & IF ( _newN > 3, " +" & FORMAT ( _newN - 3, "0" ) & " more", "" )
 			VAR _ev =
 			    CONCATENATEX ( FILTER ( ALL ( Events ), Events[EventYear] = _y ), UNICHAR ( 8226 ) & " " & Events[EventLabel], _NL )
-			VAR _head = FORMAT ( _y, "0" ) & IF ( _y = 2022, "   partial year", "" )
+			VAR _head =
+			    FORMAT ( _y, "0" )
+			        & IF ( _y = YEAR ( _lastDate ) && _lastDate < DATE ( YEAR ( _lastDate ), 12, 31 ), "   partial year to " & FORMAT ( _lastDate, "d MMM" ), "" )
 			VAR _body =
 			    "Launches" & _TB & FORMAT ( _n, "#,##0" ) & _DOT & _dTxt & _NL
 			        & "Rank" & _TB & FORMAT ( _rank, "0" ) & _ord & " busiest of " & FORMAT ( COUNTROWS ( _years ), "0" ) & _NL

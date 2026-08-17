@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "pageTitle",
   "position": {
     "x": 32,
     "y": 24,
-    "z": 1000,
+    "z": 8000,
     "height": 56,
     "width": 1216,
-    "tabOrder": 0
+    "tabOrder": 8000
   },
   "visual": {
     "visualType": "textbox",
@@ -34,7 +34,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "7,486 orbital launches \u00b7 1957\u20132026 \u00b7 select a decade to spotlight it \u00b7 2026 is a partial year (data ends 16 Aug 2026)",
+                    "value": "7,486 orbital launches · 1957–2026 · select a decade to spotlight it · 2026 is a partial year (data ends 16 Aug 2026)",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10pt",
