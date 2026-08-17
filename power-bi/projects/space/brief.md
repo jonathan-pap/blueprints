@@ -170,6 +170,23 @@ unique to the change` before claiming it is done. A live-model query is not evid
 proves Desktop's memory, which is the thing that keeps getting rolled back. Where Desktop can be
 closed, edit the TMDL directly instead; that is the documented order and it does not race.
 
+### Desktop strips `$schema` from `definition.pbism` on every save
+
+Not intermittent — **every single save**, 11 times across this build. It is the only error
+`pbir validate` reports when it happens:
+
+```text
+space.SemanticModel/definition.pbism  SCHEMA_ERROR  (root): '$schema' is a required property
+```
+
+Restore the first key and revalidate; nothing else is affected:
+
+```json
+"$schema": "https://developer.microsoft.com/json-schemas/fabric/item/semanticModel/definitionProperties/1.0.0/schema.json"
+```
+
+Treat a lone `SCHEMA_ERROR` on `definition.pbism` as expected after a save, not as a new problem.
+
 ### Final state, verified
 
 | | value |
