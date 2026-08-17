@@ -58,7 +58,8 @@ Last updated: 2026-08-16
 
 `data/space_missions_ll2.csv` — **7,591 rows, 1957-10-04 → 2026-08-16**, the exact same nine
 columns, no blank dates. Pulled by `data/fetch_ll2.py` off the free (unauthenticated) tier over
-~5½ hours at ~15 requests/hour. **Not yet swapped in.**
+~5½ hours at ~15 requests/hour. **Swapped in 2026-08-17** — see "After the swap" below for the
+two defects the swap exposed.
 
 ### The finding that matters: the current dataset is materially incomplete
 
@@ -105,6 +106,57 @@ Dynamics (3) and NASA (3). Consequences:
 
 Keep the old file as `space_missions_2022.csv` for reproducibility — the two are **not**
 interchangeable at operator level, so any saved analysis built on it should say which it used.
+
+### After the swap — two defects the pull had, and the fixes
+
+**1. The pull included SUBORBITAL flights.** `fetch_ll2.py` filtered on launch *status*
+(`status__ids=3,4,7`) but never on orbit, and LL2's `/launch/` endpoint carries suborbital too.
+That is `SpaceShipTwo` (67) and `New Shepard` (38) — **105 rows of 7,591** — in a report titled
+*Orbital* Launch Cadence. It also put **Virgin Galactic into `Events` as a 2010 operator debut**
+with 67 launches, despite it never having flown an orbital mission.
+
+Fixed in the partition, not by re-pulling (a re-pull is ~5½ hours for 1.4% of rows):
+
+```m
+#"Removed suborbital" = Table.SelectRows(#"Changed column type",
+    each not List.Contains({"SpaceShipTwo", "New Shepard"}, [Rocket]))
+```
+
+Nice confirmation that it works: **Blue Origin's debut moves to 2025**, because New Glenn is its
+first orbital flight once New Shepard is gone.
+
+**2. A calendar running past the data breaks any "of N years" denominator.** `DimDate` was
+extended to 2030 while the facts end 2026 — four empty years. Rank in the node tooltip would have
+read *"1st busiest of 74"* when only 70 years have launches, and every year axis gains four empty
+slots. `DimDate` now derives its end from the fact table and self-maintains:
+
+```dax
+VAR _maxY = YEAR ( MAX ( space_missions[Date] ) )
+RETURN ADDCOLUMNS ( CALENDAR ( DATE ( 1957, 1, 1 ), DATE ( _maxY, 12, 31 ) ), … )
+```
+
+**Operator names.** 36 names ran over 20 characters ("Lockheed Space Operations Company",
+"Production Corporation Polyot") and would have swamped the Top-5 bars and the event labels.
+Short forms are applied to the CSV **and** added to `PROVIDER` in `fetch_ll2.py`, so a re-pull
+produces identical names. The rename script carries a **collision guard**: a target that already
+exists under a different source name aborts the run. That mattered — the obvious shortening of
+"Northrop Grumman Space Systems" is "Northrop", which already exists separately, and the counts
+would have silently fused.
+
+### Final state, verified
+
+| | value |
+|---|---|
+| Fact rows | 7,486 (7,591 − 105 suborbital) |
+| Range | 1957–2026, 70 years, no empty tail |
+| Busiest year | 2025, **332** |
+| `Events` | 21 rows, longest `EventShort` 18 chars |
+| Longest operator name | 20 chars |
+| `valueAxis` / `secEnd` | 0–380 |
+| Event-marker ladder | 209 / 258 / 307 |
+| `categoryAxis` | 1953.5–2028.5 |
+| `TimelineNodes` `PerRow` | 18 (auto-rebalanced), scatter axis window −1.4 … 18.4 |
+| Ribbon rect | **unchanged** at 55/173/1175×520 — re-measured, still lands within 0.1–0.3 of a column on all four bands |
 
 ## 3. Measures
 

@@ -44,14 +44,14 @@ table _Measures
 		isHidden
 		lineageTag: d521adac-8cb5-4f6e-ae04-b8fc8deb1126
 
-	/// Marker Y on a FIXED tier ladder (110/136/162), lifted above the column when the column is taller - a stagger measured from [Launches] gets cancelled by falling launch counts, which is what culled labels before. The format string names EVERY operator debut that year, joined by ' - ' ordered by EventWeight: 1958 reads 'NASA - US Air Force'. A record only shows when the year has no debut (2021 'Record year'); record detail lives in the tooltip. Verified 1957/58/59 all render with the joined form.
+	/// Marker Y on a FIXED tier ladder, lifted above the column when the column is taller - a stagger measured from [Launches] gets cancelled by falling launch counts, which is what culled labels before. Ladder rescaled 2026-08-17 for the LL2 data: was 110/136/162 against a 0-200 axis (max column 157); now 209/258/307 against 0-380 (max column 332, 2025). THE LADDER AND THE valueAxis start/end IN cadenceCombo/visual.json MUST MOVE TOGETHER - markers above the axis top vanish, markers below the columns look like noise. The format string names EVERY operator debut that year, joined by ' - ' ordered by EventWeight.
 	measure 'Event Marker' =
 			VAR _y = SELECTEDVALUE ( DimDate[Year] )
 			VAR _has = COUNTROWS ( FILTER ( Events, Events[EventYear] = _y ) )
 			VAR _evYears = DISTINCT ( SELECTCOLUMNS ( ALL ( Events ), "@y", Events[EventYear] ) )
 			VAR _rank = COUNTROWS ( FILTER ( _evYears, [@y] <= _y ) )
 			VAR _tier = MOD ( _rank - 1, 3 )
-			VAR _ladder = 110 + _tier * 26
+			VAR _ladder = 209 + _tier * 49
 			RETURN
 			    IF ( NOT ISBLANK ( _has ), MAX ( [Launches] + 14, _ladder ) )
 		lineageTag: a7c8f2b9-acc8-477a-ac3e-8697a4b49028
@@ -361,7 +361,7 @@ table _Measures
 			VAR _y = SELECTEDVALUE ( TimelineNodes[Year] )
 			VAR _isEvent = _y IN DISTINCT ( ALL ( Events[EventYear] ) )
 			RETURN
-			    IF ( _isEvent, "#F2A93B", "#4CC9F0" )
+			    IF ( _isEvent, "#D8CAF7", "#3997B4" )  //#D8CAF7 4CC9F0
 		lineageTag: f2f21381-0496-4849-a6fe-e88c1aa498ce
 
 	/// Static SVG connector for the serpentine timeline - the horizontal band lines plus the U-turn arcs that no native Power BI visual can draw. Rendered in an image visual (sourceType 'imageData') sitting BEHIND the node scatter. Geometry is expressed in the image visual's own pixel space (viewBox 0 0 1200 430, preserveAspectRatio 'none'), and is mapped from the SAME axis window the scatter is pinned to - change one and you must change the other. NOTE: every coordinate goes through FORMAT(ROUND(x,0),"0") because a locale that uses a comma as the decimal separator would otherwise emit '1110,6' into the path data and silently break the SVG.

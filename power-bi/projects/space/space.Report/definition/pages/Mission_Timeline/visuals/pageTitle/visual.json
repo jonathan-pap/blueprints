@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "pageTitle",
   "position": {
     "x": 32,
     "y": 24,
     "z": 1000,
-    "width": 1216,
     "height": 62,
+    "width": 1216,
     "tabOrder": 3
   },
   "visual": {
@@ -34,7 +34,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "one node per year, sized by launches · amber marks a milestone year · read left to right, then follow the turn",
+                    "value": "one node per year, sized by launches · violet marks a milestone year · read left to right, then follow the turn",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10pt",

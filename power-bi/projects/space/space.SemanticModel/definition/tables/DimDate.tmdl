@@ -1,13 +1,17 @@
-/// Calendar over the fact date range 1957-2022. Rebuilt 2026-08-16 - the previous M partition pointed at the grand-exchange synthetic dataset and filtered to DateKey >= 20260101.
+/// Calendar over the fact date range. The end date is DERIVED from the fact table, not hardcoded - a calendar that runs past the data puts empty years on every axis and inflates any 'of N years' denominator (the tooltip's rank line read 'of 74' while only 70 years have launches). Currently 1957-2026.
 table DimDate
 	lineageTag: 4c62f346-42fc-43d7-9328-a5d7f016f7b9
 	dataCategory: Time
 
 	column Date
 		isUnique
+		formatString: General Date
 		lineageTag: 3f475d25-4993-4be6-94e9-ee4b5713bfce
+		summarizeBy: none
 		isNameInferred
 		sourceColumn: [Date]
+
+		annotation SummarizationSetBy = Automatic
 
 	column Year
 		formatString: 0
@@ -16,23 +20,32 @@ table DimDate
 		isNameInferred
 		sourceColumn: [Year]
 
+		annotation SummarizationSetBy = Automatic
+
 	column Decade
 		formatString: 0
 		lineageTag: ca564efc-5a9e-4829-bfe6-bda5aff7f7ac
-		summarizeBy: none
+		summarizeBy: sum
 		isNameInferred
 		sourceColumn: [Decade]
 
+		annotation SummarizationSetBy = Automatic
+
 	column DecadeLabel
 		lineageTag: 488858a1-8f9e-4c91-a1e0-1c82112ae5a5
+		summarizeBy: none
 		isNameInferred
 		sourceColumn: [DecadeLabel]
+
+		annotation SummarizationSetBy = Automatic
 
 	partition DimDate = calculated
 		mode: import
 		source =
+				VAR _maxY = YEAR ( MAX ( space_missions[Date] ) )
+				RETURN
 				ADDCOLUMNS (
-				    CALENDAR ( DATE ( 1957, 1, 1 ), DATE ( 2022, 12, 31 ) ),
+				    CALENDAR ( DATE ( 1957, 1, 1 ), DATE ( _maxY, 12, 31 ) ),
 				    "Year", YEAR ( [Date] ),
 				    "Decade", INT ( YEAR ( [Date] ) / 10 ) * 10,
 				    "DecadeLabel", FORMAT ( INT ( YEAR ( [Date] ) / 10 ) * 10, "0" ) & "s"

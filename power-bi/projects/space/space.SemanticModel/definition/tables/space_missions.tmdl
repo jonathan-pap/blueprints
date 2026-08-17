@@ -83,13 +83,17 @@ table space_missions
 		dataType: int64
 		formatString: 0
 		lineageTag: d56382a7-a727-4768-836c-59abffd7de7a
-		summarizeBy: none
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
 
 	column Decade = INT ( YEAR ( space_missions[Date] ) / 10 ) * 10
 		dataType: int64
 		formatString: 0
 		lineageTag: c48921d8-db86-43b2-b5ae-9799a072c611
-		summarizeBy: none
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
 
 	/// Launch-site country, parsed from the LAST comma-segment of Location. NOTE this is where the rocket left the ground, NOT who launched it - Kazakhstan (719) is Baikonur flying Soviet/Russian missions, France (318) is mostly Kourou flying ESA/Arianespace. Label it 'launched from' in any visual. 11 of 4,630 rows need normalising because their Location string has no country suffix; the three sea ranges are folded into 'Sea launch' because they genuinely have no country.
 	column SiteCountry =
@@ -111,13 +115,19 @@ table space_missions
 		lineageTag: 94f4468b-cf50-43eb-94ce-836360d1a275
 		summarizeBy: none
 
+	/// LL2 orbital launches. The suborbital filter is deliberate: LL2's /launch/ endpoint carries suborbital flights too, and the report is titled 'Orbital Launch Cadence'. SpaceShipTwo (67) and New Shepard (38) are the only meaningful suborbital vehicles in the pull - 105 rows of 7,591. Removing them also drops Virgin Galactic out of the operator list entirely, which is correct: it has never flown an orbital mission.
 	partition space_missions = m
 		mode: import
 		source =
 				let
-				  Source = Csv.Document(File.Contents("E:\Workspace-Blueprint\power-bi\projects\space\data\space_missions_clean.csv"), [Delimiter = ",", Columns = 9, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				  Source = Csv.Document(File.Contents("E:\Workspace-Blueprint\power-bi\projects\space\data\space_missions_ll2.csv"), [Delimiter = ",", Columns = 9, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
 				  #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
-				  #"Changed column type" = Table.TransformColumnTypes(#"Promoted headers", {{"Company", type text}, {"Location", type text}, {"Date", type date}, {"Time", type time}, {"Rocket", type text}, {"Mission", type text}, {"RocketStatus", type text}, {"Price", type text}, {"MissionStatus", type text}}, "en-US")
+				  #"Changed column type" = Table.TransformColumnTypes(#"Promoted headers", {{"Company", type text}, {"Location", type text}, {"Date", type date}, {"Time", type time}, {"Rocket", type text}, {"Mission", type text}, {"RocketStatus", type text}, {"Price", type text}, {"MissionStatus", type text}}, "en-US"),
+				  #"Removed suborbital" = Table.SelectRows(#"Changed column type", each not List.Contains({"SpaceShipTwo", "New Shepard"}, [Rocket]))
 				in
-				  #"Changed column type"
+				  #"Removed suborbital"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
 

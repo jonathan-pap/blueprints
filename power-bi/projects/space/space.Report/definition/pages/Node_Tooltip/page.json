@@ -2,10 +2,9 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
   "name": "Node_Tooltip",
   "displayName": "Node Tooltip",
-  "width": 340,
-  "height": 320,
   "displayOption": "FitToPage",
-  "type": "Tooltip",
+  "height": 320,
+  "width": 340,
   "objects": {
     "background": [
       {
@@ -31,5 +30,7 @@
         }
       }
     ]
-  }
+  },
+  "visibility": "HiddenInViewMode",
+  "type": "Tooltip"
 }

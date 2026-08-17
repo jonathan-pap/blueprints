@@ -11,6 +11,8 @@ table TimelineNodes
 		isNameInferred
 		sourceColumn: [Year]
 
+		annotation SummarizationSetBy = Automatic
+
 	column Idx
 		isHidden
 		formatString: 0
@@ -18,6 +20,8 @@ table TimelineNodes
 		summarizeBy: none
 		isNameInferred
 		sourceColumn: [Idx]
+
+		annotation SummarizationSetBy = Automatic
 
 	column NodeRow
 		isHidden
@@ -27,6 +31,8 @@ table TimelineNodes
 		isNameInferred
 		sourceColumn: [NodeRow]
 
+		annotation SummarizationSetBy = Automatic
+
 	column NodeCol
 		isHidden
 		formatString: 0
@@ -34,6 +40,8 @@ table TimelineNodes
 		summarizeBy: none
 		isNameInferred
 		sourceColumn: [NodeCol]
+
+		annotation SummarizationSetBy = Automatic
 
 	column PerRow
 		isHidden
@@ -43,6 +51,8 @@ table TimelineNodes
 		isNameInferred
 		sourceColumn: [PerRow]
 
+		annotation SummarizationSetBy = Automatic
+
 	column RowCount
 		isHidden
 		formatString: 0
@@ -50,6 +60,8 @@ table TimelineNodes
 		summarizeBy: none
 		isNameInferred
 		sourceColumn: [RowCount]
+
+		annotation SummarizationSetBy = Automatic
 
 	partition TimelineNodes = calculated
 		mode: import

@@ -8,7 +8,7 @@ model Model
 
 annotation __PBI_TimeIntelligenceEnabled = 0
 
-annotation PBI_QueryOrder = ["DimDate","space_missions"]
+annotation PBI_QueryOrder = ["space_missions"]
 
 annotation PBI_ProTooling = ["DevMode","MCP-PBIModeling"]
 
