@@ -8,20 +8,12 @@ model Model
 
 annotation __PBI_TimeIntelligenceEnabled = 0
 
-annotation PBI_QueryOrder = ["financials","FactMarketPriceDaily","DimDate","DimItem"]
+annotation PBI_QueryOrder = ["DimDate"]
 
 annotation PBI_ProTooling = ["DevMode","MCP-PBIModeling"]
 
-ref table financials
 ref table _Measures
-ref table 'financials Date Slicer'
-ref table 'Price Slicer'
-ref table 'Year Slicer'
-ref table 'Product Slicer'
-ref table FactMarketPriceDaily
 ref table DimDate
-ref table DimItem
-ref table 'Waterfall Steps'
 
 ref cultureInfo en-US
 

@@ -1,8 +1,0 @@
-{
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
-  "name": "5401d7197e4d4ef9",
-  "displayName": "SVG · Distribution",
-  "width": 1280,
-  "height": 720,
-  "displayOption": "FitToPage"
-}

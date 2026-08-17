@@ -5,8 +5,10 @@ table DimDate
 	column DateKey
 		dataType: int64
 		lineageTag: 73cc6b31-02cb-4aac-946a-4e820e606ec3
-		summarizeBy: none
+		summarizeBy: count
 		sourceColumn: DateKey
+
+		annotation SummarizationSetBy = Automatic
 
 	column Date
 		dataType: dateTime
@@ -18,14 +20,18 @@ table DimDate
 	column Year
 		dataType: int64
 		lineageTag: c1b1ce9f-68bf-4e9c-ac55-fdac212c71a7
-		summarizeBy: none
+		summarizeBy: sum
 		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
 
 	column Month
 		dataType: int64
 		lineageTag: e8906134-7c10-47b7-ad60-176efeed4c23
-		summarizeBy: none
+		summarizeBy: sum
 		sourceColumn: Month
+
+		annotation SummarizationSetBy = Automatic
 
 	column MonthName
 		dataType: string
@@ -36,8 +42,10 @@ table DimDate
 	column Day
 		dataType: int64
 		lineageTag: 005dc0f0-12d4-4c41-a83f-528d8bd157af
-		summarizeBy: none
+		summarizeBy: sum
 		sourceColumn: Day
+
+		annotation SummarizationSetBy = Automatic
 
 	partition DimDate = m
 		mode: import

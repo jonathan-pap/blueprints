@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.2.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.3.0/schema.json",
   "themeCollection": {
     "baseTheme": {
       "name": "Fluent2-CY26SU04",
@@ -11,10 +11,10 @@
       "type": "SharedResources"
     },
     "customTheme": {
-      "name": "Verdigris Arcanum (Dark).json",
+      "name": "Dragonhoard_(Dark)20867843140594755.json",
       "reportVersionAtImport": {
-        "visual": "2.8.0",
-        "report": "3.2.0",
+        "visual": "2.11.0",
+        "report": "3.4.0",
         "page": "2.3.1"
       },
       "type": "RegisteredResources"
@@ -65,8 +65,8 @@
       "type": "RegisteredResources",
       "items": [
         {
-          "name": "Verdigris Arcanum (Dark).json",
-          "path": "Verdigris Arcanum (Dark).json",
+          "name": "Dragonhoard_(Dark)20867843140594755.json",
+          "path": "Dragonhoard_(Dark)20867843140594755.json",
           "type": "CustomTheme"
         }
       ]

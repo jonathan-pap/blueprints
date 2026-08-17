@@ -1,8 +1,0 @@
-{
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
-  "name": "a3ec72567f414840",
-  "displayName": "Native · Part-to-Whole",
-  "width": 1280,
-  "height": 720,
-  "displayOption": "FitToPage"
-}

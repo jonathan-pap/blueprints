@@ -1,8 +1,0 @@
-{
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
-  "name": "b80ed1b70e014f5b",
-  "displayName": "Native · Tables & Slicer",
-  "width": 1280,
-  "height": 720,
-  "displayOption": "FitToPage"
-}

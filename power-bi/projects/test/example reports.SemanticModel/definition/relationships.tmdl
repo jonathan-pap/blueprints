@@ -1,8 +1,0 @@
-relationship Fact_DimDate
-	fromColumn: FactMarketPriceDaily.DateKey
-	toColumn: DimDate.DateKey
-
-relationship Fact_DimItem
-	fromColumn: FactMarketPriceDaily.ItemKey
-	toColumn: DimItem.ItemKey
-
