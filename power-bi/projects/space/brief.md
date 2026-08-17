@@ -597,6 +597,51 @@ the canvas — text measured `#4F5465`, i.e. `#E8ECF8` at ~30% alpha, about 2.3:
 an accessibility failure and is not one. The identical `tableEx` on `Launch_Cadence` samples
 exactly `#E8ECF8`. Check contrast on a normal page, never on the tooltip preview.
 
+## 5e. Milestones page — vertical timeline (added 2026-08-17)
+
+A tall vertical timeline of the 15 **event years**: a centre spine, one node per year, and the
+operator names alternating left/right on leader lines with an end dot. Third use of the same
+hybrid — SVG for what nothing native can draw, a real `scatterChart` for the nodes so hover and
+the canvas tooltip still work.
+
+| Layer | Visual | Why |
+|---|---|---|
+| Backdrop | `image` ← `[Nebula Backdrop]` | page scenery |
+| Spine | `image` ← `[MS Spine]` | band, leader lines, end dots, names as `<tspan>` stacks |
+| Nodes | `scatterChart` | **real** points: hover, tooltip, cross-filter |
+
+`[MS Idx]` returns the 0-based position of a year **among event years only, blank otherwise** —
+that blank is what makes the scatter draw 15 points from a 70-row table, without a filter.
+`[MS X]` is a constant 0 (every node on the spine) and `[MS Y]` is `-Idx`, so the earliest year
+is at the top. Sides alternate on index parity inside `[MS Spine]`.
+
+### A page taller than the canvas
+
+`1280 × 1500` with **`displayOption: "FitToWidth"`**. `FitToPage` would shrink the whole page to
+fit the viewport, which is not what a long timeline wants; `FitToWidth` scales to the width and
+scrolls vertically.
+
+### Gotchas found building it
+
+1. **The image visual letterboxes by default.** `[Nebula Backdrop]` is a 16:9 SVG; in a
+   1280 × 1500 container it rendered centred at 1280 × 720 with dark bands above and below — a
+   hard seam across the page. The SVG's own `preserveAspectRatio='xMidYMid slice'` does **not**
+   govern this; the *visual* does. Set `image.fit` to **`'Fill'`** (cover, preserving aspect):
+   `"fit": { "expr": { "Literal": { "Value": "'Fill'" } } }`. Valid values are `Fit`, `Fill`,
+   `Stretch`, `Normal`. Report-side only — no need to touch the shared measure.
+2. **Removing the `Size` binding resets the bubble scale.** Dropping `Size` gives the uniform
+   circles this design wants, but the same `bubbleSize` that looked right *with* a size field
+   (`-22`) renders as specks without one. `25` is correct here. Re-check the size whenever the
+   `Size` well changes, not just when the layout does.
+3. **Same plot-area inset as every other page** — container `y 150 / h 1290`, actual plot rect
+   **`y 173 / h 1249`**. Consistent with `Mission_Timeline` (23 top, 17 bottom), so that inset
+   looks like a constant for a hidden-axis scatter at this page scale rather than something to
+   re-derive from scratch each time.
+
+The year sits *beside* each node rather than inside it: a scatter cannot centre a data label in
+its bubble, and putting the text in the SVG would either hide it behind the node or block hover.
+Baking the circles into the SVG would allow it, at the cost of the tooltip.
+
 ## 6. Constraints & non-goals
 
 - **No `Price` measure.** 73% of rows have no price. Any cost KPI would silently describe the 27%

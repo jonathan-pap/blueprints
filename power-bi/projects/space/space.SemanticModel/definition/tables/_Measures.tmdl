@@ -512,6 +512,78 @@ table _Measures
 			    IF ( ISBLANK ( _y ), BLANK (), _head & _NL & _NL & _body & IF ( NOT ISBLANK ( _ev ), _NL & _NL & _ev, "" ) )
 		lineageTag: 5e253caf-de09-404a-9848-868d73af4eee
 
+	/// 0-based position of the hovered year among the EVENT years only, blank if the year carries no event. Blank is what makes the milestone scatter show 15 points instead of 70 - the point simply drops out.
+	measure 'MS Idx' =
+			VAR _y = SELECTEDVALUE ( TimelineNodes[Year] )
+			VAR _yrs = DISTINCT ( SELECTCOLUMNS ( ALL ( Events ), "@y", Events[EventYear] ) )
+			VAR _isEvent = COUNTROWS ( FILTER ( _yrs, [@y] = _y ) ) > 0
+			RETURN
+			    IF ( _isEvent, COUNTROWS ( FILTER ( _yrs, [@y] < _y ) ) + 0 )
+		formatString: 0
+		isHidden
+		lineageTag: b5d811ca-53e0-4304-a5aa-71f8c0df3108
+
+	/// Milestone timeline X - every node sits on the centre spine, so this is a constant 0. Blank for non-event years so the scatter drops them.
+	measure 'MS X' = IF ( NOT ISBLANK ( [MS Idx] ), 0 )
+		formatString: 0.0
+		lineageTag: feecc286-4701-4341-bf5d-07b46268a842
+
+	/// Milestone timeline Y - negated so the earliest year is at the TOP. The scatter's valueAxis must stay pinned to -(count-1)-0.6 .. 0.6 or the nodes will not sit on [MS Spine] behind them.
+	measure 'MS Y' = IF ( NOT ISBLANK ( [MS Idx] ), -1 * [MS Idx] )
+		formatString: 0.0
+		lineageTag: 61e09f11-c52c-4093-a91f-259deca1f6ca
+
+	/// Static SVG for the vertical milestone timeline: the centre band, and per event year a leader line, an end dot and the operator names stacked as tspans. Drawn in the image visual's own pixel space (viewBox 0 0 1200 1290, preserveAspectRatio 'none') and mapped from the SAME axis window the scatter is pinned to - change one and you must change the other. Sides alternate by index parity. Every coordinate goes through FORMAT(...,"0") because a comma decimal separator would emit invalid SVG that fails silently.
+	measure 'MS Spine' =
+			VAR _W = 1200
+			VAR _H = 1290
+			VAR _cx = 600
+			VAR _half = 14
+			VAR _reach = 210
+			VAR _yrs = DISTINCT ( SELECTCOLUMNS ( ALL ( Events ), "@y", Events[EventYear] ) )
+			VAR _n = COUNTROWS ( _yrs )
+			VAR _range = ( _n - 1 ) + 1.2
+			VAR _rows = ADDCOLUMNS ( _yrs, "@i", RANKX ( _yrs, [@y], , ASC, DENSE ) - 1 )
+			VAR _band =
+			    "<rect x='" & FORMAT ( _cx - _half, "0" ) & "' y='0' width='" & FORMAT ( _half * 2, "0" )
+			        & "' height='" & FORMAT ( _H, "0" ) & "' rx='" & FORMAT ( _half, "0" )
+			        & "' fill='#D8CAF7' fill-opacity='0.16'/>"
+			VAR _items =
+			    CONCATENATEX (
+			        _rows,
+			        VAR _i = [@i]
+			        VAR _yy = [@y]
+			        VAR _sy = FORMAT ( ROUND ( DIVIDE ( 0.6 + _i, _range ) * _H, 0 ), "0" )
+			        VAR _left = MOD ( _i, 2 ) = 1
+			        VAR _names = FILTER ( ALL ( Events ), Events[EventYear] = _yy )
+			        VAR _cntN = COUNTROWS ( _names )
+			        VAR _x1 = FORMAT ( IF ( _left, _cx - _half, _cx + _half ), "0" )
+			        VAR _x2 = FORMAT ( IF ( _left, _cx - _reach, _cx + _reach ), "0" )
+			        VAR _tx = FORMAT ( IF ( _left, _cx - _reach - 16, _cx + _reach + 16 ), "0" )
+			        VAR _anchor = IF ( _left, "end", "start" )
+			        VAR _dy0 = FORMAT ( -( _cntN - 1 ) * 8, "0" )
+			        VAR _tspans =
+			            CONCATENATEX (
+			                ADDCOLUMNS ( _names, "@k", RANKX ( _names, Events[EventWeight], , DESC, DENSE ) ),
+			                "<tspan x='" & _tx & "' dy='" & IF ( [@k] = 1, _dy0, "16" ) & "'>" & Events[EventShort] & "</tspan>",
+			                "",
+			                [@k], ASC
+			            )
+			        RETURN
+			            "<line x1='" & _x1 & "' y1='" & _sy & "' x2='" & _x2 & "' y2='" & _sy
+			                & "' stroke='#7C87A6' stroke-width='1.5' stroke-opacity='0.5'/>"
+			                & "<circle cx='" & _x2 & "' cy='" & _sy & "' r='3.5' fill='#D8CAF7' fill-opacity='0.85'/>"
+			                & "<text y='" & _sy & "' text-anchor='" & _anchor
+			                & "' font-family='Segoe UI' font-size='13' fill='#C9D2E8'>" & _tspans & "</text>",
+			        ""
+			    )
+			RETURN
+			    "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 "
+			        & FORMAT ( _W, "0" ) & " " & FORMAT ( _H, "0" ) & "' preserveAspectRatio='none'>"
+			        & _band & _items & "</svg>"
+		lineageTag: 4d95f480-27f7-4a44-8f0b-4127956a7535
+		dataCategory: ImageUrl
+
 	column _
 		isHidden
 		lineageTag: 664b670f-5eba-42a4-a1b0-bd68e0351e73
