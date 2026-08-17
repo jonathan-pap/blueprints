@@ -1,0 +1,4 @@
+relationship AutoDetected_5dbfb7e6-633f-4f35-bec9-b2d8123402fc
+	fromColumn: telecom_customer_churn.'Zip Code'
+	toColumn: telecom_zipcode_population.'Zip Code'
+

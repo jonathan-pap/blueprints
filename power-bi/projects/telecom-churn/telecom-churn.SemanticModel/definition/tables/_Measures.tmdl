@@ -5,6 +5,78 @@ table _Measures
 	measure _blank = ""
 		lineageTag: 863ebf9f-9c98-499d-b9fa-e9869f89a6c0
 
+	/// Count of customers in the current filter context (7,043 total).
+	measure 'Total Customers' = COUNTROWS ( telecom_customer_churn )
+		formatString: #,##0
+		displayFolder: Counts
+		lineageTag: 038ba0d8-96b9-4747-a89c-5b43baa50839
+
+	/// Customers with status Churned at the Q2 2022 snapshot.
+	measure 'Churned Customers' = CALCULATE ( [Total Customers], telecom_customer_churn[Customer Status] = "Churned" )
+		formatString: #,##0
+		displayFolder: Counts
+		lineageTag: 74f62b66-973e-434d-814d-167b52aa37d1
+
+	/// Customers with status Stayed at the Q2 2022 snapshot.
+	measure 'Stayed Customers' = CALCULATE ( [Total Customers], telecom_customer_churn[Customer Status] = "Stayed" )
+		formatString: #,##0
+		displayFolder: Counts
+		lineageTag: 02cb50d4-9c4b-446f-b884-1d528e8e41da
+
+	/// Customers who joined during the last quarter (status Joined).
+	measure 'Joined Customers' = CALCULATE ( [Total Customers], telecom_customer_churn[Customer Status] = "Joined" )
+		formatString: #,##0
+		displayFolder: Counts
+		lineageTag: f5d79029-f168-47e5-94f6-87ceb5d43261
+
+	/// Churned / total customers in context. Headline = 26.5%. (Denominator is total, matching the approved mockup.)
+	measure 'Churn Rate' = DIVIDE ( [Churned Customers], [Total Customers] )
+		formatString: 0.0%
+		displayFolder: Rates
+		lineageTag: 64d0e1af-b75c-4184-87e0-d3e48fc0f345
+
+	/// A segment's share of all churned customers (for churn-category % and top-reason share).
+	measure 'Churned Share of Total' = DIVIDE ( [Churned Customers], CALCULATE ( [Churned Customers], REMOVEFILTERS ( telecom_customer_churn ) ) )
+		formatString: 0.0%
+		displayFolder: Rates
+		lineageTag: 86d1fbc6-2845-4c8e-8584-043d98050b83
+
+	/// Lifetime revenue to date across customers in context.
+	measure 'Total Revenue Amt' = SUM ( telecom_customer_churn[Total Revenue] )
+		formatString: \$#,##0
+		displayFolder: Revenue
+		lineageTag: bea6a311-64ff-481c-85d8-b2e17f8df493
+
+	/// Lifetime revenue lost to churned customers (~$3.7M).
+	measure 'Churned Revenue' = CALCULATE ( [Total Revenue Amt], telecom_customer_churn[Customer Status] = "Churned" )
+		formatString: \$#,##0
+		displayFolder: Revenue
+		lineageTag: eda1303f-797b-4970-9d50-126a5fcb3fa5
+
+	/// Recurring monthly charge of churned customers = revenue lost per month.
+	measure 'Monthly Revenue at Risk' = CALCULATE ( SUM ( telecom_customer_churn[Monthly Charge] ), telecom_customer_churn[Customer Status] = "Churned" )
+		formatString: \$#,##0
+		displayFolder: Revenue
+		lineageTag: bd5b88ac-8bd9-48f0-b403-0b26c0f57547
+
+	/// Average monthly charge per customer in context.
+	measure 'Avg Monthly Charge' = AVERAGE ( telecom_customer_churn[Monthly Charge] )
+		formatString: \$#,##0.00
+		displayFolder: Revenue
+		lineageTag: 008d9383-5a65-40d0-8df5-14bba2b75ff5
+
+	/// Average monthly charge of customers who stayed.
+	measure 'Avg Monthly Charge (Stayed)' = CALCULATE ( [Avg Monthly Charge], telecom_customer_churn[Customer Status] = "Stayed" )
+		formatString: \$#,##0.00
+		displayFolder: Revenue
+		lineageTag: aec62a3c-b0ae-4ad3-aefd-c8e4e1c133b0
+
+	/// Average monthly charge of churned customers (higher than stayed = losing pricier customers).
+	measure 'Avg Monthly Charge (Churned)' = CALCULATE ( [Avg Monthly Charge], telecom_customer_churn[Customer Status] = "Churned" )
+		formatString: \$#,##0.00
+		displayFolder: Revenue
+		lineageTag: d7bd2327-2f3a-4ec2-85cc-a633e759f808
+
 	column _
 		isHidden
 		lineageTag: 664b670f-5eba-42a4-a1b0-bd68e0351e73

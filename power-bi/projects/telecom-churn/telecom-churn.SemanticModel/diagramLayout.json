@@ -11,7 +11,7 @@
         {
           "location": {
             "x": 2876.3857251328786,
-            "y": 46.51176917236144
+            "y": 80.8116932422172
           },
           "nodeIndex": "_Measures",
           "nodeLineageTag": "cfff4bff-9707-4543-823b-798f2f9200bb",
@@ -24,12 +24,38 @@
         {
           "location": {
             "x": 2599.9969627942296,
-            "y": 45.343963553530756
+            "y": 79.643887623386519
           },
           "nodeIndex": "DimDate",
           "nodeLineageTag": "f723e1c6-130c-4996-bdfa-45d11ddeda2e",
           "size": {
             "height": 224,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 560.388762338649,
+            "y": 34.883826879271112
+          },
+          "nodeIndex": "telecom_customer_churn",
+          "nodeLineageTag": "3c82b899-546c-461c-a9ff-63eb7c7b65fe",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 2599.9969627942296,
+            "y": 120.59187547456341
+          },
+          "nodeIndex": "telecom_zipcode_population",
+          "nodeLineageTag": "59fbc540-4438-4efe-8c06-f77fcfefbedb",
+          "size": {
+            "height": 128,
             "width": 234
           },
           "zIndex": 0

@@ -8,12 +8,14 @@ model Model
 
 annotation __PBI_TimeIntelligenceEnabled = 0
 
-annotation PBI_QueryOrder = ["DimDate"]
+annotation PBI_QueryOrder = ["DimDate","telecom_customer_churn","telecom_zipcode_population"]
 
 annotation PBI_ProTooling = ["DevMode","MCP-PBIModeling"]
 
 ref table _Measures
 ref table DimDate
+ref table telecom_customer_churn
+ref table telecom_zipcode_population
 
 ref cultureInfo en-US
 

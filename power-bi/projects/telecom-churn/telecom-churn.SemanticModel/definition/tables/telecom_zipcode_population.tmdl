@@ -1,0 +1,31 @@
+table telecom_zipcode_population
+	lineageTag: 59fbc540-4438-4efe-8c06-f77fcfefbedb
+
+	column 'Zip Code'
+		dataType: int64
+		formatString: 0
+		lineageTag: 12909ee8-254d-4ac8-a34a-612bc5d62478
+		summarizeBy: none
+		sourceColumn: Zip Code
+
+		annotation SummarizationSetBy = Automatic
+
+	column Population
+		dataType: int64
+		formatString: 0
+		lineageTag: 115da9fd-b6ff-44d8-9893-baf36c7fbd61
+		summarizeBy: none
+		sourceColumn: Population
+
+		annotation SummarizationSetBy = Automatic
+
+	partition telecom_zipcode_population = m
+		mode: import
+		source =
+				let
+				  Source = Csv.Document(File.Contents("E:\Workspace-Blueprint\power-bi\projects\telecom-churn\data\telecom_zipcode_population.csv"), [Delimiter = ",", Columns = 2, QuoteStyle = QuoteStyle.None]),
+				  #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				  #"Changed column type" = Table.TransformColumnTypes(#"Promoted headers", {{"Zip Code", Int64.Type}, {"Population", Int64.Type}}, "en-US")
+				in
+				  #"Changed column type"
+
