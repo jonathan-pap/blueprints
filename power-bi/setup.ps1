@@ -72,16 +72,49 @@ else { Say "[miss] Power BI Desktop  ->  winget install Microsoft.PowerBI  (or M
 if (Test-Cmd node) {
   Say "[ok]   Node $(node --version)" Green
   # Desktop Bridge CLI — reload + screenshot the open report (visual verify loop)
-  Say "[*]    installing @microsoft/powerbi-desktop-bridge-cli ..." Gray
-  npm install -g '@microsoft/powerbi-desktop-bridge-cli' 2>&1 | Out-Null
+  Say "[*]    installing @microsoft/powerbi-desktop-bridge-cli@latest ..." Gray
+  npm install -g '@microsoft/powerbi-desktop-bridge-cli@latest' 2>&1 | Out-Null
   if (Test-Cmd powerbi-desktop) { Say "[ok]   powerbi-desktop $(powerbi-desktop --version)" Green }
   else { Say "[warn] 'powerbi-desktop' not on PATH yet — reopen the shell" Yellow }
   Say "       Optional first-party extras (not auto-installed):" DarkGray
   Say "         npm i -g @microsoft/powerbi-report-authoring-cli   # 'powerbi-report-author validate' (MS's PBIR validator, alt to pbir)" DarkGray
-  Say "         Modeling MCP runs via npx @microsoft/powerbi-modeling-mcp (configured in your agent)" DarkGray
+  Say "         Modeling MCP runs via npx @microsoft/powerbi-modeling-mcp (wired by .mcp.json, step 6 below)" DarkGray
 }
 elseif ($InstallMissing) { Install-Winget 'OpenJS.NodeJS.LTS' }
 else { Say "[miss] Node.js (Desktop Bridge CLI + Modeling MCP)  ->  winget install OpenJS.NodeJS.LTS" Yellow }
+
+# 6) .mcp.json — ensure the Power BI Modeling MCP is wired for Claude Code (self-heal).
+#    Content is machine-invariant (npx @latest, no absolute paths), so a static write is safe.
+#    Lives at the WORKSPACE ROOT (one level above this power-bi/ folder).
+$McpPath = Join-Path (Split-Path $PSScriptRoot -Parent) '.mcp.json'
+$McpJson = @'
+{
+  "mcpServers": {
+    "powerbi-modeling-mcp": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@microsoft/powerbi-modeling-mcp@latest",
+        "--start",
+        "--skipconfirmation"
+      ],
+      "env": {}
+    }
+  }
+}
+'@
+$McpOk = $false
+if (Test-Path $McpPath) {
+  try { Get-Content $McpPath -Raw | ConvertFrom-Json | Out-Null; $McpOk = $true } catch { $McpOk = $false }
+}
+if ($McpOk) { Say "`n[ok]   .mcp.json present (Power BI Modeling MCP wired)" Green }
+else {
+  Say "`n[*]    writing .mcp.json (Power BI Modeling MCP) ..." Gray
+  # WriteAllText emits UTF-8 WITHOUT a BOM on both PS 5.1 and 7+ (Set-Content -Encoding UTF8 adds a BOM on 5.1).
+  [System.IO.File]::WriteAllText($McpPath, $McpJson)
+  Say "[ok]   wrote $McpPath  -> restart Claude Code to load the MCP" Green
+}
 
 Say "`nNext:" Cyan
 Say "  - Enable PBIR in Desktop: File > Options > Preview features > 'Store reports using enhanced metadata format (PBIR)'." Gray
