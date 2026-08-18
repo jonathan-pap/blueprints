@@ -23,10 +23,14 @@ Each generation job lives in `projects/<job-name>/`:
 ```text
 projects/<job-name>/
 ├── brief.md            what data, why, volume, seed, output target
-├── schema.<ext>        the data definition (entities, fields, distributions, rules)
-├── generate.py         the generator script
+├── config.yaml         the star declaration (dims, facts, measures, shares) — 02-schema/config-schema.md
 └── seed.txt            recorded RNG seed for reproducibility
 ```
+
+Star-schema jobs supply only a **`config.yaml`** and run the **reusable room engine**
+(`03-generate/generate.py`) — no per-job script. A bespoke `generate.py` in the project folder is the
+exception, for non-dimensional data the config grammar can't express. Validate with
+`05-review/reconcile.py`.
 
 ## Output convention (output layer)
 
@@ -83,6 +87,7 @@ synthetic-data/
 
 Match the user's intent. Load only what's listed.
 
+- **New star-schema dataset (dims + facts)** → `02-schema/config-schema.md` (declare it) → run `03-generate/generate.py` → `05-review/reconcile.py`
 - **New dataset from scratch** → `01-brief/context.md` → `02-schema/context.md` → `03-generate/context.md`
 - **Define or change the schema** → `02-schema/context.md`
 - **Pick / configure a generation engine** → `03-generate/context.md`

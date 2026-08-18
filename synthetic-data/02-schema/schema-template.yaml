@@ -1,0 +1,48 @@
+# Config-driven star generator — STARTER TEMPLATE
+# Copy to projects/<job>/config.yaml and adapt. Run:
+#   python 03-generate/generate.py projects/<job>/config.yaml
+#   python 05-review/reconcile.py projects/<job>/config.yaml
+# Grammar: ./config-schema.md   Method: ../03-generate/engine-share-allocation.md
+
+name: <job-name>
+seed: 42
+output: { dir: outputs/<job-name>/latest }
+
+dimensions:
+  Date:
+    type: calendar
+    range: [2023-01-01, 2025-12-31]      # emits DateKey, Year, Quarter, Month, MonthName, DayName
+    grain: day
+
+  Region:                                 # explicit members with attributes
+    key: RegionKey
+    members:
+      - { Region: North, Country: USA }
+      - { Region: South, Country: USA }
+      - { Region: West,  Country: USA }
+
+  Product:                                # generate N members
+    key: ProductKey
+    generate: 40
+    attributes:
+      Category: { values: [Electronics, Home, Apparel], weights: [0.5, 0.3, 0.2] }
+      # ProductName: { faker: "catch_phrase" }   # needs: pip install faker
+
+facts:
+  Sales:
+    grain: [Date, Region, Product]
+    sparsity: 0.35                          # 35% of grain cells don't exist
+    measures:
+      Revenue:
+        total: 10000000                     # grand total everything reconciles to
+        min: 0
+        max: 6000
+        noise: 0.20
+        trend: { yoy: 0.08 }                # +8%/yr
+        shares:                             # each block ~sums to 1
+          Region:    { North: 0.40, South: 0.35, West: 0.25 }
+          MonthName: seasonal
+          Category:  { Electronics: 0.5, Home: 0.3, Apparel: 0.2 }
+      Orders:
+        derived: "np.maximum(1, np.round(Revenue / avg_order_value))"
+        avg_order_value: { min: 45, max: 130 }

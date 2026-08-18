@@ -3,6 +3,19 @@
 > Last room before delivery. Prove the generated data satisfies the `02-schema/` contract and
 > leaks no real data. A dataset that fails review is not handed off.
 
+## Reconciliation check (config-driven jobs) — SHIPPED
+
+For anything built with the config engine, the headline check is **marginal reconciliation** —
+proof the declared `total` and `shares` actually hold in the data at every grain:
+
+```bash
+python 05-review/reconcile.py projects/<job>/config.yaml [--tol 0.01]   # exit 0 = all reconciled
+```
+
+It joins each fact to its dims and asserts every declared share (Region .40, Category .50, …) and the
+grand total tie out within tolerance. This is the guarantee a bespoke generator can't offer. See
+[`../03-generate/engine-share-allocation.md`](../03-generate/engine-share-allocation.md).
+
 ## Checks
 
 - **Schema conformance** — every field present, correct type, within its declared domain.

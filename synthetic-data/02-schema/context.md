@@ -16,8 +16,11 @@
 
 ## Output of this step
 
-A `projects/<job>/schema.<ext>` (YAML/JSON/Python) the generator reads. Hand off to
-`../03-generate/context.md`.
+A `projects/<job>/config.yaml` the engine reads. For **star-schema** datasets this is the
+**config-driven grammar** ([`config-schema.md`](config-schema.md) + [`schema-template.yaml`](schema-template.yaml)):
+declare dimensions, facts, and measures with `total`/`shares` — the engine allocates + rakes so
+marginals reconcile at every grain. Hand off to `../03-generate/context.md`. (A freeform
+`schema.<ext>` is still fine for one-off non-dimensional jobs.)
 
 ## Planned atomic files (grow as needed)
 

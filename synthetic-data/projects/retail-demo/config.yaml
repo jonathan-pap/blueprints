@@ -1,0 +1,38 @@
+name: retail-demo
+seed: 42
+output: { dir: outputs/retail-demo/latest }
+
+dimensions:
+  Date:
+    type: calendar
+    range: [2023-01-01, 2025-12-31]
+  Region:
+    key: RegionKey
+    members:
+      - { Region: North, Country: USA }
+      - { Region: South, Country: USA }
+      - { Region: West,  Country: USA }
+  Product:
+    key: ProductKey
+    generate: 30
+    attributes:
+      Category: { values: [Electronics, Home, Apparel], weights: [0.5, 0.3, 0.2] }
+
+facts:
+  Sales:
+    grain: [Date, Region, Product]
+    sparsity: 0.35
+    measures:
+      Revenue:
+        total: 10000000
+        min: 0
+        max: 6000
+        shares:
+          Region:   { North: 0.40, South: 0.35, West: 0.25 }
+          MonthName: seasonal
+          Category: { Electronics: 0.5, Home: 0.3, Apparel: 0.2 }
+        trend: { yoy: 0.08 }
+        noise: 0.20
+      Orders:
+        derived: "np.maximum(1, np.round(Revenue / avg_order_value))"
+        avg_order_value: { min: 45, max: 130 }

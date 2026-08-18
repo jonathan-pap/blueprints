@@ -3,6 +3,26 @@
 > Pick an engine and produce rows against the `02-schema/` definition. Most jobs combine engines
 > (Faker for identity fields, distribution sampling for numerics, relational wiring for keys).
 
+## Default path — the config-driven star engine (SHIPPED)
+
+For any **dimensional (star-schema) dataset**, don't hand-write a generator. Declare dims + facts +
+measures with `total`/`shares` in a YAML config and run the reusable engine:
+
+```bash
+python 03-generate/generate.py projects/<job>/config.yaml   # -> Dim*/Fact* + _manifest.json
+python 05-review/reconcile.py  projects/<job>/config.yaml   # proves marginals tie out
+```
+
+- **Config grammar:** [`../02-schema/config-schema.md`](../02-schema/config-schema.md) · template
+  [`../02-schema/schema-template.yaml`](../02-schema/schema-template.yaml)
+- **How allocation + raking works:** [`engine-share-allocation.md`](engine-share-allocation.md) — declare
+  top-line totals and shares per dimension/attribute; the engine allocates top-down and rakes so every
+  marginal reconciles at every granularity (day/month/region/product…).
+- **Multi-domain:** retail, telecom, finance, web — same engine, different config.
+
+Reach for the bespoke engines below only for **non-dimensional** data (a single flat table of realistic
+text/records) or shapes the config grammar can't express yet.
+
 ## Engines
 
 | Engine | Use for |
