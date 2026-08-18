@@ -1,0 +1,406 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/powerbi-desktop-samples/main/Report%20Theme%20JSON%20Schema/reportThemeSchema-2.152.json",
+  "name": "Hyperion Light v1.0",
+  "dataColors": [
+    "#0D6273",
+    "#54781C",
+    "#DC45A0",
+    "#A780E1",
+    "#B03B29",
+    "#278666",
+    "#A88827",
+    "#404E58"
+  ],
+  "good": "#278666",
+  "bad": "#B03B29",
+  "neutral": "#404E58",
+  "maximum": "#0D6273",
+  "center": "#E6EDF1",
+  "minimum": "#B03B29",
+  "null": "#828E98",
+  "foreground": "#0A1218",
+  "foregroundNeutralSecondary": "#3E4A54",
+  "foregroundLight": "#5F6C77",
+  "foregroundNeutralTertiary": "#828E98",
+  "foregroundDark": "#0A1218",
+  "background": "#FFFFFF",
+  "backgroundLight": "#F4F7F9",
+  "backgroundNeutral": "#E6EDF1",
+  "backgroundDark": "#D6E0E6",
+  "tableAccent": "#0D6273",
+  "hyperlink": "#0D6273",
+  "shapeStroke": "#DFE7EC",
+  "accent": "#0D6273",
+  "textClasses": {
+    "callout": {
+      "color": "#0A1218",
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 28
+    },
+    "largeTitle": {
+      "color": "#0A1218",
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 18
+    },
+    "title": {
+      "color": "#0A1218",
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 12
+    },
+    "header": {
+      "color": "#0A1218",
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 10
+    },
+    "label": {
+      "color": "#3E4A54",
+      "fontFace": "Segoe UI",
+      "fontSize": 9
+    },
+    "boldLabel": {
+      "color": "#0A1218",
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 9
+    },
+    "dataTitle": {
+      "color": "#5F6C77",
+      "fontFace": "Segoe UI",
+      "fontSize": 10
+    }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "background": [
+          {
+            "show": true,
+            "color": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "transparency": 0
+          }
+        ],
+        "border": [
+          {
+            "show": true,
+            "color": {
+              "solid": {
+                "color": "#DFE7EC"
+              }
+            },
+            "radius": 6
+          }
+        ],
+        "dropShadow": [
+          {
+            "show": false
+          }
+        ],
+        "title": [
+          {
+            "show": true,
+            "fontColor": {
+              "solid": {
+                "color": "#0A1218"
+              }
+            },
+            "background": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "fontFamily": "Segoe UI Semibold",
+            "fontSize": 12,
+            "alignment": "left"
+          }
+        ],
+        "padding": [
+          {
+            "top": 8,
+            "bottom": 8,
+            "left": 10,
+            "right": 10
+          }
+        ],
+        "outspacePane": [
+          {
+            "backgroundColor": {
+              "solid": {
+                "color": "#F4F7F9"
+              }
+            },
+            "foregroundColor": {
+              "solid": {
+                "color": "#0A1218"
+              }
+            },
+            "transparency": 0,
+            "border": true,
+            "borderColor": {
+              "solid": {
+                "color": "#DFE7EC"
+              }
+            },
+            "titleSize": 13,
+            "headerSize": 11,
+            "fontFamily": "Segoe UI",
+            "checkboxAndApplyColor": {
+              "solid": {
+                "color": "#0D6273"
+              }
+            },
+            "inputBoxColor": {
+              "solid": {
+                "color": "#E6EDF1"
+              }
+            }
+          }
+        ],
+        "filterCard": [
+          {
+            "$id": "Applied",
+            "foregroundColor": {
+              "solid": {
+                "color": "#0A1218"
+              }
+            },
+            "backgroundColor": {
+              "solid": {
+                "color": "#E6EDF1"
+              }
+            },
+            "borderColor": {
+              "solid": {
+                "color": "#DFE7EC"
+              }
+            },
+            "transparency": 0,
+            "inputBoxColor": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "fontFamily": "Segoe UI"
+          },
+          {
+            "$id": "Available",
+            "foregroundColor": {
+              "solid": {
+                "color": "#3E4A54"
+              }
+            },
+            "backgroundColor": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "borderColor": {
+              "solid": {
+                "color": "#DFE7EC"
+              }
+            },
+            "transparency": 0,
+            "inputBoxColor": {
+              "solid": {
+                "color": "#E6EDF1"
+              }
+            },
+            "fontFamily": "Segoe UI"
+          }
+        ]
+      }
+    },
+    "textbox": {
+      "*": {
+        "title": [
+          {
+            "show": false
+          }
+        ],
+        "background": [
+          {
+            "show": false
+          }
+        ],
+        "border": [
+          {
+            "show": false
+          }
+        ],
+        "dropShadow": [
+          {
+            "show": false
+          }
+        ],
+        "padding": [
+          {
+            "top": 0,
+            "bottom": 0,
+            "left": 0,
+            "right": 0
+          }
+        ]
+      }
+    },
+    "image": {
+      "*": {
+        "title": [
+          {
+            "show": false
+          }
+        ],
+        "background": [
+          {
+            "show": false
+          }
+        ],
+        "border": [
+          {
+            "show": false
+          }
+        ],
+        "dropShadow": [
+          {
+            "show": false
+          }
+        ],
+        "padding": [
+          {
+            "top": 0,
+            "bottom": 0,
+            "left": 0,
+            "right": 0
+          }
+        ]
+      }
+    },
+    "shape": {
+      "*": {
+        "title": [
+          {
+            "show": false
+          }
+        ],
+        "background": [
+          {
+            "show": false
+          }
+        ],
+        "border": [
+          {
+            "show": false
+          }
+        ],
+        "dropShadow": [
+          {
+            "show": false
+          }
+        ]
+      }
+    },
+    "actionButton": {
+      "*": {
+        "title": [
+          {
+            "show": false
+          }
+        ],
+        "background": [
+          {
+            "show": false
+          }
+        ],
+        "border": [
+          {
+            "show": false
+          }
+        ],
+        "dropShadow": [
+          {
+            "show": false
+          }
+        ]
+      }
+    },
+    "card": {
+      "*": {
+        "padding": [
+          {
+            "top": 4,
+            "bottom": 4,
+            "left": 8,
+            "right": 8
+          }
+        ]
+      }
+    },
+    "slicer": {
+      "*": {
+        "header": [
+          {
+            "show": true,
+            "textSize": 9,
+            "fontFamily": "Segoe UI Semibold",
+            "fontColor": {
+              "solid": {
+                "color": "#5F6C77"
+              }
+            },
+            "showRestatement": false
+          }
+        ],
+        "items": [
+          {
+            "textSize": 10,
+            "fontFamily": "Segoe UI",
+            "fontColor": {
+              "solid": {
+                "color": "#0A1218"
+              }
+            },
+            "background": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "padding": 4
+          }
+        ],
+        "padding": [
+          {
+            "top": 0,
+            "bottom": 0,
+            "left": 0,
+            "right": 0
+          }
+        ]
+      }
+    },
+    "page": {
+      "*": {
+        "background": [
+          {
+            "color": {
+              "solid": {
+                "color": "#F4F7F9"
+              }
+            },
+            "transparency": 0
+          }
+        ],
+        "outspace": [
+          {
+            "color": {
+              "solid": {
+                "color": "#F4F7F9"
+              }
+            },
+            "transparency": 0
+          }
+        ]
+      }
+    }
+  }
+}
