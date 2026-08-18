@@ -364,28 +364,30 @@ table telecom_customer_churn
 		summarizeBy: none
 		sortByColumn: 'Charge Band Sort'
 
-	/// Lifetime Total Revenue split into fifths across the whole customer base. Cut points come from PERCENTILEX.INC over ALL() so they are data-derived, not hardcoded. Pairs with [Charge Quintile] - the two rank customers OPPOSITELY, which is the insight on page 4.
+	/// Lifetime-revenue quintile, ranked within the CHURN BASE (churned + stayed) rather than all customers. Joined customers are two months old: their lifetime revenue is not comparable to a five-year customer's, and including them put 452 of the 454 into Q1 - which shrank Q1's churn base to 957 against ~1,408 elsewhere and pushed its rate to a meaningless 70.7%. They still receive a quintile so nothing breaks; they just do not move the boundaries.
 	column 'Revenue Quintile' =
 			VAR _v = telecom_customer_churn[Total Revenue]
-			VAR _t = ALL ( telecom_customer_churn )
-			VAR _p20 = PERCENTILEX.INC ( _t, telecom_customer_churn[Total Revenue], 0.2 )
-			VAR _p40 = PERCENTILEX.INC ( _t, telecom_customer_churn[Total Revenue], 0.4 )
-			VAR _p60 = PERCENTILEX.INC ( _t, telecom_customer_churn[Total Revenue], 0.6 )
-			VAR _p80 = PERCENTILEX.INC ( _t, telecom_customer_churn[Total Revenue], 0.8 )
+			VAR _base =
+			    FILTER ( ALL ( telecom_customer_churn ), telecom_customer_churn[Customer Status] <> "Joined" )
+			VAR _p20 = PERCENTILEX.INC ( _base, telecom_customer_churn[Total Revenue], 0.2 )
+			VAR _p40 = PERCENTILEX.INC ( _base, telecom_customer_churn[Total Revenue], 0.4 )
+			VAR _p60 = PERCENTILEX.INC ( _base, telecom_customer_churn[Total Revenue], 0.6 )
+			VAR _p80 = PERCENTILEX.INC ( _base, telecom_customer_churn[Total Revenue], 0.8 )
 			RETURN
 			    SWITCH ( TRUE (), _v <= _p20, "Q1 — lowest", _v <= _p40, "Q2", _v <= _p60, "Q3", _v <= _p80, "Q4", "Q5 — highest" )
 		dataType: string
 		lineageTag: 9b434cc8-3f57-45f8-a955-28a4faf6e09a
 		summarizeBy: none
 
-	/// Recurring Monthly Charge split into fifths. Ranks customers almost inversely to [Revenue Quintile] - lifetime revenue rewards long tenure (which predicts staying), recurring charge flags premium plans (which predicts churning).
+	/// Monthly-charge quintile, ranked within the CHURN BASE (churned + stayed) for the same reason as [Revenue Quintile] - boundaries set by the population the rate is actually measured over.
 	column 'Charge Quintile' =
 			VAR _v = telecom_customer_churn[Monthly Charge]
-			VAR _t = ALL ( telecom_customer_churn )
-			VAR _p20 = PERCENTILEX.INC ( _t, telecom_customer_churn[Monthly Charge], 0.2 )
-			VAR _p40 = PERCENTILEX.INC ( _t, telecom_customer_churn[Monthly Charge], 0.4 )
-			VAR _p60 = PERCENTILEX.INC ( _t, telecom_customer_churn[Monthly Charge], 0.6 )
-			VAR _p80 = PERCENTILEX.INC ( _t, telecom_customer_churn[Monthly Charge], 0.8 )
+			VAR _base =
+			    FILTER ( ALL ( telecom_customer_churn ), telecom_customer_churn[Customer Status] <> "Joined" )
+			VAR _p20 = PERCENTILEX.INC ( _base, telecom_customer_churn[Monthly Charge], 0.2 )
+			VAR _p40 = PERCENTILEX.INC ( _base, telecom_customer_churn[Monthly Charge], 0.4 )
+			VAR _p60 = PERCENTILEX.INC ( _base, telecom_customer_churn[Monthly Charge], 0.6 )
+			VAR _p80 = PERCENTILEX.INC ( _base, telecom_customer_churn[Monthly Charge], 0.8 )
 			RETURN
 			    SWITCH ( TRUE (), _v <= _p20, "Q1 — lowest", _v <= _p40, "Q2", _v <= _p60, "Q3", _v <= _p80, "Q4", "Q5 — highest" )
 		dataType: string
@@ -415,6 +417,15 @@ table telecom_customer_churn
 			    SWITCH ( TRUE (), _s >= 70, "High", _s >= 50, "Elevated", _s >= 30, "Moderate", "Low" )
 		dataType: string
 		lineageTag: eab00b24-97d1-4a18-b6cb-213e1720843f
+		summarizeBy: none
+
+	/// Internet Type with the no-internet cohort LABELLED rather than left empty. Internet Type is an empty string (not BLANK) for the 1,526 customers with no internet service, so a bar chart bound straight to it renders an unlabelled bar. Bind slicers and category axes here; ProfileAttr already applies the same None mapping.
+	column Internet =
+			VAR t = telecom_customer_churn[Internet Type]
+			RETURN
+			    IF ( ISBLANK ( t ) || t = "", "None", t )
+		dataType: string
+		lineageTag: 7188dc16-bfb4-4912-ad55-94e2e4c2cf0e
 		summarizeBy: none
 
 	partition telecom_customer_churn = m

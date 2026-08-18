@@ -33,18 +33,32 @@ defaults:
   panel:      { span: [4, 5],  band: analysis }
   table:      { span: [12, 3], band: detail }
   svg_strip:  { span: [12, 4], band: analysis }   # SVG image visual, full width
+  # the global filter strip: 3 dropdowns, capped at 3 per the room's slicer rule
+  # 152 not 160: 504 - 3*152 = 48, so the two 24px gaps keep every slicer origin on
+  # the 8px snap. 160 left a 12px gap and the audit flagged all three x-coordinates.
+  slicer:     { type: slicer, mode: Dropdown, size: [152, 56], count: 3 }
+  legend:     { size: [504, 24] }                 # SVG chip strip, right-aligned in the header
 
 layouts:
   # title band is identical on every page
   header:          [ [1,1,13,3] ]
+  # ...and splits: the wordmark keeps cols 1-7, the global chrome (legend + synced slicers)
+  # takes cols 8-12. Both live INSIDE the header band, so no page loses content height.
+  header_title:    [ [1,1,8,3] ]
+  header_filters:  [ [8,1,13,3] ]
   # 5 KPIs: one hero (4 cols) + four 2-col cards = 12 cols exactly
   kpi_hero_plus_4: [ [1,3,5,6], [5,3,7,6], [7,3,9,6], [9,3,11,6], [11,3,13,6] ]
   # p1: status mix panel + category panel on the left, reasons table right
   overview_body:   [ [1,6,5,9], [1,9,5,13], [5,6,13,13] ]
   # p2: one status-comparison table (all 3 statuses x 4 metrics in a single visual),
   # then the divergence strip
-  profile_summary: [ [1,3,13,6] ]
-  profile_body:    [ [1,6,13,13] ]
+  # the summary table only needs 7 columns of width - the rest of the band went to a
+  # plain-language read of each status group, which is the part a reader actually quotes
+  profile_summary: [ [1,3,8,6] ]
+  profile_note:    [ [8,3,13,6] ]
+  # the divergence matrix is 29 rows; one full-width table showed 13 and scrolled the rest
+  # out of sight, so it is split into two half-width tables that read side by side
+  profile_body_2:  [ [1,6,7,13], [7,6,13,13] ]
   # p3: hero tornado, then six small-multiple driver panels
   drivers_hero:    [ [1,3,13,9] ]
   drivers_six:     [ [1,9,3,13], [3,9,5,13], [5,9,7,13], [7,9,9,13], [9,9,11,13], [11,9,13,13] ]
@@ -52,9 +66,10 @@ layouts:
   value_two:       [ [1,3,7,8], [7,3,13,8] ]
   risk_body:       [ [1,8,9,13], [9,8,13,13] ]
 
+# every page also carries [header_title, header_filters] - the global chrome
 pages:
   - { id: Overview,  uses: [header, kpi_hero_plus_4, overview_body] }
-  - { id: Profile,   uses: [header, profile_summary, profile_body] }
+  - { id: Profile,   uses: [header, profile_summary, profile_body_2] }
   - { id: Drivers,   uses: [header, drivers_hero, drivers_six] }
   - { id: AtRisk,    uses: [header, value_two, risk_body] }
 

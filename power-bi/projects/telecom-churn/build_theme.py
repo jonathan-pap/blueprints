@@ -16,13 +16,16 @@ Three constraints, all MEASURED rather than eyeballed:
      palette toward indistinguishable.
 """
 import json
+import os
 import sys
 
-NAME = "Spectrum Light v1.1"
+NAME = "Spectrum Light v1.3"
 # NOTE: Power BI Desktop caches theme JSON BY FILENAME. Rewriting the same file does not
 # take effect - bump the version to force a reload. That is also why the naming convention
 # is versioned (where-themes-live.md).
-OUT = "telecom-churn.Report/StaticResources/RegisteredResources/Spectrum-Light-v1.1.json"
+OUT = "telecom-churn.Report/StaticResources/RegisteredResources/Spectrum-Light-v1.3.json"
+# Shared copy, per 02-build/theme/where-themes-live.md ("Central / shared themes")
+LIB = "../themes/spectrum-light/spectrum-light-v1.3.json"
 SCHEMA = ("https://raw.githubusercontent.com/microsoft/powerbi-desktop-samples/main/"
           "Report%20Theme%20JSON%20Schema/reportThemeSchema-2.152.json")
 
@@ -210,6 +213,21 @@ def theme():
             # heading - it pushed the text down and forced a scroll indicator. Zero it here.
             "textbox": {"*": {"border": off, "background": [{"show": False}],
                               "padding": [{"top": 0, "bottom": 0, "left": 0, "right": 0}]}},
+            # both containers take textSize, NOT fontSize - fontSize is silently ignored
+            # (02-build/theme/examples/visual-types/slicer.md)
+            "slicer": {"*": {
+                "header": [{"show": True, "textSize": 9, "fontFamily": "Segoe UI Semibold",
+                            "fontColor": {"solid": {"color": INK_3}},
+                            "showRestatement": False}],
+                "items": [{"textSize": 10, "fontFamily": "Segoe UI",
+                           "fontColor": {"solid": {"color": INK}},
+                           "background": {"solid": {"color": SURFACE}}, "padding": 4}],
+                "selection": [{"selectAllCheckboxEnabled": False, "singleSelect": False}],
+                "padding": [{"top": 0, "bottom": 0, "left": 0, "right": 0}]}},
+            # the wildcard 8/8/10/10 is right for a chart and wrong for a card: it eats
+            # 16px of vertical space and clipped the caption descenders on a 64px
+            # tooltip card. A card is one value plus one caption.
+            "card": {"*": {"padding": [{"top": 4, "bottom": 4, "left": 8, "right": 8}]}},
             "actionButton": {"*": {"border": off, "background": [{"show": False}],
                                    "dropShadow": off}},
             "shape": {"*": {"title": off, "background": [{"show": False}],
@@ -223,7 +241,12 @@ if __name__ == "__main__":
     bad = audit()
     if bad:
         sys.exit("\nBUILD FAILED - %d miss(es): %s" % (len(bad), ", ".join(bad)))
-    with open(OUT, "w", encoding="utf-8", newline="\n") as f:
-        json.dump(theme(), f, indent=2)
-        f.write("\n")
-    print("\nPASS - wrote %s" % OUT)
+    built = theme()
+    # written twice: the report copy Desktop reads, and the shared-library copy under
+    # projects/themes/ (02-build/theme/where-themes-live.md, "Central / shared themes")
+    for path in (OUT, LIB):
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8", newline="\n") as f:
+            json.dump(built, f, indent=2)
+            f.write("\n")
+        print("PASS - wrote %s" % path)

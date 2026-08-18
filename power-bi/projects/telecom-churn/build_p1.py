@@ -1,13 +1,12 @@
 """Page 1 - Churn Overview. Where do we stand, and why did they leave?"""
 from churnkit import (CHURNED, FACT, INK, INK2, RULE, SURFACE, add_page, head_tb, image_svg,
-                      lit, noframe, proj_c, proj_m, rects, solid, stack, textbox, ts, vis, write)
+                      lit, noframe, page_chrome, proj_c, proj_m, rects, solid, stack, textbox,
+                      ts, vis, write)
 
 d = add_page("Overview", "Churn Overview")
 
-hd = rects("header")[0]
-write(d, "pageTitle", textbox("pageTitle", hd, [
-    ("Churn Overview", ts("20pt", INK, "Segoe UI Semibold")),
-    ("Where we stand at the end of Q2 2022 \u2014 and why customers left", ts("10pt", INK2))]))
+page_chrome(d, "Churn Overview",
+            "Where we stand at the end of Q2 2022 \u2014 and why customers left")
 
 # ---- KPI row -------------------------------------------------------------
 k = rects("kpi_hero_plus_4")

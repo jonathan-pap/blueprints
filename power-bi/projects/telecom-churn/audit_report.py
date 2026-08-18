@@ -10,6 +10,7 @@ import json
 import os
 from datetime import date
 
+import churnkit
 import resolve_layout as RL
 
 REPORT = "telecom-churn.Report"
@@ -36,10 +37,24 @@ def all_region_edges():
         for r in RL.layout(name, DS):
             xs.update([r["x"], r["x"] + r["width"]])
             ys.update([r["y"], r["y"] + r["height"]])
+    # the global chrome tiles three slicers + a legend INSIDE one region, so its inner
+    # origins are legitimate without being region edges. Taken from churnkit rather than
+    # listed here, so builder and auditor cannot disagree.
+    legend, slicers = churnkit.chrome_rects()
+    for r in [legend] + slicers:
+        xs.update([r["x"], r["x"] + r["width"]])
+        ys.update([r["y"], r["y"] + r["height"]])
     return xs, ys
 
 
 pages = [p for p in sorted(os.listdir(PAGES)) if os.path.isdir(os.path.join(PAGES, p))]
+# Tooltip pages are 320x240 popups with their own layout - grading them against the
+# 12x12 page grid is meaningless. They still have to hold the 8px snap.
+TOOLTIP_PAGES = {
+    p for p in pages
+    if json.load(open(os.path.join(PAGES, p, "page.json"),
+                      encoding="utf-8")).get("type") == "Tooltip"
+}
 out("# Audit - telecom-churn report")
 out()
 out("Generated %s - theme `%s`, page %dx%d, %d-col x %d-row grid."
@@ -87,6 +102,8 @@ for p in pages:
             if pos[key] % SNAP:
                 off_snap.append((p, nm, vt, key, pos[key]))
         # a visual must start on a region edge, or be an inset of one (headings/insets)
+        if p in TOOLTIP_PAGES:
+            continue
         if pos["x"] not in xs and not any(abs(pos["x"] - e) <= 16 for e in xs):
             off_grid.append((p, nm, vt, "x", pos["x"]))
         if pos["y"] not in ys and not any(abs(pos["y"] - e) <= 56 for e in ys):
@@ -95,7 +112,9 @@ for p in pages:
 out("- Off-snap coordinates (not a multiple of %d): **%d**" % (SNAP, len(off_snap)))
 for r in off_snap[:8]:
     out("  - %s / %s (%s) %s=%s" % r)
-out("- Off-grid origins (not on or near a region edge): **%d**" % len(off_grid))
+out("- Off-grid origins (not on or near a region edge): **%d** "
+    "_(%d tooltip pages excluded - 320x240 popups, not on the 12x12 grid)_"
+    % (len(off_grid), len(TOOLTIP_PAGES)))
 for r in off_grid[:8]:
     out("  - %s / %s (%s) %s=%s" % r)
 out()

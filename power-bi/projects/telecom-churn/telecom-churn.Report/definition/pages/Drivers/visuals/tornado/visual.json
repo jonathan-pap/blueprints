@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "tornado",
   "position": {
     "x": 24,
     "y": 184,
     "z": 200,
-    "width": 1232,
     "height": 280,
+    "width": 1232,
     "tabOrder": 1
   },
   "visual": {
@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "ProfileAttr.Label",
-              "nativeQueryRef": "Label"
+              "nativeQueryRef": "Label",
+              "active": true
             }
           ]
         },
@@ -218,7 +219,35 @@
         }
       ]
     },
-    "visualContainerObjects": {},
+    "visualContainerObjects": {
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "type": {
+              "expr": {
+                "Literal": {
+                  "Value": "'ReportPage'"
+                }
+              }
+            },
+            "section": {
+              "expr": {
+                "Literal": {
+                  "Value": "'ttAttr'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
     "drillFilterOtherVisuals": true
   },
   "filterConfig": {
@@ -241,7 +270,6 @@
           "From": [
             {
               "Name": "subquery",
-              "Type": 2,
               "Expression": {
                 "Subquery": {
                   "Query": {
@@ -289,7 +317,8 @@
                     "Top": 10
                   }
                 }
-              }
+              },
+              "Type": 2
             },
             {
               "Name": "d",

@@ -281,20 +281,25 @@ table _Measures
 		lineageTag: 5a0583af-7239-46a1-8667-4c8c20c793ce
 		dataCategory: ImageUrl
 
-	/// Resolves a ProfileAttr row back onto the fact table with TREATAS, then returns [Status Share] for whatever status is in context. The SWITCH is unavoidable: each Attribute maps to a different physical column, and TREATAS needs the target column named literally. Blank when the row has no match, so an Offer value never bleeds into a Contract row.
+	/// Share of the current status group holding this attribute value. SWITCH must cover EVERY attribute in ProfileAttr: an unmatched branch returns BLANK, and a tableEx silently drops rows whose measures are all blank - so a missing branch does not show as an error, it shows as a row that was never there. Online security, Tech support and Internet=None were missing for exactly that reason.
 	measure 'Attr Share' =
 			VAR _a = SELECTEDVALUE ( ProfileAttr[Attribute] )
 			VAR _v = SELECTEDVALUE ( ProfileAttr[Value] )
 			VAR _one = { _v }
+			VAR _blankInternet = _a = "Internet" && _v = "None"
 			RETURN
 			    SWITCH (
 			        _a,
-			        "Contract",  CALCULATE ( [Status Share], TREATAS ( _one, telecom_customer_churn[Contract] ) ),
-			        "Tenure",    CALCULATE ( [Status Share], TREATAS ( _one, telecom_customer_churn[Tenure Band] ) ),
-			        "Internet",  CALCULATE ( [Status Share], TREATAS ( _one, telecom_customer_churn[Internet Type] ) ),
-			        "Payment",   CALCULATE ( [Status Share], TREATAS ( _one, telecom_customer_churn[Payment Method] ) ),
-			        "Offer",     CALCULATE ( [Status Share], TREATAS ( _one, telecom_customer_churn[Offer] ) ),
-			        "Monthly $", CALCULATE ( [Status Share], TREATAS ( _one, telecom_customer_churn[Monthly Charge Band] ) )
+			        "Contract",        CALCULATE ( [Status Share], TREATAS ( _one, telecom_customer_churn[Contract] ) ),
+			        "Tenure",          CALCULATE ( [Status Share], TREATAS ( _one, telecom_customer_churn[Tenure Band] ) ),
+			        "Internet",        IF ( _blankInternet,
+			                                CALCULATE ( [Status Share], telecom_customer_churn[Internet Service] = "No" ),
+			                                CALCULATE ( [Status Share], TREATAS ( _one, telecom_customer_churn[Internet Type] ) ) ),
+			        "Payment",         CALCULATE ( [Status Share], TREATAS ( _one, telecom_customer_churn[Payment Method] ) ),
+			        "Offer",           CALCULATE ( [Status Share], TREATAS ( _one, telecom_customer_churn[Offer] ) ),
+			        "Monthly $",       CALCULATE ( [Status Share], TREATAS ( _one, telecom_customer_churn[Monthly Charge Band] ) ),
+			        "Online security", CALCULATE ( [Status Share], TREATAS ( _one, telecom_customer_churn[Online Security] ) ),
+			        "Tech support",    CALCULATE ( [Status Share], TREATAS ( _one, telecom_customer_churn[Premium Tech Support] ) )
 			    )
 		formatString: 0.0%
 		isHidden
@@ -408,8 +413,12 @@ table _Measures
 		formatString: #,##0
 		lineageTag: 9253f829-118c-476a-ac0a-35b491b0bf68
 
-	/// Row label for the tornado: 'Contract: Month-to-Month'. Combining attribute and value into one string keeps the bar chart's category axis a single readable column instead of a two-level hierarchy.
-	measure 'Attr Label' = SELECTEDVALUE ( ProfileAttr[Attribute] ) & ": " & SELECTEDVALUE ( ProfileAttr[Value] )
+	/// Row label for a ProfileAttr segment: 'Contract: Month-to-Month'. Used as the title of the ttAttr tooltip page. Guarded: with no single row in context the raw concatenation returned a bare ': ', so it falls back to a hint instead.
+	measure 'Attr Label' =
+			VAR _a = SELECTEDVALUE ( ProfileAttr[Attribute] )
+			VAR _v = SELECTEDVALUE ( ProfileAttr[Value] )
+			RETURN
+			    IF ( ISBLANK ( _a ) || ISBLANK ( _v ), "Hover one segment", _a & ": " & _v )
 		lineageTag: 41786e41-d324-4ff3-97a1-04aabd5d073d
 
 	/// Per-bar colour for the tornado: vermillion when the segment churns MORE than the 28.4% baseline, blue when less. Must be bound through dataPoint.fill with a dataViewWildcard selector or every bar renders identically (schema-patterns/selectors). Colour is redundant with bar direction here, which is deliberate - it is reinforcement, not the only channel.
@@ -450,6 +459,126 @@ table _Measures
 			    )
 		lineageTag: 6986df10-9176-4b72-a97c-6f6d74fad0c6
 		dataCategory: ImageUrl
+
+	/// Global legend chip strip, rendered as an SVG image visual in every page header. Static content, but the swatch colours come from the [Clr *] measures so the palette stays single-sourced in the model - changing Spectrum Light in one place recolours the legend everywhere. viewBox is 504x24, exactly the container it sits in, so the image maps 1:1 instead of letterboxing; 24 rather than 20 because the header region is on an 8px snap.
+	measure 'Status Legend' =
+			VAR _ink = [Clr Ink2]
+			VAR _chips =
+			    CONCATENATEX (
+			        {
+			            ( 1, "Churned", [Clr Churned] ),
+			            ( 2, "Stayed", [Clr Stayed] ),
+			            ( 3, "Joined", [Clr Joined] )
+			        },
+			        VAR _i = [Value1]
+			        VAR _lab = [Value2]
+			        VAR _col = [Value3]
+			        VAR _x = 272 + ( _i - 1 ) * 84
+			        RETURN
+			            "<rect x='" & FORMAT ( _x, "0" ) & "' y='7' width='10' height='10' rx='2' fill='" & _col & "'/>"
+			                & "<text x='" & FORMAT ( _x + 16, "0" ) & "' y='16' font-family='Segoe UI' font-size='11' fill='" & _ink & "'>" & _lab & "</text>",
+			        "",
+			        [Value1], ASC
+			    )
+			RETURN
+			    "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 504 24'>" & _chips & "</svg>"
+		lineageTag: 5e7b6db3-1db4-4b47-adf5-dc2194ade23b
+		dataCategory: ImageUrl
+
+	/// Churn rate as a track bar for the page-4 quintile tables. Three deliberate choices: (1) the domain is FIXED at 0-70% rather than scaled to each panel's max, so a bar in the revenue panel and a bar in the charge panel are the same length for the same rate - the two panels slice the same customers by the same metric, so they should be comparable; (2) a tick marks the 28.4% baseline, which makes above/below average readable without relying on colour; (3) fill is magenta above the baseline, teal below. Colours come from the [Clr *] measures so a re-theme reaches them. viewBox is 200x16 - match imageWidth/imageHeight to it.
+	measure 'Quintile Bar' =
+			VAR _r = [Churn Rate]
+			VAR _b = [Baseline Churn Rate]
+			VAR _dom = 0.70
+			VAR _w = 200
+			VAR _fill = MIN ( _w, DIVIDE ( _r, _dom ) * _w )
+			VAR _tick = DIVIDE ( _b, _dom ) * _w
+			VAR _col = IF ( _r > _b, [Clr Churned], [Clr Stayed] )
+			RETURN
+			    IF (
+			        ISBLANK ( _r ),
+			        BLANK (),
+			        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 16'>"
+			            & "<rect x='0' y='3' width='200' height='10' rx='5' fill='" & [Clr Rule] & "'/>"
+			            & "<rect x='0' y='3' width='" & FORMAT ( ROUND ( _fill, 0 ), "0" )
+			            & "' height='10' rx='5' fill='" & _col & "'/>"
+			            & "<rect x='" & FORMAT ( ROUND ( _tick, 0 ), "0" )
+			            & "' y='0' width='2' height='16' rx='1' fill='" & [Clr Ink2] & "'/>"
+			            & "</svg>"
+			    )
+		lineageTag: 0b4420da-587d-4006-892d-f1d08a2839f4
+		dataCategory: ImageUrl
+
+	/// Dynamic title for the report-page tooltips. A tooltip page cannot echo the hovered value on its own, so this reads whichever dimension is single-valued in the hover context and names it. Order is most-specific-first: Churn Reason beats Churn Category because a reason row filters both.
+	measure 'TT Segment Label' =
+			VAR _rs = SELECTEDVALUE ( telecom_customer_churn[Churn Reason] )
+			VAR _cc = SELECTEDVALUE ( telecom_customer_churn[Churn Category] )
+			VAR _rq = SELECTEDVALUE ( telecom_customer_churn[Revenue Quintile] )
+			VAR _cq = SELECTEDVALUE ( telecom_customer_churn[Charge Quintile] )
+			VAR _ct = SELECTEDVALUE ( telecom_customer_churn[Contract] )
+			VAR _tb = SELECTEDVALUE ( telecom_customer_churn[Tenure Band] )
+			VAR _it = SELECTEDVALUE ( telecom_customer_churn[Internet] )
+			VAR _pm = SELECTEDVALUE ( telecom_customer_churn[Payment Method] )
+			VAR _os = SELECTEDVALUE ( telecom_customer_churn[Online Security] )
+			VAR _ts = SELECTEDVALUE ( telecom_customer_churn[Premium Tech Support] )
+			VAR _cy = SELECTEDVALUE ( telecom_customer_churn[City] )
+			VAR _st = SELECTEDVALUE ( telecom_customer_churn[Customer Status] )
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        NOT ISBLANK ( _rs ), _rs,
+			        NOT ISBLANK ( _cc ), _cc & " reasons",
+			        NOT ISBLANK ( _rq ), "Lifetime revenue · " & _rq,
+			        NOT ISBLANK ( _cq ), "Monthly charge · " & _cq,
+			        NOT ISBLANK ( _ct ), "Contract · " & _ct,
+			        NOT ISBLANK ( _tb ), "Tenure · " & _tb,
+			        NOT ISBLANK ( _it ), "Internet · " & _it,
+			        NOT ISBLANK ( _pm ), "Payment · " & _pm,
+			        NOT ISBLANK ( _os ), "Online security · " & _os,
+			        NOT ISBLANK ( _ts ), "Tech support · " & _ts,
+			        NOT ISBLANK ( _cy ), _cy,
+			        NOT ISBLANK ( _st ), "Status · " & _st,
+			        "All customers"
+			    )
+		lineageTag: f429eb69-4124-4266-9bb4-30dd6e8a290a
+
+	/// Title for the retention-shortlist tooltip: the customer id and their city.
+	measure 'TT Customer Label' =
+			VAR _id = SELECTEDVALUE ( telecom_customer_churn[Customer ID] )
+			VAR _city = SELECTEDVALUE ( telecom_customer_churn[City] )
+			RETURN
+			    IF ( ISBLANK ( _id ), "Multiple customers", _id & "  ·  " & _city )
+		lineageTag: 93d310e5-dc26-4251-833d-9d64d8de1133
+
+	/// [Risk Score] as a measure so it can sit on a card. AVERAGE over a single customer is that customer's score.
+	measure 'Customer Risk Score' = AVERAGE ( telecom_customer_churn[Risk Score] )
+		formatString: 0
+		lineageTag: 038803ec-db3b-4221-b614-f99a20eec9dd
+
+	/// Plain-language read-out of which [Risk Score] rules fired for the hovered customer. The score is a transparent rule set, not a model - so the tooltip shows the working rather than just the number.
+	measure 'TT Customer Why' =
+			VAR _id = SELECTEDVALUE ( telecom_customer_churn[Customer ID] )
+			VAR _ct = SELECTEDVALUE ( telecom_customer_churn[Contract] )
+			VAR _tn = SELECTEDVALUE ( telecom_customer_churn[Tenure in Months] )
+			VAR _it = SELECTEDVALUE ( telecom_customer_churn[Internet Type] )
+			VAR _os = SELECTEDVALUE ( telecom_customer_churn[Online Security] )
+			VAR _ts = SELECTEDVALUE ( telecom_customer_churn[Premium Tech Support] )
+			VAR _pm = SELECTEDVALUE ( telecom_customer_churn[Payment Method] )
+			VAR _p1 = IF ( _ct = "Month-to-Month", "month-to-month +30, ", "" )
+			VAR _p2 = SWITCH ( TRUE (), _tn <= 6, "under 6 months tenure +25, ", _tn <= 12, "under a year tenure +15, ", "" )
+			VAR _p3 = IF ( _it = "Fiber Optic", "fibre +15, ", "" )
+			VAR _p4 = IF ( _os = "No", "no online security +10, ", "" )
+			VAR _p5 = IF ( _ts = "No", "no tech support +10, ", "" )
+			VAR _p6 = IF ( _pm = "Bank Withdrawal", "bank withdrawal +10, ", "" )
+			VAR _all = _p1 & _p2 & _p3 & _p4 & _p5 & _p6
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        ISBLANK ( _id ), "Hover one customer to see which rules fired.",
+			        _all = "", "No risk rules fired for this customer.",
+			        "Score from: " & LEFT ( _all, LEN ( _all ) - 2 ) & "."
+			    )
+		lineageTag: 59c1d236-d7a5-4102-be92-635e304c75df
 
 	column _
 		isHidden

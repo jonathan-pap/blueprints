@@ -148,7 +148,7 @@ Tell Claude **"build the churn report"** — it'll confirm the §7 open question
 Rebuilt from scratch: the four hash-named pages were removed and replaced, with a new theme and a
 layout contract.
 
-### Theme — "Spectrum Light v1.1"
+### Theme — "Spectrum Light v1.2"
 
 Futuristic telecom: fibre and radio spectrum. Cyan-teal for a connected line, deep magenta for a
 dropped one, electric violet for a new signal, on a cool near-white canvas. Light rather than dark
@@ -199,9 +199,15 @@ The first cut of this theme was authored ad-hoc and skipped `02-build/theme/`. R
 Validated with **`pbir theme validate`** (passes), and audited with **`pbir color list`** — 14 distinct
 colours, all palette members plus the one measure-driven fill.
 
-> **Power BI Desktop caches theme JSON BY FILENAME.** Rewriting the same file has no effect, however
-> many times you reload — the padding fix above appeared to do nothing until the filename moved
-> v1.0 → v1.1. This is the practical reason the naming convention is versioned.
+> **Power BI Desktop will not pick up an edit to a theme file in place.** Rewriting the same file
+> has no effect however many times you reload — the padding fix above appeared to do nothing until
+> the version moved v1.0 → v1.1. What actually forces the re-import is the theme's internal `name:`
+> field: on import Desktop **re-registers the theme under a filename it derives from `name:`**,
+> sanitised and uniquified — `"Spectrum Light v1.2"` came back as
+> `Spectrum_Light_v1.2053488466004665725.json`, rewriting `report.json` and leaving a duplicate
+> file behind. Bump the filename and `name:` together (which is exactly what the room's naming
+> convention asks for), then repoint `report.json` at the intended filename — the registration
+> holds across reloads after that.
 
 > `audit/compliance.md` documents `pbir audit theme`, which **does not exist in pbir 0.9.25** (there
 > is no `audit` command group at all). `pbir color list` plus `audit_report.py` cover the same ground.
@@ -244,4 +250,186 @@ found **44 off-snap coordinates** on its first run: `resolve_layout.py` snaps re
 helper that insets a region (heading strip + gap) reintroduced drift via a 6px gap. Fixed to 8.
 Worth keeping precisely because it is *not* redundant with the resolver.
 
-Final: 4 pages, 20 data visuals, 0 off-snap, 0 off-grid, 0 stray hex, `pbir validate` clean.
+Final: 4 pages, 0 off-snap, 0 off-grid, 0 stray hex, `pbir validate` clean.
+
+## 11. Global chrome + the missing-rows bug — 2026-08-18 (second pass)
+
+Three things were missing and one was silently wrong.
+
+### Global chrome — legend + synced slicers on every page
+
+`header` split into `header_title` (cols 1–7) and `header_filters` (cols 8–12), both **inside** the
+existing title band — so the chrome cost no content height on any page.
+
+- **Legend**: a `Status Legend` SVG measure in an `image` visual, right-aligned. Static content, but
+  the swatch colours come from the `[Clr *]` measures, so a re-theme recolours it. `viewBox` is
+  authored at exactly the container size (504×24) so the image maps 1:1 instead of letterboxing.
+- **Slicers**: Contract · Internet · Tenure Band, classic dropdowns, `syncGroup` on all four pages
+  so a selection carries across. Three is the cap the room sets.
+
+**Customer Status is deliberately not a slicer.** It is the comparison axis the whole report is
+built on: filtering it blanks two of the three columns in the profile matrix, collapses the waffle,
+and makes the tornado compare a segment against a baseline that no longer exists. Status is
+communicated by the legend instead; the slicers are attributes you would hold constant *while*
+comparing statuses. Say the word if you want it as a slicer anyway.
+
+### The profile matrix was missing 5 of its 29 rows
+
+`Attr Share`'s `SWITCH` covered 6 of the 8 attributes in `ProfileAttr`. An unmatched `SWITCH`
+returns BLANK, and a `tableEx` drops rows whose measures are all blank — so **Online security, Tech
+support and Internet = None were absent with no error anywhere**. Not truncation, not a filter: rows
+that were never drawn.
+
+Two of them turned out to be among the strongest signals in the report:
+
+| row | churners | stayers | divergence |
+|---|---|---|---|
+| Online security: No | 78.2% | 38.4% | **+39.8pp** |
+| Tech support: No | 77.4% | 38.2% | **+39.2pp** |
+
+Only `Attr Churn Rate` and `Attr Segment Customers` had the full 8 branches, which is why the
+tornado on page 3 showed "Online security: No" while page 2 did not.
+
+> **Rule:** when a disconnected spine drives a `SWITCH`, every value of the spine needs a branch.
+> A missing one is invisible — it removes the row rather than erroring.
+
+### The matrix was also scrolling
+
+29 rows in one full-width table rendered 13. Split into two half-width tables (`profile_body_2`),
+with one-line panel headings and the reading rule moved up to the page subtitle to buy the last two
+rows. Both halves now show every row with nothing below the fold.
+
+### Unlabelled bars on page 3
+
+`Internet Type`, `Online Security` and `Premium Tech Support` are an **empty string, not BLANK**, for
+the 1,526 customers with no internet — so three small multiples drew a nameless bar at 8.4%. Added a
+calculated `[Internet]` column that labels that cohort `None` (slicer and category axis both bind
+there), and excluded the not-applicable blank from the two add-on charts.
+
+### The audit earned its keep again
+
+It flagged 12 off-snap coordinates in the new chrome: 160px slicers left a 12px gap. 152px leaves 24,
+which is a multiple of 8. It also flagged the three slicer origins as off-grid — correctly, since
+they tile *inside* one region. Rather than whitelist the numbers, `churnkit.chrome_rects()` is now
+the single source and `audit_report.py` imports it, so builder and auditor cannot drift.
+
+### Theme v1.2 — slicer chrome
+
+Added a `slicer` block to the theme (`header` + `items` + `selection`), so slicer styling lives in
+the theme rather than on each visual. Both containers take `textSize`, **not** `fontSize` —
+`fontSize` is silently ignored. Filename bumped v1.1 → v1.2 to force a re-import.
+
+> **Correction (found in section 13):** the mechanism is not the filename. On import Desktop **re-registers the theme under a name it derives from the JSON's internal `name:` field**, sanitised and uniquified — `"Spectrum Light v1.2"` came back as `Spectrum_Light_v1.2053488466004665725.json`, with `report.json` and a duplicate file rewritten to match. So it is the internal `name:` that has to change, and the convention of keeping filename and `name:` in step is what makes bumping either one work. After repointing `report.json` at the intended filename the registration held across reloads.
+
+Per `02-build/theme/where-themes-live.md`, `build_theme.py` now also writes the theme to the shared
+library at `projects/themes/spectrum-light/`, so it is reusable outside this report.
+
+## 12. Page 4 quintile panels — 2026-08-18 (third pass)
+
+Compared against the reference design. Two problems: the panels were the wrong *form*, and one
+of them was measuring the wrong population.
+
+### 452 of the 454 Joined customers were sitting in Q1
+
+`Revenue Quintile` cut its thresholds over `ALL(telecom_customer_churn)` — all 7,043, Joined
+included. Joined customers are two months old, so nearly every one of them landed in the lowest
+lifetime-revenue quintile:
+
+| quintile | customers | churn base (churned + stayed) | rate |
+|---|---|---|---|
+| Q1 | 1,409 | **957** | 70.7% |
+| Q2–Q5 | ~1,408 each | ~1,408 each | 13.9–30.5% |
+
+`[Churn Rate]` excludes Joined from numerator *and* denominator, so Q1's bar was drawn from a base
+a third smaller than every other bar on the chart — it was not a quintile.
+
+Both quintile columns now rank within the **churn base**. Joined still receive a quintile so nothing
+breaks; they just no longer move the boundaries. Bases came out at 1,317–1,322 across all five.
+
+Q1 reads 61.2%, not 70.7%. Still the highest — the cheapest customers really do churn most — but now
+it is comparable to the bars beside it.
+
+> The reference's numbers (40.5% down to 18.2%) do not reproduce under either basis, so its
+> quintiles were cut some third way. Ours is documented in the column description; if you know what
+> the original did, it is a one-line change.
+
+### The form was wrong too
+
+A bar chart can show the rate but not the money beside it — and the money is the whole argument of
+the page: **Q5 churns least and still loses the most, $1.44M**. Each panel is now a table:
+
+`Quintile · SVG track bar · churn rate · money lost`
+
+- **Sorted Q5 first.** The reader wants the most valuable customers at the top, not the cheapest.
+- **Fixed 0–70% domain** rather than per-panel autoscale, so a bar in the revenue panel and one in
+  the charge panel mean the same length. (The reference scales each panel to its own max, which
+  makes its 41.8% bar look longer than its 40.5% one.)
+- **A tick marks the 28.4% baseline**, so above/below average is readable without relying on colour;
+  fill colour then reinforces it rather than carrying it alone.
+- Footnote under each panel carrying the interpretation.
+
+### The charge panel is not monotonic, and that is real
+
+The peak is **Q4 at 36.9%, not Q5 at 32.5%** — the very highest bills skew to long-tenure fibre
+contracts, which are sticky. The subtitle used to claim "premium plans churn most"; it now says what
+the data says.
+
+### Sizing a table against its rendered row height
+
+At `rowPadding 4` / 10pt a row is ~35px, so five rows plus a header overflowed a 176px table and
+Power BI drew a **scroll track with nothing to scroll to** — which reads as hidden data. At
+`rowPadding 1` / 9pt a row is ~26px and it fits with slack. Same trap then hit the 32px footnote.
+Measure the rendered row, do not guess it.
+
+## 13. Tooltips — 2026-08-18 (fourth pass)
+
+Every visual carrying an SVG measure was showing its raw `data:image/svg+xml;utf8,<svg …>`
+string in the default tooltip. A report-page tooltip **replaces** the default outright, which
+kills that and buys room for context no cell could hold.
+
+### Four pages, not one
+
+A tooltip only helps if its measures mean something in the context being hovered, and the four
+contexts in this report do not share a vocabulary:
+
+| page | reaches | why it is separate |
+|---|---|---|
+| `ttSegment` | 6 driver small multiples, both quintile tables, churn by city | plain fact context — `[Churn Rate]` and friends resolve |
+| `ttAttr` | tornado, both halves of the profile matrix | ProfileAttr context — only the `[Attr *]` family resolves; plain `[Churn Rate]` is blank |
+| `ttReason` | churn-category bar, reason table | reason rows are churned-only, so a churn rate would read **100% on every row** |
+| `ttCustomer` | retention shortlist | one customer — shows the risk score *and which rules produced it* |
+
+A tooltip built for the wrong context is worse than no tooltip: it renders a confident number
+that is either blank or circular.
+
+### A tooltip page cannot echo what you hovered
+
+There is no built-in "current value" token, so `[TT Segment Label]` reads whichever dimension
+is single-valued in the hover context and names it — `Contract · Month-to-Month`,
+`Lifetime revenue · Q5 — highest`, `San Diego`. Order is most-specific-first: Churn Reason
+beats Churn Category, because a reason row filters both.
+
+`[Attr Label]` needed the same guard — with nothing in context its concatenation returned a
+bare `": "`. It now falls back to `Hover one segment`.
+
+### The customer tooltip shows its working
+
+`[Risk Score]` is a transparent rule set, not a model, so `[TT Customer Why]` spells out which
+rules fired: *"Score from: month-to-month +30, under 6 months tenure +25, fibre +15, no online
+security +10, no tech support +10, bank withdrawal +10."* A score with no explanation invites
+exactly the "is this AI?" question the brief rules out of scope.
+
+### Theme v1.3 — card padding
+
+The wildcard `padding` of 8/8/10/10 is right for a chart and wrong for a card: it ate 16px of a
+64px tooltip card and clipped the caption descenders. `card` now takes 4/4/8/8. This is the
+third time the wildcard padding has had to be overridden per visual type (`textbox`, `image`,
+now `card`) — the pattern is that the checklist's wildcard suits *data* visuals, and anything
+whose whole job is a line of text needs it relaxed.
+
+### Sizing, again
+
+The tooltip footers clipped their second line at 24px and drew a scroll indicator — the same
+"there is more below" lie as the page-2 and page-4 tables. They get 40px. All tooltip geometry
+is on the 8px snap, but the **region-edge** half of the audit now skips tooltip pages: a
+320×240 popup is not on the 12×12 page grid, and grading it against one is cargo cult.

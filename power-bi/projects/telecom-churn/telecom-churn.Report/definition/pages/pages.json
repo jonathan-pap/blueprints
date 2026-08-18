@@ -4,7 +4,11 @@
     "Overview",
     "Profile",
     "Drivers",
-    "AtRisk"
+    "AtRisk",
+    "ttSegment",
+    "ttAttr",
+    "ttReason",
+    "ttCustomer"
   ],
-  "activePageName": "Overview"
+  "activePageName": "Drivers"
 }

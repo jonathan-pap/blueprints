@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "kpiRisk",
   "position": {
     "x": 1064,
     "y": 168,
     "z": 200,
-    "width": 192,
     "height": 128,
+    "width": 192,
     "tabOrder": 1
   },
   "visual": {
@@ -93,7 +93,6 @@
         }
       ]
     },
-    "visualContainerObjects": {},
     "drillFilterOtherVisuals": true
   }
 }
