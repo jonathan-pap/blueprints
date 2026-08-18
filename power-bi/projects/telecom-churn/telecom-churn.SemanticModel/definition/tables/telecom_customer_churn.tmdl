@@ -364,6 +364,59 @@ table telecom_customer_churn
 		summarizeBy: none
 		sortByColumn: 'Charge Band Sort'
 
+	/// Lifetime Total Revenue split into fifths across the whole customer base. Cut points come from PERCENTILEX.INC over ALL() so they are data-derived, not hardcoded. Pairs with [Charge Quintile] - the two rank customers OPPOSITELY, which is the insight on page 4.
+	column 'Revenue Quintile' =
+			VAR _v = telecom_customer_churn[Total Revenue]
+			VAR _t = ALL ( telecom_customer_churn )
+			VAR _p20 = PERCENTILEX.INC ( _t, telecom_customer_churn[Total Revenue], 0.2 )
+			VAR _p40 = PERCENTILEX.INC ( _t, telecom_customer_churn[Total Revenue], 0.4 )
+			VAR _p60 = PERCENTILEX.INC ( _t, telecom_customer_churn[Total Revenue], 0.6 )
+			VAR _p80 = PERCENTILEX.INC ( _t, telecom_customer_churn[Total Revenue], 0.8 )
+			RETURN
+			    SWITCH ( TRUE (), _v <= _p20, "Q1 — lowest", _v <= _p40, "Q2", _v <= _p60, "Q3", _v <= _p80, "Q4", "Q5 — highest" )
+		dataType: string
+		lineageTag: 9b434cc8-3f57-45f8-a955-28a4faf6e09a
+		summarizeBy: none
+
+	/// Recurring Monthly Charge split into fifths. Ranks customers almost inversely to [Revenue Quintile] - lifetime revenue rewards long tenure (which predicts staying), recurring charge flags premium plans (which predicts churning).
+	column 'Charge Quintile' =
+			VAR _v = telecom_customer_churn[Monthly Charge]
+			VAR _t = ALL ( telecom_customer_churn )
+			VAR _p20 = PERCENTILEX.INC ( _t, telecom_customer_churn[Monthly Charge], 0.2 )
+			VAR _p40 = PERCENTILEX.INC ( _t, telecom_customer_churn[Monthly Charge], 0.4 )
+			VAR _p60 = PERCENTILEX.INC ( _t, telecom_customer_churn[Monthly Charge], 0.6 )
+			VAR _p80 = PERCENTILEX.INC ( _t, telecom_customer_churn[Monthly Charge], 0.8 )
+			RETURN
+			    SWITCH ( TRUE (), _v <= _p20, "Q1 — lowest", _v <= _p40, "Q2", _v <= _p60, "Q3", _v <= _p80, "Q4", "Q5 — highest" )
+		dataType: string
+		lineageTag: ae196e68-c0f5-4e2b-b3a7-065e7d183a6a
+		summarizeBy: none
+
+	/// RULE-BASED score, NOT a predictive model - the brief rules ML out of scope, so this is simply the page-3 drivers turned into additive points. Weights mirror the measured vs-baseline gaps: month-to-month +30, first 6 months +25, fiber +15, missing security/support +10 each, bank withdrawal +10. Capped at 100. Say 'rule-based' wherever it is shown so nobody mistakes it for a model output.
+	column 'Risk Score' =
+			VAR _s =
+			    IF ( telecom_customer_churn[Contract] = "Month-to-Month", 30 )
+			        + SWITCH ( TRUE (), telecom_customer_churn[Tenure in Months] <= 6, 25, telecom_customer_churn[Tenure in Months] <= 12, 15, 0 )
+			        + IF ( telecom_customer_churn[Internet Type] = "Fiber Optic", 15 )
+			        + IF ( telecom_customer_churn[Online Security] = "No", 10 )
+			        + IF ( telecom_customer_churn[Premium Tech Support] = "No", 10 )
+			        + IF ( telecom_customer_churn[Payment Method] = "Bank Withdrawal", 10 )
+			RETURN
+			    MIN ( 100, _s )
+		dataType: int64
+		formatString: 0
+		lineageTag: 24cbe5d3-dd6b-47c6-bba4-c727f527ad00
+		summarizeBy: none
+
+	/// Banding of [Risk Score] for the retention shortlist. High >= 70, Elevated >= 50, Moderate >= 30, else Low.
+	column 'Risk Tier' =
+			VAR _s = telecom_customer_churn[Risk Score]
+			RETURN
+			    SWITCH ( TRUE (), _s >= 70, "High", _s >= 50, "Elevated", _s >= 30, "Moderate", "Low" )
+		dataType: string
+		lineageTag: eab00b24-97d1-4a18-b6cb-213e1720843f
+		summarizeBy: none
+
 	partition telecom_customer_churn = m
 		mode: import
 		source =

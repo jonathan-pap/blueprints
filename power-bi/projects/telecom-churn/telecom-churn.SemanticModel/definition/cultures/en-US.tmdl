@@ -2,8 +2,480 @@ cultureInfo en-US
 
 	linguisticMetadata =
 			{
-			  "Version": "1.0.0",
-			  "Language": "en-US"
+			  "Version": "2.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "telecom_customer_churn.churn_reason": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "telecom_customer_churn",
+			          "ConceptualProperty": "Churn Reason"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Reason": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "telecom_customer_churn.churn_category": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "telecom_customer_churn",
+			          "ConceptualProperty": "Churn Category"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Category": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "telecom_customer_churn.customer_status": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "telecom_customer_churn",
+			          "ConceptualProperty": "Customer Status"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Status": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "telecom_customer_churn.customer_id": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "telecom_customer_churn",
+			          "ConceptualProperty": "Customer ID"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Customer": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "telecom_customer_churn.internet_type": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "telecom_customer_churn",
+			          "ConceptualProperty": "Internet Type"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Internet": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "telecom_customer_churn.tenure_in_months": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "telecom_customer_churn",
+			          "ConceptualProperty": "Tenure in Months"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Tenure": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "telecom_customer_churn.risk_score": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "telecom_customer_churn",
+			          "ConceptualProperty": "Risk Score"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Score": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.churned_customers": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Churned Customers"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Customers": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Churned": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.churned_share_of_total": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Churned Share of Total"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "% of churn": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.reason_bar": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Reason Bar"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "table_measures.attr_churn_share": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Attr Churn Share"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Churn": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.attr_stay_share": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Attr Stay Share"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Stay": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.attr_join_share": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Attr Join Share"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Join": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.attr_dumbbell": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Attr Dumbbell"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "stay - churn": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.attr_divergence": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Attr Divergence"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Diverg.": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.total_customers": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Total Customers"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Customers": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.avg_tenure": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Avg Tenure"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Avg tenure (mo)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.avg_monthly_charge": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Avg Monthly Charge"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Avg monthly $": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Monthly $": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.pct_month_to_month": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Pct Month to Month"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "On month-to-month": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.churn_rate": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Churn Rate"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Rate": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.total_revenue_amt": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Total Revenue Amt"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Lifetime $": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "table_measures.risk_pill": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "_Measures",
+			          "ConceptualProperty": "Risk Pill"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Tier": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    }
+			  }
 			}
 		contentType: json
 

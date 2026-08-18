@@ -1,0 +1,73 @@
+/// DISCONNECTED attribute/value spine. Eight fact columns unioned into one Attribute+Value table so a SINGLE visual can compare all of them. NO relationship: the [Attr *] measures opt in with TREATAS (disconnected-selection recipe primitive). Two data-shape fixes are load-bearing: (1) blank Internet Type means 'no internet service', labelled None; (2) Online Security / Premium Tech Support are BLANK for those same no-internet customers, and left in they produced three separate rows all describing the identical 1,344-customer cohort at 8.4% - so blanks are filtered out of the add-on attributes, which are only meaningful for internet subscribers.
+table ProfileAttr
+	lineageTag: 9b65a1b4-badd-426d-832f-b58b6678fce2
+
+	/// Attribute group name. sortByColumn = Ord so tables order Contract, Tenure, Internet, Payment, Offer, Monthly $, Online security, Tech support - the reading order of the analysis - rather than alphabetically. A tableEx cannot sort by a column it does not project, so sortByColumn is the only way to get this without showing a sort key.
+	column Attribute
+		lineageTag: fa6923dc-7724-4e50-b572-0d202e0009b0
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Attribute]
+		sortByColumn: Ord
+
+	/// Attribute value. sortByColumn = SortKey so values inside each attribute run logically (Month-to-Month, One Year, Two Year / 0-6mo upward) instead of alphabetically.
+	column Value
+		lineageTag: 7765f845-c76a-4b1e-b0c8-3ae18eec31a5
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Value]
+		sortByColumn: SortKey
+
+	column Ord
+		lineageTag: 799cfc13-842b-4d28-9544-a5d1dcd3f500
+		isNameInferred
+		sourceColumn: [Ord]
+
+	column SubOrd
+		lineageTag: 1f9529aa-4e8f-4151-b3c4-b3ca9eba4dbc
+		isNameInferred
+		sourceColumn: [SubOrd]
+
+	/// 'Contract: Month-to-Month'. Exists as a COLUMN, not a measure, because a bar chart's Category role only accepts a column - and the raw Value is ambiguous across attributes ('No' appears under both Online security and Tech support), so plotting Value alone would collapse unrelated segments onto one bar.
+	column Label = ProfileAttr[Attribute] & ": " & ProfileAttr[Value]
+		dataType: string
+		lineageTag: a7e6971e-59ba-4a62-8f82-4efb7c63315c
+		summarizeBy: none
+
+	/// Ord*10 + SubOrd, so the tornado and the profile table order attributes deliberately (Contract, Tenure, Internet, ...) and order values inside each attribute logically (Month-to-Month before One Year before Two Year) rather than alphabetically.
+	column SortKey = ProfileAttr[Ord] * 10 + ProfileAttr[SubOrd]
+		dataType: int64
+		formatString: 0
+		lineageTag: 840e108e-7b75-4d75-a211-157769d09852
+		summarizeBy: none
+
+	partition ProfileAttr = calculated
+		mode: import
+		source =
+				VAR _internet =
+				    SELECTCOLUMNS ( VALUES ( telecom_customer_churn[Internet Type] ),
+				        "Attribute", "Internet",
+				        "Value", IF ( ISBLANK ( telecom_customer_churn[Internet Type] ) || telecom_customer_churn[Internet Type] = "", "None", telecom_customer_churn[Internet Type] & "" ),
+				        "Ord", 3, "SubOrd", 1 )
+				VAR _sec =
+				    SELECTCOLUMNS (
+				        FILTER ( VALUES ( telecom_customer_churn[Online Security] ),
+				                 NOT ISBLANK ( telecom_customer_churn[Online Security] ) && telecom_customer_churn[Online Security] <> "" ),
+				        "Attribute", "Online security", "Value", telecom_customer_churn[Online Security] & "", "Ord", 7, "SubOrd", 1 )
+				VAR _sup =
+				    SELECTCOLUMNS (
+				        FILTER ( VALUES ( telecom_customer_churn[Premium Tech Support] ),
+				                 NOT ISBLANK ( telecom_customer_churn[Premium Tech Support] ) && telecom_customer_churn[Premium Tech Support] <> "" ),
+				        "Attribute", "Tech support", "Value", telecom_customer_churn[Premium Tech Support] & "", "Ord", 8, "SubOrd", 1 )
+				RETURN
+				UNION (
+				    SELECTCOLUMNS ( VALUES ( telecom_customer_churn[Contract] ), "Attribute", "Contract", "Value", telecom_customer_churn[Contract] & "", "Ord", 1, "SubOrd", SWITCH ( telecom_customer_churn[Contract], "Month-to-Month", 1, "One Year", 2, 3 ) ),
+				    SELECTCOLUMNS ( VALUES ( telecom_customer_churn[Tenure Band] ), "Attribute", "Tenure", "Value", telecom_customer_churn[Tenure Band] & "", "Ord", 2, "SubOrd", SWITCH ( telecom_customer_churn[Tenure Band], "0-6 mo", 1, "7-12 mo", 2, "13-24 mo", 3, "25-48 mo", 4, 5 ) ),
+				    _internet,
+				    SELECTCOLUMNS ( VALUES ( telecom_customer_churn[Payment Method] ), "Attribute", "Payment", "Value", telecom_customer_churn[Payment Method] & "", "Ord", 4, "SubOrd", 1 ),
+				    SELECTCOLUMNS ( VALUES ( telecom_customer_churn[Offer] ), "Attribute", "Offer", "Value", telecom_customer_churn[Offer] & "", "Ord", 5, "SubOrd", 1 ),
+				    SELECTCOLUMNS ( VALUES ( telecom_customer_churn[Monthly Charge Band] ), "Attribute", "Monthly $", "Value", telecom_customer_churn[Monthly Charge Band] & "", "Ord", 6, "SubOrd", SWITCH ( telecom_customer_churn[Monthly Charge Band], "<$30", 1, "$30-60", 2, "$60-90", 3, 4 ) ),
+				    _sec,
+				    _sup
+				)
+

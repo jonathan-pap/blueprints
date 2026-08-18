@@ -1,0 +1,61 @@
+# Design system — telecom-churn (12×12 grid model)
+#
+# Layout tokens Claude reads BEFORE every visual placement. Power BI never sees this file —
+# it is the dimension counterpart to the theme (theme = appearance, this = geometry).
+# Resolve spans/regions to pixels with resolve_layout.py (cell math from
+# ../../02-build/report/layout/layout-guidelines.md#grid-12x12).
+
+meta:
+  page:  { width: 1280, height: 720 }
+  theme: Retention Signal (Light)
+  units: grid-cells
+  reading_pattern: F          # analytical, per brief §4
+
+grid:
+  columns: 12
+  rows: 12
+  gutter: 16
+  margin: 24
+  snap: 8
+  # DERIVED: colW = (1280 - 48 - 16*11)/12 = 88.0 ; rowH = (720 - 48 - 16*11)/12 = 41.3
+
+bands:
+  summary:  { rows: [1, 5]  }   # title + KPI row
+  analysis: { rows: [5, 10] }   # charts
+  detail:   { rows: [10, 13] }  # tables / shortlists
+
+defaults:
+  title:      { span: [12, 2], band: summary }
+  kpi:        { span: [2, 3],  band: summary }
+  kpi_hero:   { span: [4, 3],  band: summary }
+  chart:      { span: [6, 5],  band: analysis }
+  chart_wide: { span: [12, 5], band: analysis }
+  panel:      { span: [4, 5],  band: analysis }
+  table:      { span: [12, 3], band: detail }
+  svg_strip:  { span: [12, 4], band: analysis }   # SVG image visual, full width
+
+layouts:
+  # title band is identical on every page
+  header:          [ [1,1,13,3] ]
+  # 5 KPIs: one hero (4 cols) + four 2-col cards = 12 cols exactly
+  kpi_hero_plus_4: [ [1,3,5,6], [5,3,7,6], [7,3,9,6], [9,3,11,6], [11,3,13,6] ]
+  # p1: status mix panel + category panel on the left, reasons table right
+  overview_body:   [ [1,6,5,9], [1,9,5,13], [5,6,13,13] ]
+  # p2: one status-comparison table (all 3 statuses x 4 metrics in a single visual),
+  # then the divergence strip
+  profile_summary: [ [1,3,13,6] ]
+  profile_body:    [ [1,6,13,13] ]
+  # p3: hero tornado, then six small-multiple driver panels
+  drivers_hero:    [ [1,3,13,9] ]
+  drivers_six:     [ [1,9,3,13], [3,9,5,13], [5,9,7,13], [7,9,9,13], [9,9,11,13], [11,9,13,13] ]
+  # p4: two quintile panels, then shortlist + city
+  value_two:       [ [1,3,7,8], [7,3,13,8] ]
+  risk_body:       [ [1,8,9,13], [9,8,13,13] ]
+
+pages:
+  - { id: Overview,  uses: [header, kpi_hero_plus_4, overview_body] }
+  - { id: Profile,   uses: [header, profile_summary, profile_body] }
+  - { id: Drivers,   uses: [header, drivers_hero, drivers_six] }
+  - { id: AtRisk,    uses: [header, value_two, risk_body] }
+
+overrides: []

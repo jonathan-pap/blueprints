@@ -37,7 +37,7 @@ Apply the 20%-change test — each earns a card only if it moves enough to matte
 | KPI | Measure (to build) | Definition / denominator | Format |
 |---|---|---|---|
 | Total Customers | `[Total Customers]` | `COUNTROWS(customer)` = 7,043 | #,##0 |
-| **Churn Rate** | `[Churn Rate]` | Churned ÷ (Churned + Stayed) — **exclude Joined** (they just arrived). ≈ 26.5% | 0.0% |
+| **Churn Rate** | `[Churn Rate]` | Churned ÷ (Churned + Stayed) — **exclude Joined** (they just arrived). **= 28.4%** (1,869 / 6,589). *Corrected 2026-08-18: this row previously said ≈26.5%, which is the churned/total figure, not this one.* | 0.0% |
 | New Customers (this qtr) | `[Joined Customers]` | Status = "Joined" = 454 | #,##0 |
 | Churned Revenue (lost) | `[Churned Revenue]` | `SUM(Total Revenue)` filtered to Churned | $#,##0 |
 | Monthly Revenue at Risk | `[Churned Monthly Charge]` | `SUM(Monthly Charge)` of Churned (recurring $ lost/month) | $#,##0 |
@@ -78,16 +78,22 @@ Page size 1280×720. Reading pattern F (analytical). 6–8 data visuals per page
 - **Don't build:** time-trend pages, forecasting, or a predictive churn model (this is descriptive BI, not ML).
 - **Deferred (v2):** per-capita penetration using the zip population table; a what-if retention simulator.
 
-## 7. Open questions (answer these first)
+## 7. Open questions — ANSWERED 2026-08-18
 
-- [ ] **Churn Rate denominator** — churned/(churned+stayed) [recommended] or churned/total? Pick one.
-- [ ] **"High value"** — define by `Total Revenue` (lifetime to date) or `Monthly Charge` (recurring)? They
-      rank customers differently; the retention shortlist depends on it.
-- [ ] **Geography** — map by lat/long point density, or aggregate to City / Zip? (Zip enables the
-      population join later.)
-- [ ] **Joined customers** — include them anywhere besides the "new this quarter" count, or treat as
-      out-of-scope for churn/profile comparisons?
-- [ ] **DimDate** — drop it, or synthesise a signup-month from tenure for a cohort view?
+- [x] **Churn Rate denominator** — **churned/(churned+stayed) = 28.4%**. `[Churn Rate of Total]`
+      (26.5%) is kept as a footnote on the KPI card so both numbers are visible and neither can be
+      quoted by accident. The model measure previously used churned/total; fixed.
+- [x] **"High value"** — **both, deliberately**. They rank customers *oppositely* and that
+      disagreement is page 4's whole argument: lifetime-revenue Q1 churns **70.7%** while Q5 churns
+      13.9%, yet Q5 is where **$1.51M** of the loss sits. Monthly-charge quintiles run the other way
+      (Q4 37.0%). Rate finds the leavers; absolute value finds the money.
+- [x] **Geography** — **City**, rolled up from zip. Keeps the population join available for v2.
+      Shown as a ranked table, not a map: `azureMap` is the only non-deprecated map visual and it
+      requires a signed-in Power BI account to render, so a map would have been a blank panel here.
+- [x] **Joined customers** — third column on page 2 and the "new this quarter" KPI; **never** in a
+      churn denominator. Note they sit entirely in the 0–6 month tenure band by definition.
+- [x] **DimDate** — **dropped from the report.** No date FK exists and the brief rules out trend
+      pages, so it has nothing to join to.
 
 ## 8. References
 
@@ -134,3 +140,72 @@ Churned Monthly Charge = CALCULATE ( SUM ( telecom_customer_churn[Monthly Charge
 
 Tell Claude **"build the churn report"** — it'll confirm the §7 open questions, seed the §9 measures
 (MCP-first if Desktop is open), propose the 4-page layout against `design-system.yaml`, then build.
+
+---
+
+## 10. Build record — 2026-08-18
+
+Rebuilt from scratch: the four hash-named pages were removed and replaced, with a new theme and a
+layout contract.
+
+### Theme — "Retention Signal (Light)"
+
+Light, not dark: the audience is Power BI Service plus **a printable exec summary** (§1), and dark
+themes print badly. `build_theme.py` generates it and **fails the build on any contrast miss**.
+
+That audit earned its keep on the first run. The status triad started as three Okabe-Ito colours,
+which are hue-separated but **not luminance-separated** — churned vs joined measured **1.09:1**,
+i.e. indistinguishable in greyscale or to some CVD readers. Rebuilt as a deliberate luminance
+ladder:
+
+| role | hex | on white | luminance |
+|---|---|---|---|
+| Stayed | `#00558F` | 7.79:1 | 0.085 |
+| Churned | `#B8480A` | 5.29:1 | 0.149 |
+| Joined | `#B673A4` | 3.51:1 | 0.249 |
+
+Mutual separation 1.47 / 1.51 / 2.22 — survives a mono printout. One honest trade-off falls out of
+this: no colour can be both dark enough for 4.5:1 **text** and light enough to separate from
+vermillion by luminance, so **Joined is graphical-only** and never used as a text fill.
+
+SVG measures cannot read the theme, so hex lives in `[Clr *]` measures — one place to re-theme.
+
+### Layout — `design-system.yaml` + `resolve_layout.py`
+
+Every rectangle resolves from a 12×12 grid; region edges snap to 8 so adjacent regions tile with
+exact 16px gutters. Nothing is hardcoded at the call site.
+
+### `ProfileAttr` — the disconnected spine
+
+Eight fact columns unioned into one Attribute+Value table with **no relationship**; the `[Attr *]`
+measures opt in with `TREATAS`. Without it pages 2 and 3 would each need eight separate visuals,
+because a `tableEx` can only group by columns it is given.
+
+Two data-shape traps inside it:
+
+1. Blank `Internet Type` means *no internet service* — labelled **None**, or it renders as an empty row.
+2. `Online Security` / `Premium Tech Support` are **blank for those same no-internet customers**, and
+   left in they produced three separate rows all describing the identical 1,344-customer cohort at
+   8.4%. Filtered out — those add-ons only mean anything to internet subscribers.
+
+### PBIR gotchas hit while building
+
+| Symptom | Cause |
+|---|---|
+| `sortDefinition` rejected | it is a **sibling of `queryState`**, not inside it |
+| `filterConfig` rejected | it belongs at the **root of visual.json**, not inside `visual` |
+| TopN filter rejected | not `itemCount`/`topBottom` properties — it is a **subquery in `From`** plus an `In` against it |
+| Shape panels invisible | a shape's fill is `objects.fill` with its own `show`; even set explicitly it would not render. Abandoned for headings-on-canvas + each visual carrying its own themed card |
+| Two stacked titles on charts | setting container `title.text` renders the custom title **and** the auto-generated name. Headings are textboxes everywhere |
+| Data labels unreadable | `labelPosition` Auto flips them *inside* long bars, where secondary ink on vermillion fails. Forced `OutsideEnd` |
+| Every screenshot `Unknown pageId` | deleting **all** pages while Desktop is open invalidates its page registry; `reload` does not rebuild it — `powerbi-desktop open` does |
+| Table sorted alphabetically | a `tableEx` cannot sort by a column it does not project — use `sortByColumn` on the column instead |
+
+### Audit — `outputs/2026-08-18-telecom-churn-audit.md`
+
+`audit_report.py` runs the §04-review quick checks plus design-system and theme compliance. It
+found **44 off-snap coordinates** on its first run: `resolve_layout.py` snaps region *edges*, but a
+helper that insets a region (heading strip + gap) reintroduced drift via a 6px gap. Fixed to 8.
+Worth keeping precisely because it is *not* redundant with the resolver.
+
+Final: 4 pages, 20 data visuals, 0 off-snap, 0 off-grid, 0 stray hex, `pbir validate` clean.

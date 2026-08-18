@@ -11,7 +11,7 @@
       "type": "SharedResources"
     },
     "customTheme": {
-      "name": "churn-light.json",
+      "name": "retention-signal-light.json",
       "reportVersionAtImport": {
         "visual": "2.11.0",
         "report": "3.4.0",
@@ -65,8 +65,8 @@
       "type": "RegisteredResources",
       "items": [
         {
-          "name": "churn-light.json",
-          "path": "churn-light.json",
+          "name": "retention-signal-light.json",
+          "path": "retention-signal-light.json",
           "type": "CustomTheme"
         }
       ]

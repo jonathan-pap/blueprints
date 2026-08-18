@@ -16,6 +16,7 @@ ref table _Measures
 ref table DimDate
 ref table telecom_customer_churn
 ref table telecom_zipcode_population
+ref table ProfileAttr
 
 ref cultureInfo en-US
 

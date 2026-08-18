@@ -29,8 +29,8 @@ table _Measures
 		displayFolder: Counts
 		lineageTag: f5d79029-f168-47e5-94f6-87ceb5d43261
 
-	/// Churned / total customers in context. Headline = 26.5%. (Denominator is total, matching the approved mockup.)
-	measure 'Churn Rate' = DIVIDE ( [Churned Customers], [Total Customers] )
+	/// THE headline. Denominator excludes Joined (brief §7 decision): Joined customers arrived this quarter and have not had the chance to churn, so counting them in the base understates the rate. 1,869 / (1,869 + 4,720) = 28.4%. Reporting churned/total gives 26.5% - that is [Churn Rate of Total], kept only as a footnote. NOTE brief §3 mislabels 26.5% as this measure's value; it is the other denominator.
+	measure 'Churn Rate' = DIVIDE ( [Churned Customers], [Churned Customers] + [Stayed Customers] )
 		formatString: 0.0%
 		displayFolder: Rates
 		lineageTag: 64d0e1af-b75c-4184-87e0-d3e48fc0f345
@@ -76,6 +76,351 @@ table _Measures
 		formatString: \$#,##0.00
 		displayFolder: Revenue
 		lineageTag: d7bd2327-2f3a-4ec2-85cc-a633e759f808
+
+	/// Alternative denominator including Joined - 26.5%. Footnote only; the headline is [Churn Rate].
+	measure 'Churn Rate of Total' = DIVIDE ( [Churned Customers], [Total Customers] )
+		formatString: 0.0%
+		lineageTag: 2151c50a-8723-4071-b494-a41971bee830
+
+	/// The overall 28.4%, immune to the visual's own filter context - the constant every driver bar is ranked against. REMOVEFILTERS on the fact only, so an external page filter (e.g. Contract) still moves it deliberately.
+	measure 'Baseline Churn Rate' = CALCULATE ( [Churn Rate], REMOVEFILTERS ( telecom_customer_churn ) )
+		formatString: 0.0%
+		lineageTag: f15e0175-a33a-49b5-b484-a6ebcfcbd2a9
+
+	/// Segment churn rate minus the overall baseline, in PERCENTAGE POINTS. Positive = over-indexes for churn. This is the tornado's value - a raw rate hides that a big segment churns more simply by being big.
+	measure 'Churn Rate vs Baseline' =
+			VAR _seg = [Churn Rate]
+			VAR _base = [Baseline Churn Rate]
+			RETURN
+			    IF ( NOT ISBLANK ( _seg ), ( _seg - _base ) * 100 )
+		formatString: +0.0;-0.0;0.0
+		lineageTag: 7eafcf2f-091f-4a9f-9353-6b3715d85296
+
+	/// Customers in the segment excluding Joined - the denominator behind [Churn Rate], shown next to driver bars so a reader can see whether a big gap rests on 40 customers or 4,000.
+	measure 'Segment Customers' = CALCULATE ( [Total Customers], telecom_customer_churn[Customer Status] IN { "Churned", "Stayed" } )
+		formatString: #,##0
+		lineageTag: 6683a692-590c-47c8-b958-c3a0cce00e5d
+
+	/// Average tenure in months for the customers in context.
+	measure 'Avg Tenure' = AVERAGE ( telecom_customer_churn[Tenure in Months] )
+		formatString: 0
+		lineageTag: 8da38209-70d6-4713-be18-38a5961ac3d1
+
+	/// Share of the customers in context on a month-to-month contract - the single strongest churn lever, so it earns a slot on each status profile card.
+	measure 'Pct Month to Month' =
+			DIVIDE (
+			    CALCULATE ( [Total Customers], telecom_customer_churn[Contract] = "Month-to-Month" ),
+			    [Total Customers]
+			)
+		formatString: 0.0%
+		lineageTag: f453cb53-cbcf-4612-b97f-229d2af9baf3
+
+	/// Share of an attribute value WITHIN its status group - read across a row, never down a column. Denominator is the status total, so Churned/Stayed/Joined each sum to 100% down their own column.
+	measure 'Status Share' =
+			VAR _status = VALUES ( telecom_customer_churn[Customer Status] )
+			RETURN
+			    DIVIDE (
+			        [Total Customers],
+			        CALCULATE ( [Total Customers], REMOVEFILTERS ( telecom_customer_churn ), _status )
+			    )
+		formatString: 0.0%
+		lineageTag: 9a1c67c7-9040-43e7-b9d6-fa58444c005a
+
+	/// Palette indirection for SVG measures. SVG built in DAX cannot read the theme, so hardcoding hex in every chart measure means a re-theme silently misses them (visuals/svg/theme-color-references.md). These three are the single place to change. Must stay in step with retention-signal-light.json.
+	measure 'Clr Churned' = "#B8480A"
+		isHidden
+		lineageTag: 023f06ee-37bf-4291-a235-bf7cd79fb14c
+
+	/// Palette indirection - see [Clr Churned].
+	measure 'Clr Stayed' = "#00558F"
+		isHidden
+		lineageTag: 7dc42a43-b95d-44b4-8f30-1d7dd9457d21
+
+	/// Palette indirection - see [Clr Churned]. GRAPHICAL ONLY (3.5:1) - never use as a text fill.
+	measure 'Clr Joined' = "#B673A4"
+		isHidden
+		lineageTag: 591d3011-7f21-483f-9853-8c091d2ab123
+
+	/// Palette indirection - primary text.
+	measure 'Clr Ink' = "#1B1F27"
+		isHidden
+		lineageTag: c0475036-916e-4706-b5d8-5e0ec3613fcc
+
+	/// Palette indirection - secondary text.
+	measure 'Clr Ink2' = "#5B6472"
+		isHidden
+		lineageTag: a882be17-d88a-4b17-bfb5-859c8c2f2ddc
+
+	/// Palette indirection - hairlines and empty track fills.
+	measure 'Clr Rule' = "#DCE1E9"
+		isHidden
+		lineageTag: 97478796-844a-4426-b0b1-a98439afe12a
+
+	/// Unit chart - 100 squares, one per percent of the customer base, ordered Stayed then Churned then Joined with a legend. A waffle beats a donut here because the reader can COUNT the churned squares rather than judge an angle, and 26 squares of 100 lands harder than '26.5%'. Squares are allocated by largest remainder so they always total exactly 100. Colours come from the [Clr *] palette measures, never inline hex.
+	measure 'Status Waffle' =
+			VAR _tot = [Total Customers]
+			VAR _ch = [Churned Customers]
+			VAR _st = [Stayed Customers]
+			VAR _jo = [Joined Customers]
+			VAR _cExact = DIVIDE ( _ch, _tot ) * 100
+			VAR _jExact = DIVIDE ( _jo, _tot ) * 100
+			VAR _cS = ROUND ( _cExact, 0 )
+			VAR _jS = MAX ( 1, ROUND ( _jExact, 0 ) )
+			VAR _sS = 100 - _cS - _jS
+			VAR _colC = [Clr Churned]
+			VAR _colS = [Clr Stayed]
+			VAR _colJ = [Clr Joined]
+			VAR _ink = [Clr Ink]
+			VAR _ink2 = [Clr Ink2]
+			VAR _cells =
+			    CONCATENATEX (
+			        GENERATESERIES ( 0, 99 ),
+			        VAR _i = [Value]
+			        VAR _x = 6 + MOD ( _i, 10 ) * 17
+			        VAR _y = 6 + INT ( DIVIDE ( _i, 10 ) ) * 17
+			        VAR _f = SWITCH ( TRUE (), _i < _sS, _colS, _i < _sS + _cS, _colC, _colJ )
+			        RETURN
+			            "<rect x='" & FORMAT ( _x, "0" ) & "' y='" & FORMAT ( _y, "0" )
+			                & "' width='14' height='14' rx='2' fill='" & _f & "'/>",
+			        ""
+			    )
+			VAR _legend =
+			    CONCATENATEX (
+			        {
+			            ( 1, "Stayed", _colS, _st, _sS ),
+			            ( 2, "Churned", _colC, _ch, _cS ),
+			            ( 3, "Joined", _colJ, _jo, _jS )
+			        },
+			        VAR _row = [Value1]
+			        VAR _lab = [Value2]
+			        VAR _col = [Value3]
+			        VAR _n = [Value4]
+			        VAR _y = 26 + ( _row - 1 ) * 46
+			        RETURN
+			            "<rect x='198' y='" & FORMAT ( _y, "0" ) & "' width='11' height='11' rx='2' fill='" & _col & "'/>"
+			                & "<text x='216' y='" & FORMAT ( _y + 10, "0" ) & "' font-family='Segoe UI' font-size='12' fill='" & _ink & "'>" & _lab & "</text>"
+			                & "<text x='216' y='" & FORMAT ( _y + 27, "0" ) & "' font-family='Segoe UI' font-size='11' fill='" & _ink2 & "'>"
+			                & FORMAT ( _n, "#,##0" ) & "  ·  " & FORMAT ( DIVIDE ( _n, _tot ), "0.0%" ) & "</text>",
+			        "",
+			        [Value1], ASC
+			    )
+			RETURN
+			    "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 340 182'>"
+			        & _cells & _legend
+			        & "<text x='198' y='176' font-family='Segoe UI' font-size='10' fill='" & _ink2 & "'>1 square = 1% of "
+			        & FORMAT ( _tot, "#,##0" ) & "</text>"
+			        & "</svg>"
+		lineageTag: d06b5aaf-4ad8-4001-b088-ee73b5e6eca4
+		dataCategory: ImageUrl
+
+	/// Two dots on a 0-100% track: where this attribute value sits WITHIN the churned population vs WITHIN the stayed population. A dumbbell is the right form for a two-point comparison per row - paired bars would double the ink and make the reader compare lengths from different baselines, whereas here the GAP itself is the message. Connector is coloured by direction: vermillion when churned over-indexes, blue when stayed does. Rendered per row in a tableEx at 230x18.
+	measure 'Profile Dumbbell' =
+			VAR _ch = CALCULATE ( [Status Share], telecom_customer_churn[Customer Status] = "Churned" )
+			VAR _st = CALCULATE ( [Status Share], telecom_customer_churn[Customer Status] = "Stayed" )
+			VAR _wide = 230
+			VAR _tall = 18
+			VAR _pad = 8
+			VAR _span = _wide - 2 * _pad
+			VAR _xc = _pad + _ch * _span
+			VAR _xs = _pad + _st * _span
+			VAR _col = IF ( _ch >= _st, [Clr Churned], [Clr Stayed] )
+			RETURN
+			    IF (
+			        ISBLANK ( _ch ) && ISBLANK ( _st ),
+			        BLANK (),
+			        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 "
+			            & FORMAT ( _wide, "0" ) & " " & FORMAT ( _tall, "0" ) & "'>"
+			            & "<line x1='" & FORMAT ( _pad, "0" ) & "' y1='9' x2='" & FORMAT ( _wide - _pad, "0" )
+			            & "' y2='9' stroke='" & [Clr Rule] & "' stroke-width='2' stroke-linecap='round'/>"
+			            & "<line x1='" & FORMAT ( ROUND ( _xs, 0 ), "0" ) & "' y1='9' x2='" & FORMAT ( ROUND ( _xc, 0 ), "0" )
+			            & "' y2='9' stroke='" & _col & "' stroke-width='3' stroke-linecap='round'/>"
+			            & "<circle cx='" & FORMAT ( ROUND ( _xs, 0 ), "0" ) & "' cy='9' r='4.5' fill='" & [Clr Stayed] & "'/>"
+			            & "<circle cx='" & FORMAT ( ROUND ( _xc, 0 ), "0" ) & "' cy='9' r='4.5' fill='" & [Clr Churned] & "'/>"
+			            & "</svg>"
+			    )
+		lineageTag: 33a4614c-65f7-45fb-b3eb-3d2a43a81946
+		dataCategory: ImageUrl
+
+	/// Rounded pill naming the rule-based risk tier. Text is spelled out, not colour-coded alone (brief §6 accessibility: meaning never by colour alone). Fill/'text' pairs are all >= 4.5:1. Rendered per row in the retention shortlist at 74x20.
+	measure 'Risk Pill' =
+			VAR _tier = SELECTEDVALUE ( telecom_customer_churn[Risk Tier] )
+			VAR _fill =
+			    SWITCH ( _tier, "High", [Clr Churned], "Elevated", "#8A6D1F", "Moderate", [Clr Ink2], "#8A93A3" )
+			RETURN
+			    IF (
+			        ISBLANK ( _tier ),
+			        BLANK (),
+			        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 74 20'>"
+			            & "<rect x='1' y='2' width='72' height='16' rx='8' fill='" & _fill & "'/>"
+			            & "<text x='37' y='14' text-anchor='middle' font-family='Segoe UI' font-size='10.5' fill='#FFFFFF'>"
+			            & _tier & "</text></svg>"
+			    )
+		lineageTag: 0b7f1fbc-80d7-421b-b8c3-463083263c1b
+		dataCategory: ImageUrl
+
+	/// In-row bar for the churn-reason table, scaled to the LARGEST reason rather than to 100% - with 21 reasons the biggest is only ~17% of churn, so a 0-100% scale would render every bar as a stub. Rendered per row at 150x14.
+	measure 'Reason Bar' =
+			VAR _share = [Churned Share of Total]
+			VAR _max =
+			    MAXX (
+			        CALCULATETABLE ( VALUES ( telecom_customer_churn[Churn Reason] ), REMOVEFILTERS ( telecom_customer_churn ) ),
+			        [Churned Share of Total]
+			    )
+			VAR _wide = 150
+			VAR _len = DIVIDE ( _share, _max ) * ( _wide - 6 )
+			RETURN
+			    IF (
+			        ISBLANK ( _share ),
+			        BLANK (),
+			        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 "
+			            & FORMAT ( _wide, "0" ) & " 14'>"
+			            & "<rect x='3' y='4' width='" & FORMAT ( _wide - 6, "0" ) & "' height='6' rx='3' fill='" & [Clr Rule] & "'/>"
+			            & "<rect x='3' y='4' width='" & FORMAT ( MAX ( 3, ROUND ( _len, 0 ) ), "0" ) & "' height='6' rx='3' fill='" & [Clr Churned] & "'/>"
+			            & "</svg>"
+			    )
+		lineageTag: 5a0583af-7239-46a1-8667-4c8c20c793ce
+		dataCategory: ImageUrl
+
+	/// Resolves a ProfileAttr row back onto the fact table with TREATAS, then returns [Status Share] for whatever status is in context. The SWITCH is unavoidable: each Attribute maps to a different physical column, and TREATAS needs the target column named literally. Blank when the row has no match, so an Offer value never bleeds into a Contract row.
+	measure 'Attr Share' =
+			VAR _a = SELECTEDVALUE ( ProfileAttr[Attribute] )
+			VAR _v = SELECTEDVALUE ( ProfileAttr[Value] )
+			VAR _one = { _v }
+			RETURN
+			    SWITCH (
+			        _a,
+			        "Contract",  CALCULATE ( [Status Share], TREATAS ( _one, telecom_customer_churn[Contract] ) ),
+			        "Tenure",    CALCULATE ( [Status Share], TREATAS ( _one, telecom_customer_churn[Tenure Band] ) ),
+			        "Internet",  CALCULATE ( [Status Share], TREATAS ( _one, telecom_customer_churn[Internet Type] ) ),
+			        "Payment",   CALCULATE ( [Status Share], TREATAS ( _one, telecom_customer_churn[Payment Method] ) ),
+			        "Offer",     CALCULATE ( [Status Share], TREATAS ( _one, telecom_customer_churn[Offer] ) ),
+			        "Monthly $", CALCULATE ( [Status Share], TREATAS ( _one, telecom_customer_churn[Monthly Charge Band] ) )
+			    )
+		formatString: 0.0%
+		isHidden
+		lineageTag: 69ba2af8-034f-4403-bcd5-323de044eb24
+
+	/// Share of CHURNED customers holding this attribute value. Read across a row against Stay/Join, never down the column.
+	measure 'Attr Churn Share' = CALCULATE ( [Attr Share], telecom_customer_churn[Customer Status] = "Churned" )
+		formatString: 0.0%
+		lineageTag: 9e79cfd1-cd75-44e7-bf3a-3d78fc1d1536
+
+	/// Share of STAYED customers holding this attribute value.
+	measure 'Attr Stay Share' = CALCULATE ( [Attr Share], telecom_customer_churn[Customer Status] = "Stayed" )
+		formatString: 0.0%
+		lineageTag: c2c51dd1-2666-4e4f-bd50-e89db808c4e8
+
+	/// Share of JOINED customers holding this attribute value. Joined sit entirely in the 0-6 month tenure band by definition - the snapshot holds no earlier history for them.
+	measure 'Attr Join Share' = CALCULATE ( [Attr Share], telecom_customer_churn[Customer Status] = "Joined" )
+		formatString: 0.0%
+		lineageTag: 72ff902b-5b4d-47ed-8a36-6f192a0eff58
+
+	/// Churned-minus-Stayed share, in PERCENTAGE POINTS - the actual signal on page 2. A big positive means churners are concentrated in this value relative to the people who stayed.
+	measure 'Attr Divergence' =
+			VAR _c = [Attr Churn Share]
+			VAR _s = [Attr Stay Share]
+			RETURN
+			    IF ( NOT ( ISBLANK ( _c ) && ISBLANK ( _s ) ), ( _c - _s ) * 100 )
+		formatString: +0.0;-0.0;0.0
+		lineageTag: 465c114b-2ae8-4e78-b619-d4ead2735407
+
+	/// Dumbbell for one ProfileAttr row: blue dot = share of stayers, vermillion dot = share of churners, on a common 0-100% track. Connector coloured by which side leads. A dumbbell rather than paired bars because the GAP is the message and two bars would force the eye to compare lengths off different baselines.
+	measure 'Attr Dumbbell' =
+			VAR _c = [Attr Churn Share]
+			VAR _s = [Attr Stay Share]
+			VAR _wide = 230
+			VAR _pad = 8
+			VAR _span = _wide - 2 * _pad
+			VAR _xc = _pad + COALESCE ( _c, 0 ) * _span
+			VAR _xs = _pad + COALESCE ( _s, 0 ) * _span
+			VAR _col = IF ( COALESCE ( _c, 0 ) >= COALESCE ( _s, 0 ), [Clr Churned], [Clr Stayed] )
+			RETURN
+			    IF (
+			        ISBLANK ( _c ) && ISBLANK ( _s ),
+			        BLANK (),
+			        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 230 18'>"
+			            & "<line x1='8' y1='9' x2='222' y2='9' stroke='" & [Clr Rule] & "' stroke-width='2' stroke-linecap='round'/>"
+			            & "<line x1='" & FORMAT ( ROUND ( _xs, 0 ), "0" ) & "' y1='9' x2='" & FORMAT ( ROUND ( _xc, 0 ), "0" )
+			            & "' y2='9' stroke='" & _col & "' stroke-width='3' stroke-linecap='round'/>"
+			            & "<circle cx='" & FORMAT ( ROUND ( _xs, 0 ), "0" ) & "' cy='9' r='4.5' fill='" & [Clr Stayed] & "'/>"
+			            & "<circle cx='" & FORMAT ( ROUND ( _xc, 0 ), "0" ) & "' cy='9' r='4.5' fill='" & [Clr Churned] & "'/>"
+			            & "</svg>"
+			    )
+		lineageTag: a416d075-4a8c-4d49-bc2f-69a61ef0f7f2
+		dataCategory: ImageUrl
+
+	/// Not called directly - documents the TREATAS mapping shared by [Attr Share], [Attr Churn Rate] and [Attr Segment Customers]. Kept as a note because the SWITCH is duplicated three times: each Attribute maps to a different physical column and TREATAS must name the target column literally, so it cannot be factored into one reusable filter.
+	measure 'Attr Filter' = "see Attr Share / Attr Churn Rate"
+		isHidden
+		lineageTag: 449760f7-8ee3-4bfd-ae40-29ff142ddbbb
+
+	/// Churn RATE for a ProfileAttr row - churned/(churned+stayed) within that attribute value. Rate, not count: a big segment has more churners simply by being big, and the brief §9 is explicit that drivers must be compared on rate.
+	measure 'Attr Churn Rate' =
+			VAR _a = SELECTEDVALUE ( ProfileAttr[Attribute] )
+			VAR _v = SELECTEDVALUE ( ProfileAttr[Value] )
+			VAR _one = { _v }
+			VAR _blankInternet = _a = "Internet" && _v = "None"
+			RETURN
+			    SWITCH (
+			        _a,
+			        "Contract",        CALCULATE ( [Churn Rate], TREATAS ( _one, telecom_customer_churn[Contract] ) ),
+			        "Tenure",          CALCULATE ( [Churn Rate], TREATAS ( _one, telecom_customer_churn[Tenure Band] ) ),
+			        "Internet",        IF ( _blankInternet,
+			                                CALCULATE ( [Churn Rate], telecom_customer_churn[Internet Service] = "No" ),
+			                                CALCULATE ( [Churn Rate], TREATAS ( _one, telecom_customer_churn[Internet Type] ) ) ),
+			        "Payment",         CALCULATE ( [Churn Rate], TREATAS ( _one, telecom_customer_churn[Payment Method] ) ),
+			        "Offer",           CALCULATE ( [Churn Rate], TREATAS ( _one, telecom_customer_churn[Offer] ) ),
+			        "Monthly $",       CALCULATE ( [Churn Rate], TREATAS ( _one, telecom_customer_churn[Monthly Charge Band] ) ),
+			        "Online security", CALCULATE ( [Churn Rate], TREATAS ( _one, telecom_customer_churn[Online Security] ) ),
+			        "Tech support",    CALCULATE ( [Churn Rate], TREATAS ( _one, telecom_customer_churn[Premium Tech Support] ) )
+			    )
+		formatString: 0.0%
+		lineageTag: f3bd5b33-f37a-43a7-8019-803920a6cad8
+
+	/// The tornado's value: this segment's churn rate minus the overall 28.4%, in percentage points. Right of centre over-indexes for churn. Ranking against a constant baseline is what turns 'these segments churn' into 'these segments churn MORE THAN AVERAGE'.
+	measure 'Attr vs Baseline' =
+			VAR _r = [Attr Churn Rate]
+			RETURN
+			    IF ( NOT ISBLANK ( _r ), ( _r - [Baseline Churn Rate] ) * 100 )
+		formatString: +0.0;-0.0;0.0
+		lineageTag: 93cbcb59-28cc-4405-8ffa-1daf3a38149e
+
+	/// Customers behind a ProfileAttr row, excluding Joined - shown beside each tornado bar so a reader can tell whether a large gap rests on 400 customers or 4,000.
+	measure 'Attr Segment Customers' =
+			VAR _a = SELECTEDVALUE ( ProfileAttr[Attribute] )
+			VAR _v = SELECTEDVALUE ( ProfileAttr[Value] )
+			VAR _one = { _v }
+			VAR _blankInternet = _a = "Internet" && _v = "None"
+			RETURN
+			    SWITCH (
+			        _a,
+			        "Contract",        CALCULATE ( [Segment Customers], TREATAS ( _one, telecom_customer_churn[Contract] ) ),
+			        "Tenure",          CALCULATE ( [Segment Customers], TREATAS ( _one, telecom_customer_churn[Tenure Band] ) ),
+			        "Internet",        IF ( _blankInternet,
+			                                CALCULATE ( [Segment Customers], telecom_customer_churn[Internet Service] = "No" ),
+			                                CALCULATE ( [Segment Customers], TREATAS ( _one, telecom_customer_churn[Internet Type] ) ) ),
+			        "Payment",         CALCULATE ( [Segment Customers], TREATAS ( _one, telecom_customer_churn[Payment Method] ) ),
+			        "Offer",           CALCULATE ( [Segment Customers], TREATAS ( _one, telecom_customer_churn[Offer] ) ),
+			        "Monthly $",       CALCULATE ( [Segment Customers], TREATAS ( _one, telecom_customer_churn[Monthly Charge Band] ) ),
+			        "Online security", CALCULATE ( [Segment Customers], TREATAS ( _one, telecom_customer_churn[Online Security] ) ),
+			        "Tech support",    CALCULATE ( [Segment Customers], TREATAS ( _one, telecom_customer_churn[Premium Tech Support] ) )
+			    )
+		formatString: #,##0
+		lineageTag: 9253f829-118c-476a-ac0a-35b491b0bf68
+
+	/// Row label for the tornado: 'Contract: Month-to-Month'. Combining attribute and value into one string keeps the bar chart's category axis a single readable column instead of a two-level hierarchy.
+	measure 'Attr Label' = SELECTEDVALUE ( ProfileAttr[Attribute] ) & ": " & SELECTEDVALUE ( ProfileAttr[Value] )
+		lineageTag: 41786e41-d324-4ff3-97a1-04aabd5d073d
+
+	/// Per-bar colour for the tornado: vermillion when the segment churns MORE than the 28.4% baseline, blue when less. Must be bound through dataPoint.fill with a dataViewWildcard selector or every bar renders identically (schema-patterns/selectors). Colour is redundant with bar direction here, which is deliberate - it is reinforcement, not the only channel.
+	measure 'Attr Bar Color' = IF ( [Attr vs Baseline] >= 0, [Clr Churned], [Clr Stayed] )
+		isHidden
+		lineageTag: dd9432f0-08a6-4b11-843b-08cef86ff6a5
+
+	/// Absolute size of a segment's gap from the baseline, used ONLY as the tornado's TopN filter. 29 segments will not fit legibly in one chart, and sorting by signed value pushes every protective segment off the bottom - so the chart shows the largest gaps in BOTH directions instead of just the worst offenders.
+	measure 'Attr Impact' = ABS ( [Attr vs Baseline] )
+		formatString: 0.0
+		lineageTag: 886fb97f-62d2-42aa-ad2b-a85bcecb4dd7
 
 	column _
 		isHidden
