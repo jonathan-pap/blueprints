@@ -126,33 +126,33 @@ table _Measures
 		formatString: 0.0%
 		lineageTag: 9a1c67c7-9040-43e7-b9d6-fa58444c005a
 
-	/// Palette indirection for SVG measures. SVG built in DAX cannot read the theme, so hardcoding hex in every chart measure means a re-theme silently misses them (visuals/svg/theme-color-references.md). These three are the single place to change. Must stay in step with retention-signal-light.json.
-	measure 'Clr Churned' = "#B8480A"
+	/// Palette indirection for SVG measures - SVG built in DAX cannot read the theme, so these are the single place to change on a re-theme. Spectrum (Light): deep magenta = a dropped line. Must stay in step with build_theme.py, which is the audited source of truth.
+	measure 'Clr Churned' = "#9D174D"
 		isHidden
 		lineageTag: 023f06ee-37bf-4291-a235-bf7cd79fb14c
 
-	/// Palette indirection - see [Clr Churned].
-	measure 'Clr Stayed' = "#00558F"
+	/// Palette indirection - Spectrum (Light) fibre cyan-teal = a connected line.
+	measure 'Clr Stayed' = "#0E7490"
 		isHidden
 		lineageTag: 7dc42a43-b95d-44b4-8f30-1d7dd9457d21
 
-	/// Palette indirection - see [Clr Churned]. GRAPHICAL ONLY (3.5:1) - never use as a text fill.
-	measure 'Clr Joined' = "#B673A4"
+	/// Palette indirection - Spectrum (Light) electric violet = a new signal. GRAPHICAL ONLY (3.42:1): never use as a text fill.
+	measure 'Clr Joined' = "#9575F5"
 		isHidden
 		lineageTag: 591d3011-7f21-483f-9853-8c091d2ab123
 
 	/// Palette indirection - primary text.
-	measure 'Clr Ink' = "#1B1F27"
+	measure 'Clr Ink' = "#0B1020"
 		isHidden
 		lineageTag: c0475036-916e-4706-b5d8-5e0ec3613fcc
 
 	/// Palette indirection - secondary text.
-	measure 'Clr Ink2' = "#5B6472"
+	measure 'Clr Ink2' = "#4A5578"
 		isHidden
 		lineageTag: a882be17-d88a-4b17-bfb5-859c8c2f2ddc
 
 	/// Palette indirection - hairlines and empty track fills.
-	measure 'Clr Rule' = "#DCE1E9"
+	measure 'Clr Rule' = "#DEE4F2"
 		isHidden
 		lineageTag: 97478796-844a-4426-b0b1-a98439afe12a
 
@@ -421,6 +421,35 @@ table _Measures
 	measure 'Attr Impact' = ABS ( [Attr vs Baseline] )
 		formatString: 0.0
 		lineageTag: 886fb97f-62d2-42aa-ad2b-a85bcecb4dd7
+
+	/// Signal-strength indicator for the retention shortlist - four ascending bars, filled by rule-based risk tier, with the tier spelled out beside them. Replaces the earlier coloured pill: a signal meter is the native idiom for a telecom report, and it encodes risk THREE ways (bar count, colour, word) instead of colour alone, which is what brief section 6 asks for. Text sits outside the graphic on white, so it clears 4.5:1 - the old pill relied on white-on-fill.
+	measure 'Risk Signal' =
+			VAR _tier = SELECTEDVALUE ( telecom_customer_churn[Risk Tier] )
+			VAR _lit = SWITCH ( _tier, "High", 4, "Elevated", 3, "Moderate", 2, 1 )
+			VAR _col = SWITCH ( _tier, "High", [Clr Churned], "Elevated", "#7A2E5B", "Moderate", [Clr Ink2], [Clr Ink2] )
+			VAR _bars =
+			    CONCATENATEX (
+			        GENERATESERIES ( 1, 4 ),
+			        VAR _i = [Value]
+			        VAR _h = 4 + _i * 3
+			        VAR _x = 2 + ( _i - 1 ) * 8
+			        VAR _f = IF ( _i <= _lit, _col, [Clr Rule] )
+			        RETURN
+			            "<rect x='" & FORMAT ( _x, "0" ) & "' y='" & FORMAT ( 17 - _h, "0" )
+			                & "' width='5' height='" & FORMAT ( _h, "0" ) & "' rx='1' fill='" & _f & "'/>",
+			        ""
+			    )
+			RETURN
+			    IF (
+			        ISBLANK ( _tier ),
+			        BLANK (),
+			        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 20'>"
+			            & _bars
+			            & "<text x='38' y='14' font-family='Segoe UI' font-size='10.5' fill='" & [Clr Ink]
+			            & "'>" & _tier & "</text></svg>"
+			    )
+		lineageTag: 6986df10-9176-4b72-a97c-6f6d74fad0c6
+		dataCategory: ImageUrl
 
 	column _
 		isHidden

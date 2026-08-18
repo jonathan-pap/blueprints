@@ -199,8 +199,8 @@ short = table("shortTable", c, [
     proj_m("Avg Monthly Charge", "Monthly $"),
     proj_m("Total Revenue Amt", "Lifetime $"),
     proj_c(FACT, "Risk Score", "Score"),
-    proj_m("Risk Pill", "Tier"),
-], grid_extra={"imageHeight": lit("20D"), "imageWidth": lit("74D")})
+    proj_m("Risk Signal", "Tier"),
+], grid_extra={"imageHeight": lit("20D"), "imageWidth": lit("96D")})
 # filterConfig sits at the ROOT of visual.json, as a sibling of "visual" - not inside it
 short["filterConfig"] = {"filters": [
     cat_filter("fStayed", "Customer Status", "Stayed"),

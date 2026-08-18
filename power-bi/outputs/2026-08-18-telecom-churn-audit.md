@@ -13,7 +13,7 @@ Generated 2026-08-18 - theme `Retention Signal (Light)`, page 1280x720, 12-col x
 
 Data visuals total: **20** across 4 pages. Decorative (textbox/image/shape) are excluded - they carry no query cost.
 
-Custom theme applied: **retention-signal-light.json**
+Custom theme applied: **Spectrum-Light-v1.1.json**
 
 ## Design-system compliance
 

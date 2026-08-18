@@ -107,8 +107,8 @@ out()
 # ---- theme compliance ---------------------------------------------------
 out("## Theme compliance")
 out()
-PALETTE = {"#B8480A", "#00558F", "#B673A4", "#1B1F27", "#5B6472", "#7A8494",
-           "#FFFFFF", "#DCE1E9", "#EEF1F5", "#8A6D1F", "#8A93A3"}
+PALETTE = {"#9D174D", "#0E7490", "#9575F5", "#0B1020", "#4A5578", "#6E7A9C",
+           "#FFFFFF", "#DEE4F2", "#F1F4FB", "#334166", "#7A2E5B"}
 stray = {}
 for p in pages:
     for f in glob.glob(os.path.join(PAGES, p, "visuals", "*", "visual.json")):

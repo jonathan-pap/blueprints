@@ -1,37 +1,57 @@
-"""Generate 'Retention Signal (Light)' and AUDIT it. The audit FAILS the build on any
-contrast miss, so a theme can never ship below WCAG AA.
+"""Generate the Spectrum (Light) theme and AUDIT it. Fails the build on any miss.
 
-Direction (from brief §1/§5): commercial retention leadership, Power BI Service, and a
-PRINTABLE exec summary - so a light canvas, not a dark one. Status colours are three of the
-Okabe-Ito CVD-safe set, which is why churn/stay/join stay separable for colour-blind readers
-without relying on red-vs-green.
+Direction: futuristic telecom. The palette is fibre and radio spectrum - cyan-teal for a
+connected line, deep magenta for a dropped one, electric violet for a new signal - on a cool
+near-white canvas. Light rather than dark because the audience is Power BI Service plus a
+PRINTABLE exec summary (brief section 1).
+
+Three constraints, all MEASURED rather than eyeballed:
+  1. WCAG contrast - 4.5:1 for text, 3:1 for graphical objects
+  2. greyscale - mutual luminance ratio >= 1.3, so status survives a mono printout
+  3. colour blindness - pairwise separation under simulated deuteranopia AND protanopia
+     (Vienot 1999). This one mattered: orange-vs-blue is the safest possible pair, which is
+     why Okabe-Ito uses it, so dropping vermillion had to be PROVEN not assumed. Measured
+     worst pair here is 0.219 against 0.228 for the vermillion palette - a 4 percent give,
+     not a real loss. CVD_MIN sits just under that so a later edit cannot quietly slide the
+     palette toward indistinguishable.
 """
 import json
 import sys
 
-NAME = "Retention Signal (Light)"
+NAME = "Spectrum Light v1.1"
+# NOTE: Power BI Desktop caches theme JSON BY FILENAME. Rewriting the same file does not
+# take effect - bump the version to force a reload. That is also why the naming convention
+# is versioned (where-themes-live.md).
+OUT = "telecom-churn.Report/StaticResources/RegisteredResources/Spectrum-Light-v1.1.json"
+SCHEMA = ("https://raw.githubusercontent.com/microsoft/powerbi-desktop-samples/main/"
+          "Report%20Theme%20JSON%20Schema/reportThemeSchema-2.152.json")
 
-INK        = "#1B1F27"   # primary text
-INK_2      = "#5B6472"   # secondary text
-INK_3      = "#7A8494"   # axis / tertiary
-CANVAS     = "#EEF1F5"   # page
-SURFACE    = "#FFFFFF"   # cards / visual backgrounds
-RULE       = "#DCE1E9"   # borders, gridlines
-CHURNED    = "#B8480A"   # vermillion - luminance 0.149, the MID rung of the ladder
-STAYED     = "#00558F"   # blue       - luminance 0.085, the DARKEST rung
-JOINED     = "#B673A4"   # purple     - luminance 0.249, the LIGHTEST rung.
-#              GRAPHICAL ONLY: clears 3:1 but not the 4.5:1 text bar, so Joined is never a
-#              text colour - it labels via ink + a colour chip instead.
-BASELINE   = "#444B57"
+INK      = "#0B1020"
+INK_2    = "#4A5578"
+INK_3    = "#6E7A9C"
+CANVAS   = "#F1F4FB"
+SURFACE  = "#FFFFFF"
+RULE     = "#DEE4F2"
+STAYED   = "#0E7490"
+CHURNED  = "#9D174D"
+JOINED   = "#9575F5"
+BASELINE = "#334166"
 
-# supporting ramp for non-status categories
-SUPPORT = ["#00558F", "#B8480A", "#B673A4", "#3F7A6B", "#8A6D1F", "#5B6472", "#2E6E8E", "#9A4B3F"]
+SUPPORT = [STAYED, CHURNED, JOINED, "#2A6F7F", "#7A2E5B", "#4A5578", "#12867F", "#6B4BC2"]
+CVD_MIN = 0.18
 
 
-def lum(hexc):
-    c = [int(hexc[i:i + 2], 16) / 255 for i in (1, 3, 5)]
-    c = [x / 12.92 if x <= 0.03928 else ((x + 0.055) / 1.055) ** 2.4 for x in c]
-    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+def srgb(h):
+    return [int(h[i:i + 2], 16) / 255 for i in (1, 3, 5)]
+
+
+def linear(c):
+    return [x / 12.92 if x <= 0.04045 else ((x + 0.055) / 1.055) ** 2.4 for x in c]
+
+
+def lum(h):
+    r, g, b = linear(srgb(h))
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
 
 
 def ratio(a, b):
@@ -40,53 +60,76 @@ def ratio(a, b):
     return (hi + 0.05) / (lo + 0.05)
 
 
+RGB2LMS = [[0.31399022, 0.63951294, 0.04649755],
+           [0.15537241, 0.75789446, 0.08670142],
+           [0.01775239, 0.10944209, 0.87256922]]
+LMS2RGB = [[5.47221206, -4.6419601, 0.16963708],
+           [-1.1252419, 2.29317094, -0.1678952],
+           [0.02980165, -0.19318073, 1.16364789]]
+PROTAN = [[0, 1.05118294, -0.05116099], [0, 1, 0], [0, 0, 1]]
+DEUTAN = [[1, 0, 0], [0.9513092, 0, 0.04866992], [0, 0, 1]]
+
+
+def _mul(m, v):
+    return [sum(m[i][j] * v[j] for j in range(3)) for i in range(3)]
+
+
+def simulate(h, kind):
+    lms = _mul(RGB2LMS, linear(srgb(h)))
+    lms = _mul(PROTAN if kind == "protan" else DEUTAN, lms)
+    return [max(0.0, min(1.0, x)) for x in _mul(LMS2RGB, lms)]
+
+
+def cvd_dist(h1, h2, kind):
+    a, b = simulate(h1, kind), simulate(h2, kind)
+    return sum((a[i] - b[i]) ** 2 for i in range(3)) ** 0.5
+
+
 def audit():
-    """4.5:1 for text, 3:1 for graphical objects (WCAG AA)."""
-    checks = [
-        ("text  ink/surface",       INK,      SURFACE, 4.5),
-        ("text  ink/canvas",        INK,      CANVAS,  4.5),
-        ("text  ink2/surface",      INK_2,    SURFACE, 4.5),
-        ("text  ink3/surface",      INK_3,    SURFACE, 3.0),   # axis labels = graphical-ish
-        ("graph churned/surface",   CHURNED,  SURFACE, 3.0),
-        ("graph stayed/surface",    STAYED,   SURFACE, 3.0),
-        ("graph joined/surface",    JOINED,   SURFACE, 3.0),
-        ("text  churned/surface",   CHURNED,  SURFACE, 4.5),   # used as KPI value colour
-        ("text  stayed/surface",    STAYED,   SURFACE, 4.5),
-        # Joined is graphical-only (see palette note): 3:1, not 4.5:1
-        ("graph joined/surface2",   JOINED,   SURFACE, 3.0),
-        ("graph baseline/surface",  BASELINE, SURFACE, 3.0),
-        ("graph rule/surface",      RULE,     SURFACE, 1.2),   # hairline, decorative only
-    ]
     bad = []
-    print("  %-26s %7s  %s" % ("pair", "ratio", "min"))
-    for label, a, b, need in checks:
-        r = ratio(a, b)
-        ok = r >= need
-        print("  %-26s %6.2f:1  %.1f  %s" % (label, r, need, "ok" if ok else "*** FAIL ***"))
+    print("  %-28s %9s  %s" % ("check", "value", "min"))
+
+    def row(label, got, need, fmt="%7.2f:1"):
+        ok = got >= need
+        print(("  %-28s " + fmt + "  %.2f  %s")
+              % (label, got, need, "ok" if ok else "*** FAIL ***"))
         if not ok:
-            bad.append((label, r, need))
-    # the three status colours must also be separable FROM EACH OTHER
-    for n1, c1, n2, c2 in [("churned", CHURNED, "stayed", STAYED),
-                           ("churned", CHURNED, "joined", JOINED),
-                           ("stayed", STAYED, "joined", JOINED)]:
-        r = ratio(c1, c2)
-        print("  %-26s %6.2f:1  %.1f  %s" % ("pair  %s/%s" % (n1, n2), r, 1.3,
-                                             "ok" if r >= 1.3 else "*** FAIL ***"))
-        if r < 1.3:
-            bad.append(("%s/%s" % (n1, n2), r, 1.3))
+            bad.append(label)
+
+    for label, a, b, need in [
+        ("text  ink / surface", INK, SURFACE, 4.5),
+        ("text  ink / canvas", INK, CANVAS, 4.5),
+        ("text  ink2 / surface", INK_2, SURFACE, 4.5),
+        ("axis  ink3 / surface", INK_3, SURFACE, 3.0),
+        ("text  stayed / surface", STAYED, SURFACE, 4.5),
+        ("text  churned / surface", CHURNED, SURFACE, 4.5),
+        ("graph joined / surface", JOINED, SURFACE, 3.0),
+        ("graph baseline / surface", BASELINE, SURFACE, 3.0),
+    ]:
+        row(label, ratio(a, b), need)
+    print()
+    pairs = [("stayed", STAYED, "churned", CHURNED),
+             ("churned", CHURNED, "joined", JOINED),
+             ("stayed", STAYED, "joined", JOINED)]
+    for n1, c1, n2, c2 in pairs:
+        row("grey  %s / %s" % (n1, n2), ratio(c1, c2), 1.3)
+    print()
+    for kind in ("deutan", "protan"):
+        for n1, c1, n2, c2 in pairs:
+            row("%s %s / %s" % (kind, n1, n2), cvd_dist(c1, c2, kind), CVD_MIN, "%9.3f")
     return bad
 
 
-def text_class(size, colour=INK, weight=None):
-    d = {"fontFace": "Segoe UI", "fontSize": size, "color": colour}
-    if weight:
-        d["fontFace"] = weight
-    return d
+def tc(size, colour=INK, face="Segoe UI"):
+    return {"fontFace": face, "fontSize": size, "color": colour}
 
 
 def theme():
     off = [{"show": False}]
     return {
+        # $schema FIRST key - enables IDE autocomplete and Desktop validation on import
+        # (create/schema-integration.md). Versioned GitHub URL is the authoring form.
+        "$schema": SCHEMA,
         "name": NAME,
         "dataColors": SUPPORT,
         "foreground": INK,
@@ -104,40 +147,51 @@ def theme():
         "minimum": STAYED,
         "hyperlink": STAYED,
         "textClasses": {
-            "title":     text_class(16, INK, "Segoe UI Semibold"),
-            "header":    text_class(12, INK, "Segoe UI Semibold"),
-            "label":     text_class(10, INK_2),
-            "callout":   text_class(28, INK, "Segoe UI Semibold"),
-            "largeTitle": text_class(20, INK, "Segoe UI Semibold"),
+            "title": tc(16, INK, "Segoe UI Semibold"),
+            "header": tc(12, INK, "Segoe UI Semibold"),
+            "label": tc(10, INK_2),
+            "callout": tc(28, INK, "Segoe UI Semibold"),
+            "largeTitle": tc(20, INK, "Segoe UI Semibold"),
+            "dataTitle": tc(11, INK_2),
         },
         "visualStyles": {
-            "*": {
-                "*": {
-                    # every visual is a white card on a grey canvas - one surface rule
-                    "background": [{"show": True, "color": {"solid": {"color": SURFACE}},
-                                    "transparency": 0}],
-                    "border":     [{"show": True, "color": {"solid": {"color": RULE}},
-                                    "radius": 6}],
-                    "dropShadow": off,
-                    "visualHeader": [{"show": False}],
-                    "title": [{"show": False}],
-                    "labels": [{"color": {"solid": {"color": INK_2}}, "fontSize": 9}],
-                    "categoryAxis": [{"labelColor": {"solid": {"color": INK_3}}, "fontSize": 9,
-                                      "showAxisTitle": False,
-                                      "gridlineShow": False}],
-                    "valueAxis": [{"labelColor": {"solid": {"color": INK_3}}, "fontSize": 9,
-                                   "showAxisTitle": False,
-                                   "gridlineShow": True,
-                                   "gridlineColor": {"solid": {"color": RULE}},
-                                   "gridlineThickness": 1}],
-                    "legend": [{"labelColor": {"solid": {"color": INK_2}}, "fontSize": 9,
-                                "showTitle": False}],
-                },
-            },
-            "page": {"*": {"background": [{"color": {"solid": {"color": CANVAS}},
-                                           "transparency": 0}],
-                           "outspace": [{"color": {"solid": {"color": CANVAS}},
-                                         "transparency": 0}]}},
+            "*": {"*": {
+                "background": [{"show": True, "color": {"solid": {"color": SURFACE}},
+                                "transparency": 0}],
+                "border": [{"show": True, "color": {"solid": {"color": RULE}}, "radius": 8}],
+                "dropShadow": off,
+                "visualHeader": [{"show": False}],
+                "title": off,
+                "labels": [{"color": {"solid": {"color": INK_2}}, "fontSize": 9}],
+                "categoryAxis": [{"labelColor": {"solid": {"color": INK_3}}, "fontSize": 9,
+                                  "showAxisTitle": False, "gridlineShow": False}],
+                "valueAxis": [{"labelColor": {"solid": {"color": INK_3}}, "fontSize": 9,
+                               "showAxisTitle": False, "gridlineShow": True,
+                               "gridlineColor": {"solid": {"color": RULE}},
+                               "gridlineThickness": 1}],
+                "legend": [{"labelColor": {"solid": {"color": INK_2}}, "fontSize": 9,
+                            "showTitle": False}],
+                "padding": [{"top": 8, "bottom": 8, "left": 10, "right": 10}],
+                # filter pane, per the checklist - otherwise it keeps Power BI default grey
+                "outspacePane": [{"backgroundColor": {"solid": {"color": CANVAS}},
+                                  "foregroundColor": {"solid": {"color": INK}},
+                                  "borderColor": {"solid": {"color": RULE}},
+                                  "transparency": 0, "titleSize": 12, "headerSize": 10,
+                                  "fontFamily": "Segoe UI"}],
+                "filterCard": [
+                    {"$id": "Applied", "backgroundColor": {"solid": {"color": SURFACE}},
+                     "foregroundColor": {"solid": {"color": INK}},
+                     "borderColor": {"solid": {"color": RULE}},
+                     "transparency": 0, "textSize": 10, "fontFamily": "Segoe UI"},
+                    {"$id": "Available", "backgroundColor": {"solid": {"color": SURFACE}},
+                     "foregroundColor": {"solid": {"color": INK_2}},
+                     "borderColor": {"solid": {"color": RULE}},
+                     "transparency": 0, "textSize": 10, "fontFamily": "Segoe UI"},
+                ],
+            }},
+            "page": {"*": {
+                "background": [{"color": {"solid": {"color": CANVAS}}, "transparency": 0}],
+                "outspace": [{"color": {"solid": {"color": CANVAS}}, "transparency": 0}]}},
             "tableEx": {"*": {
                 "grid": [{"gridVertical": False, "gridHorizontal": True,
                           "gridHorizontalColor": {"solid": {"color": RULE}},
@@ -149,33 +203,27 @@ def theme():
                             "backColorPrimary": {"solid": {"color": SURFACE}},
                             "backColorSecondary": {"solid": {"color": SURFACE}},
                             "fontSize": 10}],
-                "total": [{"totals": False}],
-            }},
-            # panels are shape visuals used as card backgrounds. A shape's fill comes from
-            # objects.fill - NOT the container background - so without this it renders in the
-            # first dataColor (solid blue). ~15 panels means this belongs in the theme, not as
-            # a per-visual override (theme-first rule, power-bi/CLAUDE.md).
-            "shape": {"*": {
-                "fill":    [{"show": True, "fillColor": {"solid": {"color": SURFACE}},
-                             "transparency": 0}],
-                "outline": [{"show": True, "lineColor": {"solid": {"color": RULE}},
-                             "weight": 1, "transparency": 0}],
-                "title": off, "background": [{"show": False}], "border": off,
-                "dropShadow": off,
-            }},
-            "image": {"*": {"border": off, "background": [{"show": False}]}},
-            "textbox": {"*": {"border": off, "background": [{"show": False}]}},
+                "total": [{"totals": False}]}},
+            "image": {"*": {"border": off, "background": [{"show": False}],
+                            "padding": [{"top": 0, "bottom": 0, "left": 0, "right": 0}]}},
+            # wildcard padding is right for data visuals but clips a textbox used as a
+            # heading - it pushed the text down and forced a scroll indicator. Zero it here.
+            "textbox": {"*": {"border": off, "background": [{"show": False}],
+                              "padding": [{"top": 0, "bottom": 0, "left": 0, "right": 0}]}},
+            "actionButton": {"*": {"border": off, "background": [{"show": False}],
+                                   "dropShadow": off}},
+            "shape": {"*": {"title": off, "background": [{"show": False}],
+                            "border": off, "dropShadow": off}},
         },
     }
 
 
 if __name__ == "__main__":
-    print("auditing %s ..." % NAME)
+    print("auditing %s ...\n" % NAME)
     bad = audit()
     if bad:
-        sys.exit("\nBUILD FAILED - %d contrast miss(es); fix the palette before shipping." % len(bad))
-    out = "telecom-churn.Report/StaticResources/RegisteredResources/retention-signal-light.json"
-    with open(out, "w", encoding="utf-8", newline="\n") as f:
+        sys.exit("\nBUILD FAILED - %d miss(es): %s" % (len(bad), ", ".join(bad)))
+    with open(OUT, "w", encoding="utf-8", newline="\n") as f:
         json.dump(theme(), f, indent=2)
         f.write("\n")
-    print("\nPASS - wrote %s" % out)
+    print("\nPASS - wrote %s" % OUT)

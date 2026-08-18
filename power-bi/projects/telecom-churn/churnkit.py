@@ -14,9 +14,10 @@ SCHEMA = ("https://developer.microsoft.com/json-schemas/fabric/item/report/"
           "definition/visualContainer/2.10.0/schema.json")
 FACT = "telecom_customer_churn"
 
-INK, INK2, INK3 = "#1B1F27", "#5B6472", "#7A8494"
-CHURNED, STAYED, JOINED = "#B8480A", "#00558F", "#B673A4"
-SURFACE, RULE, CANVAS = "#FFFFFF", "#DCE1E9", "#EEF1F5"
+# Spectrum (Light) - keep in step with build_theme.py, which is the audited source of truth
+INK, INK2, INK3 = "#0B1020", "#4A5578", "#6E7A9C"
+CHURNED, STAYED, JOINED = "#9D174D", "#0E7490", "#9575F5"
+SURFACE, RULE, CANVAS = "#FFFFFF", "#DEE4F2", "#F1F4FB"
 
 DS = RL.load(os.path.join(ROOT, RL.DS))
 

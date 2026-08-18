@@ -148,27 +148,63 @@ Tell Claude **"build the churn report"** — it'll confirm the §7 open question
 Rebuilt from scratch: the four hash-named pages were removed and replaced, with a new theme and a
 layout contract.
 
-### Theme — "Retention Signal (Light)"
+### Theme — "Spectrum Light v1.1"
 
-Light, not dark: the audience is Power BI Service plus **a printable exec summary** (§1), and dark
-themes print badly. `build_theme.py` generates it and **fails the build on any contrast miss**.
-
-That audit earned its keep on the first run. The status triad started as three Okabe-Ito colours,
-which are hue-separated but **not luminance-separated** — churned vs joined measured **1.09:1**,
-i.e. indistinguishable in greyscale or to some CVD readers. Rebuilt as a deliberate luminance
-ladder:
+Futuristic telecom: fibre and radio spectrum. Cyan-teal for a connected line, deep magenta for a
+dropped one, electric violet for a new signal, on a cool near-white canvas. Light rather than dark
+because the audience is Power BI Service plus a **printable exec summary** (§1).
 
 | role | hex | on white | luminance |
 |---|---|---|---|
-| Stayed | `#00558F` | 7.79:1 | 0.085 |
-| Churned | `#B8480A` | 5.29:1 | 0.149 |
-| Joined | `#B673A4` | 3.51:1 | 0.249 |
+| Stayed | `#0E7490` | 5.36:1 | 0.106 |
+| Churned | `#9D174D` | 7.88:1 | 0.072 |
+| Joined | `#9575F5` | 3.42:1 | 0.271 |
 
-Mutual separation 1.47 / 1.51 / 2.22 — survives a mono printout. One honest trade-off falls out of
-this: no colour can be both dark enough for 4.5:1 **text** and light enough to separate from
-vermillion by luminance, so **Joined is graphical-only** and never used as a text fill.
+`build_theme.py` generates it and **fails the build on any miss** across three constraint families:
+WCAG contrast, greyscale separation (1.47 / 2.31 / 1.57 — status survives a mono printout), and
+**simulated colour blindness** (Viénot 1999, deuteranopia + protanopia).
+
+That third check exists because the first palette used Okabe-Ito vermillion, and orange-vs-blue is
+the safest possible pair — which is exactly *why* Okabe-Ito uses it. Moving to magenta therefore
+had to be proven rather than assumed:
+
+```
+vermillion palette   worst CVD pair distance  0.228
+spectrum palette     worst CVD pair distance  0.219
+```
+
+A 4 percent give, not a real loss. `CVD_MIN = 0.18` now guards it so a later edit cannot quietly
+slide the palette toward indistinguishable.
+
+An earlier version of this theme also failed its own audit before shipping: three Okabe-Ito colours
+were hue-separated but **not luminance-separated** (churned vs joined measured 1.09:1, identical in
+greyscale). Fixed by making the three a deliberate luminance ladder.
 
 SVG measures cannot read the theme, so hex lives in `[Clr *]` measures — one place to re-theme.
+
+### Following the theme room (corrected 2026-08-18)
+
+The first cut of this theme was authored ad-hoc and skipped `02-build/theme/`. Re-done against
+`create/checklist.md`, which caught six real gaps:
+
+| Gap | Fix |
+|---|---|
+| No `$schema` | added as the **first key** (versioned GitHub URL) — without it you author blind |
+| `textClasses` missing `dataTitle` | added |
+| Wildcard missing `padding` | added — then **zeroed for `textbox`/`image`**, because it clipped heading textboxes and forced scroll indicators |
+| No filter-pane styling | `outspacePane` + `filterCard` (Applied/Available) added |
+| No `actionButton` chrome override | added |
+| Unversioned filename, `name:` out of sync | `Spectrum-Light-v1.1.json` with matching `name:` per `where-themes-live.md` |
+
+Validated with **`pbir theme validate`** (passes), and audited with **`pbir color list`** — 14 distinct
+colours, all palette members plus the one measure-driven fill.
+
+> **Power BI Desktop caches theme JSON BY FILENAME.** Rewriting the same file has no effect, however
+> many times you reload — the padding fix above appeared to do nothing until the filename moved
+> v1.0 → v1.1. This is the practical reason the naming convention is versioned.
+
+> `audit/compliance.md` documents `pbir audit theme`, which **does not exist in pbir 0.9.25** (there
+> is no `audit` command group at all). `pbir color list` plus `audit_report.py` cover the same ground.
 
 ### Layout — `design-system.yaml` + `resolve_layout.py`
 

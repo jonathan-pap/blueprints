@@ -127,11 +127,11 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "Risk Pill"
+                  "Property": "Risk Signal"
                 }
               },
-              "queryRef": "_Measures.Risk Pill",
-              "nativeQueryRef": "Risk Pill",
+              "queryRef": "_Measures.Risk Signal",
+              "nativeQueryRef": "Risk Signal",
               "displayName": "Tier"
             }
           ]
@@ -178,7 +178,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#DCE1E9'"
+                      "Value": "'#DEE4F2'"
                     }
                   }
                 }
@@ -208,7 +208,7 @@
             "imageWidth": {
               "expr": {
                 "Literal": {
-                  "Value": "74D"
+                  "Value": "96D"
                 }
               }
             }
@@ -223,7 +223,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#5B6472'"
+                      "Value": "'#4A5578'"
                     }
                   }
                 }
@@ -258,7 +258,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1B1F27'"
+                      "Value": "'#0B1020'"
                     }
                   }
                 }

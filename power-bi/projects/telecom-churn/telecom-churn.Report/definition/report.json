@@ -11,7 +11,7 @@
       "type": "SharedResources"
     },
     "customTheme": {
-      "name": "retention-signal-light.json",
+      "name": "Spectrum-Light-v1.1.json",
       "reportVersionAtImport": {
         "visual": "2.11.0",
         "report": "3.4.0",
@@ -65,8 +65,8 @@
       "type": "RegisteredResources",
       "items": [
         {
-          "name": "retention-signal-light.json",
-          "path": "retention-signal-light.json",
+          "name": "Spectrum-Light-v1.1.json",
+          "path": "Spectrum-Light-v1.1.json",
           "type": "CustomTheme"
         }
       ]
