@@ -1,6 +1,7 @@
 # Arcane Emporium — Contoso reskinned as a fantasy magic-item retail chain.
-# A chain of enchanted-goods shops across three realms; Gold revenue over two years
-# with a Frostfall festival peak (Nov/Dec) and +12% yearly growth.
+# A chain of enchanted-goods shops across three realms; Gold revenue over four years
+# (2023-2026) with a Frostfall festival peak (Nov/Dec) and +12% yearly growth.
+# Sparsity 0.9822 targets ~100K fact rows over the Date x Shop x Item x Customer grain.
 name: arcane-emporium
 seed: 1337
 output: { dir: outputs/arcane-emporium/latest }
@@ -8,7 +9,7 @@ output: { dir: outputs/arcane-emporium/latest }
 dimensions:
   Date:
     type: calendar
-    range: [2024-01-01, 2025-12-31]
+    range: [2023-01-01, 2026-12-31]
     grain: day
 
   Shop:
@@ -51,22 +52,48 @@ dimensions:
       - { Item: Ring of Embers,            Category: Artifacts }
       - { Item: Sleeping Draught,          Category: Potions }
 
+  Customer:
+    key: CustomerKey
+    members:   # list order = pareto rank within each pinned CustomerType
+      - { Customer: Kaelen Swiftblade,        CustomerType: Adventurer }
+      - { Customer: Lady Serapha Vane,        CustomerType: Noble }
+      - { Customer: Magister Orin Blackquill, CustomerType: Collector }
+      - { Customer: The Wayfarers Company,    CustomerType: Guild }
+      - { Customer: Brynn Emberforge,         CustomerType: Adventurer }
+      - { Customer: Thessaly Moonwhisper,     CustomerType: Adventurer }
+      - { Customer: Duke Alaric Thorne,       CustomerType: Noble }
+      - { Customer: Vex the Curious,          CustomerType: Collector }
+      - { Customer: Order of the Silver Dawn, CustomerType: Guild }
+      - { Customer: Garrick Stonehelm,        CustomerType: Adventurer }
+      - { Customer: Countess Isolde Grimm,    CustomerType: Noble }
+      - { Customer: Archivist Penrose,        CustomerType: Collector }
+      - { Customer: Black Banner Mercenaries, CustomerType: Guild }
+      - { Customer: Sylvie Nightbloom,        CustomerType: Adventurer }
+      - { Customer: Ferrin Quickfingers,      CustomerType: Adventurer }
+      - { Customer: Baron Cassius Mor,        CustomerType: Noble }
+      - { Customer: The Gilded Hand,          CustomerType: Collector }
+      - { Customer: The Gravewatch,           CustomerType: Guild }
+      - { Customer: Mira of the Dunes,        CustomerType: Adventurer }
+      - { Customer: Old Hemlock,              CustomerType: Collector }
+
 facts:
   Sales:
-    grain: [Date, Shop, Item]
-    sparsity: 0.45
+    grain: [Date, Shop, Item, Customer]
+    sparsity: 0.9822                   # ~100K rows of the 5.6M-cell grain
     measures:
       Gold:
-        total: 12000000
+        total: 25000000
         min: 0
         max: 9000
         noise: 0.25
         trend: { yoy: 0.12 }
         shares:
-          Realm:     { Eldoria: 0.45, Grimmwald: 0.30, Sunspire: 0.25 }
-          MonthName: seasonal          # Frostfall festival peak (Nov/Dec)
-          Category:  { Potions: 0.30, Enchanted Weapons: 0.25, Scrolls: 0.20, Artifacts: 0.15, Reagents: 0.10 }
-          Item:      pareto            # flagships (list order) carry the long tail
+          Realm:        { Eldoria: 0.45, Grimmwald: 0.30, Sunspire: 0.25 }
+          MonthName:    seasonal       # Frostfall festival peak (Nov/Dec)
+          Category:     { Potions: 0.30, Enchanted Weapons: 0.25, Scrolls: 0.20, Artifacts: 0.15, Reagents: 0.10 }
+          Item:         pareto         # flagships (list order) carry the long tail
+          CustomerType: { Adventurer: 0.40, Collector: 0.25, Guild: 0.20, Noble: 0.15 }
+          Customer:     pareto         # big spenders lead within each type
       Units:
         derived: "np.maximum(1, np.round(Gold / avg_item_price))"
         avg_item_price: { min: 25, max: 400 }
