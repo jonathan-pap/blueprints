@@ -1,0 +1,19 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/2.1.0/schema.json",
+  "displayName": "2 · Realms",
+  "name": "tourStop2",
+  "options": {
+    "targetVisualNames": [],
+    "suppressData": true,
+    "suppressDisplay": true
+  },
+  "explorationState": {
+    "version": "1.0",
+    "activeSection": "Realms",
+    "sections": {
+      "Realms": {
+        "visualContainers": {}
+      }
+    }
+  }
+}

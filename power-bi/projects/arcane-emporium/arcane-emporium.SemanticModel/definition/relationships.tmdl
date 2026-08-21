@@ -1,0 +1,16 @@
+relationship FactSales_DimDate
+	fromColumn: FactSales.DateKey
+	toColumn: DimDate.DateKey
+
+relationship FactSales_DimShop
+	fromColumn: FactSales.ShopKey
+	toColumn: DimShop.ShopKey
+
+relationship FactSales_DimItem
+	fromColumn: FactSales.ItemKey
+	toColumn: DimItem.ItemKey
+
+relationship FactSales_DimCustomer
+	fromColumn: FactSales.CustomerKey
+	toColumn: DimCustomer.CustomerKey
+

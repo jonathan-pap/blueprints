@@ -1,0 +1,40 @@
+/// Eight enchanted-goods shops across three realms.
+table DimShop
+	lineageTag: cd02a37c-6f89-4f62-8198-7c925a702c8f
+
+	column ShopKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 56525e8b-6363-4b63-897f-82131a960810
+		summarizeBy: none
+		sourceColumn: ShopKey
+
+	column Shop
+		dataType: string
+		lineageTag: f2ec77f6-229e-4779-82c9-d580024c9712
+		summarizeBy: none
+		sourceColumn: Shop
+
+	column City
+		dataType: string
+		lineageTag: af32a426-d9a4-41ad-88b5-e219a442237e
+		summarizeBy: none
+		sourceColumn: City
+
+	column Realm
+		dataType: string
+		lineageTag: 3ccd5ba2-94ad-4a01-808d-c9ff12f2fa34
+		summarizeBy: none
+		sourceColumn: Realm
+
+	partition DimShop = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(SourceFolder & "DimShop.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"ShopKey", Int64.Type}, {"Shop", type text}, {"City", type text}, {"Realm", type text}})
+				in
+				    Typed
+

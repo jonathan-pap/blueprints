@@ -1,0 +1,3 @@
+# Desktop-local state, per 04-review/scripts/validate_pbip.py
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
