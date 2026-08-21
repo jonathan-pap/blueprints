@@ -44,3 +44,6 @@ power-bi/02-build/recipes/candlestick/
 
 # LL2 pull resume cache - regenerated on every run, not a deliverable
 power-bi/projects/space/data/*.partial.json
+
+# Claude setup snapshots (tools/export-claude-setup.ps1) - personal, never committed
+claude-setup-*.zip
