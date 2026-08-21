@@ -9,9 +9,16 @@ schema compliance is delegated to `pbir validate` if it is on PATH.
 
 Usage:
     validate_pbip.py <path>          text output
+    validate_pbip.py <path> --fix    repair the handful of things that are
+                                     safe to write unattended:
+                                       - scaffold .gitignore
+                                       - restore the $schema header that Power
+                                         BI Desktop strips from definition.pbir
+                                         and definition.pbism on save
+    validate_pbip.py <path> --fix-schema
+                                     restore ONLY the $schema headers (what the
+                                     restore-pbip-schema hook runs)
     validate_pbip.py <path> --json   machine-readable output
-    validate_pbip.py <path> --fix    create the handful of things that are
-                                     safe to scaffold (currently: .gitignore)
     validate_pbip.py <path> --no-pbir-cli
                                      skip delegation to `pbir validate`
     validate_pbip.py <path> --quiet  hide informational lines
@@ -56,6 +63,27 @@ PAGE_NAME_RE = re.compile(r"^[\w-]+$")
 DEFAULT_GITIGNORE = """**/.pbi/localSettings.json
 **/.pbi/cache.abf
 """
+
+# Power BI Desktop STRIPS "$schema" from definition.pbir and definition.pbism every
+# time it saves, and both `pbir validate` and the Fabric item schemas treat it as
+# required. So a project that has simply been opened and saved starts failing
+# validation through no edit of yours. --fix puts the line back; see
+# 04-review/audit/pbip-schema-drift.md.
+SCHEMA_URLS = {
+    "definition.pbir": "https://developer.microsoft.com/json-schemas/fabric/item/"
+                       "report/definitionProperties/2.0.0/schema.json",
+    "definition.pbism": "https://developer.microsoft.com/json-schemas/fabric/item/"
+                        "semanticModel/definitionProperties/1.0.0/schema.json",
+}
+
+# Same shape, minus the version segment — used to tell "wrong URL" from "old version",
+# which is a warning rather than an error.
+SCHEMA_STEMS = {
+    "definition.pbir": "https://developer.microsoft.com/json-schemas/fabric/item/"
+                       "report/definitionProperties/",
+    "definition.pbism": "https://developer.microsoft.com/json-schemas/fabric/item/"
+                        "semanticModel/definitionProperties/",
+}
 
 ERROR = "error"
 WARN = "warn"
@@ -592,6 +620,76 @@ def run_pbir_validate(report_dir: Path, result: Result) -> None:
 
 #region Fix mode
 
+def restore_schema_header(path: Path, result: Result, fix: bool) -> None:
+    """Check — and with --fix, restore — the "$schema" header on a .pbir/.pbism.
+
+    Desktop drops the key on save. Nothing else about the file changes, so the
+    repair is a pure insert of a known constant at a known position: safe to do
+    unattended, and idempotent. The file is rewritten as text rather than
+    re-serialised from json.loads so that indentation, key order and line
+    endings survive untouched — a reformatted .pbir is a noisy diff and Desktop
+    will just rewrite it anyway.
+    """
+    if not path.exists():
+        return
+    expected = SCHEMA_URLS.get(path.name)
+    stem = SCHEMA_STEMS.get(path.name)
+    if not expected:
+        return
+
+    try:
+        # newline="" on BOTH the read and the write. Without it Python's universal
+        # newline translation turns a CRLF file into LF on the way in, and the
+        # repair silently rewrites every line ending in the file — one added key
+        # would show up as a whole-file diff.
+        with open(path, "r", encoding="utf-8-sig", newline="") as fh:
+            raw = fh.read()
+    except OSError as e:
+        result.add(ERROR, "schema_read", f"{path.name}: {e}", path)
+        return
+
+    try:
+        found = json.loads(raw).get("$schema")
+    except json.JSONDecodeError:
+        return          # load_json already reported the parse failure
+
+    if found:
+        if not found.startswith(stem):
+            result.add(WARN, "schema_url_unexpected",
+                       f"{path.name} $schema is '{found}'; expected a URL under {stem}",
+                       path)
+        return
+
+    if not fix:
+        result.add(ERROR, "schema_header_missing",
+                   # plain hyphen, not an em dash: this text reaches a Windows
+                   # console via hook stderr, where cp1252 turns it into mojibake
+                   f"{path.name} has no $schema key - Power BI Desktop strips it on save. "
+                   f"Re-add it, or run this script with --fix",
+                   path)
+        return
+
+    # Insert as the first key, matching the indent of whatever key follows.
+    m = re.search(r"^\{[ \t]*(\r?\n)([ \t]*)", raw)
+    if not m:
+        result.add(ERROR, "schema_header_unfixable",
+                   f"{path.name} is not a brace-on-first-line object; add $schema by hand",
+                   path)
+        return
+    file_nl = m.group(1)
+    indent = m.group(2)
+    patched = (raw[:m.end(1)]
+               + f'{indent}"$schema": "{expected}",{file_nl}'
+               + raw[m.end(1):])
+    try:
+        with open(path, "w", encoding="utf-8", newline="") as fh:
+            fh.write(patched)
+    except OSError as e:
+        result.add(ERROR, "schema_header_write", f"{path.name}: {e}", path)
+        return
+    result.fixes_applied.append(f"restored $schema in {path}")
+
+
 def ensure_gitignore(project_root: Path, result: Result, fix: bool) -> None:
     """Scaffold a minimal .gitignore if absent. Only pbip runtime state, no
     implication that those files are required."""
@@ -680,7 +778,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Validate a Power BI Project (PBIP)")
     parser.add_argument("path", help=".pbip file, .Report / .SemanticModel dir, or project root")
     parser.add_argument("--fix", action="store_true",
-                        help="scaffold missing files that are safe to create (currently only .gitignore)")
+                        help="repair everything that is safe to write unattended "
+                             "(.gitignore scaffold + $schema headers)")
+    parser.add_argument("--fix-schema", action="store_true", dest="fix_schema",
+                        help="repair ONLY the $schema headers Desktop strips. What the "
+                             "restore-pbip-schema hook calls, so that an automated repair "
+                             "never quietly scaffolds unrelated files")
     parser.add_argument("--json", action="store_true", dest="as_json",
                         help="machine-readable output")
     parser.add_argument("--quiet", action="store_true", help="hide informational lines in text output")
@@ -708,7 +811,14 @@ def main() -> int:
     if result.semantic_model_dir:
         validate_semantic_model(result.semantic_model_dir, result)
 
-    ensure_gitignore(result.project_root, result, args.fix)
+    fix_schema = args.fix or args.fix_schema
+    if result.report_dir:
+        restore_schema_header(result.report_dir / "definition.pbir", result, fix_schema)
+    if result.semantic_model_dir:
+        restore_schema_header(result.semantic_model_dir / "definition.pbism", result, fix_schema)
+
+    if not args.fix_schema:
+        ensure_gitignore(result.project_root, result, args.fix)
 
     if args.as_json:
         print(render_json(result))

@@ -3,6 +3,7 @@
 - `full-report.md` — one-shot audit via `pbir audit`
 - `quick-checks.md` — fast smoke tests (page count, visual count per page)
 - `pbir-validate.md` — interpreting `pbir validate` output: real errors vs CLI bundled-schema lag (false positives on report.json / pages.json / 2.9.0 visuals)
+- `pbip-schema-drift.md` — `'$schema' is a required property` on a file you never touched: Desktop strips the key on every save. The `--fix-schema` repair and the hook that automates it
 - `visual-design.md` — design-quality checklist (3-30-300, spacing, sorting)
 - `layout-contract-validate.md` — conformance: did the build implement its approved `Design Brief:` (vs visual-design.md's generic quality)
 - `performance.md` — query-time + render-time smell tests

@@ -47,6 +47,18 @@
             "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/validate-report-binding.sh\"",
             "timeout": 10,
             "if": "Edit(**/definition.pbir)"
+          },
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/restore-pbip-schema.sh\"",
+            "timeout": 15,
+            "if": "Edit(**/definition.pbir)"
+          },
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/restore-pbip-schema.sh\"",
+            "timeout": 15,
+            "if": "Edit(**/*.pbism)"
           }
         ]
       },
@@ -76,6 +88,29 @@
             "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/validate-report-binding.sh\"",
             "timeout": 10,
             "if": "Write(**/definition.pbir)"
+          },
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/restore-pbip-schema.sh\"",
+            "timeout": 15,
+            "if": "Write(**/definition.pbir)"
+          },
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/restore-pbip-schema.sh\"",
+            "timeout": 15,
+            "if": "Write(**/*.pbism)"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/restore-pbip-schema.sh\"",
+            "timeout": 15,
+            "if": "Bash(*powerbi-desktop*)"
           }
         ]
       }
