@@ -12,6 +12,7 @@ PreToolUse + PostToolUse hooks that validate PBIR/TMDL files and visual bindings
 | `validate-tmdl.sh` | PostToolUse | Write, Edit, Bash | .tmdl files in .SemanticModel/ or .Dataset/ |
 | `lint-tmdl-traps.sh` | PostToolUse | Write, Edit | Desktop-strict TMDL traps the structural validator misses ([[tmdl-multiline-measures]] indent collision, [[tmdl-comment-syntax]] standalone `//`). Pure awk, no external binary. |
 | `audit-layout-consistency.sh` | manual / opt-in PostToolUse | run on a `.Report` | Flags layout drift vs the project's `design-system.yaml`: sub-pixel + off-grid positions, slicer type/size drift. See below. |
+| `restore-pbip-schema.sh` | PostToolUse | `Bash(*powerbi-desktop*)`, Write/Edit of `definition.pbir` / `*.pbism` | **Repairs** rather than reports: puts back the `$schema` key Desktop strips on every save. Needs no `jq`. See [`../audit/pbip-schema-drift.md`](../audit/pbip-schema-drift.md) |
 
 ## Checks
 
@@ -23,6 +24,7 @@ All checks are toggleable via `config.yaml`. Set any key to `false` to disable.
 | `folder_spaces` | Folder names with spaces (won't render) | validate-pbir |
 | `required_fields` | Required fields per file type (from Microsoft JSON schemas) | validate-pbir |
 | `schema_url` | `$schema` URL matches expected pattern | validate-pbir |
+| `restore_schema` | Restores the `$schema` key Desktop strips on save (repairs, does not block) | restore-pbip-schema |
 | `name_format` | Visual/page name is word chars and hyphens only | validate-pbir |
 | `bypath_exists` | byPath target directory exists locally | validate-report-binding |
 | `fab_exists` | byConnection model exists in Fabric (via `fab exists`) | validate-report-binding |
@@ -67,9 +69,23 @@ Derived from Microsoft's published JSON schemas at [github.com/microsoft/json-sc
 | `report.json` | report/3.2.0 | `$schema`, `themeCollection` |
 | `definition.pbir` | definitionProperties/2.0.0 | `$schema`, `version`, `datasetReference` |
 
+## Check `jq` before trusting any of this
+
+Every hook here except `restore-pbip-schema.sh` opens with `command -v jq || exit 0`. That is
+graceful degradation in principle and a silent no-op in practice: **Git Bash on Windows does not
+ship `jq`**, so on a stock Windows machine these hooks have never run and never said so.
+
+```bash
+command -v jq || echo "jq ABSENT - the jq-dependent hooks above are inert"
+```
+
+If it is absent, install it (`winget install jqlang.jq`) or accept that only the Python-based
+hook is live. Worth checking before concluding that a validation "passed".
+
 ## Graceful degradation
 
-- If `jq` is not installed, all hooks skip silently
+- If `jq` is not installed, all hooks skip silently — **except `restore-pbip-schema.sh`**, which
+  parses the payload with Python instead
 - If `fab` CLI is not installed or not authenticated, the `fab_exists` check skips silently
 - If `tmdl-validate` binary is not found, TMDL hooks skip silently
 - If `config.yaml` is missing, all checks default to enabled

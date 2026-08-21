@@ -1,0 +1,11 @@
+# Shell scripts must stay LF.
+#
+# core.autocrlf=true is the norm on Windows, and it would hand a fresh clone
+# CRLF copies of the hook scripts in power-bi/04-review/hooks. bash then fails
+# on the carriage return with errors like:
+#
+#   $'\r': command not found
+#   syntax error near unexpected token `$'{\r''
+#
+# which reads as a broken script rather than a line-ending problem. Pin them.
+*.sh text eol=lf

@@ -22,6 +22,14 @@ required_fields: true
 # $schema URL format validation
 schema_url: true
 
+# Put back the "$schema" key Power BI Desktop strips from definition.pbir and
+# definition.pbism every time it saves. Unlike every other check here this one
+# REPAIRS rather than reports — the fix is a known constant inserted at a known
+# position, so it cannot lose content, and the alternative is a project that
+# fails `pbir validate` because someone pressed Ctrl+S.
+# See 04-review/audit/pbip-schema-drift.md.
+restore_schema: true
+
 # Visual/page name format (word chars and hyphens only)
 name_format: true
 
