@@ -16,13 +16,15 @@ product — any grain a report slices by.
 
 1. **Grid.** Build the grain cross-product (Date × Region × Product…), then drop `sparsity` fraction
    of cells once per fact (structural zeros — not every product sells every day).
-2. **Share vectors.** For each grain dimension, resolve a weight vector over its members that sums to 1:
-   - shares keyed by the **dimension** → one weight per member;
-   - shares keyed by an **attribute** (Category, MonthName) → the group's share **split equally among
-     its members**, so the group sums to the declared share (this is what makes attribute marginals
-     reconcile after the grain dim is raked);
-   - `seasonal` / `pareto` / `[list]` are built-in curves; missing members split the remainder;
-   - `trend.yoy` multiplies the calendar vector by `(1+yoy)^(year−base)`.
+2. **Share vectors.** For each grain dimension, resolve a weight vector over its members that sums to 1.
+   All blocks targeting the dimension **compose**:
+   - **curves** (`pareto`, `seasonal`, `[list]`, `trend.yoy` on the calendar) multiply together and
+     rank members;
+   - the first **dict** block (dimension- or attribute-keyed) is the **exact** block: the curve product
+     is normalized *within each of its groups*, then scaled to the group's declared share. So
+     `Item: pareto` + `Category: {Potions: .3, …}` gives a flagship-led long tail *inside* categories
+     that still sum exactly to their shares. Undeclared groups split the remainder evenly; a second
+     dict on the same dim only shapes (approximate).
 3. **Outer product.** Expected value per cell = `total × Π_d w_d[member]`. Because each `w_d` sums to 1,
    the grand total is `total` in expectation and each 1-D marginal equals `total × share`.
 4. **Noise.** Multiply by a mean-preserving lognormal `exp(N(−½σ², σ))` (σ = `noise`) for realistic

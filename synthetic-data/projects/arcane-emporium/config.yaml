@@ -1,0 +1,72 @@
+# Arcane Emporium — Contoso reskinned as a fantasy magic-item retail chain.
+# A chain of enchanted-goods shops across three realms; Gold revenue over two years
+# with a Frostfall festival peak (Nov/Dec) and +12% yearly growth.
+name: arcane-emporium
+seed: 1337
+output: { dir: outputs/arcane-emporium/latest }
+
+dimensions:
+  Date:
+    type: calendar
+    range: [2024-01-01, 2025-12-31]
+    grain: day
+
+  Shop:
+    key: ShopKey
+    members:
+      - { Shop: The Gilded Grimoire,    City: Silverhaven,  Realm: Eldoria }
+      - { Shop: Wands & Wonders,        City: Highmarket,   Realm: Eldoria }
+      - { Shop: The Crystal Cauldron,   City: Dawnmere,     Realm: Eldoria }
+      - { Shop: Blackfang Curios,       City: Ravenmoor,    Realm: Grimmwald }
+      - { Shop: The Iron Talisman,      City: Thornkeep,    Realm: Grimmwald }
+      - { Shop: Nightshade Emporium,    City: Duskhollow,   Realm: Grimmwald }
+      - { Shop: The Phoenix Bazaar,     City: Emberfall,    Realm: Sunspire }
+      - { Shop: Djinn & Tonic,          City: Mirage Gate,  Realm: Sunspire }
+
+  Item:
+    key: ItemKey
+    members:   # list order = pareto rank (flagships first)
+      - { Item: Elixir of Vitality,        Category: Potions }
+      - { Item: Flamebrand Longsword,      Category: Enchanted Weapons }
+      - { Item: Scroll of Teleportation,   Category: Scrolls }
+      - { Item: Amulet of the Watcher,     Category: Artifacts }
+      - { Item: Potion of Invisibility,    Category: Potions }
+      - { Item: Frostbite Dagger,          Category: Enchanted Weapons }
+      - { Item: Scroll of Fireball,        Category: Scrolls }
+      - { Item: Dragonscale Reagent,       Category: Reagents }
+      - { Item: Philter of Love,           Category: Potions }
+      - { Item: Stormcaller Staff,         Category: Enchanted Weapons }
+      - { Item: Scroll of Mending,         Category: Scrolls }
+      - { Item: Orb of True Sight,         Category: Artifacts }
+      - { Item: Draught of Giant Strength, Category: Potions }
+      - { Item: Moonsilver Rapier,         Category: Enchanted Weapons }
+      - { Item: Scroll of Warding,         Category: Scrolls }
+      - { Item: Mandrake Root,             Category: Reagents }
+      - { Item: Tonic of Quickness,        Category: Potions }
+      - { Item: Runed Warhammer,           Category: Enchanted Weapons }
+      - { Item: Scroll of Silence,         Category: Scrolls }
+      - { Item: Cloak of Whispers,         Category: Artifacts }
+      - { Item: Phoenix Feather,           Category: Reagents }
+      - { Item: Basilisk Eye,              Category: Reagents }
+      - { Item: Ring of Embers,            Category: Artifacts }
+      - { Item: Sleeping Draught,          Category: Potions }
+
+facts:
+  Sales:
+    grain: [Date, Shop, Item]
+    sparsity: 0.45
+    measures:
+      Gold:
+        total: 12000000
+        min: 0
+        max: 9000
+        noise: 0.25
+        trend: { yoy: 0.12 }
+        shares:
+          Realm:     { Eldoria: 0.45, Grimmwald: 0.30, Sunspire: 0.25 }
+          MonthName: seasonal          # Frostfall festival peak (Nov/Dec)
+          Category:  { Potions: 0.30, Enchanted Weapons: 0.25, Scrolls: 0.20, Artifacts: 0.15, Reagents: 0.10 }
+          Item:      pareto            # flagships (list order) carry the long tail
+      Units:
+        derived: "np.maximum(1, np.round(Gold / avg_item_price))"
+        avg_item_price: { min: 25, max: 400 }

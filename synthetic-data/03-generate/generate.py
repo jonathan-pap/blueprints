@@ -86,38 +86,54 @@ def build_dimensions(cfg, rng, faker):
 
 # ---------- share resolution ----------
 def share_vector(dimname, dim, shares, trend, rng):
-    """Return a weight array aligned to dim['df'] rows, summing to 1."""
-    df = dim["df"]; n = len(df); w = np.ones(n)
-    spec = None
-    # direct: shares keyed by the dimension's label column values
-    if dimname in shares:
-        spec = (dimname, shares[dimname])
-    else:  # attribute-level: e.g. Month / Category / MonthName present as a column
-        for col in df.columns:
-            if col in shares:
-                spec = (col, shares[col]); break
-    if spec:
-        col, val = spec
-        if val == "seasonal" and col in ("Month", "MonthName"):
-            months = df["Month"].to_numpy() if "Month" in df else np.arange(1, n + 1)
-            w = SEASONAL[(months - 1) % 12]
+    """Weight array aligned to dim['df'] rows, summing to 1.
+
+    Multiple share blocks may target ONE dimension (e.g. Category dict + Item pareto):
+    - CURVE specs (`seasonal`, `pareto`, `[list]`, extra dicts) multiply together and
+      shape the distribution WITHIN groups.
+    - The first DICT spec is the EXACT block: curves are normalized inside each of its
+      groups, then scaled to the group's declared share — so group marginals pin exactly
+      while curves still rank the members inside them.
+    """
+    df = dim["df"]; n = len(df)
+    curves = np.ones(n); exact = None
+    cols = [dimname] + [c for c in df.columns if c != dimname]
+    for col in cols:
+        if col not in shares:
+            continue
+        val = shares[col]
+        if isinstance(val, dict):
+            if exact is None:
+                exact = (col, val)
+            else:  # a second dict on the same dim only shapes (documented approximation)
+                w = df[col].map(lambda x: val.get(x, np.nan)).to_numpy(float)
+                fill = np.nanmean(w) if not np.isnan(w).all() else 1.0
+                curves = curves * np.where(np.isnan(w), fill, w)
+        elif val == "seasonal" and col in ("Month", "MonthName"):
+            months = df["Month"].to_numpy() if "Month" in df.columns else np.arange(1, n + 1)
+            curves = curves * SEASONAL[(months - 1) % 12]
         elif val == "pareto":
-            r = np.arange(1, n + 1); w = 1.0 / np.power(r, 1.0)  # 1/rank (zipf-ish)
-        elif isinstance(val, dict):
-            w = df[col].map(lambda x: val.get(x, np.nan)).to_numpy(dtype=float)
-            miss = np.isnan(w)
-            if miss.any():  # members without a declared share split the remainder evenly
-                rem = max(0.0, 1.0 - np.nansum(w)); w[miss] = rem / miss.sum() if miss.sum() else 0
+            curves = curves * (1.0 / np.arange(1, n + 1))  # 1/rank in member order
         elif isinstance(val, (list, tuple)):
-            w = np.resize(np.array(val, float), n)
-        # A declared share belongs to the GROUP (col value); split it equally among the
-        # group's members so the group sums to the share. Direct dim shares -> groups of 1 (no-op).
-        counts = df.groupby(col)[col].transform("count").to_numpy(float)
-        w = w / counts
-    # year-over-year trend on the calendar dim
+            curves = curves * np.resize(np.array(val, float), n)
+    # year-over-year trend on the calendar dim (a curve)
     if trend and "Year" in df.columns and trend.get("yoy"):
-        yrs = df["Year"].to_numpy(); base = yrs.min()
-        w = w * np.power(1.0 + float(trend["yoy"]), (yrs - base))
+        yrs = df["Year"].to_numpy()
+        curves = curves * np.power(1.0 + float(trend["yoy"]), (yrs - yrs.min()))
+    if exact:
+        col, val = exact
+        key = df[col].to_numpy()
+        gshare = df[col].map(lambda x: val.get(x, np.nan)).to_numpy(float)
+        miss = np.isnan(gshare)
+        if miss.any():  # undeclared groups split the remaining share evenly
+            declared = sum(v for v in val.values())
+            groups = pd.unique(df.loc[miss, col])
+            per = max(0.0, 1.0 - declared) / len(groups) if len(groups) else 0.0
+            gshare = np.where(miss, per, gshare)
+        gsum = pd.Series(curves).groupby(key).transform("sum").to_numpy()
+        w = np.where(gsum > 0, curves / gsum, 0.0) * gshare
+    else:
+        w = curves
     s = w.sum()
     return w / s if s > 0 else np.ones(n) / n
 

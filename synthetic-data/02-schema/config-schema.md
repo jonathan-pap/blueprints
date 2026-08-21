@@ -75,11 +75,14 @@ Revenue:
 
 - **`shares` keys** are either a **grain dimension name** (members reconcile *exactly* after raking) or
   an **attribute column** on a grain dim (e.g. `Category` on Product, `MonthName`/`Month` on Date —
-  also reconcile exactly because the engine splits each group's share among its members and rakes the
-  grain dim). A dimension with no `shares` block is allocated **uniformly**.
+  also reconcile exactly). A dimension with no `shares` block is allocated **uniformly**.
 - **Special values:** `seasonal` (12-month retail curve, peaks Nov/Dec — only on `Month`/`MonthName`),
-  `pareto` (1/rank, an 80/20 long tail — on a member dimension), or a bare `[list]` of weights.
-- **Members you omit** from a `{dict}` split the remaining share evenly.
+  `pareto` (1/rank in member-list order, an 80/20 long tail), or a bare `[list]` of weights.
+- **Combining blocks on ONE dimension** (e.g. `Category` dict + `Item: pareto`): curves (`pareto` /
+  `seasonal` / `[list]`) **shape the ranking within groups**, while the first `{dict}` block **pins the
+  group totals exactly** — so your flagship item leads *and* Potions still sums to exactly .30. Only one
+  dict block per dimension is exact; a second dict on the same dim shapes approximately.
+- **Members/groups you omit** from a `{dict}` split the remaining share evenly.
 
 **Derived measure** — an expression over the other measures + sampled params (no `total`):
 

@@ -1,0 +1,75 @@
+# Guild Provisioners — Northwind reskinned as a fantasy wholesale trading guild.
+# The guild supplies taverns, adventuring guilds, academies and noble courts with
+# provisions, armaments, alchemical stock and textiles from named suppliers.
+name: guild-provisioners
+seed: 2024
+output: { dir: outputs/guild-provisioners/latest }
+
+dimensions:
+  Date:
+    type: calendar
+    range: [2024-01-01, 2025-12-31]
+    grain: day
+
+  Patron:
+    key: PatronKey
+    members:
+      - { Patron: The Prancing Griffin,       PatronType: Tavern,  City: Silverhaven }
+      - { Patron: The Drunken Basilisk,       PatronType: Tavern,  City: Ravenmoor }
+      - { Patron: The Salted Wound,           PatronType: Tavern,  City: Thornkeep }
+      - { Patron: The Last Candle Inn,        PatronType: Tavern,  City: Duskhollow }
+      - { Patron: The Ember Hearth,           PatronType: Tavern,  City: Emberfall }
+      - { Patron: Order of the Silver Dawn,   PatronType: Guild,   City: Silverhaven }
+      - { Patron: The Wayfarers Company,      PatronType: Guild,   City: Highmarket }
+      - { Patron: Black Banner Mercenaries,   PatronType: Guild,   City: Ravenmoor }
+      - { Patron: The Gravewatch,             PatronType: Guild,   City: Duskhollow }
+      - { Patron: Academy of High Sorcery,    PatronType: Academy, City: Dawnmere }
+      - { Patron: Thornkeep War College,      PatronType: Academy, City: Thornkeep }
+      - { Patron: The Alchemists Collegium,   PatronType: Academy, City: Mirage Gate }
+      - { Patron: Court of Queen Maravelle,   PatronType: Court,   City: Silverhaven }
+      - { Patron: The Sunspire Caliphate,     PatronType: Court,   City: Mirage Gate }
+      - { Patron: House Blackfang,            PatronType: Court,   City: Ravenmoor }
+
+  Ware:
+    key: WareKey
+    members:   # list order = pareto rank
+      - { Ware: Dwarven Ale (barrel),        WareType: Provisions,  Supplier: Ironroot Brewery }
+      - { Ware: Hardtack Rations (crate),    WareType: Provisions,  Supplier: Saltmarsh Traders }
+      - { Ware: Steel Longswords (bundle),   WareType: Armaments,   Supplier: Ironroot Forge }
+      - { Ware: Healing Salve (case),        WareType: Alchemical,  Supplier: Moonpetal Apothecary }
+      - { Ware: Elven Waybread (crate),      WareType: Provisions,  Supplier: Moonpetal Apothecary }
+      - { Ware: Oak Shields (stack),         WareType: Armaments,   Supplier: Ironroot Forge }
+      - { Ware: Torch Oil (cask),            WareType: Alchemical,  Supplier: Saltmarsh Traders }
+      - { Ware: Wool Cloaks (bale),          WareType: Textiles,    Supplier: Gloamweave Mills }
+      - { Ware: Smoked Wyvern Ham,           WareType: Provisions,  Supplier: Saltmarsh Traders }
+      - { Ware: Crossbow Bolts (chest),      WareType: Armaments,   Supplier: Ironroot Forge }
+      - { Ware: Antitoxin Vials (case),      WareType: Alchemical,  Supplier: Moonpetal Apothecary }
+      - { Ware: Silk Banners (bolt),         WareType: Textiles,    Supplier: Gloamweave Mills }
+      - { Ware: Honeyed Mead (barrel),       WareType: Provisions,  Supplier: Ironroot Brewery }
+      - { Ware: Chainmail Hauberks (crate),  WareType: Armaments,   Supplier: Ironroot Forge }
+      - { Ware: Alchemical Fire (strongbox), WareType: Alchemical,  Supplier: The Alchemists Collegium }
+      - { Ware: Linen Bandages (bale),       WareType: Textiles,    Supplier: Gloamweave Mills }
+      - { Ware: Grimmwald Cheese (wheel),    WareType: Provisions,  Supplier: Saltmarsh Traders }
+      - { Ware: Spiced Wine (cask),          WareType: Provisions,  Supplier: Ironroot Brewery }
+      - { Ware: Padded Gambesons (crate),    WareType: Textiles,    Supplier: Gloamweave Mills }
+      - { Ware: Glowmoss Lanterns (crate),   WareType: Alchemical,  Supplier: Moonpetal Apothecary }
+
+facts:
+  Orders:
+    grain: [Date, Patron, Ware]
+    sparsity: 0.85
+    measures:
+      Gold:
+        total: 8000000
+        min: 0
+        max: 12000
+        noise: 0.30
+        trend: { yoy: 0.06 }
+        shares:
+          PatronType: { Tavern: 0.35, Guild: 0.30, Academy: 0.20, Court: 0.15 }
+          WareType:   { Provisions: 0.40, Armaments: 0.25, Alchemical: 0.20, Textiles: 0.15 }
+          MonthName:  seasonal      # campaign season stock-up before winter
+          Ware:       pareto
+      Units:
+        derived: "np.maximum(1, np.round(Gold / avg_lot_price))"
+        avg_lot_price: { min: 60, max: 900 }
