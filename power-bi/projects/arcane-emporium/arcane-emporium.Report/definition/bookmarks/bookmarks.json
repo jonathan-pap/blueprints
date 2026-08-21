@@ -1,0 +1,54 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmarksMetadata/1.0.0/schema.json",
+  "items": [
+    {
+      "name": "grpTour",
+      "displayName": "Tour",
+      "children": [
+        "tourStop1",
+        "tourStop2",
+        "tourStop3",
+        "tourStop4",
+        "tourStop5"
+      ]
+    },
+    {
+      "name": "grpTutOverview",
+      "displayName": "Overview tutorial",
+      "children": [
+        "rstOverview",
+        "tut01",
+        "tut02",
+        "tut03"
+      ]
+    },
+    {
+      "name": "grpTutRealms",
+      "displayName": "Realms tutorial",
+      "children": [
+        "rstRealms",
+        "tut04",
+        "tut05"
+      ]
+    },
+    {
+      "name": "grpTutItems",
+      "displayName": "Items tutorial",
+      "children": [
+        "rstItems",
+        "tut06",
+        "tut07"
+      ]
+    },
+    {
+      "name": "grpTutPatrons",
+      "displayName": "Patrons tutorial",
+      "children": [
+        "rstPatrons",
+        "tut08",
+        "tut09",
+        "tut10"
+      ]
+    }
+  ]
+}

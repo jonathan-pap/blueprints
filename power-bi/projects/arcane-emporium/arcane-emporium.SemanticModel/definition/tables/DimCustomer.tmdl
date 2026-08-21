@@ -1,0 +1,34 @@
+/// 20 named patrons in four types - Adventurer, Collector, Guild, Noble.
+table DimCustomer
+	lineageTag: a74819af-34bd-4428-a4ce-b59083cff001
+
+	column CustomerKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 24b6ac2e-6ed9-444e-9db5-372b4644e0d1
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+	column Customer
+		dataType: string
+		lineageTag: eb186048-16ad-4043-b758-eccf931954c2
+		summarizeBy: none
+		sourceColumn: Customer
+
+	column CustomerType
+		dataType: string
+		lineageTag: 9c6986e5-a477-46d6-9274-908df5b5958b
+		summarizeBy: none
+		sourceColumn: CustomerType
+
+	partition DimCustomer = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(SourceFolder & "DimCustomer.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"CustomerKey", Int64.Type}, {"Customer", type text}, {"CustomerType", type text}})
+				in
+				    Typed
+

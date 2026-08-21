@@ -1,0 +1,4 @@
+/// Folder holding the generated arcane-emporium CSVs. One place to repoint the whole model if the synthetic-data job is re-run to a different output folder.
+expression SourceFolder = "E:/Workspace-Blueprint/synthetic-data/outputs/arcane-emporium/latest/" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: a4e14619-ddea-41db-9406-1e97ea5fb675
+

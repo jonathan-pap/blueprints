@@ -1,0 +1,89 @@
+/// Calendar 2023-2026, one row per day. Joined to FactSales on the integer DateKey, not on Date - the fact carries a yyyymmdd key.
+table DimDate
+	lineageTag: 40ede73e-7294-4a5f-a4fb-77edc7e67cd7
+	dataCategory: Time
+
+	column Date
+		dataType: dateTime
+		isUnique
+		formatString: dd mmm yyyy
+		lineageTag: 650c8530-8580-4784-a1b0-58640d4b44b4
+		summarizeBy: none
+		sourceColumn: Date
+
+	column DateKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 04627b33-bec8-4a65-be09-fae73b694361
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: 4d17a536-75fe-4584-a168-0f08d5734dce
+		summarizeBy: none
+		sourceColumn: Year
+
+	column Quarter
+		dataType: string
+		lineageTag: 04f5b4ad-1010-472f-ad1b-a89c50878973
+		summarizeBy: none
+		sourceColumn: Quarter
+
+	column Month
+		dataType: int64
+		isHidden
+		lineageTag: b934fa55-c824-4239-ac4c-8e4bcf234f7c
+		summarizeBy: none
+		sourceColumn: Month
+
+	column MonthName
+		dataType: string
+		lineageTag: 37f967cd-b340-46f4-a832-d592451f3e76
+		summarizeBy: none
+		sourceColumn: MonthName
+		sortByColumn: Month
+
+	column DayName
+		dataType: string
+		lineageTag: a7f27984-59bd-4dcd-a7e1-8991c66cb6e3
+		summarizeBy: none
+		sourceColumn: DayName
+		sortByColumn: DayNum
+
+	column DayNum
+		dataType: int64
+		isHidden
+		lineageTag: 74d89d35-9105-40b2-bb96-251b6310d5d8
+		summarizeBy: none
+		sourceColumn: DayNum
+
+	column YearMonth
+		dataType: int64
+		isHidden
+		lineageTag: dbdbc39b-2665-4bb3-b839-17ab4467386d
+		summarizeBy: none
+		sourceColumn: YearMonth
+
+	column MonthYear
+		dataType: string
+		lineageTag: efde9b33-6447-40e0-9afb-340bc405a41b
+		summarizeBy: none
+		sourceColumn: MonthYear
+		sortByColumn: YearMonth
+
+	partition DimDate = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(SourceFolder & "DimDate.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"Date", type date}, {"DateKey", Int64.Type}, {"Year", Int64.Type}, {"Quarter", type text}, {"Month", Int64.Type}, {"MonthName", type text}, {"DayName", type text}}),
+				    WithDayNum = Table.AddColumn(Typed, "DayNum", each Date.DayOfWeek([Date], Day.Monday) + 1, Int64.Type),
+				    WithYearMonth = Table.AddColumn(WithDayNum, "YearMonth", each [Year] * 100 + [Month], Int64.Type),
+				    WithMonthYear = Table.AddColumn(WithYearMonth, "MonthYear", each [MonthName] & " " & Text.From([Year]), type text)
+				in
+				    WithMonthYear
+

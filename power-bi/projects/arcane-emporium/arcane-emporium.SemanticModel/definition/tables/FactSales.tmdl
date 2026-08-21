@@ -1,0 +1,67 @@
+/// Daily Gold sales at Date x Shop x Item x Customer. ~99K rows, 25M Gold over four years. Gold is rounded to 2dp and Units to whole units in M - the generator emits full float precision.
+table FactSales
+	lineageTag: 7dc2efb0-1179-4f8e-8960-410e39ef2fd2
+
+	column SalesKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 3d1a61d4-e7fb-4e36-aabb-123085192fef
+		summarizeBy: none
+		sourceColumn: SalesKey
+
+	column Gold
+		dataType: double
+		isHidden
+		formatString: #,##0
+		lineageTag: a10cc742-66e5-4478-8822-6392d969b567
+		summarizeBy: sum
+		sourceColumn: Gold
+
+	column Units
+		dataType: int64
+		isHidden
+		formatString: #,##0
+		lineageTag: 73260800-033b-4536-8709-09b717f9d08c
+		summarizeBy: sum
+		sourceColumn: Units
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: 70c7ebd6-bd8f-421b-939e-4b6a29c46c74
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column ShopKey
+		dataType: int64
+		isHidden
+		lineageTag: 47e3c300-ee7c-40ff-9b91-8b85a375968f
+		summarizeBy: none
+		sourceColumn: ShopKey
+
+	column ItemKey
+		dataType: int64
+		isHidden
+		lineageTag: e8a20bdc-e634-47ac-b883-855d26e9474d
+		summarizeBy: none
+		sourceColumn: ItemKey
+
+	column CustomerKey
+		dataType: int64
+		isHidden
+		lineageTag: 656ae395-c4c6-4bc3-8baf-44f7899c4bc3
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+	partition FactSales = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(SourceFolder & "FactSales.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"SalesKey", Int64.Type}, {"Gold", type number}, {"Units", type number}, {"DateKey", Int64.Type}, {"ShopKey", Int64.Type}, {"ItemKey", Int64.Type}, {"CustomerKey", Int64.Type}}),
+				    Rounded = Table.TransformColumns(Typed, {{"Gold", each Number.Round(_, 2), type number}, {"Units", each Number.Round(_, 0), Int64.Type}})
+				in
+				    Rounded
+

@@ -1,0 +1,81 @@
+# Design system — arcane-emporium (12x12 grid model)
+#
+# Layout tokens read BEFORE every visual placement. Power BI never sees this file — it is the
+# dimension counterpart to the theme (theme = appearance, this = geometry). Resolve spans and
+# regions to pixels with resolve_layout.py (cell math from
+# ../../02-build/report/layout/layout-guidelines.md#grid-12x12).
+
+meta:
+  page:  { width: 1280, height: 720 }
+  theme: Runeforge Dark v1.0
+  units: grid-cells
+  reading_pattern: Z          # demo showcase: headline first, then left-to-right narrative
+
+grid:
+  columns: 12
+  rows: 12
+  gutter: 16
+  margin: 24
+  snap: 8
+  # DERIVED: colW = (1280 - 48 - 16*11)/12 = 88.0 ; rowH = (720 - 48 - 16*11)/12 = 41.3
+
+bands:
+  summary:  { rows: [1, 6]  }   # title + KPI row
+  analysis: { rows: [6, 10] }   # charts
+  detail:   { rows: [10, 12] }  # tables / league tables
+  tour:     { rows: [12, 13] }  # the bookmark tour bar, on every page
+
+defaults:
+  title:      { span: [12, 2], band: summary }
+  kpi:        { span: [2, 3],  band: summary }
+  kpi_hero:   { span: [4, 3],  band: summary }
+  chart:      { span: [6, 5],  band: analysis }
+  chart_wide: { span: [12, 5], band: analysis }
+  panel:      { span: [4, 5],  band: analysis }
+  table:      { span: [12, 3], band: detail }
+  svg_strip:  { span: [12, 4], band: analysis }   # SVG image visual, full width
+  # the global filter strip: 3 dropdowns, the cap the room's slicer.md sets
+  slicer:     { type: slicer, mode: Dropdown, size: [152, 56], count: 3 }
+  legend:     { size: [504, 24] }
+
+layouts:
+  # title band is identical on every page; the wordmark keeps cols 1-7 and the global chrome
+  # (realm/category/year slicers) takes cols 8-12, both INSIDE the header so no page loses
+  # content height
+  header:          [ [1,1,13,3] ]
+  header_title:    [ [1,1,8,3] ]
+  header_filters:  [ [8,1,13,3] ]
+  # 5 KPIs: one hero (4 cols) + four 2-col cards = 12 cols exactly
+  kpi_hero_plus_4: [ [1,3,5,5], [5,3,7,5], [7,3,9,5], [9,3,11,5], [11,3,13,5] ]
+  # p1: the four-year trend across the top of the analysis band, realm + category beneath.
+  # The KPI band is two rows, not three: five category bars need a 176px body and the
+  # row has to come from somewhere. A card does not need 160px to show one number.
+  # the trend keeps four rows: at three (152px) Power BI drops the month labels
+  # entirely, and the Frostfall story needs to see which months are the spikes
+  overview_trend:  [ [1,5,13,9] ]
+  # three rows is enough for the splits once the category chart is VERTICAL -
+  # five horizontal bars in a 128px body is 25px a bar and the fifth gets dropped
+  overview_split:  [ [1,9,7,12], [7,9,13,12] ]
+  # p2: realm treemap/bar left, shop league table right
+  realms_body:     [ [1,3,6,12], [6,3,13,12] ]
+  # p3: pareto hero, then the category strip
+  items_hero:      [ [1,3,13,9] ]
+  items_strip:     [ [1,9,13,12] ]
+  # p4: patron type panels, then the big-spender table
+  patrons_two:     [ [1,3,7,8], [7,3,13,8] ]
+  patrons_body:    [ [1,8,13,12] ]
+
+# every page also carries [header_title, header_filters] - the global chrome
+pages:
+  - { id: Overview, uses: [header, kpi_hero_plus_4, overview_trend, overview_split] }
+  - { id: Realms,   uses: [header, realms_body] }
+  - { id: Items,    uses: [header, items_hero, items_strip] }
+  - { id: Patrons,  uses: [header, patrons_two, patrons_body] }
+
+overrides:
+  # The tour bar owns row 12: y 656..704, with the page margin below it. It needed its own
+  # band because a bookmarkNavigator clips its tile labels below ~48px. Every content band
+  # therefore stops at row 12 (y=640) instead of row 13.
+  - { visual: tourBar, pages: [Overview, Realms, Items, Patrons],
+      rect: { x: 24, y: 656, width: 1232, height: 48 },
+      reason: 48px is the smallest height whose tile labels are not clipped }
