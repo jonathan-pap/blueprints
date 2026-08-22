@@ -1,0 +1,85 @@
+# Quest Ledger — the Dragonhold Adventurers' Guild bounty book.
+# Same world as arcane-emporium / guild-provisioners (Eldoria / Grimmwald / Sunspire).
+# Bounty gold paid per completed quest at Date x GuildHall x QuestType x Adventurer.
+# Sparsity 0.968 targets ~40K rows of the 1.26M-cell grain.
+name: quest-ledger
+seed: 777
+output: { dir: outputs/quest-ledger/latest }
+
+dimensions:
+  Date:
+    type: calendar
+    range: [2024-01-01, 2026-12-31]
+    grain: day
+
+  GuildHall:
+    key: GuildHallKey
+    members:
+      - { GuildHall: Silverhaven Chapterhouse, City: Silverhaven,  Realm: Eldoria }
+      - { GuildHall: Dawnmere Lodge,           City: Dawnmere,     Realm: Eldoria }
+      - { GuildHall: Ravenmoor Keep,           City: Ravenmoor,    Realm: Grimmwald }
+      - { GuildHall: Thornkeep Barracks,       City: Thornkeep,    Realm: Grimmwald }
+      - { GuildHall: Emberfall Hall,           City: Emberfall,    Realm: Sunspire }
+      - { GuildHall: Mirage Gate Outpost,      City: Mirage Gate,  Realm: Sunspire }
+
+  QuestType:
+    key: QuestTypeKey
+    members:   # list order = pareto rank
+      - { QuestType: Monster Hunt,     Danger: High }
+      - { QuestType: Escort,           Danger: Low }
+      - { QuestType: Dungeon Delve,    Danger: High }
+      - { QuestType: Bounty,           Danger: Medium }
+      - { QuestType: Artifact Recovery, Danger: Medium }
+      - { QuestType: Investigation,    Danger: Low }
+      - { QuestType: Siege Relief,     Danger: Extreme }
+      - { QuestType: Dragon Slaying,   Danger: Extreme }
+
+  Adventurer:
+    key: AdventurerKey
+    members:   # list order = pareto rank within each pinned Rank
+      - { Adventurer: Kaelen Swiftblade,     Rank: Gold,   Class: Ranger }
+      - { Adventurer: Brynn Emberforge,      Rank: Gold,   Class: Paladin }
+      - { Adventurer: Thessaly Moonwhisper,  Rank: Gold,   Class: Sorcerer }
+      - { Adventurer: Garrick Stonehelm,     Rank: Silver, Class: Fighter }
+      - { Adventurer: Sylvie Nightbloom,     Rank: Silver, Class: Rogue }
+      - { Adventurer: Mira of the Dunes,     Rank: Silver, Class: Monk }
+      - { Adventurer: Ferrin Quickfingers,   Rank: Silver, Class: Rogue }
+      - { Adventurer: Orla Grimbrand,        Rank: Silver, Class: Cleric }
+      - { Adventurer: Dorian Vell,           Rank: Bronze, Class: Bard }
+      - { Adventurer: Hesper Wyldwood,       Rank: Bronze, Class: Druid }
+      - { Adventurer: Tobin Ashcroft,        Rank: Bronze, Class: Fighter }
+      - { Adventurer: Nyx Umberhollow,       Rank: Bronze, Class: Warlock }
+      - { Adventurer: Wren Tallow,           Rank: Bronze, Class: Ranger }
+      - { Adventurer: Lucan Fairweather,     Rank: Bronze, Class: Paladin }
+      - { Adventurer: Isolde Marrow,         Rank: Bronze, Class: Cleric }
+      - { Adventurer: Pip Underbough,        Rank: Copper, Class: Rogue }
+      - { Adventurer: Edda Stoutflagon,      Rank: Copper, Class: Fighter }
+      - { Adventurer: Corvin Blackmere,      Rank: Copper, Class: Warlock }
+      - { Adventurer: Anwen Thistle,         Rank: Copper, Class: Druid }
+      - { Adventurer: Rook Hallows,          Rank: Copper, Class: Bard }
+      - { Adventurer: Maelis Dawnstrider,    Rank: Copper, Class: Monk }
+      - { Adventurer: Osric Pennywhistle,    Rank: Copper, Class: Bard }
+      - { Adventurer: Vanna Ironquill,       Rank: Copper, Class: Sorcerer }
+      - { Adventurer: Hob Greenmantle,       Rank: Copper, Class: Ranger }
+
+facts:
+  Quests:
+    grain: [Date, GuildHall, QuestType, Adventurer]
+    sparsity: 0.968                    # ~40K completed quests
+    measures:
+      Bounty:
+        total: 6000000
+        min: 10
+        max: 15000
+        noise: 0.35
+        trend: { yoy: 0.09 }
+        shares:
+          Realm:     { Eldoria: 0.40, Grimmwald: 0.35, Sunspire: 0.25 }
+          MonthName: seasonal          # campaign season
+          Danger:    { Extreme: 0.30, High: 0.35, Medium: 0.22, Low: 0.13 }
+          QuestType: pareto
+          Rank:      { Gold: 0.40, Silver: 0.30, Bronze: 0.20, Copper: 0.10 }
+          Adventurer: pareto
+      DaysOnQuest:
+        derived: "np.maximum(1, np.round(Bounty / gold_per_day))"
+        gold_per_day: { min: 40, max: 400 }

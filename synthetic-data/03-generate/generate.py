@@ -44,6 +44,9 @@ def build_calendar(spec):
     df["Month"] = df["Date"].dt.month
     df["MonthName"] = df["Date"].dt.strftime("%b")
     df["DayName"] = df["Date"].dt.strftime("%a")
+    df["DayNum"] = df["Date"].dt.dayofweek + 1                 # sort-by for DayName (Mon=1)
+    df["YearMonth"] = df["Date"].dt.year * 100 + df["Date"].dt.month   # sort-by for MonthYear
+    df["MonthYear"] = df["Date"].dt.strftime("%b %Y")
     df["Date"] = df["Date"].dt.strftime("%Y-%m-%d")
     return df, "DateKey"
 

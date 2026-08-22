@@ -55,11 +55,22 @@ pbir model "../power-bi/projects/<project>/<project>.Report" -d
 Use the canonical `Table.Field` names — don't guess from English. (This is the same
 canonical-name discipline the power-bi blueprint enforces before binding.)
 
-## Status
+## The splice script (config-driven jobs) — SHIPPED
 
-v0 stub — the mechanics are documented; the reusable splice/import scripts grow here as the
-first real hand-off job runs. For the TMDL splice pattern to copy, see
-`../../power-bi/projects/test/_build-svg-gallery.py`.
+For any star built with the config engine, the TMDL-splice mode is one command:
+
+```bash
+python 04-output/handoff_to_pbi.py projects/<job>/config.yaml --target ../power-bi/projects/<project>
+```
+
+It reads the job's config + `outputs/<job>/latest/` CSVs and writes into `<project>.SemanticModel/definition/`:
+`expressions.tmdl` (a `SourceFolder` parameter pointing at `latest/` — one place to repoint the whole
+model), one typed import table per CSV (M partition: `Csv.Document(File.Contents(SourceFolder & "<Table>.csv"))`,
+keys hidden/`isKey`, fact measure columns hidden + summed, floats rounded 2dp), `DimDate` marked as the
+date table with sort-by columns wired, fact→dim `relationships.tmdl` on the `<Dim>Key` columns, a
+`_Measures` home seeded with `Total <measure>` / row count / averages, and the `ref table` lines in
+`model.tmdl` (idempotent). Desktop must be **closed** during the splice; the first open needs a Refresh.
+Worked end-to-end: `projects/quest-ledger` → `../power-bi/projects/demo`.
 
 ## Hard rules
 
