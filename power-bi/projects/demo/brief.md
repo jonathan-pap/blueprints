@@ -78,9 +78,10 @@ Page size 1280×720. Use the project `design-system.yaml` (copy from `02-build/r
 0. **Hand-off** (Desktop closed):
    `cd synthetic-data && python 04-output/handoff_to_pbi.py projects/quest-ledger/config.yaml --target ../power-bi/projects/demo`
    — splices tables, relationships, `SourceFolder`, `_Measures`. Then `pbir model "projects/demo/demo.Report" -d` to confirm.
-1. **Activate the bridge:** set `desktop_bridge: true` in `03-bind/via-powershell/hooks/config.yaml`, then
-   `npx -y @microsoft/powerbi-desktop-bridge-cli open power-bi/projects/demo/demo.pbip` and `status` until
-   `bridgeStatus: connected`.
+1. **Activate the bridge (build-report.md B9a):** set `desktop_bridge: true` in `03-bind/via-powershell/hooks/config.yaml`;
+   preflight `powerbi-desktop --version` (fallback `npx -y @microsoft/powerbi-desktop-bridge-cli`); then
+   `powerbi-desktop open projects/demo/demo.pbip --timeout 120` and `status --wait-seconds 60` until
+   `bridgeStatus: connected` — note the pid + page ids.
 2. **Load data:** connect the Modeling MCP to the Desktop instance → `RefreshWithXMLA` (Full). Verify
    `[Total Bounty]` = 6,000,000 via a DAX query before touching visuals.
 3. **Add the §3 measures** via MCP. Save in Desktop (persists to TMDL).

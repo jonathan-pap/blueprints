@@ -23,8 +23,18 @@ It doesn't replace `pbir validate` either — the Bridge shows the *rendered* re
 
 ```bash
 npm install -g @microsoft/powerbi-desktop-bridge-cli    # (setup.ps1 auto-installs when Node is present)
-powerbi-desktop --version
+powerbi-desktop --version                                # verified against v0.1.2
 ```
+
+**If `powerbi-desktop` isn't on PATH** (common in a fresh shell before it's reopened — the npm global
+shim lives in `%APPDATA%
+pm`), every verb below also runs without install via npx:
+
+```bash
+npx -y @microsoft/powerbi-desktop-bridge-cli status     # identical verbs/flags; always works when Node is present
+```
+
+Preflight in scripts: `powerbi-desktop --version || alias powerbi-desktop='npx -y @microsoft/powerbi-desktop-bridge-cli'`.
 
 Enable the Desktop preview feature (on by default): *File → Options → Preview features → "Enable external
 tool access to Power BI Desktop through secure local APIs"*.
@@ -38,13 +48,18 @@ to an already-running Desktop.
 ## The command loop
 
 ```bash
-powerbi-desktop open "<path.pbip>"                                   # launch Desktop with a report
-powerbi-desktop status                                               # instances[]: pid, bridgeStatus, currentFilePath, reportDir, pages[]
+powerbi-desktop open "<path.pbip>" --timeout 120                     # launch Desktop with a report, wait for the bridge
+powerbi-desktop status --wait-seconds 60                             # instances[]: pid, bridgeStatus, hasUnsavedChanges, reportDir, pages[]
 powerbi-desktop manifest --pid <pid>                                 # methods this Desktop build supports
 powerbi-desktop reload --pid <pid> --wait-seconds 120                # re-read PBIP/PBIR (+ TMDL) from disk in place
-powerbi-desktop screenshot <pageId> --pid <pid> --wait-seconds 120 --output page.png
-powerbi-desktop screenshot-all --pid <pid> --wait-seconds 120 --output-dir shots
+powerbi-desktop screenshot <pageId> --pid <pid> --wait-seconds 120 --output page.png   # --scale 1..3 (default 2)
+powerbi-desktop screenshot-all --pid <pid> --wait-seconds 120 --settle 1500 --output-dir shots   # --settle ms before first capture
 ```
+
+Flags (v0.1.2): `open --timeout <s>` · `status|manifest --pid --wait-seconds` · `reload --pid --wait-seconds` ·
+`screenshot --pid --output --scale --wait-seconds` · `screenshot-all --pid --output-dir --scale --settle --wait-seconds`.
+**In the build workflow** this loop is step **B9a** (activate) → **B10** (render after each page) → **B12**
+(`screenshot-all`) of [`../02-build/report/build-report.md`](../02-build/report/build-report.md).
 
 - **`status` gives you everything**: pick the PID where `bridgeStatus: connected` and `currentFilePath`
   matches your target; its `pages[]` lists every `id` + `displayName` (no need to read `pages.json`).

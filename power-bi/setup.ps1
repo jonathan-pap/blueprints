@@ -75,7 +75,7 @@ if (Test-Cmd node) {
   Say "[*]    installing @microsoft/powerbi-desktop-bridge-cli@latest ..." Gray
   npm install -g '@microsoft/powerbi-desktop-bridge-cli@latest' 2>&1 | Out-Null
   if (Test-Cmd powerbi-desktop) { Say "[ok]   powerbi-desktop $(powerbi-desktop --version)" Green }
-  else { Say "[warn] 'powerbi-desktop' not on PATH yet — reopen the shell" Yellow }
+  else { Say "[warn] 'powerbi-desktop' not on PATH yet — reopen the shell, or use: npx -y @microsoft/powerbi-desktop-bridge-cli <verb>" Yellow }
   Say "       Optional first-party extras (not auto-installed):" DarkGray
   Say "         npm i -g @microsoft/powerbi-report-authoring-cli   # 'powerbi-report-author validate' (MS's PBIR validator, alt to pbir)" DarkGray
   Say "         Modeling MCP runs via npx @microsoft/powerbi-modeling-mcp (wired by .mcp.json, step 6 below)" DarkGray

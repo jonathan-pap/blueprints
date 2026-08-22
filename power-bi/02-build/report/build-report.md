@@ -104,6 +104,24 @@ Create pages ([`page/add-page.md`](page/add-page.md)). On **pbir ≥ 0.9.25** (t
 first) — see [`../../04-review/audit/pbir-validate.md`](../../04-review/audit/pbir-validate.md). Reference
 pages by **display name**, keep names unique, verify with `pbir ls`.
 
+### B9a — Activate the render loop (Desktop Bridge)  ← when `desktop_bridge: true`, or the user wants to *see* the build
+Check `desktop_bridge` in [`../../03-bind/via-powershell/hooks/config.yaml`](../../03-bind/via-powershell/hooks/config.yaml)
+(or the brief asks for visual verification). If on, bring the bridge up **before the first visual**:
+
+```bash
+powerbi-desktop --version || alias powerbi-desktop='npx -y @microsoft/powerbi-desktop-bridge-cli'   # CLI preflight + fallback
+powerbi-desktop open "projects/<name>/<name>.pbip" --timeout 120     # launches Desktop, waits for the bridge
+powerbi-desktop status --wait-seconds 60                             # -> pid, bridgeStatus: connected, pages[] with ids
+```
+
+Record the **pid** and the page **ids** from `status` — every later `reload`/`screenshot` targets them.
+If the model's tables were just spliced/edited on disk, **refresh first** (Modeling MCP `RefreshWithXMLA`,
+or Home ▸ Refresh) and **Save in Desktop** — a model that isn't loaded makes every capture time out.
+Full command loop, the 30 s render budget (`--wait-seconds 120`), and the error table:
+[`../../03-bind/desktop-bridge.md`](../../03-bind/desktop-bridge.md). If the bridge can't connect
+(`NO_BRIDGE` / `DESKTOP_EXE_NOT_FOUND`), fall back to the close-and-reopen loop — don't build blind *and*
+claim it was verified.
+
 ### B10 — Per page: tokens → visuals → format
 For each contract page: read the `design-system.yaml` tokens for sizes/positions, then add + bind each
 visual ([`add-visual/_index.md`](add-visual/_index.md); bulk via `pbir add visual --from-json`).
@@ -111,6 +129,13 @@ Bindings reference **real** fields — run [`bind/find-canonical-name.md`](bind/
 first. Place on the canvas with the zones model
 ([`layout/detail-gradient.md`](layout/detail-gradient.md)) + equal-gap golden rules
 ([`layout/layout-guidelines.md`](layout/layout-guidelines.md)); snap to the 8-grid. Then titles/format.
+
+**Render as you go (bridge on):** after each page's visuals are in, `pbir validate`, then
+`powerbi-desktop reload --pid <pid> --wait-seconds 120` and
+`powerbi-desktop screenshot <pageId> --pid <pid> --wait-seconds 120 --output <shots>/<page>.png`,
+**read the PNG**, and fix what it shows *before* starting the next page — don't wait until the end to
+render. `reload` makes **disk win**: if you made model edits through the MCP, **Save in Desktop first**
+or the reload discards them. Serialize per pid (never reload/screenshot in parallel).
 
 ### B11 — Validate
 `pbir validate` after every mutation ([`validate/validate.md`](validate/validate.md)). Interpret
@@ -121,7 +146,9 @@ Check the finished report against the brief
 ([`../../04-review/audit/layout-contract-validate.md`](../../04-review/audit/layout-contract-validate.md))
 and run the layout audit
 ([`../../04-review/hooks/audit-layout-consistency.sh`](../../04-review/hooks/audit-layout-consistency.sh)).
-Fix drift before declaring done. Desktop is the final visual truth (edit TMDL/PBIR with Desktop closed).
+Fix drift before declaring done. **Rendered pixels are the final truth:** with the bridge on, finish with
+`powerbi-desktop screenshot-all --pid <pid> --wait-seconds 120 --settle 1500 --output-dir <shots>` and
+review every page; without it, close and reopen Desktop (edit TMDL/PBIR only while Desktop is closed).
 
 ---
 
@@ -138,6 +165,10 @@ Fix drift before declaring done. Desktop is the final visual truth (edit TMDL/PB
 - **Unprompted theme build** — authoring/swapping a theme JSON when the user only picked a tone. Tone is
   *direction*; keep the existing theme unless a theme change was **explicitly** requested (A5/B8).
 - **Missing `design-system.yaml`** — B7 skipped → the report can't be layout-audited and sizes drift.
+- **Built blind** — `desktop_bridge: true` but no `reload`/`screenshot` between pages; or `powerbi-desktop`
+  not on PATH in a fresh shell (use `npx -y @microsoft/powerbi-desktop-bridge-cli …`). Renders are the proof.
+- **Reload clobbered MCP edits** — model changes made live through the MCP weren't Saved before a
+  `reload` (disk wins). Save in Desktop, then reload.
 
 ## Related
 - [`context.md`](context.md) — the intent router (this path is its "build a full report" branch)
