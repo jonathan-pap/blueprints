@@ -36,7 +36,7 @@
 
 Spec-only (paste straight into Deneb):
 
-- `examples/spec/vega-lite/bar-chart.json`
+- `examples/spec/vega-lite/kpi-card.json`
 - `examples/spec/vega-lite/kpi-card.json`
 - `examples/spec/vega-lite/bullet-chart.json` (Vega-Lite version)
 - `examples/spec/vega/bar-chart.json` (Vega version for comparison)

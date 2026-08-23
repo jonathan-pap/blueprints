@@ -34,5 +34,5 @@ measure 'Total Revenue' =
 
 ## When to escalate
 
-- DAX has a bug → `../../../03-bind/references/evaluateandlog-debugging.md`
-- Need to compute the live result → `../../../03-bind/references/query-dax.md`
+- DAX has a bug → `../../../03-bind/via-powershell/evaluateandlog-debugging.md`
+- Need to compute the live result → `../../../03-bind/via-mcp/query-dax.md`

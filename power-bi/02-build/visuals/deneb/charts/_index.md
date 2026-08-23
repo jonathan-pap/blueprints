@@ -1,0 +1,9 @@
+# deneb/charts — one file per chart recipe
+
+- `bar.md` — Deneb — bar chart (Vega-Lite): Use Deneb bar only when native bar can't express it (custom mark, layered annotations, advanced interaction). …
+- `bullet.md` — Deneb — bullet chart: Bullet charts show actual vs target on a banded range (poor / satisfactory / good). Native PBI can fake this w…
+- `kpi-card.md` — Deneb — KPI card: Full custom KPI with headline value, target indicator, sparkline, and arrow icon — all in one Vega spec.
+- `line.md` — Deneb — line chart (Vega-Lite): pbir visuals bind "<...>/MyLine.Visual" \
+- `trend-with-target.md` — Deneb — trend with target line: Line chart with a horizontal target line and shaded area above/below target.
+- `ytd-comparison.md` — Deneb — YTD comparison: Compare current year YTD vs prior year YTD as overlaid bars (or grouped lines).
+- `ytd-line.md` — Deneb — YTD line chart: Two lines: current year YTD vs prior year YTD. Cleaner for trend comparison than overlaid bars when the period…

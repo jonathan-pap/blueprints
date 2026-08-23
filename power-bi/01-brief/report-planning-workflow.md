@@ -71,7 +71,7 @@ vs page slicers, search/prefix slicers for high-cardinality dims, drillthrough/p
 pages, bookmarks/nav.
 
 **Round 4 — Identity, accessibility, delivery.** Pick a tone+signature from
-`references/design-identity.md` (+ `tones.md`, `signatures.md`); offer 2–3 concrete
+`../02-build/report/references/design-identity.md` (+ `tones.md`, `signatures.md`); offer 2–3 concrete
 identity options, recommend one. Apply design defaults automatically: WCAG-AA contrast,
 no red-on-red, Azure Map over legacy map/filledMap, alt text on every chart, searchable
 dropdowns for high-cardinality fields, detailed tables near the page bottom, predictable

@@ -34,5 +34,5 @@ If `Date.Month` comes through as text (PBI's Calendar Month columns sometimes do
 
 ## Reference
 
-- `../../examples/script/trend-line.R`
-- `../../examples/visual/trend-line.json`
+- `../examples/script/trend-line.R`
+- `../examples/visual/trend-line.json`

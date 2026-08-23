@@ -38,4 +38,4 @@ compatibility_auto_upgrade: false
 # Requires: @microsoft/powerbi-desktop-bridge-cli + Node.js + Desktop open with
 # the "external tool access" preview toggle on. Preview feature. See
 # ../../desktop-bridge.md. Opt-in — leave false unless you've set it up.
-desktop_bridge: false
+desktop_bridge: true

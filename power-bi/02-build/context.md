@@ -31,7 +31,7 @@ Self-contained, atomized patterns that combine model + report primitives. Each r
 ## Decision rules
 
 - **Theme vs visual override:** If the change should apply to every visual of a type, edit `theme/`. If it's a single-visual exception, edit `report/`.
-- **Model vs report extension:** If the measure is reusable, add it to the model via `model/`. If it's report-specific only, add a thin-report measure via `report/references/thin-report-measures.md`.
+- **Model vs report extension:** If the measure is reusable, add it to the model via `model/`. If it's report-specific only, add a thin-report measure via `report/calculations/thin-report-measure.md`.
 - **Native vs custom visual:** Try native visuals first. Only enter `visuals/` when native cannot express the chart.
 - **Need real field/measure names?** Stop. Load `../03-bind/context.md`, get the names, come back.
 
@@ -41,7 +41,7 @@ Self-contained, atomized patterns that combine model + report primitives. Each r
 - After every mutation in `report/`, run `pbir validate "<project>.Report"`.
 - After every mutation in `model/`, validate TMDL syntax (see `model/context.md`).
 - Never edit `.pbi`/`.platform` files unless explicitly intended — they carry IDs.
-- Renames cascade: a table or measure rename touches TMDL, visual JSON, report extensions, culture files, and DAX query files. See `report/references/rename-patterns.md` and `model/references/naming-conventions.md`.
+- Renames cascade: a table or measure rename touches TMDL, visual JSON, report extensions, culture files, and DAX query files. See `report/pbip-format/_index.md` (rename cascades) and `model/naming/_index.md`.
 - Tell the user to close and reopen Power BI Desktop after the change — it does not detect external file edits.
 - **Desktop must be CLOSED before editing TMDL on disk.** Desktop holds an in-memory copy of the model; its next save (or close-with-save) writes that copy back to disk and silently overwrites every external edit. Confirm Desktop is closed before each `model/` mutation, or tell the user to close it first. After editing, if Desktop was open during the edits, close it WITHOUT saving so the stale copy doesn't clobber the new files. A clean `pbir model -d` immediately after editing proves the on-disk state is good but does NOT protect it from a later Desktop save. Symptom of a clobber: `<system-reminder>` notes that a file you just wrote was "modified by user or linter" — that's the overwrite signature. Confirmed against gddt 2026-05-21 (lost calc columns + `dim_calendar` + `_Measures` + relationships to one Desktop save).
 

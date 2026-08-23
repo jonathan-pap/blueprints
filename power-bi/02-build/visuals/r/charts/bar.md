@@ -37,5 +37,5 @@ print(p)
 
 ## Reference
 
-- `../../examples/script/bar-chart.R`
-- `../../examples/visual/bar-chart.json`
+- `../examples/script/bar-chart.R`
+- `../examples/visual/bar-chart.json`

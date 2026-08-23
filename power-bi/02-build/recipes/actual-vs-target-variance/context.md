@@ -74,5 +74,5 @@ asked). Battle-tested live as the **AvT-Variance-Test** page in `projects/test/`
 - `../../report/calculations/error-bar.md` — the native error-bar mechanism this repurposes (P3)
 - `../../report/add-visual/clustered-column-chart.md` — the base visual (P2)
 - `../../report/format/conditional-fmt-rule.md` — measure-driven color for the label (P4)
-- `../../model/update/multi-line-dax.md` — the streak / best-month measures (P5)
+- `../../model/update/dax-multiline.md` — the streak / best-month measures (P5)
 - `../disconnected-selection-emphasis/context.md` — pairs well if you add a what-if target slider

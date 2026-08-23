@@ -28,7 +28,7 @@ Most MCP refresh tools return a `refreshId` immediately and complete async. Poll
 
 ## Fallback (no MCP)
 
-`../via-powershell/refresh-model.md` — TMSL `refresh` script via `$server.Execute()`, plus `scripts/refresh_model.py` wrapping the Enhanced Refresh REST API (Fabric models).
+`../via-powershell/refresh-model.md` — TMSL `refresh` script via `$server.Execute()`, plus `../via-powershell/scripts/refresh_model.py` wrapping the Enhanced Refresh REST API (Fabric models).
 
 ## When refresh fails
 

@@ -39,4 +39,4 @@ Bind with `-a "Y:Sales.Total Revenue" -t Measure` (CLI handles the quoting inter
 - No port discovery, no NuGet install
 - Same canonical names
 
-For live values, go to `../../../03-bind/references/quickstart.md`.
+For live values, go to `../../../03-bind/via-powershell/quickstart.md`.

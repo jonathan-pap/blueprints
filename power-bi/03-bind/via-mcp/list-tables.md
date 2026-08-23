@@ -28,4 +28,4 @@ The returned object names the workspace + model — feed those into the MCP call
 ## Fallback (no MCP)
 
 - Thick PBIP → `../../02-build/report/bind/find-canonical-name.md` (`pbir model -d`).
-- Otherwise → `../via-powershell/quickstart.md` then `../via-powershell/tom-object-types.md`.
+- Otherwise → `../via-powershell/quickstart.md` then `../via-powershell/tom-object-types/_index.md`.

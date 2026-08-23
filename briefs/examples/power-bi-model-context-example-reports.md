@@ -2,7 +2,7 @@
 
 > Generated from the on-disk TMDL at `power-bi/projects/test/example reports.SemanticModel/` on 2026-08-12. A map of the model
 > so an agent can work against **real object names** without introspecting it live. Follows the template
-> at [`../../../../briefs/model-context-brief.md`](../model-context-brief.md).
+> at [`../model-context-brief.md`](../model-context-brief.md).
 > Row counts aren't in TMDL (data lives in the model cache) — refresh in Desktop to confirm.
 
 ## 1. Identity & purpose

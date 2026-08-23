@@ -48,7 +48,7 @@
 ## references/ — design judgment + vocabulary (build-time)
 - `design-identity.md` — the tone + signature + per-page archetype model (read for greenfield)
 - `tones.md` · `signatures.md` — the design-identity catalogs (12 tones, 15 signatures)
-- `archetypes/_index.md` — per-page router → 5 archetypes (+ variants)
+- `references/archetypes/_index.md` — per-page router → 5 archetypes (+ variants)
 - `composition.md` — multi-page composition + variant rotation
 - `color-palettes.md` — CVD-safe palettes + colour-assignment strategy
 - `accessibility.md` · `anti-patterns.md` — pre-ship checks (WCAG, the slop catalog)

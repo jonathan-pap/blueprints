@@ -23,7 +23,7 @@ In each filter (page-level or visual-level), set:
 
 ## Style
 
-Pane background and font come from the report theme. To customize per-report, see `../../theme/format/override-property.md`.
+Pane background and font come from the report theme. To customize per-report, see `../format/override-property.md`.
 
 ## After
 

@@ -51,5 +51,5 @@ number formatting — skip them for the [minimal variant](variants/minimal-no-na
   positions the % label above whichever bar is taller and reserves headroom. See [P2](primitives/overlay-series-scaffold.md).
 - **`formatStringDefinition` needs compatibilityLevel ≥ 1601** in `database.tmdl`, and the
   arrow format `"▲0%;▼0%;0%"` must be a block-form definition, not an inline `formatString`
-  (Desktop throws *"Invalid indentation"* otherwise). See `../../../model/update/multi-line-dax.md`.
+  (Desktop throws *"Invalid indentation"* otherwise). See `../../model/update/dax-multiline.md`.
 - Every `lineageTag` / visual `name` must be fresh and unique — see [tokens.md](tokens.md).

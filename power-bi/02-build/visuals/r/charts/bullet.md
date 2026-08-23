@@ -40,4 +40,4 @@ Three light-to-dark gray bands (target ranges), one blue actual bar (thinner), o
 
 ## Reference
 
-- `../../examples/visual/bullet-chart.json`
+- `../examples/visual/bullet-chart.json`

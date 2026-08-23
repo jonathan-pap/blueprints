@@ -34,5 +34,5 @@ Long region names fit better horizontally. For short labels use vertical with `a
 
 ## Reference
 
-- `../../examples/script/bar-chart.py` — fuller example
-- `../../examples/visual/bar-chart.json` — full PBIR visual block
+- `../examples/script/bar-chart.py` — fuller example
+- `../examples/visual/bar-chart.json` — full PBIR visual block

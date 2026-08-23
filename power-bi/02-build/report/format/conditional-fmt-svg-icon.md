@@ -5,7 +5,7 @@ Inline icon (arrow, status pill, traffic light) per row, driven by a DAX measure
 ## How it works
 
 1. Write a DAX measure that returns a `data:image/svg+xml;utf8,...` string. See `../../visuals/svg/context.md` for the SVG engine details and ready-made example measures.
-2. Set the measure's **`dataCategory = ImageUrl`** in TMDL (see `../../model/references/object-properties.md`).
+2. Set the measure's **`dataCategory = ImageUrl`** in TMDL (see `../../model/object-types/_index.md`).
 3. Bind the measure to a table/matrix `Values` role or a card `Image URL` role.
 
 ## Minimal example (status pill)

@@ -114,4 +114,4 @@ TradeKey int PK, DateKey FK, ItemKey FK, SellerKey FK→DimSeller, BuyerSellerKe
 
 - Dims + bridges → CSV (`outputs/<date>-grand-exchange-<table>.csv`)
 - `FactMarketPriceDaily`, `FactTrade` → **Parquet** at `full` scale; CSV at `smoke`
-- Power BI hand-off: drop CSVs into `../power-bi/projects/grand-exchange/` (see [04-output/handoff-to-power-bi.md](../../../04-output/handoff-to-power-bi.md))
+- Power BI hand-off: drop CSVs into `../power-bi/projects/grand-exchange/` (see [04-output/handoff-to-power-bi.md](../../04-output/handoff-to-power-bi.md))

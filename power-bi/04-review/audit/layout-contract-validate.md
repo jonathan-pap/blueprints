@@ -54,14 +54,14 @@ fix the report (not the brief) unless the brief itself was wrong.
 - [ ] The **signature** recurs on every relevant page (the one move from the brief is actually present).
 - [ ] Multi-page: all pages share one tone+signature; archetypes/variants rotated per [composition](../../02-build/report/references/composition.md).
 
-### Accessibility — walk [`design/accessibility.md`](../../02-build/report/references/accessibility.md) testing checklist
+### Accessibility — walk [`references/accessibility.md`](../../02-build/report/references/accessibility.md) testing checklist
 - [ ] Alt text (insight-driven, not "chart") on every non-decorative visual; DAX alt text where the insight is filter-dependent.
 - [ ] WCAG AA contrast on every text/background pair (body ≥4.5:1, large ≥3:1, non-text ≥3:1).
 - [ ] No meaning by colour alone — paired with icon/arrow/label. CVD simulation passes.
 - [ ] Tab order matches reading order; keyboard-only navigation works; targets ≥24×24px.
 - [ ] Modern visual types only (`cardVisual`/`tableEx`/`pivotTable`/`azureMap`), no legacy `card`/`table`/`matrix`/`map`/`filledMap`.
 
-### Anti-pattern detection — run [`design/anti-patterns.md`](../../02-build/report/references/anti-patterns.md) heuristics
+### Anti-pattern detection — run [`references/anti-patterns.md`](../../02-build/report/references/anti-patterns.md) heuristics
 - [ ] No `strong-warn` triggers unresolved: dual axis · bar baseline ≠ 0 · contrast <4.5:1.
 - [ ] `warn` triggers reviewed: >8 hues · >6 cards · pie/donut >5 · >12 visuals · empty alt text · ops page without freshness timestamp.
 

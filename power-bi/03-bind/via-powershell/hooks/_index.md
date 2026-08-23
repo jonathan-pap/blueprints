@@ -22,4 +22,4 @@ Different from [`../../../04-review/hooks/`](../../../04-review/hooks/), which v
 
 ## Install
 
-Hooks register through Claude Code's plugin / hooks mechanism. Copy `hooks.json` into your harness config (e.g., `.claude/hooks.json`) and point `${CLAUDE_PLUGIN_ROOT}/hooks/pbi-hooks.sh` at this folder. `jq` must be on `PATH`; PowerShell is auto-detected (or routed via Parallels on macOS — see `../parallels-macos.md`).
+Hooks register through Claude Code's plugin / hooks mechanism. Copy `hooks.json` into your harness config (the workspace `.claude/settings.json`) and point `${CLAUDE_PLUGIN_ROOT}/hooks/pbi-hooks.sh` at this folder. `jq` must be on `PATH`; PowerShell is auto-detected (or routed via Parallels on macOS — see `../parallels-macos.md`).

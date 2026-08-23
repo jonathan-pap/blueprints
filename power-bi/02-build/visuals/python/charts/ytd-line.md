@@ -41,4 +41,4 @@ Months sort alphabetically by default ("Apr, Aug, Dec, Feb..."). Either:
 
 ## Reference
 
-- `../../examples/visual/ytd-line-chart.json`
+- `../examples/visual/ytd-line-chart.json`

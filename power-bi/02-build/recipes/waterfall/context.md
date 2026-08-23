@@ -134,5 +134,5 @@ different domains.
 - `../../report/add-visual/waterfall-chart.md` — the native waterfall (when this recipe is overkill)
 - `../../visuals/svg/per-chart/waterfall.md` — inline SVG waterfall (when a per-row micro-chart is wanted instead)
 - `../../report/format/conditional-fmt-rule.md` — measure-driven color, if `<PREFIX> Body Color` is used
-- `../../model/dax/disconnected-tables.md` — the broader disconnected-table family this recipe is one instance of
+- `../disconnected-selection-emphasis/primitives/disconnected-selection-table.md` — the disconnected-table primitive this recipe is one instance of
 - `../disconnected-selection-emphasis/context.md` — pairs well if the recipe is driven by a what-if step picker

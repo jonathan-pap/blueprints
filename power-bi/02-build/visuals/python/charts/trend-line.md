@@ -37,5 +37,5 @@ If `Date.Month` is bound as a column (not a date), it may come through as string
 
 ## Reference
 
-- `../../examples/script/trend-line.py`
-- `../../examples/visual/trend-line.json`
+- `../examples/script/trend-line.py`
+- `../examples/visual/trend-line.json`

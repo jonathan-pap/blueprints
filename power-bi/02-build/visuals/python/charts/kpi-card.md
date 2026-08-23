@@ -16,7 +16,7 @@ pbir visuals bind "<...>/MyPyKpi.Visual" \
 
 ## Script
 
-See `../../examples/script/kpi-card.py` for the full pattern; outline:
+See `../examples/script/` (no kpi-card sample yet — the script below is the reference) for the full pattern; outline:
 
 ```python
 import matplotlib.pyplot as plt
@@ -44,4 +44,4 @@ Python visuals don't have native title slots; everything is figure text. Layout 
 
 ## Reference
 
-- `../../examples/visual/kpi-card.json` — full PBIR visual
+- `../examples/visual/kpi-card.json` — full PBIR visual

@@ -41,4 +41,4 @@ print(p)
 
 ## Reference
 
-- `../../examples/visual/ytd-line-chart.json`
+- `../examples/visual/ytd-line-chart.json`

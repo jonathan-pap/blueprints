@@ -26,4 +26,4 @@ Hooks NEVER use `set -u` and defensively exit 0 on environmental failures (no jq
 
 - `config.md` — toggle individual checks
 - `windows-issues.md` — why hooks may not fire on Windows + the master kill-switch
-- `../snapshot-model.ps1`, `../check-referential-integrity.ps1` — the PowerShell payloads
+- `snapshot-model.ps1`, `check-referential-integrity.ps1` — the PowerShell payloads

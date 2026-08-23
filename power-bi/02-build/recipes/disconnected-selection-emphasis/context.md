@@ -49,5 +49,5 @@ Each is atomic and reusable on its own. Compose them.
 
 - `../../report/calculations/visual-calculation.md` — the `NativeVisualCalculation` mechanism (P4)
 - `../../report/calculations/reference-line.md` — reference lines (P3)
-- `../../model/add/table.md` / `../../model/add/measure.md` — table + measure creation (P1, P2)
+- `../../model/add/table-calculated.md` / `../../model/add/measure.md` — table + measure creation (P1, P2)
 - `../../report/add-visual/slicer.md` — slicer visual (P5)

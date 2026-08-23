@@ -16,7 +16,7 @@ The layout / design workstream — much of it ported from the Microsoft **skills
   drift hook `04-review/hooks/audit-layout-consistency.sh`. The grid runs end-to-end through the design
   contract, the conformance validator, and the wireframe spec.
 - **Design-identity room.** `02-build/report/design/` (tone / signature / archetype) +
-  `layout/design-contract.md` + `04-review/audit/layout-contract-validate.md`.
+  `02-build/report/layout/design-contract.md` + `04-review/audit/layout-contract-validate.md`.
 - **Wireframes room.** `01-brief/wireframes/` — brief → story → portable spec → Figma / Claude handoff.
 - **Redistributable workspace.** Root `.mcp.json` (Power BI Modeling MCP) + `power-bi/setup.ps1`
   bootstrap (pbir CLI, Node, Desktop Bridge). Clone-and-go on Windows with Power BI Desktop.

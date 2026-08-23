@@ -8,13 +8,15 @@
 Workspace-Blueprint/
 ├── CLAUDE.md                this file (workspace directory)
 ├── README.md
+├── .mcp.json                Power BI Modeling MCP (npx, portable) — loads on any clone
+├── tools/                   workspace utilities — export/import the Claude user setup to another machine
 ├── briefs/                  ── HUB — brief templates (linked) + filled examples (NOT a blueprint)
 │   ├── README.md            how to use; links to each blueprint's canonical template
 │   └── examples/            filled example briefs (power-bi + synthetic-data, a paired set)
 ├── power-bi/                ── BLUEPRINT — Power BI Desktop projects (PBIP)
 │   ├── CLAUDE.md            entry point for this blueprint (L1 router + folder map)
 │   ├── README.md
-│   ├── 01-brief/            discovery / requirements (5 atomic files)
+│   ├── 01-brief/            discovery / requirements (+ wireframes room)
 │   ├── 02-build/            edit room — report, model (+DAX, Power Query, naming), theme, visuals (~490 atomic files)
 │   ├── 03-bind/             live model — Power BI MCP or PowerShell TOM + Enhanced Refresh (~50 atomic files)
 │   ├── 04-review/           validate, audit, model-audit, usage, lineage, reviewers (~45 atomic files + hooks + scripts)
@@ -34,8 +36,8 @@ Workspace-Blueprint/
     ├── README.md
     ├── 01-brief/            requirements — what data, volume, seed, PII policy
     ├── 02-schema/           define the data shape — entities, types, distributions, rules
-    ├── 03-generate/         generation engines — faker / distribution / relational / statistical / LLM
-    ├── 04-output/           serialize & deliver (CSV/JSON/Parquet/SQL/DB + Power BI hand-off)
+    ├── 03-generate/         generate.py — config-driven star engine (+ faker / statistical / LLM engines)
+    ├── 04-output/           serialize & deliver + handoff_to_pbi.py (TMDL splice into a power-bi/ model)
     ├── 05-review/           validate, profile, key integrity, PII-leakage audit
     ├── projects/            raw layer — one folder per generation job
     └── outputs/             output layer — dated datasets YYYY-MM-DD-<job>-<dataset>.<ext>
@@ -46,7 +48,7 @@ Workspace-Blueprint/
 > **New machine?** Install a blueprint's prerequisites before your first edit — each has its own `00-setup.md` (e.g. [`power-bi/00-setup.md`](power-bi/00-setup.md) → `pwsh power-bi/setup.ps1`).
 
 - **[power-bi/](power-bi/)** — Power BI Desktop projects (PBIP format). Reports, semantic models, themes, custom visuals, live-model bridge (MCP-first, PowerShell alternative), audit + validation hooks. Entry point: [power-bi/CLAUDE.md](power-bi/CLAUDE.md) (has its own detailed folder map).
-- **[synthetic-data/](synthetic-data/)** — synthetic / dummy data creation (Python-first: Faker, numpy/scipy, SDV). Schema-faithful, privacy-safe fake datasets for demos, testing, ML fixtures, or to populate a BI model. Includes a Power BI hand-off that writes generated data into a `power-bi/` semantic model. Entry point: [synthetic-data/CLAUDE.md](synthetic-data/CLAUDE.md). *(Skeleton — rooms grow per job.)*
+- **[synthetic-data/](synthetic-data/)** — synthetic / dummy data creation (Python-first: Faker, numpy/scipy, SDV). Schema-faithful, privacy-safe fake datasets for demos, testing, ML fixtures, or to populate a BI model. Config-driven star generator (declare dims/facts/measures + shares; the engine allocates and rakes so totals reconcile at every grain) with a TMDL hand-off that splices the star into a `power-bi/` semantic model. Entry point: [synthetic-data/CLAUDE.md](synthetic-data/CLAUDE.md).
 - **[tabular-editor/](tabular-editor/)** — Tabular Editor toolkit: reusable **C# scripts**, **BPA rule sets**, and **TE3 macros** for bulk semantic-model operations, all portable across **Tabular Editor 2 (free) and 3**. Works on any tabular model (Power BI PBIP/TMDL or live, Azure AS, SSAS, Fabric). Cross-referenced by `power-bi/` for the PBIP workflow. Entry point: [tabular-editor/CLAUDE.md](tabular-editor/CLAUDE.md).
 
 ## Convention for adding a blueprint

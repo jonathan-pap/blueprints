@@ -51,4 +51,4 @@ Briefs decay. If the brief references measure names that no longer exist in the 
 
 ## Sample brief location for `test` project
 
-See `../../projects/test/brief.md` for a worked example.
+See `../projects/demo/brief.md` for a worked example.

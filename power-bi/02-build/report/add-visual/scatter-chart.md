@@ -25,7 +25,9 @@ pbir visuals bind "<...>/Margin vs Volume.Visual" \
 - `X` (Measure) — horizontal axis
 - `Y` (Measure) — vertical axis
 - `Size` (Measure, optional) — point size (creates a bubble chart)
-- `Legend` (Column, optional) — color points by group
+- `Series` (Column, optional) — color points by group. **Not `Legend`** — the CLI rejects it:
+  `Role 'Legend' not valid for scatterChart. Available: Category, X, Y, Size, Series, Play,
+  Tooltips`. (Most chart types do call it `Legend`; scatter is the exception.)
 
 ## Templates
 

@@ -198,7 +198,7 @@ projects/themes/
 
 A theme is a self-contained artifact that may apply to many reports. Storing it inside a single `.Report/StaticResources/RegisteredResources/` couples it to that one report. Storing it here means:
 
-- One source of truth, distributed via `pbir theme apply-template` or `apply/file.md`
+- One source of truth, distributed via `pbir theme apply-template` or `../../02-build/theme/apply/file.md`
 - Iterate the theme without touching consumer reports
 - Diff between versions with `pbir theme diff`
 - Register as a CLI template for the whole machine (`~/.pbir/templates/themes/`)

@@ -48,4 +48,4 @@ table 'Sales'
 
 - `extract-expressions.md` — pulling partitions from deployed models
 - `safe-pattern.md` — recommended order of M steps
-- `../../object-types/partition-properties.md` — full partition property reference
+- `../object-types/partition-properties.md` — full partition property reference
