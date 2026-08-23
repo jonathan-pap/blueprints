@@ -47,79 +47,25 @@ Four pipeline rooms (enter one at a time), plus a tool room.
 
 **Sibling blueprint:** bulk model ops via **Tabular Editor** (C# scripts, BPA rule sets, TE3 macros — portable TE2/TE3) live in their own top-level blueprint at [`../tabular-editor/`](../tabular-editor/CLAUDE.md). Reach for it over `03-bind/` / `02-build/model/` when changing **many** model objects at once.
 
-## Folder map (current)
+## Folder map (rooms + sub-rooms)
 
-Counts shown as `(md files in this folder, total atomic files including subfolders)`. The tree omits `projects/`, `outputs/`, and `_examples/` (see "Layers" below for those).
+Each room has a `context.md` (doctrine) and an `_index.md` (the file catalogue) — open those for
+the per-file list; this tree is only the shape. Omits `projects/`, `outputs/`, `_examples/` (see "Layers").
 
 ```text
 power-bi/
-├── CLAUDE.md                                this file (L1 router)
-├── README.md
-├── 01-brief/                                discovery / requirements room
-│   └── references/         (5 md)           vague-prompts, layout-patterns, kpi-selection, limitations, report-dev-mindset
-│
-├── 02-build/                                edit room — biggest, 4 sub-rooms
-│   ├── report/             (2 md, 98 atomic)   PBIR editing — visuals, pages, bindings, formatting
-│   │   ├── add-visual/     (21 md)          one file per chart type (kpi, line, bar, table, …) + templates
-│   │   ├── bind/           (7  md)          find canonical names, bind/swap/clear fields
-│   │   ├── layout/         (11 md)          design-system tokens, position, size, align, page dims, detail gradient, guidelines, groups
-│   │   ├── format/         (8  md)          override property, conditional fmt × 4 flavours, presets, apply theme
-│   │   ├── schema-patterns/ (4 md)          PBIR internals — selectors, expressions, property catalogue
-│   │   ├── references/     (4  md)          design best-practices — cards/KPIs, tables, colors
-│   │   ├── page/           (7  md)          add / rename / delete / size / title / wallpaper
-│   │   ├── filters/        (4  md)          page filter, visual filter, filter pane
-│   │   ├── bookmarks/      (3  md)          create + navigator
-│   │   ├── calculations/   (5  md)          visual calc, thin-report measure, ref line, error bar
-│   │   ├── pbip-format/    (14 md)          PBIP file format + rename cascades + Copilot folder
-│   │   ├── semantic-model/ (5  md)          read TMDL from report side (no live conn)
-│   │   ├── validate/       (4  md)          pbir validate, fix broken refs, convert legacy
-│   │   ├── examples/                        K201-MonthSlicer report + 55 visual.json templates
-│   │   └── scripts/                         convert_legacy, background utilities
-│   │
-│   ├── model/              (4 md, 108 atomic) TMDL editing + DAX + Power Query + naming
-│   │   ├── add/            (11 md)          measure, column, table, relationship, role, hierarchy, …
-│   │   ├── update/         (3  md)          property, measure expression, multi-line DAX
-│   │   ├── fix-pattern/    (7  md)          common bug recipes (summarizeBy, format, namespace collision)
-│   │   ├── object-types/   (8  md)          full property reference per object
-│   │   ├── naming/         (6  md)          standardize naming conventions, audit workflow, downstream impact
-│   │   ├── power-query/    (19 md + 2 .py)  M authoring, query folding, validation via API/XMLA, patterns
-│   │   ├── dax/            (50 md)          DAX optimization — 21 Tier-1 patterns + 4 QRY + 10 MDL + 2 DL + engine internals
-│   │   └── examples/                        SpaceParts.SemanticModel (full real-world model)
-│   │
-│   ├── theme/              (3 md, 32 atomic)  theme JSON authoring + serialize/build
-│   │   ├── apply/          (3  md)          template, file, copy-from-other
-│   │   ├── modify/         (5  md)          colors, text classes, wildcard, visual-type override, sentiment
-│   │   ├── promote/        (2  md)          lift visual-level overrides to theme
-│   │   ├── audit/          (3  md)          compliance, find overrides, find hardcoded hex
-│   │   ├── serialize/      (3  md)          split monolith ↔ build
-│   │   ├── _deep-reference/ (1 md)          theme-json-spec (25 KB; load on explicit ask only)
-│   │   └── examples/                        community theme JSONs + 49 per-visual-type override examples
-│   │
-│   └── visuals/            (1 md, 60 atomic)  custom visual engines
-│       ├── deneb/          (8 md, 25 total) Vega / Vega-Lite — interactive
-│       ├── svg/            (7 md, 37 total) DAX-driven SVG — in-table micro-charts
-│       ├── python/         (6 md, 16 total) matplotlib / seaborn — static stats
-│       └── r/              (6 md, 16 total) ggplot2 — static stats
-│
-├── 03-bind/                                 live model — three tiers
-│   ├── via-mcp/            (11 md)          PREFERRED — Power BI MCP tool calls
-│   └── via-powershell/     (19 md, 41 atomic) ALTERNATIVE — connect-pbid TOM/ADOMD + Enhanced Refresh REST
-│       ├── tom-object-types/ (16 md)        per-object CRUD via TOM
-│       └── scripts/                         PowerShell + sh + refresh_model.py
-│
-└── 04-review/                               validate, audit, usage, lineage, model-audit
-    ├── audit/              (5 md)           report-level: full report, quick checks, design, performance
-    ├── model-audit/        (7 md)           model-level: workflow, gather-context, categories, AI readiness, perf
-    ├── bpa/                (2 md)           Best Practice Analyzer via pbir (rule library: ../tabular-editor/bpa/)
-    ├── usage/              (4 md)           workspace, single report, distribution, exclude non-consumers
-    ├── lineage/            (3 md + 1 .py)   downstream reports finder + other-consumer caveats
-    ├── structure/          (3 md)           validate_pbip, post-rename, UTF-8 BOM check
-    ├── reviewers/          (7 md)           pre-flight checklists (Deneb / SVG / Python / R / PBIP / Semantic Model Auditor)
-    ├── export/             (1 md)           visual data → Excel for QA
-    ├── metadata/           (1 md)           file sizes / dependencies / last-modified
-    ├── hooks/                               opt-in PostToolUse validation (PBIR + TMDL + binding)
-    ├── scripts/                             validate_pbip + usage scripts + get_model_info
-    └── usage-metrics-dataset/               reference Power BI usage-metrics PBIP
+├── 00-setup.md · setup.ps1     prerequisites + bootstrap (read once per machine)
+├── 01-brief/                   discovery / requirements (+ references/, wireframes/, hooks/)
+├── 02-build/                   edit room — four sub-rooms
+│   ├── report/                 PBIR: add-visual, bind, layout (grid tokens + resolve_layout.py), format,
+│   │                           page, filters, bookmarks, calculations, schema-patterns, pbip-format,
+│   │                           semantic-model (read TMDL), validate, references, examples, tools (pbirkit.py)
+│   ├── model/                  TMDL: add, update, fix-pattern, object-types, naming, power-query, dax (50 patterns)
+│   ├── theme/                  theme JSON: apply, modify, promote, audit, serialize, _deep-reference (spec, on ask only)
+│   └── visuals/                custom engines: deneb, svg, python, r
+├── 03-bind/                    live model: desktop-bridge.md · via-mcp (preferred) · via-powershell (TOM + scripts)
+└── 04-review/                  audit, model-audit, bpa, usage, lineage, structure, reviewers, export, metadata,
+                                hooks (opt-in PostToolUse), scripts
 ```
 
 ## Layers (the rest of the workspace)
