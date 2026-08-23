@@ -62,7 +62,7 @@ These don't need to be asked — derived from `<PREFIX>` and `<STEPS>`:
 ## Lineage tags
 
 The MCP auto-generates these on create. If pasting into Tabular Editor manually, use
-[`../../model/object-types/lineage-tag.md`](../../model/object-types/lineage-tag.md) — every
+[`../../model/object-types/_index.md`](../../model/object-types/_index.md) (lineageTag) — every
 new object needs a fresh GUID. The recipe templates leave `lineageTag:` lines blank so the
 tool fills them in.
 

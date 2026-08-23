@@ -761,6 +761,6 @@ jq empty visual.json
 
 ## Related Documentation
 
-- [visual-container-formatting.md](./visual-container-formatting.md) - Container vs visual properties
-- [textbox.md](./textbox.md) - Textbox-specific theme issues
-- [filter-pane.md](./filter-pane.md) - Filter pane formatting
+- [../cascade.md](../cascade.md) - Container vs visual properties (the theme cascade)
+- [../examples/visual-types/textbox.md](../examples/visual-types/textbox.md) - Textbox-specific theme issues
+- [../../report/filters/configure-filter-pane.md](../../report/filters/configure-filter-pane.md) - Filter pane formatting
