@@ -1,177 +1,36 @@
 # Build a report — the one path (greenfield, multi-page)
 
-> **The single end-to-end pipeline.** Design decisions first, then authoring — one continuous flow,
-> no parallel "design room." Two phases: **A. Design** (decide what it looks like + why → a
-> `Design Brief:` contract) and **B. Build** (materialize tokens → theme → pages → visuals → gate).
-> Each step names the exact file to load. This page is the *sequence*; the linked files are the *detail*.
-
-For a single mechanical edit (add one card, restyle one visual), skip this — use the
-[`context.md`](context.md) router directly. This path is for building (or redesigning) a whole report.
-
----
+> The single end-to-end sequence: **A. Design** (decide → a `Design Brief:` contract) then **B. Build**
+> (tokens → theme → pages → visuals → gate). One line per step = *what to do* + *the file to load*.
+> Elaboration per step: [`build-report-detail.md`](build-report-detail.md) (same headings).
+> Single mechanical edits skip this — use the [`context.md`](context.md) router.
 
 ## Phase A — Design (decide before authoring)
 
-### A0 — Data-first investigation (mandatory)
-Inspect the semantic model **before any design decision**.
-- **Live model** → Modeling MCP ([`../../03-bind/via-mcp/_index.md`](../../03-bind/via-mcp/_index.md)): list
-  tables/columns/measures/relationships; sample rows for cardinality/magnitude; run DAX to confirm a
-  measure returns non-flat values.
-- **No live connection** → read TMDL ([`semantic-model/find-field-from-tmdl.md`](semantic-model/find-field-from-tmdl.md),
-  [`semantic-model/read-measure-definition.md`](semantic-model/read-measure-definition.md)).
-
-Map **each measure + dimension to the analytical question it answers**. A flat line or two-bar chart is
-the wrong field/visual, not a styling problem. Missing model work (new measures, sort-by columns,
-variance/ratio) is **model-side** → [`../model/_index.md`](../model/_index.md) or [`../../03-bind/_index.md`](../../03-bind/_index.md), not here.
-
-### A1 — Design identity (tone + signature)
-Commit a **tone** ([`references/tones.md`](references/tones.md)) and **signature**
-([`references/signatures.md`](references/signatures.md)) — the model is in
-[`references/design-identity.md`](references/design-identity.md). The tone pins palette/type/density/
-borders; the signature is the one recurring move. If the prompt is vague (no audience/purpose/page
-count/filter depth), **stop and offer 2–3 named options** first
-([`../../01-brief/references/vague-prompts.md`](../../01-brief/references/vague-prompts.md)); recommend
-one, record the assumption, proceed. For **brownfield**, capture current + target — the delta is the
-redesign ([`references/brownfield.md`](references/brownfield.md)).
-
-### A2 — Archetype per page
-Route **each page independently** ([`references/archetypes/_index.md`](references/archetypes/_index.md))
-— even one broad request decomposes into pages of different archetypes. Walk that archetype's variant
-table using the page's data shape; record `layout_variant` + `variant_rationale`. Multi-page → apply
-[`references/composition.md`](references/composition.md) (variant rotation; avoid mono-archetype).
-
-### A3 — Chart selection
-Match each question to a visual type via [`add-visual/pick-visual-type.md`](add-visual/pick-visual-type.md)
-(the question→chart taxonomy, **cardinality limits**, encoding-accuracy hierarchy, and the canonical
-`visualType` names — `columnChart`, not `stackedColumnChart`). One analytical question per visual.
-
-### A4 — Visual configuration
-Decide per-visual sort, color strategy, label placement, axis, conditional formatting. Reference
-[`references/cards-and-kpis.md`](references/cards-and-kpis.md),
-[`references/tables-and-matrices.md`](references/tables-and-matrices.md),
-[`references/visual-colors.md`](references/visual-colors.md). Cross-filter etiquette →
-[`references/interactivity.md`](references/interactivity.md).
-
-### A5 — Theme decision (DEFAULT: keep the existing theme)
-**Use the report's current theme.** The A1 tone is design *direction* — it shapes the brief's
-`color_map` (which palette slot maps to which measure); it does **not** authorize a theme. **Never
-create, apply, or swap a theme JSON unless the user explicitly asks** for a new/different theme (hard
-rule — [`../theme/context.md`](../theme/context.md)). Record `theme.base: existing theme preserved` in
-the brief. Only if a swap was explicitly requested: escalate to
-[`../theme/create/_index.md`](../theme/create/_index.md), and never replace per-type safeguards with a
-blunt `visualStyles["*"]["*"]` ([`../theme/modify/wildcard.md`](../theme/modify/wildcard.md)).
-
-### A6 — Emit the Design Brief contract
-Produce the `Design Brief:` YAML — full schema + validation checklist in
-[`layout/design-contract.md`](layout/design-contract.md). Must carry
-`generated_by: powerbi-report-design-room`, one `pages[]` per page (each with `archetype`,
-`layout_variant`, `variant_rationale`, insight `page_title`), a per-page `layout_contract` (grid
-regions + bands), and a `space_budget` with no dead cells. Review it against
-[`references/anti-patterns.md`](references/anti-patterns.md) and
-[`references/accessibility.md`](references/accessibility.md) **before** authoring — layout gaps,
-missing slicers, monochrome charts, raw field names, failed contrast are cheapest to fix on the
-contract.
-
----
+- **A0 Data-first investigation (mandatory)** — inspect the model before any design decision: live → [`../../03-bind/via-mcp/_index.md`](../../03-bind/via-mcp/_index.md); no connection → [`semantic-model/find-field-from-tmdl.md`](semantic-model/find-field-from-tmdl.md). Map every measure/dimension to the question it answers; missing model work is model-side ([`../model/_index.md`](../model/_index.md)).
+- **A1 Design identity** — commit a tone ([`references/tones.md`](references/tones.md)) + signature ([`references/signatures.md`](references/signatures.md)); vague prompt → offer 2–3 options first ([`../../01-brief/references/vague-prompts.md`](../../01-brief/references/vague-prompts.md)); brownfield → [`references/brownfield.md`](references/brownfield.md).
+- **A2 Archetype per page** — route each page ([`references/archetypes/_index.md`](references/archetypes/_index.md)); record `layout_variant` + rationale; multi-page → rotate ([`references/composition.md`](references/composition.md)).
+- **A3 Chart selection** — one question per visual; canonical `visualType` names ([`add-visual/pick-visual-type.md`](add-visual/pick-visual-type.md)).
+- **A4 Visual configuration** — sort, color strategy, labels, axes ([`references/cards-and-kpis.md`](references/cards-and-kpis.md), [`references/tables-and-matrices.md`](references/tables-and-matrices.md), [`references/visual-colors.md`](references/visual-colors.md), [`references/interactivity.md`](references/interactivity.md)).
+- **A5 Theme decision — DEFAULT keep the existing theme.** Tone is direction, not a licence to build a theme; swap only on explicit ask ([`../theme/context.md`](../theme/context.md)).
+- **A6 Emit the `Design Brief:` contract** — grid regions + bands per page, `space_budget`, `color_map` ([`layout/design-contract.md`](layout/design-contract.md)); review against [`references/anti-patterns.md`](references/anti-patterns.md) + [`references/accessibility.md`](references/accessibility.md) before authoring.
 
 ## Phase B — Build (implement the contract)
 
-> The contract is the spec; authoring computes the **how** (exact `pbir` commands, coordinates, theme
-> JSON, validation). Don't free-author — every visual traces to a contract placement.
+- **B7 Materialize `projects/<name>/design-system.yaml`** (do not skip) — copy [`layout/design-system-default.yaml`](layout/design-system-default.yaml) if absent; it's what authoring reads and the layout hook audits ([`layout/design-system.md`](layout/design-system.md)).
+- **B8 Theme** — only if A5 sanctioned a change ([`../theme/create/_index.md`](../theme/create/_index.md)); theme-first: repeated per-visual overrides move up into the theme.
+- **B9 Pages** — [`page/add-page.md`](page/add-page.md); pbir ≥ 0.9.25 writes `pages.json` directly; reference pages by display name, verify with `pbir ls`.
+- **B9a Activate the render loop (Desktop Bridge)** — when `desktop_bridge: true` in [`../../03-bind/via-powershell/hooks/config.yaml`](../../03-bind/via-powershell/hooks/config.yaml): preflight `powerbi-desktop --version` (fallback `npx -y @microsoft/powerbi-desktop-bridge-cli`), `open <pbip> --timeout 120`, `status` → pid + page ids; refresh + Save if the model was just spliced ([`../../03-bind/desktop-bridge.md`](../../03-bind/desktop-bridge.md)). Can't connect → close/reopen loop; never build blind and claim it verified.
+- **B10 Per page: tokens → visuals → format** — read the yaml tokens, add + bind visuals ([`add-visual/_index.md`](add-visual/_index.md); bulk `pbir add visual --from-json`) against **real** field names ([`bind/find-canonical-name.md`](bind/find-canonical-name.md)); place on the grid ([`layout/layout-guidelines.md`](layout/layout-guidelines.md)); scripted builds import [`tools/pbirkit.py`](tools/pbirkit.py). **Bridge on: `reload` + `screenshot` after each page, read the PNG, fix before the next page; Save in Desktop before any reload (disk wins over live MCP edits).**
+- **B11 Validate** — `pbir validate` after every mutation ([`validate/validate.md`](validate/validate.md)); real-vs-cosmetic per [`../../04-review/audit/pbir-validate.md`](../../04-review/audit/pbir-validate.md).
+- **B12 Gate against the contract** — [`../../04-review/audit/layout-contract-validate.md`](../../04-review/audit/layout-contract-validate.md) + [`../../04-review/hooks/audit-layout-consistency.sh`](../../04-review/hooks/audit-layout-consistency.sh); finish with `screenshot-all --settle 1500` (bridge) or close/reopen Desktop. Rendered pixels are the final truth.
 
-### B7 — Materialize `projects/<name>/design-system.yaml`  ← do not skip
-The contract speaks in zones + tokens; the **dimensions** live in the project's
-`design-system.yaml` ([`layout/design-system.md`](layout/design-system.md)). **If the project has none,
-copy the starter** [`layout/design-system-default.yaml`](layout/design-system-default.yaml) to
-`projects/<name>/design-system.yaml` and set `meta.page`, `meta.theme`, and any layout tokens to match
-the contract. This is the file Claude reads before every `pbir add visual` **and** the file
-[`../../04-review/hooks/audit-layout-consistency.sh`](../../04-review/hooks/audit-layout-consistency.sh)
-checks — a project without it cannot be layout-audited and visual sizes will drift.
+## Gotchas (check before handoff)
 
-### B8 — Theme (only if A5 sanctioned a change)
-**By default, do nothing here — the report already has a theme; keep it.** Only when the user
-*explicitly* asked for a new/swapped theme: author it
-([`../theme/create/_index.md`](../theme/create/_index.md)) — it lands in
-`<project>.Report/StaticResources/RegisteredResources/<Theme>.json`, referenced from `report.json`
-([`../theme/where-themes-live.md`](../theme/where-themes-live.md)); add a `$schema` line
-([`../theme/create/schema-integration.md`](../theme/create/schema-integration.md)). **Theme-first:**
-push any repeated per-visual override up into the theme; don't scatter formatting on individual visuals.
-
-### B9 — Pages
-Create pages ([`page/add-page.md`](page/add-page.md)). On **pbir ≥ 0.9.25** (the assumed version —
-[`../../00-setup.md`](../../00-setup.md)) `add page`/`add visual` write `pages.json` directly. Only on
-**≤ 0.9.21** does the schema-lag write block bite (`pagesMetadata/1.1.0` → refuse; pin to `1.0.0`
-first) — see [`../../04-review/audit/pbir-validate.md`](../../04-review/audit/pbir-validate.md). Reference
-pages by **display name**, keep names unique, verify with `pbir ls`.
-
-### B9a — Activate the render loop (Desktop Bridge)  ← when `desktop_bridge: true`, or the user wants to *see* the build
-Check `desktop_bridge` in [`../../03-bind/via-powershell/hooks/config.yaml`](../../03-bind/via-powershell/hooks/config.yaml)
-(or the brief asks for visual verification). If on, bring the bridge up **before the first visual**:
-
-```bash
-powerbi-desktop --version || alias powerbi-desktop='npx -y @microsoft/powerbi-desktop-bridge-cli'   # CLI preflight + fallback
-powerbi-desktop open "projects/<name>/<name>.pbip" --timeout 120     # launches Desktop, waits for the bridge
-powerbi-desktop status --wait-seconds 60                             # -> pid, bridgeStatus: connected, pages[] with ids
-```
-
-Record the **pid** and the page **ids** from `status` — every later `reload`/`screenshot` targets them.
-If the model's tables were just spliced/edited on disk, **refresh first** (Modeling MCP `RefreshWithXMLA`,
-or Home ▸ Refresh) and **Save in Desktop** — a model that isn't loaded makes every capture time out.
-Full command loop, the 30 s render budget (`--wait-seconds 120`), and the error table:
-[`../../03-bind/desktop-bridge.md`](../../03-bind/desktop-bridge.md). If the bridge can't connect
-(`NO_BRIDGE` / `DESKTOP_EXE_NOT_FOUND`), fall back to the close-and-reopen loop — don't build blind *and*
-claim it was verified.
-
-### B10 — Per page: tokens → visuals → format
-For each contract page: read the `design-system.yaml` tokens for sizes/positions, then add + bind each
-visual ([`add-visual/_index.md`](add-visual/_index.md); bulk via `pbir add visual --from-json`).
-Bindings reference **real** fields — run [`bind/find-canonical-name.md`](bind/find-canonical-name.md)
-first. Place on the canvas with the zones model
-([`layout/detail-gradient.md`](layout/detail-gradient.md)) + equal-gap golden rules
-([`layout/layout-guidelines.md`](layout/layout-guidelines.md)); snap to the 8-grid. Then titles/format.
-
-**Render as you go (bridge on):** after each page's visuals are in, `pbir validate`, then
-`powerbi-desktop reload --pid <pid> --wait-seconds 120` and
-`powerbi-desktop screenshot <pageId> --pid <pid> --wait-seconds 120 --output <shots>/<page>.png`,
-**read the PNG**, and fix what it shows *before* starting the next page — don't wait until the end to
-render. `reload` makes **disk win**: if you made model edits through the MCP, **Save in Desktop first**
-or the reload discards them. Serialize per pid (never reload/screenshot in parallel).
-
-### B11 — Validate
-`pbir validate` after every mutation ([`validate/validate.md`](validate/validate.md)). Interpret
-real-vs-cosmetic against [`../../04-review/audit/pbir-validate.md`](../../04-review/audit/pbir-validate.md).
-
-### B12 — Gate against the contract
-Check the finished report against the brief
-([`../../04-review/audit/layout-contract-validate.md`](../../04-review/audit/layout-contract-validate.md))
-and run the layout audit
-([`../../04-review/hooks/audit-layout-consistency.sh`](../../04-review/hooks/audit-layout-consistency.sh)).
-Fix drift before declaring done. **Rendered pixels are the final truth:** with the bridge on, finish with
-`powerbi-desktop screenshot-all --pid <pid> --wait-seconds 120 --settle 1500 --output-dir <shots>` and
-review every page; without it, close and reopen Desktop (edit TMDL/PBIR only while Desktop is closed).
-
----
-
-## Gotchas (check each before handoff)
-- **Tone declared but never propagated** — same fonts/palette/borders as every other report. Walk the
-  tone's downstream column.
-- **Page background** — an intentional surface; avoid white canvas + white containers.
-- **Redundant callouts** — a tile repeating an absolute measure already in the adjacent chart is noise.
-  Needs a derived `insight_basis` (Δ, variance %, rank, threshold, narrative) or delete it.
-- **Temporal slicer grain** — annual/executive pages → a Year dropdown/tile, not a full-date `between`.
-- **Raw field names** — set human-readable display names everywhere.
-- **Percentage formatting** — a rate stored as 0.53 must display "53%".
-- **Monochrome bars** — single-measure bars render one color; specify per-category/gradient in the brief.
-- **Unprompted theme build** — authoring/swapping a theme JSON when the user only picked a tone. Tone is
-  *direction*; keep the existing theme unless a theme change was **explicitly** requested (A5/B8).
-- **Missing `design-system.yaml`** — B7 skipped → the report can't be layout-audited and sizes drift.
-- **Built blind** — `desktop_bridge: true` but no `reload`/`screenshot` between pages; or `powerbi-desktop`
-  not on PATH in a fresh shell (use `npx -y @microsoft/powerbi-desktop-bridge-cli …`). Renders are the proof.
-- **Reload clobbered MCP edits** — model changes made live through the MCP weren't Saved before a
-  `reload` (disk wins). Save in Desktop, then reload.
+Tone never propagated · white-on-white page background · redundant callouts without an `insight_basis` ·
+full-date `between` slicer on an annual page · raw field names · rates shown as 0.53 · monochrome bars ·
+unprompted theme build · missing `design-system.yaml` · **built blind** (bridge on, no renders / CLI not on
+PATH) · **reload clobbered unsaved MCP edits**. Each is explained in [`build-report-detail.md#gotchas-check-each-before-handoff`](build-report-detail.md#gotchas-check-each-before-handoff).
 
 ## Related
-- [`context.md`](context.md) — the intent router (this path is its "build a full report" branch)
-- [`references/design-identity.md`](references/design-identity.md) — the tone/signature/archetype model
-- [`layout/design-contract.md`](layout/design-contract.md) — the Phase-A output Phase B implements
-- [`../../01-brief/_index.md`](../../01-brief/_index.md) — the requirements that feed A0–A1
+[`context.md`](context.md) (the router this is the "build a full report" branch of) · [`references/design-identity.md`](references/design-identity.md) · [`layout/design-contract.md`](layout/design-contract.md) · [`../../01-brief/_index.md`](../../01-brief/_index.md)

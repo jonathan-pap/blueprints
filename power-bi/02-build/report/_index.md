@@ -2,7 +2,7 @@
 
 > Pick by intent. Load only the file(s) you need. Folder map below.
 
-## build-report.md — the one path for a full report (greenfield/redesign)
+## build-report.md` — the build SEQUENCE (one line per step; read every build) · `build-report-detail.md — the one path for a full report (greenfield/redesign)
 - `build-report.md` — **read first when building a whole report** — the end-to-end pipeline:
   design (tone → archetype → charts → contract) → build (design-system.yaml → theme → pages → visuals → gate)
 - the design vocabulary it uses lives in `references/` (below); the contract spec is `layout/design-contract.md`
