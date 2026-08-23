@@ -1,7 +1,12 @@
-"""Resolve design-system.yaml regions to pixel rectangles.
+"""Resolve design-system.yaml regions to pixel rectangles (ROOM TOOL - shared by every project).
 
-Every visual position in this report comes from here - nothing is hardcoded at the call site.
-Cell math per ../../02-build/report/layout/layout-guidelines.md#grid-12x12.
+Every visual position comes from here - nothing is hardcoded at a call site. Cell math per
+./layout-guidelines.md#grid-12x12. Projects do NOT copy this file; they import it:
+
+    sys.path.insert(0, "<workspace>/power-bi/02-build/report/layout"); import resolve_layout as RL
+    DS = RL.load("projects/<name>/design-system.yaml"); RL.layout("kpi_row_4", DS)
+
+CLI:  python resolve_layout.py [path/to/design-system.yaml] [layout ...]
 
 Regions are [col_start, row_start, col_end, row_end], 1-indexed, END-EXCLUSIVE.
 Region EDGES are snapped to the grid snap (8px), then width/height derive from the snapped
@@ -49,11 +54,13 @@ def layout(name, ds=None):
 
 
 if __name__ == "__main__":
-    ds = load()
+    args = sys.argv[1:]
+    path = args.pop(0) if args and args[0].endswith((".yaml", ".yml")) else DS
+    ds = load(path)
     colW, rowH = cells(ds)
     pg = ds["meta"]["page"]
     print("page %dx%d  colW=%.2f rowH=%.2f" % (pg["width"], pg["height"], colW, rowH))
-    names = sys.argv[1:] or list(ds["layouts"])
+    names = args or list(ds["layouts"])
     for n in names:
         print("\n%s:" % n)
         for r in layout(n, ds):

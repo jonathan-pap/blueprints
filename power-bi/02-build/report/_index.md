@@ -92,3 +92,4 @@
 - `read-measure-definition.md`
 - `infer-dax-from-visual.md`
 - `rebind-to-different-field.md`
+- `tools/` — room-level Python for scripted builds: `pbirkit.py` (the shared PBIR authoring core every project kit imports) — see `tools/_index.md`
