@@ -57,6 +57,12 @@ SCHEMA = ("https://raw.githubusercontent.com/microsoft/powerbi-desktop-samples/m
 
 VERSION = "v1.0"
 
+# Container corner radius, applied to every radius in the cloned theme (border and
+# visualCorners, 11 places). dark-ruby originally shipped 30, which reads as a soft pill on a
+# 1280x720 canvas and eats usable area at the corners of small cards. 5 is a crisp panel edge
+# that still softens the corner.
+CORNER_RADIUS = 6
+
 # Surfaces + true neutrals + the red/green semantics are carried over untouched. Everything
 # else in the file is hue-bearing and gets re-solved.
 KEEP = {
@@ -389,6 +395,21 @@ def build_map(fam, ruby):
     return out
 
 
+def set_radius(node):
+    """Rewrite every corner radius in the cloned theme. Radius is a theme concern - doing it
+    per visual would be the override anti-pattern the format room warns about."""
+    if isinstance(node, dict):
+        for k, v in node.items():
+            if k == "radius" and isinstance(v, (int, float)):
+                node[k] = CORNER_RADIUS
+            else:
+                set_radius(v)
+    elif isinstance(node, list):
+        for v in node:
+            set_radius(v)
+    return node
+
+
 def remap(node, cmap):
     if isinstance(node, dict):
         return {k: remap(v, cmap) for k, v in node.items()}
@@ -520,7 +541,7 @@ def a11y_audit(slug, theme, cmap, pal):
 
 def build_a11y(slug, fam, ruby, write):
     cmap, pal = a11y_map(fam, ruby)
-    theme = remap(ruby, cmap)
+    theme = set_radius(remap(ruby, cmap))
     theme["name"] = fam["name"] + " A11y"
 
     ordered = {"$schema": SCHEMA}
@@ -553,7 +574,7 @@ def build_a11y(slug, fam, ruby, write):
 # --------------------------------------------------------------------------------- build
 def build(slug, fam, ruby, write):
     cmap = build_map(fam, ruby)
-    theme = remap(ruby, cmap)
+    theme = set_radius(remap(ruby, cmap))
     theme["name"] = fam["name"]
 
     # dark-ruby ships without a $schema; the variants do not repeat that. Rebuilt as an

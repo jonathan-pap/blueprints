@@ -66,12 +66,12 @@
                 "color": "#3A3A3A"
               }
             },
-            "radius": 30
+            "radius": 6
           }
         ],
         "visualCorners": [
           {
-            "radius": 30
+            "radius": 6
           }
         ],
         "title": [
@@ -314,12 +314,12 @@
                 "color": "#3A3A3A"
               }
             },
-            "radius": 30
+            "radius": 6
           }
         ],
         "visualCorners": [
           {
-            "radius": 30
+            "radius": 6
           }
         ],
         "labels": [
@@ -421,7 +421,7 @@
         ],
         "visualCorners": [
           {
-            "radius": 30
+            "radius": 6
           }
         ],
         "stylePreset": [
@@ -1302,12 +1302,12 @@
                 "color": "#3A3A3A"
               }
             },
-            "radius": 30
+            "radius": 6
           }
         ],
         "visualCorners": [
           {
-            "radius": 30
+            "radius": 6
           }
         ],
         "data": [
@@ -1950,12 +1950,12 @@
                 "color": "#3A3A3A"
               }
             },
-            "radius": 30
+            "radius": 6
           }
         ],
         "visualCorners": [
           {
-            "radius": 30
+            "radius": 6
           }
         ],
         "questions": [
@@ -2021,12 +2021,12 @@
                 "color": "#3A3A3A"
               }
             },
-            "radius": 30
+            "radius": 6
           }
         ],
         "visualCorners": [
           {
-            "radius": 30
+            "radius": 6
           }
         ],
         "text": [

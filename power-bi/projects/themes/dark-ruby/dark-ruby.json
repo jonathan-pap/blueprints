@@ -64,11 +64,11 @@
           {
             "show": true,
             "color": { "solid": { "color": "#3A3A3A" } },
-            "radius": 30
+            "radius": 6
           }
         ],
         "visualCorners": [
-          { "radius": 30 }
+          { "radius": 6 }
         ],
         "title": [
           {
@@ -198,11 +198,11 @@
           {
             "show": true,
             "color": { "solid": { "color": "#3A3A3A" } },
-            "radius": 30
+            "radius": 6
           }
         ],
         "visualCorners": [
-          { "radius": 30 }
+          { "radius": 6 }
         ],
         "labels": [
           {
@@ -266,7 +266,7 @@
           { "color": { "solid": { "color": "#2A2A2A" } } }
         ],
         "visualCorners": [
-          { "radius": 30 }
+          { "radius": 6 }
         ],
         "stylePreset": [
           { "name": "None" }
@@ -797,11 +797,11 @@
           {
             "show": true,
             "color": { "solid": { "color": "#3A3A3A" } },
-            "radius": 30
+            "radius": 6
           }
         ],
         "visualCorners": [
-          { "radius": 30 }
+          { "radius": 6 }
         ],
         "data": [
           {
@@ -1184,11 +1184,11 @@
           {
             "show": true,
             "color": { "solid": { "color": "#3A3A3A" } },
-            "radius": 30
+            "radius": 6
           }
         ],
         "visualCorners": [
-          { "radius": 30 }
+          { "radius": 6 }
         ],
         "questions": [
           {
@@ -1225,11 +1225,11 @@
           {
             "show": true,
             "color": { "solid": { "color": "#3A3A3A" } },
-            "radius": 30
+            "radius": 6
           }
         ],
         "visualCorners": [
-          { "radius": 30 }
+          { "radius": 6 }
         ],
         "text": [
           {

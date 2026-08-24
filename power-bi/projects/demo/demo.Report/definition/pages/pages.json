@@ -1,7 +1,9 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.1.0/schema.json",
   "pageOrder": [
-    "e9f0b4426847e09a4abe"
+    "Guild_Overview",
+    "Quest_Board",
+    "Adventurer_Roster"
   ],
-  "activePageName": "e9f0b4426847e09a4abe"
+  "activePageName": "Guild_Overview"
 }
