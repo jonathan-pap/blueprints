@@ -145,6 +145,14 @@ renders 10. Nothing warns you, and the chart looks complete — it just quietly 
 category, which on a "top 10" is the one the title promises. Count the bars in the render
 against the TopN filter every time.
 
+## 15. A container title on a chart renders YOUR title AND the auto title, stacked
+
+Setting `visualContainerObjects.title.text` on a chart makes Power BI render the custom text
+**and** its auto-generated name ("Churned Customers by Churn Category") on top of each other.
+`pbir validate` passes; the render is a two-line title mess. Fix: keep the container title
+`show: false` on every chart and put headings in a **textbox** instead — deterministic, and the
+pattern `tools/pbirkit.py` (`panel()`, `head_tb()`) already enforces in scripted builds.
+
 ## See also
 
 - `../../../04-review/audit/pbip-schema-drift.md` — Desktop strips `$schema` on every save
