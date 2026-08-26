@@ -13,5 +13,17 @@ is data). If a helper is useful to a second project, it belongs here, not copied
 - `resolve_layout.py` — regions → snapped pixel rects from a project's `design-system.yaml`
   (CLI: `python resolve_layout.py <design-system.yaml> [layout …]`).
 
+CLI utilities (run, not imported):
+
+- `convert_legacy_to_pbir.py` — legacy monolithic `report.json` → PBIR directory format
+  (doctrine: [`../validate/convert-legacy.md`](../validate/convert-legacy.md))
+- `set-background-image.py` — apply an image as a page wallpaper, sized correctly
+- `generate-background-with-gemini.py` — OPTIONAL: Gemini-generated background from a text prompt —
+  the one script with an external AI dependency; nothing else depends on it
+  (both: [`../page/set-page-wallpaper.md`](../page/set-page-wallpaper.md))
+
+**Hard rule:** a script here may *enforce* a rule, but the rule's home is always a markdown file.
+If a fact's only home is a `.py`, that's a bug (see build trap 15 for the precedent).
+
 Worked users: `projects/telecom-churn/churnkit.py`, `projects/arcane-emporium/emporiumkit.py`
 (each ~120–150 lines of project-specific code on top of this core).

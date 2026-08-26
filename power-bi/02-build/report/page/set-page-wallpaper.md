@@ -20,7 +20,7 @@ Often cleaner than an image — easier to maintain and updates with theme color 
 
 ## Generate a custom background
 
-Two helper scripts ship in `../scripts/`:
+Two helper scripts ship in `../tools/`:
 
 - `generate-background-with-gemini.py` — Gemini-generated background image from a text prompt.
 - `set-background-image.py` — apply an existing image as a page wallpaper, sized correctly.

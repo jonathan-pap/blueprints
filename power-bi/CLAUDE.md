@@ -59,7 +59,7 @@ power-bi/
 ├── 02-build/                   edit room — four sub-rooms
 │   ├── report/                 PBIR: add-visual, bind, layout (grid tokens), format,
 │   │                           page, filters, bookmarks, calculations, schema-patterns, pbip-format,
-│   │                           semantic-model (read TMDL), validate, references, examples, tools (pbirkit.py + resolve_layout.py)
+│   │                           semantic-model (read TMDL), validate, references, examples, tools (all room code: pbirkit, resolve_layout, converters)
 │   ├── model/                  TMDL: add, update, fix-pattern, object-types, naming, power-query, dax (50 patterns)
 │   ├── theme/                  theme JSON: apply, modify, promote, audit, serialize, _deep-reference (spec, on ask only)
 │   └── visuals/                custom engines: deneb, svg, python, r

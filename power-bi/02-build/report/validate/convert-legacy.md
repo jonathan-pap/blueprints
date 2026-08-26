@@ -18,7 +18,7 @@ Open the PBIX in Power BI Desktop → File → Save As → choose **Power BI Pro
 There is no fully reliable CLI converter — Desktop is the canonical path. If Desktop is unavailable, run the helper script:
 
 ```bash
-python ../scripts/convert_legacy_to_pbir.py path/to/Report/Layout path/to/output.Report
+python ../tools/convert_legacy_to_pbir.py path/to/Report/Layout path/to/output.Report
 ```
 
 Handles the common cases; complex reports may need manual fixup afterwards.
