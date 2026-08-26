@@ -10,8 +10,8 @@ is data). If a helper is useful to a second project, it belongs here, not copied
   projections), `vis`/`textbox`/`head_tb`/`heading`/`image_svg`/`slicer` (visual JSON),
   `panel`/`noframe`/`axis`/`sort_by`/`in_filter` (formatting + filters), `add_page`/`write`/`run`
   (pages, files, `pbir` calls). Docstring shows the 6-line project wiring.
-- Geometry itself lives next door: [`../layout/resolve_layout.py`](../layout/resolve_layout.py)
-  (regions → snapped pixel rects; CLI: `python resolve_layout.py <design-system.yaml> [layout …]`).
+- `resolve_layout.py` — regions → snapped pixel rects from a project's `design-system.yaml`
+  (CLI: `python resolve_layout.py <design-system.yaml> [layout …]`).
 
 Worked users: `projects/telecom-churn/churnkit.py`, `projects/arcane-emporium/emporiumkit.py`
 (each ~120–150 lines of project-specific code on top of this core).

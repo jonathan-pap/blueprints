@@ -11,7 +11,7 @@ the fact/measure table names, and bespoke visual recipes - and configures this m
     import os, sys
     ROOT = os.path.dirname(os.path.abspath(__file__))
     WS = os.path.normpath(os.path.join(ROOT, "..", "..", "02-build", "report"))
-    sys.path[:0] = [os.path.join(WS, "tools"), os.path.join(WS, "layout")]
+    sys.path.insert(0, os.path.join(WS, "tools"))
     import pbirkit as K
     K.configure(root=ROOT, report="<name>.Report", fact="FactSales",
                 palette=dict(INK="#0B1020", INK2="#4A5578", INK3="#6E7A9C",
@@ -19,7 +19,7 @@ the fact/measure table names, and bespoke visual recipes - and configures this m
     from pbirkit import *     # AFTER configure, so DS/PAGES/palette names bind to real values
 
 Functions read module globals at CALL time, so configure() must run before any call.
-Geometry: ../layout/resolve_layout.py. Conventions: ../schema-patterns/, ../add-visual/.
+Geometry: ./resolve_layout.py. Conventions: ../schema-patterns/, ../add-visual/.
 """
 import json
 import os

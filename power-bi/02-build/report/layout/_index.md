@@ -3,7 +3,7 @@
 - `design-contract.md` — the `Design Brief:` handoff schema (from [`../design/`](../references/design-identity.md)) — grid regions, bands, placements, space rules + the handoff validation checklist. The spec the steps below implement.
 - `design-system.md` — **read first** — project layout tokens (`design-system.yaml`): the 12×12 grid, per-type spans, bands, gaps. The dimension counterpart to the theme.
 - `design-system-default.yaml` — copyable starter tokens for a new project
-- `resolve_layout.py` — **tool**: regions → snapped pixel rects from a project's `design-system.yaml` (import it; never copy it into a project). CLI: `python resolve_layout.py <yaml> [layout …]`
+- geometry tool lives in [`../tools/resolve_layout.py`](../tools/resolve_layout.py) — regions → snapped pixel rects (this folder stays markdown + the yaml template)
 - `page-dimensions.md` — query and choose page size
 - `position-visual.md` — set x, y
 - `size-visual.md` — set width, height
