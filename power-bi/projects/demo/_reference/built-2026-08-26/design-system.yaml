@@ -1,0 +1,107 @@
+# Design system — DEFAULT STARTER (12×12 grid model)
+#
+# Copy to projects/<name>/design-system.yaml and adapt. Layout tokens Claude reads BEFORE every
+# `pbir add visual`. Power BI never sees this file — it's the layout counterpart to the theme
+# (theme = appearance, this = dimensions). Geometry is a 12-column × 12-row grid; tokens are
+# resolution-independent grid SPANS + region coords, not pixels — they resolve to pixels per canvas
+# via the cell math in ../layout-guidelines.md#grid-12x12. See ../design-system.md.
+
+meta:
+  page: { width: 1280, height: 720 }          # cell size derives from this + grid below
+  theme: spectrum-light-v1.3                   # appearance lives in the theme, not here
+  units: grid-cells                            # placements are grid spans/regions; authoring -> px
+
+grid:
+  columns: 12
+  rows: 12
+  gutter: 16                                    # px between cells (24 on FHD 1920×1080)
+  margin: 24                                    # px page edge (32 on FHD)
+  snap: 8                                       # resolved-px snap (audited)
+  # Cell size is DERIVED, never stored:
+  #   colW = (page.width  - 2*margin - gutter*(columns-1)) / columns
+  #   rowH = (page.height - 2*margin - gutter*(rows-1))    / rows
+  # 1280×720 -> colW ≈ 88, rowH ≈ 41.   1920×1080 (margin 32, gutter 24) -> colW ≈ 132.7, rowH ≈ 62.7
+
+# Detail gradient = a SEMANTIC label on grid rows (storytelling), not the geometry.
+bands:
+  summary:  { rows: [1, 4]  }                   # KPIs, slicers    (rows 1-3)
+  analysis: { rows: [4, 10] }                   # charts, maps     (rows 4-9)
+  detail:   { rows: [10, 13] }                  # tables, matrices (rows 10-12)
+
+# Per-type DEFAULT spans [cols, rows]. Same type -> same span everywhere = no drift, any canvas.
+defaults:
+  title:      { span: [12, 1], band: summary }  # full-width header row
+  slicer:     { span: [2, 1],  band: summary }  # inline; 4+ slicers -> use the `rail` region instead
+  card:       { span: [3, 3],  band: summary }  # KPI / card (value + context)
+  chart:      { span: [6, 5],  band: analysis } # standard chart (half width)
+  chart_wide: { span: [12, 5], band: analysis } # hero / full-width chart
+  table:      { span: [12, 3], band: detail }   # table / matrix, full width
+  rail:       { span: [2, 12], band: summary }  # full-height filter rail (4+ slicers)
+
+# Region templates: named grid rectangles [col_start, row_start, col_end, row_end]
+# (1-indexed, end-EXCLUSIVE; e.g. [1,1,4,4] = cols 1-3, rows 1-3).
+layouts:
+  kpi_row_4:      [ [1,1,4,4], [4,1,7,4], [7,1,10,4], [10,1,13,4] ]   # 4 cards across, rows 1-3
+  charts_2up:     [ [1,4,7,10], [7,4,13,10] ]                          # two half-width charts
+  charts_3up:     [ [1,4,5,10], [5,4,9,10], [9,4,13,10] ]              # three thirds
+  hero_plus_rail: [ [1,1,3,13], [3,1,13,9], [3,9,13,13] ]             # rail + hero + detail (a 2D layout)
+
+  # --- demo (quest-ledger) -------------------------------------------------------------
+  # Brief section 3 asks for FIVE KPIs, and 5 does not divide into 12. Rather than fake it
+  # with uneven gaps, the lead metric takes a 4-col hero and the other four take 2 each.
+  # Page 1 - Guild Overview
+  page_title:      [ [1,1,13,2] ]
+  kpi_hero_plus_4: [ [1,2,5,5], [5,2,7,5], [7,2,9,5], [9,2,11,5], [11,2,13,5] ]
+  overview_trend:  [ [1,5,13,9] ]
+  overview_split:  [ [1,9,7,13], [7,9,13,13] ]
+
+  # Page 2 - Quest Board.  Title yields cols 10-12 to the Year slicer, then a full-width
+  # Pareto hero over two half-width analysis charts.  The scatter gets 328px of height
+  # (v1 gave it 360 but only 616 wide and it still overplotted) - the win here is that
+  # nothing else competes for the lower band.
+  board_header:    [ [1,1,10,2], [10,1,13,2] ]
+  board_hero:      [ [1,2,13,7] ]
+  board_split:     [ [1,7,7,13], [7,7,13,13] ]
+
+  # Page 3 - Adventurer Roster.  THE CAPACITY FIX: v1 gave the two charts 360px each and
+  # left the 24-row roster table 232px, which showed 4-5 rows and read as broken.  A 4-bar
+  # rank chart does not need 360px.  Charts drop to 272, the table takes 328 (~11 rows).
+  # A detail-band table scrolling is normal; a detail-band table showing 4 rows is not.
+  roster_header:   [ [1,1,7,2], [7,1,10,2], [10,1,13,2] ]
+  roster_charts:   [ [1,2,7,7], [7,2,13,7] ]
+  roster_detail:   [ [1,7,13,13] ]
+  # Page 3 does NOT use the resolved pixels of the two regions above - see overrides.
+  # Ten horizontal bars and nine table rows both need more height than the region
+  # split gives, and 16px between them overflows the page by exactly 8px.
+
+# overrides: record any deliberate per-visual departure from the spans above (the audit hook keys on it)
+overrides:
+  - page: Guild_Overview
+    visuals: [kpiBounty, kpiQuests, kpiAvgBounty, kpiAvgDays, kpiAdventurers]
+    change: "height 160 -> 104 (rows 2-4 span is taller than a card needs)"
+    then: "trendLine y 256 -> 200, height 208 -> 264 to absorb the reclaimed 56px"
+    why: >
+      A 3-row grid span gives a KPI card 160px, which is ~60px of dead space under a single
+      number, while the hero trend line was the visual actually short of room. Adjusted by hand
+      in v1 and kept: bands still tile at a clean 16px gap and every edge stays on the 8-snap.
+
+  - page: all
+    visuals: [pageTitle, fltYear, fltRealm, fltRank]
+    change: "header band 40 -> 56px"
+    why: >
+      One grid row resolves to 40px, which fits a text run but not a labelled slicer - the
+      slicer draws its own header plus the dropdown and at 40px you get the header and a
+      sliver. Page 1 has no slicers but keeps the 56px band so the title does not change
+      height between pages.
+
+  - page: Adventurer_Roster
+    visuals: [rankBar, topAdventurers, rosterTable]
+    change: "charts 96..416 (h 320), table 424..696 (h 272) - analysis->detail gap 16 -> 8"
+    why: >
+      THE PAGE-3 CAPACITY PROBLEM, resolved by measurement rather than by taste. Ten
+      horizontal bars scroll below 320px; nine table rows (at 9pt with rowPadding 1) need
+      272px. 96 + 320 + 16 + 272 = 704, which is 8px past the bottom margin, so the band gap
+      closes to 8. Tested both ways: 312px charts drops the tenth adventurer, 264px table
+      clips the ninth row mid-glyph. This is the only split where neither visual scrolls.
+      v1 shipped 360px charts and a 232px table showing 4 rows, which is what made the page
+      read as broken.

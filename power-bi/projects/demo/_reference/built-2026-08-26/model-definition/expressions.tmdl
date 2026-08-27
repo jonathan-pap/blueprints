@@ -1,0 +1,4 @@
+/// Folder holding the generated quest-ledger CSVs. Repoint here if the synthetic-data job is re-run elsewhere.
+expression SourceFolder = "e:/Workspace-Blueprint/synthetic-data/outputs/quest-ledger/latest/" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 6fdff2b2-17b0-4497-8ea6-76dd89965e3d
+

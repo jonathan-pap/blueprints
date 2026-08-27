@@ -596,8 +596,17 @@ def run_pbir_validate(report_dir: Path, result: Result) -> None:
         return
     try:
         proc = subprocess.run(
-            ["pbir", "validate", str(report_dir), "--quiet"],
+            # No `--quiet`: pbir 0.9.25 has no such option, and passing it made
+            # pbir exit 2 on EVERY run, which this function then reported as
+            # `pbir_cli_reported_errors` on a perfectly clean report.
+            ["pbir", "validate", str(report_dir)],
             capture_output=True, text=True, timeout=60,
+            # pbir prints U+2713 and box-drawing characters. Without an explicit
+            # encoding, text=True decodes with the console codepage - cp1252 on a
+            # default Windows shell - and the reader thread dies with
+            # UnicodeDecodeError. subprocess still returns, but with EMPTY output,
+            # so a clean report was being reported as `pbir_cli_reported_errors`.
+            encoding="utf-8", errors="replace",
         )
     except subprocess.TimeoutExpired:
         result.add(WARN, "pbir_cli_timeout",
@@ -790,6 +799,16 @@ def main() -> int:
     parser.add_argument("--no-pbir-cli", action="store_true",
                         help="skip delegation to `pbir validate` for .Report folder validation")
     args = parser.parse_args()
+
+    # The report we print embeds pbir's own output (U+2713, box-drawing). On a
+    # default Windows console stdout is cp1252 and printing it raises
+    # UnicodeEncodeError *after* every check has already run - the work is done
+    # and the result is thrown away. Force UTF-8 rather than strip the characters.
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError):
+            pass  # not a reconfigurable TextIOWrapper (piped, or a test double)
 
     path = Path(args.path)
     if not path.exists():

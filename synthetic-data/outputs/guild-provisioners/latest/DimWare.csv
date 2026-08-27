@@ -1,0 +1,21 @@
+WareKey,Ware,WareType,Supplier
+1,Dwarven Ale (barrel),Provisions,Ironroot Brewery
+2,Hardtack Rations (crate),Provisions,Saltmarsh Traders
+3,Steel Longswords (bundle),Armaments,Ironroot Forge
+4,Healing Salve (case),Alchemical,Moonpetal Apothecary
+5,Elven Waybread (crate),Provisions,Moonpetal Apothecary
+6,Oak Shields (stack),Armaments,Ironroot Forge
+7,Torch Oil (cask),Alchemical,Saltmarsh Traders
+8,Wool Cloaks (bale),Textiles,Gloamweave Mills
+9,Smoked Wyvern Ham,Provisions,Saltmarsh Traders
+10,Crossbow Bolts (chest),Armaments,Ironroot Forge
+11,Antitoxin Vials (case),Alchemical,Moonpetal Apothecary
+12,Silk Banners (bolt),Textiles,Gloamweave Mills
+13,Honeyed Mead (barrel),Provisions,Ironroot Brewery
+14,Chainmail Hauberks (crate),Armaments,Ironroot Forge
+15,Alchemical Fire (strongbox),Alchemical,The Alchemists Collegium
+16,Linen Bandages (bale),Textiles,Gloamweave Mills
+17,Grimmwald Cheese (wheel),Provisions,Saltmarsh Traders
+18,Spiced Wine (cask),Provisions,Ironroot Brewery
+19,Padded Gambesons (crate),Textiles,Gloamweave Mills
+20,Glowmoss Lanterns (crate),Alchemical,Moonpetal Apothecary

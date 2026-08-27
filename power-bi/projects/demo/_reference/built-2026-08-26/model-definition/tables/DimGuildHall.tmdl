@@ -1,0 +1,39 @@
+table DimGuildHall
+	lineageTag: 93c29951-8cbb-44d7-876f-b7a92784ebaa
+
+	column GuildHallKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: bcce440d-52bf-48b3-b9c4-a5639e1ed4a2
+		summarizeBy: none
+		sourceColumn: GuildHallKey
+
+	column GuildHall
+		dataType: string
+		lineageTag: 61d41c43-27fe-4e20-8072-d7219b3708fe
+		summarizeBy: none
+		sourceColumn: GuildHall
+
+	column City
+		dataType: string
+		lineageTag: bc42d4d3-a3ce-4d13-90ff-f9eedfe3e018
+		summarizeBy: none
+		sourceColumn: City
+
+	column Realm
+		dataType: string
+		lineageTag: b334f217-e75c-44c9-b514-51d4a77ac8fb
+		summarizeBy: none
+		sourceColumn: Realm
+
+	partition DimGuildHall = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(SourceFolder & "DimGuildHall.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"GuildHallKey", Int64.Type}, {"GuildHall", type text}, {"City", type text}, {"Realm", type text}})
+				in
+				    Typed
+

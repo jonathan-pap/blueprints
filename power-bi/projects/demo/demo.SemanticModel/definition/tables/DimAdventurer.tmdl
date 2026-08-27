@@ -20,23 +20,12 @@ table DimAdventurer
 		lineageTag: 1d413800-c307-4b1d-97e7-e4751a47ef50
 		summarizeBy: none
 		sourceColumn: Rank
-		sortByColumn: RankOrder
 
 	column Class
 		dataType: string
 		lineageTag: 73eec43f-b861-4c79-9816-6af5a757edc8
 		summarizeBy: none
 		sourceColumn: Class
-
-	/// Ordinal for Rank so charts read Gold -> Copper, not alphabetically (Bronze, Copper, Gold, Silver). Keyed off AdventurerKey to avoid the circular dependency that sorting Rank by a Rank-derived column would create; the roster is pinned 3 Gold / 5 Silver / 7 Bronze / 9 Copper in key order.
-	column RankOrder =
-			VAR _k = DimAdventurer[AdventurerKey]
-			RETURN
-			    SWITCH ( TRUE (), _k <= 3, 1, _k <= 8, 2, _k <= 15, 3, 4 )
-		dataType: int64
-		isHidden
-		lineageTag: efd5a377-4ed9-491f-be7c-0968151bd419
-		summarizeBy: none
 
 	partition DimAdventurer = m
 		mode: import

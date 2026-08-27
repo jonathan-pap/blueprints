@@ -1,0 +1,12 @@
+{
+  "generated": "2026-08-27T08:05:58",
+  "seed": 1337,
+  "config": "config.yaml",
+  "tables": {
+    "DimDate": 1461,
+    "DimShop": 8,
+    "DimItem": 24,
+    "DimCustomer": 20,
+    "FactSales": 99374
+  }
+}

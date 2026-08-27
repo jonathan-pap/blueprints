@@ -1,0 +1,11 @@
+{
+  "generated": "2026-08-27T08:05:59",
+  "seed": 2024,
+  "config": "config.yaml",
+  "tables": {
+    "DimDate": 731,
+    "DimPatron": 15,
+    "DimWare": 20,
+    "FactOrders": 32512
+  }
+}

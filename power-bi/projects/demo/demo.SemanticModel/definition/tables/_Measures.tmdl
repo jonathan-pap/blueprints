@@ -2,67 +2,6 @@
 table _Measures
 	lineageTag: 225609f4-2e37-4b94-8863-39025746e58f
 
-	/// Total bounty gold paid on completed quests. Generator pins this to 6,000,000 across all years.
-	measure 'Total Bounty' = SUM ( FactQuests[Bounty] )
-		formatString: #,##0
-		displayFolder: Core
-		lineageTag: 99668cdf-5008-455d-9714-ff11d06ac57f
-
-	measure 'Total DaysOnQuest' = SUM ( FactQuests[DaysOnQuest] )
-		formatString: #,##0
-		displayFolder: Core
-		lineageTag: 9cde03e9-746e-4737-a9ff-ad969f21d1f3
-
-	/// Completed quests. One fact row = one completed quest.
-	measure Quests = COUNTROWS ( FactQuests )
-		formatString: #,##0
-		displayFolder: Core
-		lineageTag: 1fd34c06-825c-4799-a155-16fee32a742f
-
-	measure 'Avg Bounty' = DIVIDE ( [Total Bounty], [Quests] )
-		formatString: #,##0
-		displayFolder: Core
-		lineageTag: 266e4238-e955-4c12-b3c5-facd9142839f
-
-	measure 'Avg DaysOnQuest' = DIVIDE ( [Total DaysOnQuest], [Quests] )
-		formatString: 0.0
-		displayFolder: Core
-		lineageTag: 18efff06-8418-4161-997d-d61410a6b27b
-
-	/// Adventurers with at least one completed quest in context. 24 in the roster.
-	measure 'Active Adventurers' = DISTINCTCOUNT ( FactQuests[AdventurerKey] )
-		formatString: #,##0
-		displayFolder: Core
-		lineageTag: 1d7e0881-34cc-4c11-bcd6-196969d27ed1
-
-	measure 'Bounty PY' = CALCULATE ( [Total Bounty], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
-		formatString: #,##0
-		displayFolder: Time
-		lineageTag: 0e1c6fbe-fe79-4181-ae52-edc5470b723d
-
-	/// Growth vs the same period last year. Only meaningful at a grain that HAS a prior period - on a card showing all years it compares 2024-2026 against 2024-2025 and reads high. Use [Bounty YoY % Latest] for a card.
-	measure 'Bounty YoY %' = DIVIDE ( [Total Bounty] - [Bounty PY], [Bounty PY] )
-		formatString: 0.0%
-		displayFolder: Time
-		lineageTag: f232ac02-9d93-4a96-a8dd-4f78658dffb3
-
-	/// Latest year vs the year before, regardless of the visual's grain. This is the card-safe YoY; the plain [Bounty YoY %] misreads at an all-years grain.
-	measure 'Bounty YoY % Latest' =
-			VAR _y = MAX ( DimDate[Year] )
-			VAR _cur = CALCULATE ( [Total Bounty], REMOVEFILTERS ( DimDate ), DimDate[Year] = _y )
-			VAR _pre = CALCULATE ( [Total Bounty], REMOVEFILTERS ( DimDate ), DimDate[Year] = _y - 1 )
-			RETURN
-			    DIVIDE ( _cur - _pre, _pre )
-		formatString: 0.0%
-		displayFolder: Time
-		lineageTag: 231d146c-7cb7-4fe3-a051-76fda2c28e3a
-
-	/// Share of the bounty total visible under the current filters.
-	measure 'Bounty Share' = DIVIDE ( [Total Bounty], CALCULATE ( [Total Bounty], REMOVEFILTERS ( ) ) )
-		formatString: 0.0%
-		displayFolder: Analysis
-		lineageTag: b248d8a3-369e-4b6e-b439-38e0e28f1e7a
-
 	column _
 		lineageTag: afaa155b-ce29-43a7-804b-b76c459db1b3
 		isNameInferred

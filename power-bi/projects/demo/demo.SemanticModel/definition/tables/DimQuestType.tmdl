@@ -20,14 +20,6 @@ table DimQuestType
 		lineageTag: e2445b28-3cf1-46c5-aac4-507d1c01687d
 		summarizeBy: none
 		sourceColumn: Danger
-		sortByColumn: DangerOrder
-
-	/// Ordinal for Danger so charts read Low -> Extreme, not alphabetically. Keyed off QuestTypeKey rather than Danger: deriving it from Danger and then sorting Danger by it is a circular dependency Power BI rejects.
-	column DangerOrder = SWITCH ( DimQuestType[QuestTypeKey], 2, 1, 6, 1, 4, 2, 5, 2, 1, 3, 3, 3, 7, 4, 8, 4, 99 )
-		dataType: int64
-		isHidden
-		lineageTag: 92a42e75-8741-4b94-9f78-63eeeb3607c8
-		summarizeBy: none
 
 	partition DimQuestType = m
 		mode: import

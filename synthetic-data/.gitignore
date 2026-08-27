@@ -23,6 +23,11 @@ outputs/*.json
 outputs/*.ndjson
 outputs/*.xlsx
 outputs/*.sql
-# Multi-table run folders (outputs/<job>/latest/, outputs/<job>/runs/...):
-outputs/*/**
+# Multi-table run folders: COMMIT latest/ (the stable path models import from - datasets
+# must be available on a fresh clone), ignore runs/ snapshots and partials.
+outputs/*/runs/
+outputs/*/*.partial.json
+# grand-exchange: legacy bespoke job with 600MB of fact CSVs - far over GitHub's 100MB file cap.
+# Regenerate locally: python projects/grand-exchange/generate.py
+outputs/grand-exchange/
 !outputs/README.md

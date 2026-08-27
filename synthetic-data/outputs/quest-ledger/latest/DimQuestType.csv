@@ -1,0 +1,9 @@
+QuestTypeKey,QuestType,Danger
+1,Monster Hunt,High
+2,Escort,Low
+3,Dungeon Delve,High
+4,Bounty,Medium
+5,Artifact Recovery,Medium
+6,Investigation,Low
+7,Siege Relief,Extreme
+8,Dragon Slaying,Extreme

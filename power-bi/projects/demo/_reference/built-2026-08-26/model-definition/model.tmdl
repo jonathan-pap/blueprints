@@ -1,0 +1,24 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-GB
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_ProTooling = ["DevMode","MCP-PBIModeling"]
+
+annotation PBI_QueryOrder = ["DimDate","DimGuildHall","DimQuestType","DimAdventurer","FactQuests","SourceFolder"]
+
+ref table DimDate
+ref table DimGuildHall
+ref table DimQuestType
+ref table DimAdventurer
+ref table FactQuests
+ref table _Measures
+
+ref cultureInfo en-US
+
