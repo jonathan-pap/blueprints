@@ -2,6 +2,13 @@
 
 > Every entry here cost real time on a build and none of them are caught by `pbir validate`.
 > Read this before a report build, not after.
+>
+> **Eight of them are now checked mechanically** by
+> [`../../../04-review/hooks/lint-report-traps.sh`](../../../04-review/hooks/lint-report-traps.sh) —
+> run it **per page as you build** (`--page <name>`), not once at the end:
+> ERR on 1 (default measure-descending sort), 9 (`filterConfig` nested), 15 (stacked container title);
+> WARN on 5, 6, 11, 14. The rest still need your eyes on a render — 2, 3, 4, 7, 8, 10, 12, 13 depend on
+> the model, the rendered pixels, or a CLI error message. The linter is a floor, not the ceiling.
 
 ## 1. `pbir add visual` sorts charts by the MEASURE, descending
 

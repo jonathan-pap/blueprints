@@ -147,8 +147,23 @@ render. `reload` makes **disk win**: if you made model edits through the MCP, **
 or the reload discards them. Serialize per pid (never reload/screenshot in parallel).
 
 ### B11 — Validate
-`pbir validate` after every mutation ([`validate/validate.md`](validate/validate.md)). Interpret
-real-vs-cosmetic against [`../../04-review/audit/pbir-validate.md`](../../04-review/audit/pbir-validate.md).
+Two layers, and they catch different things.
+
+**Schema** — `pbir validate` after every mutation ([`validate/validate.md`](validate/validate.md)),
+interpreted real-vs-cosmetic against
+[`../../04-review/audit/pbir-validate.md`](../../04-review/audit/pbir-validate.md). This proves the
+JSON parses and matches Microsoft's schema. It has never caught a report that *looked* wrong.
+
+**Intent** — `bash ../../04-review/hooks/lint-report-traps.sh --page "<page>" "<project>.Report"`,
+run on each page **while you are still on it**. It checks the render-time traps that schema validation
+passes: a chart still carrying the CLI's default measure-descending sort, a container title that will
+render stacked on the auto title, `filterConfig` nested inside `visual`, a slicer too short for List
+mode, bars under ~32px. Full catalogue and the ones still needing your eyes:
+[`validate/build-traps.md`](validate/build-traps.md).
+
+Cadence is the point. Validating schema ten times a page catches nothing extra; running the trap lint
+once per page catches the defects that otherwise surface at B12, after the layout is set — which is
+how a build turns into a sequence of patch scripts instead of one re-runnable build.
 
 ### B12 — Gate against the contract
 Check the finished report against the brief

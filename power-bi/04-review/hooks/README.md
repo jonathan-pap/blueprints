@@ -12,6 +12,7 @@ PreToolUse + PostToolUse hooks that validate PBIR/TMDL files and visual bindings
 | `validate-tmdl.sh` | PostToolUse | Write, Edit, Bash | .tmdl files in .SemanticModel/ or .Dataset/ |
 | `lint-tmdl-traps.sh` | PostToolUse | Write, Edit | Desktop-strict TMDL traps the structural validator misses ([[tmdl-multiline-measures]] indent collision, [[tmdl-comment-syntax]] standalone `//`). Pure awk, no external binary. |
 | `audit-layout-consistency.sh` | manual / opt-in PostToolUse | run on a `.Report` | Flags layout drift vs the project's `design-system.yaml`: sub-pixel + off-grid positions, slicer type/size drift. See below. |
+| `lint-report-traps.sh` | manual / opt-in, **run per page during B10** | run on a `.Report` (`--page <name>` for one) | The report-side counterpart to `lint-tmdl-traps.sh`: the render-time traps from [`build-traps.md`](../../02-build/report/validate/build-traps.md) that `pbir validate` passes — default measure-descending sort (T1), container title stacked on the auto title (T15), `filterConfig` nested inside `visual` (T9), plus slicer/textbox/bar-height warnings. Pure python. |
 | `restore-pbip-schema.sh` | PostToolUse | `Bash(*powerbi-desktop*)`, Write/Edit of `definition.pbir` / `*.pbism` | **Repairs** rather than reports: puts back the `$schema` key Desktop strips on every save. Needs no `jq`. See [`../audit/pbip-schema-drift.md`](../audit/pbip-schema-drift.md) |
 
 ## Checks
