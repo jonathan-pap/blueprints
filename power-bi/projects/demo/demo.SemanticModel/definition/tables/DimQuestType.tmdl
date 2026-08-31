@@ -6,8 +6,10 @@ table DimQuestType
 		isHidden
 		isKey
 		lineageTag: 6a50bd05-5c67-4143-866a-51ca431caae9
-		summarizeBy: none
+		summarizeBy: count
 		sourceColumn: QuestTypeKey
+
+		annotation SummarizationSetBy = Automatic
 
 	column QuestType
 		dataType: string

@@ -6,8 +6,10 @@ table DimAdventurer
 		isHidden
 		isKey
 		lineageTag: 33e3bba8-24fc-4768-8747-8fbb66f13c9b
-		summarizeBy: none
+		summarizeBy: count
 		sourceColumn: AdventurerKey
+
+		annotation SummarizationSetBy = Automatic
 
 	column Adventurer
 		dataType: string

@@ -10,8 +10,8 @@
       "nodes": [
         {
           "location": {
-            "x": 869.09636936452728,
-            "y": 267.60810913234877
+            "x": 336.09636936452728,
+            "y": 432.60810913234877
           },
           "nodeIndex": "_Measures",
           "nodeLineageTag": "225609f4-2e37-4b94-8863-39025746e58f",
@@ -23,8 +23,8 @@
         },
         {
           "location": {
-            "x": 50,
-            "y": 305.77131510961249
+            "x": 0,
+            "y": 310.77131510961249
           },
           "nodeIndex": "DimAdventurer",
           "nodeLineageTag": "18340131-b552-4a43-be52-2d3c48f1e587",
@@ -36,8 +36,8 @@
         },
         {
           "location": {
-            "x": 247.83610411800987,
-            "y": -50
+            "x": 0,
+            "y": 0
           },
           "nodeIndex": "DimDate",
           "nodeLineageTag": "9afe5b3e-0cd3-4f1c-be81-ddccc6b65954",
@@ -49,8 +49,8 @@
         },
         {
           "location": {
-            "x": 329.28104804032984,
-            "y": 609.21621826469755
+            "x": 253.28104804032984,
+            "y": 0
           },
           "nodeIndex": "DimGuildHall",
           "nodeLineageTag": "93c29951-8cbb-44d7-876f-b7a92784ebaa",
@@ -62,8 +62,8 @@
         },
         {
           "location": {
-            "x": 635.09636936452739,
-            "y": 115.03711612140455
+            "x": 417.09636936452739,
+            "y": 244.03711612140455
           },
           "nodeIndex": "DimQuestType",
           "nodeLineageTag": "2f87e96d-f927-4397-b099-01088b7ff299",
@@ -75,8 +75,8 @@
         },
         {
           "location": {
-            "x": 343.434576852353,
-            "y": 310.05472254911024
+            "x": 0,
+            "y": 516.05472254911024
           },
           "nodeIndex": "FactQuests",
           "nodeLineageTag": "664d8acb-b137-4b71-b1db-35cbcafa6f1a",

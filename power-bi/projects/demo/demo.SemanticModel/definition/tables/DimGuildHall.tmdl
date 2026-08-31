@@ -6,8 +6,10 @@ table DimGuildHall
 		isHidden
 		isKey
 		lineageTag: bcce440d-52bf-48b3-b9c4-a5639e1ed4a2
-		summarizeBy: none
+		summarizeBy: count
 		sourceColumn: GuildHallKey
+
+		annotation SummarizationSetBy = Automatic
 
 	column GuildHall
 		dataType: string

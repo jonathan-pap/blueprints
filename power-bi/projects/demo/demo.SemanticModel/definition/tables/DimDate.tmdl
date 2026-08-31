@@ -17,15 +17,19 @@ table DimDate
 		isHidden
 		isKey
 		lineageTag: e0e41125-f99f-4b03-89aa-091d9e49e38c
-		summarizeBy: none
+		summarizeBy: count
 		sourceColumn: DateKey
+
+		annotation SummarizationSetBy = Automatic
 
 	column Year
 		dataType: int64
 		formatString: 0
 		lineageTag: d0a78c2f-efd3-4fef-b731-667de3177f6e
-		summarizeBy: none
+		summarizeBy: sum
 		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
 
 	column Quarter
 		dataType: string
@@ -37,8 +41,10 @@ table DimDate
 		dataType: int64
 		isHidden
 		lineageTag: 59ff80ae-49b1-4c58-a10d-216b538cf14c
-		summarizeBy: none
+		summarizeBy: sum
 		sourceColumn: Month
+
+		annotation SummarizationSetBy = Automatic
 
 	column MonthName
 		dataType: string
@@ -58,15 +64,19 @@ table DimDate
 		dataType: int64
 		isHidden
 		lineageTag: d4e6de6e-5092-4ab3-8b66-f8eb7864c5bf
-		summarizeBy: none
+		summarizeBy: sum
 		sourceColumn: DayNum
+
+		annotation SummarizationSetBy = Automatic
 
 	column YearMonth
 		dataType: int64
 		isHidden
 		lineageTag: ad9e4c00-42cb-4123-8092-a488f46dfbf6
-		summarizeBy: none
+		summarizeBy: sum
 		sourceColumn: YearMonth
+
+		annotation SummarizationSetBy = Automatic
 
 	column MonthYear
 		dataType: string
