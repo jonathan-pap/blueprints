@@ -18,13 +18,22 @@ Each Power BI project lives in `projects/<project-name>/` and follows the standa
 
 ```text
 projects/<project-name>/
+├── brief.md                      # what to build and why (or brief/ for larger briefs)
 ├── <project-name>.Report/        # PBIR JSON — edit here for visuals/layout/theme
 ├── <project-name>.SemanticModel/ # TMDL — edit here for tables/measures/columns
 ├── <project-name>.pbip           # entry point opened by PBI Desktop
-└── design-system.yaml            # layout tokens — read before every `pbir add visual` (optional but recommended)
+├── design-system.yaml            # layout tokens — the 12×12 grid; read before placing any visual
+└── build/                        # scripted build, when there is one
+    ├── <project-name>kit.py      #   project specifics only (palette, tables) — imports the room's pbirkit
+    └── build.py                  #   the entry point; re-runnable
 ```
 
 A project can be thick (model + report together) or thin (report only, connects to a remote model).
+
+**Every file this blueprint writes has a mapped home and an example to copy from —
+[`file-map.md`](file-map.md).** Consult it before creating a file: build scripts in particular have a
+fixed shape (`build/<name>kit.py` + `build/build.py`), because four names for one kind of file means
+the convention was missing.
 
 ## Output convention (output layer)
 

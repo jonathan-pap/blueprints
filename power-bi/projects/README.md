@@ -11,12 +11,31 @@ projects/<project-name>/
 │   ├── 00-context.md
 │   ├── 01-kpis.md
 │   └── …
+├── design-system.yaml             ← OPTIONAL — layout tokens (the 12×12 grid)
 ├── <project-name>.Report/         ← PBIR JSON
 ├── <project-name>.SemanticModel/  ← TMDL
-└── <project-name>.pbip            ← entry point opened in Power BI Desktop
+├── <project-name>.pbip            ← entry point opened in Power BI Desktop
+└── build/                         ← OPTIONAL — the scripted build, if there is one
+    ├── <project-name>kit.py       ←   project specifics only; imports ../../02-build/report/tools/pbirkit.py
+    └── build.py                   ←   entry point, re-runnable
 ```
 
 `<project-name>` is kebab-case, lowercase, no spaces. The `.Report` / `.SemanticModel` / `.pbip` suffixes are fixed by Power BI.
+
+## Build scripts
+
+If the report is built by script, the script is part of the project — it's how the report is
+reproduced from the brief and the layout tokens. It has a fixed shape:
+
+- **`build/<project-name>kit.py`** — only what is specific to this project (palette, fact/dimension
+  table names, bespoke visual recipes). It imports the shared core at
+  `../../02-build/report/tools/pbirkit.py` rather than copying from it. Typically 120–190 lines.
+- **`build/build.py`** — the entry point, and it must be re-runnable: running it twice gives the same
+  report. A build *step* is a function in here, not a new file.
+
+Don't create `_build-report.py`, `build_p1.py`, `finish_build.py`, `fix_layout.py` at the project root.
+One-off patch scripts are how a project ends up with a dozen of them and no way to rebuild. Full
+mapping and rationale: [`../file-map.md`](../file-map.md).
 
 ## Project brief (recommended)
 
