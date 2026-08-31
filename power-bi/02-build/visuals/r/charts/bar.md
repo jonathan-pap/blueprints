@@ -1,5 +1,7 @@
 # R — bar chart (ggplot2)
 
+A bar chart drawn by an R script visual with ggplot2. Use it only when no native or Deneb visual can do the job — script visuals render as a static image: they receive filters but can't cross-filter back, and they need R installed wherever the report is rendered.
+
 ## Bindings
 
 ```bash

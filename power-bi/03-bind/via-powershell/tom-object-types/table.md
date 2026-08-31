@@ -1,5 +1,7 @@
 # Table — CRUD
 
+Create, read, update and delete tables through TOM. Nothing persists until `$model.SaveChanges()`, and model metadata is never changed in `03-bind/` without explicit user direction.
+
 ## Create
 
 ```powershell

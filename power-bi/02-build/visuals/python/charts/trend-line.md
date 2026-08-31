@@ -1,5 +1,7 @@
 # Python — trend line
 
+A trend line drawn by a Python script visual — for a fitted or smoothed trend the native line chart can't produce. Script visuals render as a static image: they receive filters but can't cross-filter back, and they need Python installed wherever the report is rendered.
+
 ## Bindings
 
 ```bash

@@ -1,5 +1,7 @@
 # Set page size
 
+Sets the page canvas dimensions. Set this once, before placing visuals: the 12x12 grid in the project's `design-system.yaml` resolves to pixels against these dimensions, so changing the size later invalidates every position already on the page.
+
 ```bash
 pbir pages set "<project>.Report/Overview.Page" --width 1920 --height 1080
 ```

@@ -1,5 +1,7 @@
 # Delete a measure (via MCP)
 
+Removes a measure from the live model. Destructive and not undoable from the model side: confirm with the user first, and check no visual still binds to it — a report bound to a deleted measure breaks at render time, not at delete time.
+
 ## Tool call
 
 ```

@@ -1,5 +1,7 @@
 # Deneb — line chart (Vega-Lite)
 
+A line chart authored as a Vega-Lite spec in Deneb. Reach for Deneb when the native line chart can't express the encoding you need: unlike Python/R script visuals it still cross-filters and follows the theme.
+
 ## Bindings
 
 ```bash

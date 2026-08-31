@@ -1,5 +1,7 @@
 # Python — bar chart
 
+A bar chart drawn by a Python script visual. Use it only when no native or Deneb visual can do the job — script visuals render as a static image: they receive filters but can't cross-filter back, and they need Python installed wherever the report is rendered.
+
 ## Bindings
 
 ```bash

@@ -1,5 +1,7 @@
 # R — trend line (ggplot2)
 
+A trend line drawn by an R script visual with ggplot2 — for a fitted or smoothed trend the native line chart can't produce. Script visuals render as a static image: they receive filters but can't cross-filter back, and they need R installed wherever the report is rendered.
+
 ## Bindings
 
 ```bash

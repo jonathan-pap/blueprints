@@ -33,4 +33,5 @@ unprompted theme build · missing `design-system.yaml` · **built blind** (bridg
 PATH) · **reload clobbered unsaved MCP edits**. Each is explained in [`build-report-detail.md#gotchas-check-each-before-handoff`](build-report-detail.md#gotchas-check-each-before-handoff).
 
 ## Related
+
 [`context.md`](context.md) (the router this is the "build a full report" branch of) · [`references/design-identity.md`](references/design-identity.md) · [`layout/design-contract.md`](layout/design-contract.md) · [`../../01-brief/_index.md`](../../01-brief/_index.md)

@@ -1,5 +1,7 @@
 # Fragment layout (after `serialize`)
 
+The folder shape `theme serialize` produces — one JSON fragment per theme concern, so a change touches one small file instead of one large one. Read this before editing a serialized theme.
+
 ```
 <theme>_serialized/
 ├── meta.json              {name, version}

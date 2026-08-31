@@ -1,5 +1,7 @@
 # Copy / move / delete a visual
 
+Restructures visuals that already exist — duplicate one onto another page, rename it, or remove it. To create a new visual instead, use `../add-visual/`.
+
 ## Copy across pages
 
 ```bash

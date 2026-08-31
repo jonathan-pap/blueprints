@@ -1,5 +1,7 @@
 # Relationship — CRUD
 
+Create, read, update and delete relationships through TOM. Nothing persists until `$model.SaveChanges()`. Only one path between two tables can be active — every other path needs `USERELATIONSHIP` at query time.
+
 ## Create
 
 ```powershell

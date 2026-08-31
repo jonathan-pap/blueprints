@@ -1,5 +1,7 @@
 # Apply a custom theme JSON file
 
+Points the report at a custom theme JSON. Theme-first is the rule: appearance belongs in the theme, so reach for this instead of repeating the same formatting override across individual visuals.
+
 ## CLI
 
 ```bash

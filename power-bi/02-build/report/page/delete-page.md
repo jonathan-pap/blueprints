@@ -1,5 +1,7 @@
 # Delete a page
 
+Removes a page and every visual on it. There is no undo in PBIR — run the checks below first, because bookmarks, buttons and drillthrough targets that point at the page break silently.
+
 ```bash
 pbir pages rm "<project>.Report/Page-Name.Page" -f
 ```

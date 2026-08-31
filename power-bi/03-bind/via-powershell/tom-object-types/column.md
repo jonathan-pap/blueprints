@@ -1,5 +1,7 @@
 # Column (DataColumn) — CRUD
 
+Create, read, update and delete columns through TOM. Nothing persists until `$model.SaveChanges()`. Set `SummarizeBy` deliberately — the default makes Power BI silently sum things that should never be summed.
+
 ## Create
 
 ```powershell

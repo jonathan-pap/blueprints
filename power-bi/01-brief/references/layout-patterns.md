@@ -1,5 +1,14 @@
 # Layout Example and Time Granularity
 
+Reference material for the brief stage: what a well-spaced executive page looks like, how to pick a
+time granularity, and how to distribute meaning across page and visual titles.
+
+> **The pixel arithmetic below is an illustration, not the build method.** Builds place visuals on the
+> 12x12 grid declared in the project's `design-system.yaml` — regions and bands, not hand-computed
+> `--x`/`--y`. See [`../../02-build/report/layout/design-system.md`](../../02-build/report/layout/design-system.md).
+> Read this page for the *principles* it demonstrates — equal gaps, equal margins, a clear vertical
+> rhythm of title → KPIs → charts → detail — then express them as grid regions.
+
 ## Executive Dashboard Layout (1280x720, margin=24, gap=16)
 
 ```bash

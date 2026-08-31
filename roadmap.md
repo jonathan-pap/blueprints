@@ -31,8 +31,8 @@ _Nothing active right now._
 
 ## Parked
 
-Decided direction is recorded in `memory/` (not active). See
-[memory/parked-workstreams.md](file:///C:/Users/jonathan/.claude/projects/e--Workspace-Blueprint/memory/parked-workstreams.md):
+Decided direction is recorded in Claude's local memory (`parked-workstreams`), outside this repo —
+the summary below is the portable version:
 
 - **Cross-blueprint brief chaining** — briefs stay tool-local; chain via a "Downstream / hand-off"
   section rather than a shared engine.

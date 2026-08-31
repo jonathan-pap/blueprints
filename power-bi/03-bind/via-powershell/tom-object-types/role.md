@@ -1,5 +1,7 @@
 # Role (RLS / OLS) — CRUD
 
+Create, read, update and delete security roles (RLS/OLS) through TOM. This changes who can see which rows, so it needs explicit sign-off before you run it — and nothing persists until `$model.SaveChanges()`.
+
 ## Create with RLS filter
 
 ```powershell
