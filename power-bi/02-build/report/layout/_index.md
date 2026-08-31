@@ -16,6 +16,14 @@
 
 ## Golden rules
 
+- **The 12×12 grid is the default.** Every size and position resolves from the project's
+  `design-system.yaml` — spans for size, regions for placement. Pixel numbers are what the grid
+  *produces*; they are never what you decide.
+- **An override is an exception that must be recorded.** Hand-picked dimensions are allowed only when
+  the brief asks for that specific visual, or it's a genuine one-off — and the reason goes in the yaml
+  `overrides:` block. Unrecorded deviations are flagged by
+  [`audit-layout-consistency.sh`](../../../04-review/hooks/audit-layout-consistency.sh); a rule applied
+  to more than two visuals of one type isn't an override, it's a missing `defaults.<type>` entry.
 - Visuals must not overlap.
 - All horizontal gaps on a page must be equal. Same for vertical gaps.
 - All edge margins on a page must be equal.

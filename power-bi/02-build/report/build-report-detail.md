@@ -133,6 +133,12 @@ first. Place on the canvas with the zones model
 ([`layout/detail-gradient.md`](layout/detail-gradient.md)) + equal-gap golden rules
 ([`layout/layout-guidelines.md`](layout/layout-guidelines.md)); snap to the 8-grid. Then titles/format.
 
+**The 12×12 grid is the default.** Sizes come from `defaults.<type>` spans, positions from `layouts:`
+regions — resolve those to pixels and pass the result to `pbir`. A dimension you chose yourself is an
+**override**: only when the brief asks for that visual or it's a true one-off, and it goes in the yaml
+`overrides:` block with a reason. Needing the same override on >2 visuals of a type means a
+`defaults.<type>` entry is missing, not that the grid is wrong.
+
 **Render as you go (bridge on):** after each page's visuals are in, `pbir validate`, then
 `powerbi-desktop reload --pid <pid> --wait-seconds 120` and
 `powerbi-desktop screenshot <pageId> --pid <pid> --wait-seconds 120 --output <shots>/<page>.png`,
@@ -168,6 +174,9 @@ review every page; without it, close and reopen Desktop (edit TMDL/PBIR only whi
 - **Unprompted theme build** — authoring/swapping a theme JSON when the user only picked a tone. Tone is
   *direction*; keep the existing theme unless a theme change was **explicitly** requested (A5/B8).
 - **Missing `design-system.yaml`** — B7 skipped → the report can't be layout-audited and sizes drift.
+- **Unrecorded layout override** — a hand-picked size or position that never made it into the yaml
+  `overrides:` block. The audit then can't tell a deliberate exception from drift, so it flags both:
+  either resolve the visual from the grid, or record the override with its reason.
 - **Built blind** — `desktop_bridge: true` but no `reload`/`screenshot` between pages; or `powerbi-desktop`
   not on PATH in a fresh shell (use `npx -y @microsoft/powerbi-desktop-bridge-cli …`). Renders are the proof.
 - **Reload clobbered MCP edits** — model changes made live through the MCP weren't Saved before a

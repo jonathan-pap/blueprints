@@ -69,7 +69,7 @@
 
 **Rule: validate after each visual.** Open `../validate/validate.md` after adding or changing each visual — the `pbir` CLI enforces schema correctness, but catching issues visual-by-visual keeps the PBIR file honest.
 
-**Rule: position visuals on the grid, not freeform.** Read `projects/<name>/design-system.yaml` for your page's grid position, size, and spacing rules. Place each visual at or below y=120 (the default page title textbox). Off-grid or overlapping visuals fail the layout audit.
+**Rule: the 12×12 grid decides size and position — the default, every time.** Read `projects/<name>/design-system.yaml` and resolve the visual's span (size) and region (placement) to pixels before you write the `--x/--y/--width/--height` flags; the numbers in the examples below are illustrative output, not values to copy. Place each visual at or below y=120 (the default page title textbox). Hand-picking dimensions is an **override** — allowed only when the brief asks for that specific visual or it's a genuine one-off, and it must be recorded in the yaml `overrides:` block with a reason. Off-grid, off-token, or overlapping visuals fail the layout audit ([`../layout/design-system.md`](../layout/design-system.md)).
 
 **Rule: start from a template.** Check `../examples/visuals/default/<type>.json` for your chart type — it has the schema structure already correct and ready to bind. Faster than hand-editing.
 
