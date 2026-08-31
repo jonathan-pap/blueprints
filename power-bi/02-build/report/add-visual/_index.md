@@ -63,14 +63,20 @@
 
 ## Common rules
 
-- Run `../bind/find-canonical-name.md` BEFORE creating any data visual.
-- Run `../validate/validate.md` AFTER each addition.
-- **Bind inline with `-d "Role:Table.Field"`** on the same `pbir add visual` call (repeatable for multiple
-  roles) — it's the one-shot path the per-visual files split into a separate `pbir visuals bind` step.
-  Both work; inline is fewer calls. Roles are the type's exact role names (`pbir add visual --list`):
-  e.g. `cardVisual`→`Data`, charts→`Category`/`Y`/`Y2`, `scatterChart`→`X`/`Y`, `gauge`→`Y`/`TargetValue`,
-  `tableEx`/`slicer`→`Values`, `pivotTable`→`Rows`/`Columns`/`Values`, `azureMap`→`Category`/`Size`.
-  ⚠️ On `add visual`, **`-t` means `--title`, not `--type`** (the type is the positional arg).
-- Place visuals at y ≥ 120 to avoid the default page title textbox.
-- For each visual you add, check `../examples/visuals/default/<type>.json` first — fastest path to a working visual.
-- **Long-named visual types** (`hundredPercentStackedAreaChart`, `hundredPercentStackedBarChart`, `hundredPercentStackedColumnChart`, `lineClusteredColumnComboChart`, `lineStackedColumnComboChart`) need explicit `--name "shortname"` — the auto-generated `<title>-<type>-<hash>` name overflows the PBIR schema length limit. Without `--name`, you get: `Schema validation failed for 'visual': name '…' is too long`.
+**Rule: always verify field names first.** Open `../bind/find-canonical-name.md` before creating any data visual — copy the exact `Table.Field` name from the model (e.g., `FactQuests.BountyAmount`). Never guess from English labels; a visual bound to a wrong field will render data incorrectly and fail validation. Verify your field names are real before any CLI call.
+
+**Rule: bind each role to one field.** Each chart type has roles (e.g., a bar chart has `Category` and `Y`; a scatter has `X`, `Y`). Bind each role to the correct field from the model. Inline binding — adding the bindings in the same call as the visual creation — is preferred (one command, one edit to PBIR). The `pbir` CLI lets you use `-d "Role:Table.Field"` (repeatable for multiple roles); separate binding is a second step, also valid but less efficient.
+
+**Rule: validate after each visual.** Open `../validate/validate.md` after adding or changing each visual — the `pbir` CLI enforces schema correctness, but catching issues visual-by-visual keeps the PBIR file honest.
+
+**Rule: position visuals on the grid, not freeform.** Read `projects/<name>/design-system.yaml` for your page's grid position, size, and spacing rules. Place each visual at or below y=120 (the default page title textbox). Off-grid or overlapping visuals fail the layout audit.
+
+**Rule: start from a template.** Check `../examples/visuals/default/<type>.json` for your chart type — it has the schema structure already correct and ready to bind. Faster than hand-editing.
+
+**Rule: short names for long types.** Visual type names like `hundredPercentStackedAreaChart` or `lineClusteredColumnComboChart` are long; the auto-generated name (`<title>-<type>-<hash>`) can overflow PBIR's length limit. Provide an explicit short name (e.g., `--name "sales-trend"`); without it you'll see: `Schema validation failed for 'visual': name '…' is too long`.
+
+### Tool reference (pbir CLI syntax)
+
+- **List available roles for a visual type:** `pbir add visual --list <visualType>` shows role names (e.g., `cardVisual`→`Data`; charts→`Category`/`Y`/`Y2`; `scatterChart`→`X`/`Y`; `gauge`→`Y`/`TargetValue`; `tableEx`/`slicer`→`Values`; `pivotTable`→`Rows`/`Columns`/`Values`; `azureMap`→`Category`/`Size`).
+- **Add a visual with bindings:** `pbir add visual <pageName> <visualType> -d "Role1:Table.Field1" -d "Role2:Table.Field2"` (repeatable `-d` for each role).
+- **Note:** `-t` means `--title`, not `--type` (the type is the positional argument).
