@@ -149,7 +149,8 @@ or the reload discards them. Serialize per pid (never reload/screenshot in paral
 ### B11 — Validate
 Two layers, and they catch different things.
 
-**Schema** — `pbir validate` after every mutation ([`validate/validate.md`](validate/validate.md)),
+**Schema** — `pbir validate` per finished page ([`validate/validate.md`](validate/validate.md) has the
+cadence table; it is whole-report only, so per-visual runs re-check everything to verify one addition),
 interpreted real-vs-cosmetic against
 [`../../04-review/audit/pbir-validate.md`](../../04-review/audit/pbir-validate.md). This proves the
 JSON parses and matches Microsoft's schema. It has never caught a report that *looked* wrong.

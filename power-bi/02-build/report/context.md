@@ -33,7 +33,7 @@ Find your intent. Each bullet gives the exact step files to load in order.
 
 ## Hard rules
 
-- Run `validate/validate.md` after every mutation.
+- Validate per finished page, not per visual — cadence in `validate/validate.md`.
 - Visuals must not overlap.
 - New reports already include a default Page 1 with a title textbox at (20, 20). Rename the page, don't add a duplicate. Place new visuals at y ≥ 120.
 - Bindings must reference real model fields. Always run `bind/find-canonical-name.md` before guessing.

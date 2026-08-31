@@ -83,7 +83,7 @@
 - `rename-table.md`, `rename-measure.md`, `rename-column.md`, `post-rename-checklist.md`
 
 ## validate/
-- `validate.md` — `pbir validate` after every mutation
+- `validate.md` — `pbir validate` cadence: per finished page, not per visual
 - `convert-legacy.md` — old `report.json` → PBIR
 - `fix-broken-field-reference.md`
 

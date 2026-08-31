@@ -147,7 +147,7 @@ design). **Do not build until approved.**
 4. After column/measure changes, trigger a lightweight recalc (XMLA `refreshType=Calculate`) unless a full source refresh is needed.
 5. Export/organize TMDL (`database.tmdl`, `model.tmdl`, `relationships.tmdl`, `tables/*.tmdl`).
 6. Scaffold PBIR, author per `02-build/report/` (generated PBIR beats hand-editing visual JSON).
-7. `pbir validate` after every mutation; validate JSON + `definition.pbir` model pointer.
+7. `pbir validate` per finished page (plus `lint-report-traps.sh --page`); validate JSON + `definition.pbir` model pointer.
 8. Reload in Desktop (Desktop Bridge) → screenshot → fix visual/slicer/binding/accessibility/layout → iterate.
 
 ## Validation standards (report not "done" until)
