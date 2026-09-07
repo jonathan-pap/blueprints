@@ -1,0 +1,24 @@
+# Scope the knowledge graph to the BLUEPRINT (the rooms), not the raw/output layers.
+#
+# This mirrors the workspace's own rule (CLAUDE.md, "rooms vs projects/"): the rooms are the
+# workflow and the knowledge; projects/ is user data - often stale, mid-experiment, or built
+# before the current best-practice landed - and outputs/ is generated. Graphing them buries the
+# ~630 markdown files that ARE the blueprint under ~16k PBIR JSON nodes.
+#
+# Remove a line here if you deliberately want to graph a project's report structure.
+
+# Raw layer - user data, not knowledge
+power-bi/projects/
+synthetic-data/projects/
+
+# Output layer - generated, dated artifacts
+power-bi/outputs/
+synthetic-data/outputs/
+
+# Provenance snapshots - upstream reference, explicitly "do not load"
+power-bi/_examples/
+synthetic-data/_examples/
+
+# Working scratch + the graph's own output
+.scratch/
+graphify-out/
