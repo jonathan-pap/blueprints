@@ -13,195 +13,195 @@ dimensions:
   Realm:
     key: RealmKey
     members:
-      - { Realm: Emberwaste,    Terrain: Volcanic,   ThreatBand: High }
-      - { Realm: Hollowmere,    Terrain: Swamp,      ThreatBand: High }
-      - { Realm: Thornveil,     Terrain: Forest,     ThreatBand: Medium }
-      - { Realm: Saltreach,     Terrain: Coast,      ThreatBand: Medium }
-      - { Realm: Gloamspire,    Terrain: Cavern,     ThreatBand: Medium }
-      - { Realm: Frosthollow,   Terrain: Tundra,     ThreatBand: High }
-      - { Realm: "Ashfall Reach", Terrain: Wasteland, ThreatBand: Extreme }
-      - { Realm: "Verdant Deep", Terrain: Jungle,    ThreatBand: Extreme }
+      - { Realm: "Emberwaste", Terrain: "Volcanic", ThreatBand: "High", Region: "Rimeward Reaches", Latitude: 64.8, Longitude: -18.5 }
+      - { Realm: "Hollowmere", Terrain: "Swamp", ThreatBand: "High", Region: "Southern Marches", Latitude: 45.18, Longitude: 29.12 }
+      - { Realm: "Thornveil", Terrain: "Forest", ThreatBand: "Medium", Region: "The Heartlands", Latitude: 48.27, Longitude: 8.18 }
+      - { Realm: "Saltreach", Terrain: "Coast", ThreatBand: "Medium", Region: "Western Shores", Latitude: 38.71, Longitude: -9.41 }
+      - { Realm: "Gloamspire", Terrain: "Cavern", ThreatBand: "Medium", Region: "The Heartlands", Latitude: 45.78, Longitude: 14.2 }
+      - { Realm: "Frosthollow", Terrain: "Tundra", ThreatBand: "High", Region: "Rimeward Reaches", Latitude: 69.65, Longitude: 18.96 }
+      - { Realm: "Ashfall Reach", Terrain: "Wasteland", ThreatBand: "Extreme", Region: "Southern Marches", Latitude: 37.75, Longitude: 14.99 }
+      - { Realm: "Verdant Deep", Terrain: "Jungle", ThreatBand: "Extreme", Region: "Western Shores", Latitude: 37.74, Longitude: -25.67 }
 
   # A player belongs to exactly ONE guild, so Guild rides here as an attribute rather than
   # becoming a grain dimension (see brief.md §4). Roll up by Guild, drill to Adventurer.
   Adventurer:
     key: AdventurerKey
     members:
-      - { Adventurer: "Brannoc Steelvow",    Guild: Ironpact,        Class: Warrior, Rank: Gold }
-      - { Adventurer: "Mira Ironsong",       Guild: Ironpact,        Class: Cleric,  Rank: Silver }
-      - { Adventurer: "Dagen Hollowshield",  Guild: Ironpact,        Class: Warden,  Rank: Silver }
-      - { Adventurer: "Sera Vantel",         Guild: Ironpact,        Class: Mage,    Rank: Bronze }
-      - { Adventurer: "Korrin Blackanvil",   Guild: Ironpact,        Class: Warrior, Rank: Bronze }
-      - { Adventurer: "Ysolde Grimm",        Guild: Ironpact,        Class: Rogue,   Rank: Copper }
-      - { Adventurer: "Kael Emberlin",       Guild: Emberwatch,      Class: Mage,    Rank: Gold }
-      - { Adventurer: "Thessa Brightcoal",   Guild: Emberwatch,      Class: Cleric,  Rank: Silver }
-      - { Adventurer: "Roderic Ash",         Guild: Emberwatch,      Class: Warrior, Rank: Silver }
-      - { Adventurer: "Nima Flintwhisper",   Guild: Emberwatch,      Class: Rogue,   Rank: Bronze }
-      - { Adventurer: "Garreth Cinder",      Guild: Emberwatch,      Class: Warden,  Rank: Bronze }
-      - { Adventurer: "Alvia Pyre",          Guild: Emberwatch,      Class: Ranger,  Rank: Copper }
-      - { Adventurer: "Wren Tallowmere",     Guild: "Silver Compass", Class: Ranger,  Rank: Gold }
-      - { Adventurer: "Jorin Saltkey",       Guild: "Silver Compass", Class: Rogue,   Rank: Silver }
-      - { Adventurer: "Isbeth Fairwind",     Guild: "Silver Compass", Class: Mage,    Rank: Bronze }
-      - { Adventurer: "Calder Mapp",         Guild: "Silver Compass", Class: Warden,  Rank: Bronze }
-      - { Adventurer: "Nyssa Farstride",     Guild: "Silver Compass", Class: Ranger,  Rank: Copper }
-      - { Adventurer: "Ovid Quill",          Guild: "Silver Compass", Class: Cleric,  Rank: Copper }
-      - { Adventurer: "Bram Thornwood",      Guild: Thornguard,      Class: Warden,  Rank: Gold }
-      - { Adventurer: "Elowen Briar",        Guild: Thornguard,      Class: Ranger,  Rank: Silver }
-      - { Adventurer: "Hask Ivyfell",        Guild: Thornguard,      Class: Warrior, Rank: Silver }
-      - { Adventurer: "Marta Greenspar",     Guild: Thornguard,      Class: Cleric,  Rank: Bronze }
-      - { Adventurer: "Dorn Bramblehelm",    Guild: Thornguard,      Class: Warrior, Rank: Bronze }
-      - { Adventurer: "Sylva Nettle",        Guild: Thornguard,      Class: Mage,    Rank: Copper }
-      - { Adventurer: "Vex Goldtooth",       Guild: "Gilded Fang",   Class: Rogue,   Rank: Gold }
-      - { Adventurer: "Ravella Sly",         Guild: "Gilded Fang",   Class: Rogue,   Rank: Silver }
-      - { Adventurer: "Toma Coinbite",       Guild: "Gilded Fang",   Class: Ranger,  Rank: Bronze }
-      - { Adventurer: "Dessa Marrow",        Guild: "Gilded Fang",   Class: Mage,    Rank: Bronze }
-      - { Adventurer: "Fenn Gildspur",       Guild: "Gilded Fang",   Class: Warrior, Rank: Copper }
-      - { Adventurer: "Ambrose Knave",       Guild: "Gilded Fang",   Class: Cleric,  Rank: Copper }
-      - { Adventurer: "Corvin Duskbane",     Guild: Nightwardens,    Class: Rogue,   Rank: Gold }
-      - { Adventurer: "Lys Shadowmere",      Guild: Nightwardens,    Class: Mage,    Rank: Silver }
-      - { Adventurer: "Orin Nightfell",      Guild: Nightwardens,    Class: Warden,  Rank: Silver }
-      - { Adventurer: "Perra Gloam",         Guild: Nightwardens,    Class: Ranger,  Rank: Bronze }
-      - { Adventurer: "Sabel Vane",          Guild: Nightwardens,    Class: Cleric,  Rank: Bronze }
-      - { Adventurer: "Thane Blackmoor",     Guild: Nightwardens,    Class: Warrior, Rank: Copper }
-      - { Adventurer: "Aerin Skyrend",       Guild: Stormcallers,    Class: Mage,    Rank: Gold }
-      - { Adventurer: "Bolt Vanharrow",      Guild: Stormcallers,    Class: Mage,    Rank: Silver }
-      - { Adventurer: "Ceria Thunderglass",  Guild: Stormcallers,    Class: Cleric,  Rank: Bronze }
-      - { Adventurer: "Dain Galewright",     Guild: Stormcallers,    Class: Warrior, Rank: Bronze }
-      - { Adventurer: "Ellis Stormcrow",     Guild: Stormcallers,    Class: Ranger,  Rank: Copper }
-      - { Adventurer: "Fira Levin",          Guild: Stormcallers,    Class: Rogue,   Rank: Copper }
-      - { Adventurer: "Anselm Truevow",      Guild: Oathkeepers,     Class: Cleric,  Rank: Gold }
-      - { Adventurer: "Beatrix Hale",        Guild: Oathkeepers,     Class: Warden,  Rank: Silver }
-      - { Adventurer: "Cedric Oathbright",   Guild: Oathkeepers,     Class: Warrior, Rank: Bronze }
-      - { Adventurer: "Dara Pledgemoor",     Guild: Oathkeepers,     Class: Ranger,  Rank: Bronze }
-      - { Adventurer: "Edran Sworn",         Guild: Oathkeepers,     Class: Warrior, Rank: Copper }
-      - { Adventurer: "Fiora Kept",          Guild: Oathkeepers,     Class: Mage,    Rank: Copper }
-      - { Adventurer: "Gorran Drakebane",    Guild: Wyrmbane,        Class: Warrior, Rank: Gold }
-      - { Adventurer: "Hilde Scalebreak",    Guild: Wyrmbane,        Class: Warrior, Rank: Silver }
-      - { Adventurer: "Ivor Wyrmsong",       Guild: Wyrmbane,        Class: Mage,    Rank: Silver }
-      - { Adventurer: "Jessa Dracont",       Guild: Wyrmbane,        Class: Ranger,  Rank: Bronze }
-      - { Adventurer: "Kestrel Fang",        Guild: Wyrmbane,        Class: Rogue,   Rank: Bronze }
-      - { Adventurer: "Lorca Vhal",          Guild: Wyrmbane,        Class: Cleric,  Rank: Copper }
-      - { Adventurer: "Malchor Hollow",      Guild: "Hollow Crown",  Class: Warden,  Rank: Gold }
-      - { Adventurer: "Nerys Crownfall",     Guild: "Hollow Crown",  Class: Mage,    Rank: Silver }
-      - { Adventurer: "Osric Pale",          Guild: "Hollow Crown",  Class: Cleric,  Rank: Bronze }
-      - { Adventurer: "Petra Vaultborn",     Guild: "Hollow Crown",  Class: Warrior, Rank: Bronze }
-      - { Adventurer: "Quill Ashen",         Guild: "Hollow Crown",  Class: Rogue,   Rank: Copper }
-      - { Adventurer: "Rook Emberless",      Guild: "Hollow Crown",  Class: Ranger,  Rank: Copper }
+      - { Adventurer: "Brannoc Steelvow", Guild: "Ironpact", Class: "Warrior", Rank: "Gold", RankOrder: 4 }
+      - { Adventurer: "Mira Ironsong", Guild: "Ironpact", Class: "Cleric", Rank: "Silver", RankOrder: 3 }
+      - { Adventurer: "Dagen Hollowshield", Guild: "Ironpact", Class: "Warden", Rank: "Silver", RankOrder: 3 }
+      - { Adventurer: "Sera Vantel", Guild: "Ironpact", Class: "Mage", Rank: "Bronze", RankOrder: 2 }
+      - { Adventurer: "Korrin Blackanvil", Guild: "Ironpact", Class: "Warrior", Rank: "Bronze", RankOrder: 2 }
+      - { Adventurer: "Ysolde Grimm", Guild: "Ironpact", Class: "Rogue", Rank: "Copper", RankOrder: 1 }
+      - { Adventurer: "Kael Emberlin", Guild: "Emberwatch", Class: "Mage", Rank: "Gold", RankOrder: 4 }
+      - { Adventurer: "Thessa Brightcoal", Guild: "Emberwatch", Class: "Cleric", Rank: "Silver", RankOrder: 3 }
+      - { Adventurer: "Roderic Ash", Guild: "Emberwatch", Class: "Warrior", Rank: "Silver", RankOrder: 3 }
+      - { Adventurer: "Nima Flintwhisper", Guild: "Emberwatch", Class: "Rogue", Rank: "Bronze", RankOrder: 2 }
+      - { Adventurer: "Garreth Cinder", Guild: "Emberwatch", Class: "Warden", Rank: "Bronze", RankOrder: 2 }
+      - { Adventurer: "Alvia Pyre", Guild: "Emberwatch", Class: "Ranger", Rank: "Copper", RankOrder: 1 }
+      - { Adventurer: "Wren Tallowmere", Guild: "Silver Compass", Class: "Ranger", Rank: "Gold", RankOrder: 4 }
+      - { Adventurer: "Jorin Saltkey", Guild: "Silver Compass", Class: "Rogue", Rank: "Silver", RankOrder: 3 }
+      - { Adventurer: "Isbeth Fairwind", Guild: "Silver Compass", Class: "Mage", Rank: "Bronze", RankOrder: 2 }
+      - { Adventurer: "Calder Mapp", Guild: "Silver Compass", Class: "Warden", Rank: "Bronze", RankOrder: 2 }
+      - { Adventurer: "Nyssa Farstride", Guild: "Silver Compass", Class: "Ranger", Rank: "Copper", RankOrder: 1 }
+      - { Adventurer: "Ovid Quill", Guild: "Silver Compass", Class: "Cleric", Rank: "Copper", RankOrder: 1 }
+      - { Adventurer: "Bram Thornwood", Guild: "Thornguard", Class: "Warden", Rank: "Gold", RankOrder: 4 }
+      - { Adventurer: "Elowen Briar", Guild: "Thornguard", Class: "Ranger", Rank: "Silver", RankOrder: 3 }
+      - { Adventurer: "Hask Ivyfell", Guild: "Thornguard", Class: "Warrior", Rank: "Silver", RankOrder: 3 }
+      - { Adventurer: "Marta Greenspar", Guild: "Thornguard", Class: "Cleric", Rank: "Bronze", RankOrder: 2 }
+      - { Adventurer: "Dorn Bramblehelm", Guild: "Thornguard", Class: "Warrior", Rank: "Bronze", RankOrder: 2 }
+      - { Adventurer: "Sylva Nettle", Guild: "Thornguard", Class: "Mage", Rank: "Copper", RankOrder: 1 }
+      - { Adventurer: "Vex Goldtooth", Guild: "Gilded Fang", Class: "Rogue", Rank: "Gold", RankOrder: 4 }
+      - { Adventurer: "Ravella Sly", Guild: "Gilded Fang", Class: "Rogue", Rank: "Silver", RankOrder: 3 }
+      - { Adventurer: "Toma Coinbite", Guild: "Gilded Fang", Class: "Ranger", Rank: "Bronze", RankOrder: 2 }
+      - { Adventurer: "Dessa Marrow", Guild: "Gilded Fang", Class: "Mage", Rank: "Bronze", RankOrder: 2 }
+      - { Adventurer: "Fenn Gildspur", Guild: "Gilded Fang", Class: "Warrior", Rank: "Copper", RankOrder: 1 }
+      - { Adventurer: "Ambrose Knave", Guild: "Gilded Fang", Class: "Cleric", Rank: "Copper", RankOrder: 1 }
+      - { Adventurer: "Corvin Duskbane", Guild: "Nightwardens", Class: "Rogue", Rank: "Gold", RankOrder: 4 }
+      - { Adventurer: "Lys Shadowmere", Guild: "Nightwardens", Class: "Mage", Rank: "Silver", RankOrder: 3 }
+      - { Adventurer: "Orin Nightfell", Guild: "Nightwardens", Class: "Warden", Rank: "Silver", RankOrder: 3 }
+      - { Adventurer: "Perra Gloam", Guild: "Nightwardens", Class: "Ranger", Rank: "Bronze", RankOrder: 2 }
+      - { Adventurer: "Sabel Vane", Guild: "Nightwardens", Class: "Cleric", Rank: "Bronze", RankOrder: 2 }
+      - { Adventurer: "Thane Blackmoor", Guild: "Nightwardens", Class: "Warrior", Rank: "Copper", RankOrder: 1 }
+      - { Adventurer: "Aerin Skyrend", Guild: "Stormcallers", Class: "Mage", Rank: "Gold", RankOrder: 4 }
+      - { Adventurer: "Bolt Vanharrow", Guild: "Stormcallers", Class: "Mage", Rank: "Silver", RankOrder: 3 }
+      - { Adventurer: "Ceria Thunderglass", Guild: "Stormcallers", Class: "Cleric", Rank: "Bronze", RankOrder: 2 }
+      - { Adventurer: "Dain Galewright", Guild: "Stormcallers", Class: "Warrior", Rank: "Bronze", RankOrder: 2 }
+      - { Adventurer: "Ellis Stormcrow", Guild: "Stormcallers", Class: "Ranger", Rank: "Copper", RankOrder: 1 }
+      - { Adventurer: "Fira Levin", Guild: "Stormcallers", Class: "Rogue", Rank: "Copper", RankOrder: 1 }
+      - { Adventurer: "Anselm Truevow", Guild: "Oathkeepers", Class: "Cleric", Rank: "Gold", RankOrder: 4 }
+      - { Adventurer: "Beatrix Hale", Guild: "Oathkeepers", Class: "Warden", Rank: "Silver", RankOrder: 3 }
+      - { Adventurer: "Cedric Oathbright", Guild: "Oathkeepers", Class: "Warrior", Rank: "Bronze", RankOrder: 2 }
+      - { Adventurer: "Dara Pledgemoor", Guild: "Oathkeepers", Class: "Ranger", Rank: "Bronze", RankOrder: 2 }
+      - { Adventurer: "Edran Sworn", Guild: "Oathkeepers", Class: "Warrior", Rank: "Copper", RankOrder: 1 }
+      - { Adventurer: "Fiora Kept", Guild: "Oathkeepers", Class: "Mage", Rank: "Copper", RankOrder: 1 }
+      - { Adventurer: "Gorran Drakebane", Guild: "Wyrmbane", Class: "Warrior", Rank: "Gold", RankOrder: 4 }
+      - { Adventurer: "Hilde Scalebreak", Guild: "Wyrmbane", Class: "Warrior", Rank: "Silver", RankOrder: 3 }
+      - { Adventurer: "Ivor Wyrmsong", Guild: "Wyrmbane", Class: "Mage", Rank: "Silver", RankOrder: 3 }
+      - { Adventurer: "Jessa Dracont", Guild: "Wyrmbane", Class: "Ranger", Rank: "Bronze", RankOrder: 2 }
+      - { Adventurer: "Kestrel Fang", Guild: "Wyrmbane", Class: "Rogue", Rank: "Bronze", RankOrder: 2 }
+      - { Adventurer: "Lorca Vhal", Guild: "Wyrmbane", Class: "Cleric", Rank: "Copper", RankOrder: 1 }
+      - { Adventurer: "Malchor Hollow", Guild: "Hollow Crown", Class: "Warden", Rank: "Gold", RankOrder: 4 }
+      - { Adventurer: "Nerys Crownfall", Guild: "Hollow Crown", Class: "Mage", Rank: "Silver", RankOrder: 3 }
+      - { Adventurer: "Osric Pale", Guild: "Hollow Crown", Class: "Cleric", Rank: "Bronze", RankOrder: 2 }
+      - { Adventurer: "Petra Vaultborn", Guild: "Hollow Crown", Class: "Warrior", Rank: "Bronze", RankOrder: 2 }
+      - { Adventurer: "Quill Ashen", Guild: "Hollow Crown", Class: "Rogue", Rank: "Copper", RankOrder: 1 }
+      - { Adventurer: "Rook Emberless", Guild: "Hollow Crown", Class: "Ranger", Rank: "Copper", RankOrder: 1 }
 
   Monster:
     key: MonsterKey
     members:
       # --- Field (20): the rank and file ---
-      - { Monster: "Mossback Gnoll",      Kind: Field, Family: Beast,     Tier: 1, Habitat: Thornveil }
-      - { Monster: "Cinder Rat",          Kind: Field, Family: Beast,     Tier: 1, Habitat: Emberwaste }
-      - { Monster: "Grave Tick",          Kind: Field, Family: Undead,    Tier: 1, Habitat: Hollowmere }
-      - { Monster: "Sparkmite Swarm",     Kind: Field, Family: Elemental, Tier: 1, Habitat: Gloamspire }
-      - { Monster: "Thorn Sprite",        Kind: Field, Family: Elemental, Tier: 1, Habitat: Thornveil }
-      - { Monster: "Gloamrat Pack",       Kind: Field, Family: Beast,     Tier: 1, Habitat: Gloamspire }
-      - { Monster: "Bog Shambler",        Kind: Field, Family: Undead,    Tier: 2, Habitat: Hollowmere }
-      - { Monster: "Dustwing Harpy",      Kind: Field, Family: Beast,     Tier: 2, Habitat: Emberwaste }
-      - { Monster: "Rimefang Wolf",       Kind: Field, Family: Beast,     Tier: 2, Habitat: Frosthollow }
-      - { Monster: "Brine Lurker",        Kind: Field, Family: Beast,     Tier: 2, Habitat: Saltreach }
-      - { Monster: "Glass Scarab",        Kind: Field, Family: Construct, Tier: 2, Habitat: Gloamspire }
-      - { Monster: "Emberhound",          Kind: Field, Family: Elemental, Tier: 2, Habitat: Emberwaste }
-      - { Monster: "Verdant Creeper",     Kind: Field, Family: Beast,     Tier: 2, Habitat: "Verdant Deep" }
-      - { Monster: "Frostgale Imp",       Kind: Field, Family: Demon,     Tier: 2, Habitat: Frosthollow }
-      - { Monster: "Hexwisp",             Kind: Field, Family: Demon,     Tier: 2, Habitat: Thornveil }
-      - { Monster: "Ashen Ghoul",         Kind: Field, Family: Undead,    Tier: 3, Habitat: "Ashfall Reach" }
-      - { Monster: "Mudlarker Troll",     Kind: Field, Family: Beast,     Tier: 3, Habitat: Hollowmere }
-      - { Monster: "Salt Wraith",         Kind: Field, Family: Undead,    Tier: 3, Habitat: Saltreach }
-      - { Monster: "Rust Golemling",      Kind: Field, Family: Construct, Tier: 3, Habitat: "Ashfall Reach" }
-      - { Monster: "Spinevine Stalker",   Kind: Field, Family: Beast,     Tier: 3, Habitat: "Verdant Deep" }
+      - { Monster: "Mossback Gnoll", Kind: "Field", Family: "Beast", Tier: 1, Habitat: "Thornveil", KindOrder: 1, Icon: "🐺", KindColor: "#6B8F71" }
+      - { Monster: "Cinder Rat", Kind: "Field", Family: "Beast", Tier: 1, Habitat: "Emberwaste", KindOrder: 1, Icon: "🐀", KindColor: "#6B8F71" }
+      - { Monster: "Grave Tick", Kind: "Field", Family: "Undead", Tier: 1, Habitat: "Hollowmere", KindOrder: 1, Icon: "🕷", KindColor: "#6B8F71" }
+      - { Monster: "Sparkmite Swarm", Kind: "Field", Family: "Elemental", Tier: 1, Habitat: "Gloamspire", KindOrder: 1, Icon: "✨", KindColor: "#6B8F71" }
+      - { Monster: "Thorn Sprite", Kind: "Field", Family: "Elemental", Tier: 1, Habitat: "Thornveil", KindOrder: 1, Icon: "🌿", KindColor: "#6B8F71" }
+      - { Monster: "Gloamrat Pack", Kind: "Field", Family: "Beast", Tier: 1, Habitat: "Gloamspire", KindOrder: 1, Icon: "🐁", KindColor: "#6B8F71" }
+      - { Monster: "Bog Shambler", Kind: "Field", Family: "Undead", Tier: 2, Habitat: "Hollowmere", KindOrder: 1, Icon: "🧟", KindColor: "#6B8F71" }
+      - { Monster: "Dustwing Harpy", Kind: "Field", Family: "Beast", Tier: 2, Habitat: "Emberwaste", KindOrder: 1, Icon: "🦅", KindColor: "#6B8F71" }
+      - { Monster: "Rimefang Wolf", Kind: "Field", Family: "Beast", Tier: 2, Habitat: "Frosthollow", KindOrder: 1, Icon: "🐺", KindColor: "#6B8F71" }
+      - { Monster: "Brine Lurker", Kind: "Field", Family: "Beast", Tier: 2, Habitat: "Saltreach", KindOrder: 1, Icon: "🦑", KindColor: "#6B8F71" }
+      - { Monster: "Glass Scarab", Kind: "Field", Family: "Construct", Tier: 2, Habitat: "Gloamspire", KindOrder: 1, Icon: "🪲", KindColor: "#6B8F71" }
+      - { Monster: "Emberhound", Kind: "Field", Family: "Elemental", Tier: 2, Habitat: "Emberwaste", KindOrder: 1, Icon: "🔥", KindColor: "#6B8F71" }
+      - { Monster: "Verdant Creeper", Kind: "Field", Family: "Beast", Tier: 2, Habitat: "Verdant Deep", KindOrder: 1, Icon: "🌱", KindColor: "#6B8F71" }
+      - { Monster: "Frostgale Imp", Kind: "Field", Family: "Demon", Tier: 2, Habitat: "Frosthollow", KindOrder: 1, Icon: "👺", KindColor: "#6B8F71" }
+      - { Monster: "Hexwisp", Kind: "Field", Family: "Demon", Tier: 2, Habitat: "Thornveil", KindOrder: 1, Icon: "👻", KindColor: "#6B8F71" }
+      - { Monster: "Ashen Ghoul", Kind: "Field", Family: "Undead", Tier: 3, Habitat: "Ashfall Reach", KindOrder: 1, Icon: "🧟", KindColor: "#6B8F71" }
+      - { Monster: "Mudlarker Troll", Kind: "Field", Family: "Beast", Tier: 3, Habitat: "Hollowmere", KindOrder: 1, Icon: "👹", KindColor: "#6B8F71" }
+      - { Monster: "Salt Wraith", Kind: "Field", Family: "Undead", Tier: 3, Habitat: "Saltreach", KindOrder: 1, Icon: "👻", KindColor: "#6B8F71" }
+      - { Monster: "Rust Golemling", Kind: "Field", Family: "Construct", Tier: 3, Habitat: "Ashfall Reach", KindOrder: 1, Icon: "🗿", KindColor: "#6B8F71" }
+      - { Monster: "Spinevine Stalker", Kind: "Field", Family: "Beast", Tier: 3, Habitat: "Verdant Deep", KindOrder: 1, Icon: "🌵", KindColor: "#6B8F71" }
       # --- Elite (8): the ones that need a party ---
-      - { Monster: "Ironjaw Chimera",     Kind: Elite, Family: Beast,     Tier: 4, Habitat: Thornveil }
-      - { Monster: "Widow of Hollowmere", Kind: Elite, Family: Undead,    Tier: 4, Habitat: Hollowmere }
-      - { Monster: "Sunder Elemental",    Kind: Elite, Family: Elemental, Tier: 4, Habitat: Emberwaste }
-      - { Monster: "Brinelord Serpent",   Kind: Elite, Family: Beast,     Tier: 4, Habitat: Saltreach }
-      - { Monster: "Palefrost Revenant",  Kind: Elite, Family: Undead,    Tier: 4, Habitat: Frosthollow }
-      - { Monster: "Obsidian Sentinel",   Kind: Elite, Family: Construct, Tier: 4, Habitat: "Ashfall Reach" }
-      - { Monster: "Duskmaw Alpha",       Kind: Elite, Family: Beast,     Tier: 4, Habitat: Gloamspire }
-      - { Monster: "Thornking Dryad",     Kind: Elite, Family: Elemental, Tier: 4, Habitat: "Verdant Deep" }
+      - { Monster: "Ironjaw Chimera", Kind: "Elite", Family: "Beast", Tier: 4, Habitat: "Thornveil", KindOrder: 2, Icon: "🦁", KindColor: "#A855F7" }
+      - { Monster: "Widow of Hollowmere", Kind: "Elite", Family: "Undead", Tier: 4, Habitat: "Hollowmere", KindOrder: 2, Icon: "🕸", KindColor: "#A855F7" }
+      - { Monster: "Sunder Elemental", Kind: "Elite", Family: "Elemental", Tier: 4, Habitat: "Emberwaste", KindOrder: 2, Icon: "🌋", KindColor: "#A855F7" }
+      - { Monster: "Brinelord Serpent", Kind: "Elite", Family: "Beast", Tier: 4, Habitat: "Saltreach", KindOrder: 2, Icon: "🐍", KindColor: "#A855F7" }
+      - { Monster: "Palefrost Revenant", Kind: "Elite", Family: "Undead", Tier: 4, Habitat: "Frosthollow", KindOrder: 2, Icon: "❄", KindColor: "#A855F7" }
+      - { Monster: "Obsidian Sentinel", Kind: "Elite", Family: "Construct", Tier: 4, Habitat: "Ashfall Reach", KindOrder: 2, Icon: "🗿", KindColor: "#A855F7" }
+      - { Monster: "Duskmaw Alpha", Kind: "Elite", Family: "Beast", Tier: 4, Habitat: "Gloamspire", KindOrder: 2, Icon: "🐺", KindColor: "#A855F7" }
+      - { Monster: "Thornking Dryad", Kind: "Elite", Family: "Elemental", Tier: 4, Habitat: "Verdant Deep", KindOrder: 2, Icon: "🌳", KindColor: "#A855F7" }
       # --- Boss (4): the raid targets ---
-      - { Monster: "Emberfang the Wyrm",  Kind: Boss,  Family: Dragon,    Tier: 5, Habitat: Emberwaste }
-      - { Monster: "Vorrak, Hollow Crown", Kind: Boss, Family: Demon,     Tier: 5, Habitat: Hollowmere }
-      - { Monster: "Glacius Rimeheart",   Kind: Boss,  Family: Dragon,    Tier: 5, Habitat: Frosthollow }
-      - { Monster: "The Verdant Maw",     Kind: Boss,  Family: Dragon,    Tier: 5, Habitat: "Verdant Deep" }
+      - { Monster: "Emberfang the Wyrm", Kind: "Boss", Family: "Dragon", Tier: 5, Habitat: "Emberwaste", KindOrder: 3, Icon: "🐉", KindColor: "#E03131" }
+      - { Monster: "Vorrak, Hollow Crown", Kind: "Boss", Family: "Demon", Tier: 5, Habitat: "Hollowmere", KindOrder: 3, Icon: "😈", KindColor: "#E03131" }
+      - { Monster: "Glacius Rimeheart", Kind: "Boss", Family: "Dragon", Tier: 5, Habitat: "Frosthollow", KindOrder: 3, Icon: "🐲", KindColor: "#E03131" }
+      - { Monster: "The Verdant Maw", Kind: "Boss", Family: "Dragon", Tier: 5, Habitat: "Verdant Deep", KindOrder: 3, Icon: "🐊", KindColor: "#E03131" }
 
   Quest:
     key: QuestKey
     members:
-      - { Quest: "Cull the Gnoll Warren",       QuestType: Hunt,   Danger: Low,     RankRequired: Copper }
-      - { Quest: "Escort the Salt Caravan",     QuestType: Escort, Danger: Low,     RankRequired: Copper }
-      - { Quest: "Gather Emberbloom",           QuestType: Gather, Danger: Low,     RankRequired: Copper }
-      - { Quest: "Clear the Old Mill",          QuestType: Hunt,   Danger: Low,     RankRequired: Bronze }
-      - { Quest: "Map the Gloamspire Tunnels",  QuestType: Delve,  Danger: Medium,  RankRequired: Bronze }
-      - { Quest: "Ward the Thornveil Road",     QuestType: Escort, Danger: Medium,  RankRequired: Bronze }
-      - { Quest: "Harvest Rimefrost Sap",       QuestType: Gather, Danger: Medium,  RankRequired: Bronze }
-      - { Quest: "Break the Bog Siege",         QuestType: Hunt,   Danger: Medium,  RankRequired: Silver }
-      - { Quest: "Recover the Sunken Ledger",   QuestType: Delve,  Danger: Medium,  RankRequired: Silver }
-      - { Quest: "Hunt the Ironjaw",            QuestType: Hunt,   Danger: High,    RankRequired: Silver }
-      - { Quest: "Escort the Ambassador",       QuestType: Escort, Danger: High,    RankRequired: Silver }
-      - { Quest: "Delve the Obsidian Vault",    QuestType: Delve,  Danger: High,    RankRequired: Silver }
-      - { Quest: "Purge the Ashfall Crypts",    QuestType: Hunt,   Danger: High,    RankRequired: Gold }
-      - { Quest: "Silence the Widow",           QuestType: Hunt,   Danger: High,    RankRequired: Gold }
-      - { Quest: "Chart the Verdant Deep",      QuestType: Delve,  Danger: High,    RankRequired: Gold }
-      - { Quest: "Siege of Ashfall Reach",      QuestType: Raid,   Danger: Extreme, RankRequired: Gold }
-      - { Quest: "The Wyrm of Emberwaste",      QuestType: Raid,   Danger: Extreme, RankRequired: Gold }
-      - { Quest: "Vorrak's Descent",            QuestType: Raid,   Danger: Extreme, RankRequired: Gold }
-      - { Quest: "Rimeheart's Lair",            QuestType: Raid,   Danger: Extreme, RankRequired: Gold }
-      - { Quest: "The Maw Awakens",             QuestType: Raid,   Danger: Extreme, RankRequired: Gold }
+      - { Quest: "Cull the Gnoll Warren", QuestType: "Hunt", Danger: "Low", RankRequired: "Copper", DangerOrder: 1, RankRequiredOrder: 1, DangerColor: "#4CAF7D", ChainName: "The Gnoll Uprising", ChainStep: 1, PrerequisiteQuestKey: 0 }
+      - { Quest: "Escort the Salt Caravan", QuestType: "Escort", Danger: "Low", RankRequired: "Copper", DangerOrder: 1, RankRequiredOrder: 1, DangerColor: "#4CAF7D", ChainName: "The Long Road", ChainStep: 1, PrerequisiteQuestKey: 0 }
+      - { Quest: "Gather Emberbloom", QuestType: "Gather", Danger: "Low", RankRequired: "Copper", DangerOrder: 1, RankRequiredOrder: 1, DangerColor: "#4CAF7D", ChainName: "Wyrmsong", ChainStep: 1, PrerequisiteQuestKey: 0 }
+      - { Quest: "Clear the Old Mill", QuestType: "Hunt", Danger: "Low", RankRequired: "Bronze", DangerOrder: 1, RankRequiredOrder: 2, DangerColor: "#4CAF7D", ChainName: "The Gnoll Uprising", ChainStep: 2, PrerequisiteQuestKey: 1 }
+      - { Quest: "Map the Gloamspire Tunnels", QuestType: "Delve", Danger: "Medium", RankRequired: "Bronze", DangerOrder: 2, RankRequiredOrder: 2, DangerColor: "#F2C037", ChainName: "The Widow's Web", ChainStep: 1, PrerequisiteQuestKey: 0 }
+      - { Quest: "Ward the Thornveil Road", QuestType: "Escort", Danger: "Medium", RankRequired: "Bronze", DangerOrder: 2, RankRequiredOrder: 2, DangerColor: "#F2C037", ChainName: "The Long Road", ChainStep: 2, PrerequisiteQuestKey: 2 }
+      - { Quest: "Harvest Rimefrost Sap", QuestType: "Gather", Danger: "Medium", RankRequired: "Bronze", DangerOrder: 2, RankRequiredOrder: 2, DangerColor: "#F2C037", ChainName: "Wyrmsong", ChainStep: 2, PrerequisiteQuestKey: 3 }
+      - { Quest: "Break the Bog Siege", QuestType: "Hunt", Danger: "Medium", RankRequired: "Silver", DangerOrder: 2, RankRequiredOrder: 3, DangerColor: "#F2C037", ChainName: "The Gnoll Uprising", ChainStep: 3, PrerequisiteQuestKey: 4 }
+      - { Quest: "Recover the Sunken Ledger", QuestType: "Delve", Danger: "Medium", RankRequired: "Silver", DangerOrder: 2, RankRequiredOrder: 3, DangerColor: "#F2C037", ChainName: "The Widow's Web", ChainStep: 2, PrerequisiteQuestKey: 5 }
+      - { Quest: "Hunt the Ironjaw", QuestType: "Hunt", Danger: "High", RankRequired: "Silver", DangerOrder: 3, RankRequiredOrder: 3, DangerColor: "#F97316", ChainName: "Wyrmsong", ChainStep: 3, PrerequisiteQuestKey: 7 }
+      - { Quest: "Escort the Ambassador", QuestType: "Escort", Danger: "High", RankRequired: "Silver", DangerOrder: 3, RankRequiredOrder: 3, DangerColor: "#F97316", ChainName: "The Long Road", ChainStep: 3, PrerequisiteQuestKey: 6 }
+      - { Quest: "Delve the Obsidian Vault", QuestType: "Delve", Danger: "High", RankRequired: "Silver", DangerOrder: 3, RankRequiredOrder: 3, DangerColor: "#F97316", ChainName: "Into the Deep", ChainStep: 1, PrerequisiteQuestKey: 0 }
+      - { Quest: "Purge the Ashfall Crypts", QuestType: "Hunt", Danger: "High", RankRequired: "Gold", DangerOrder: 3, RankRequiredOrder: 4, DangerColor: "#F97316", ChainName: "The Ashfall Wars", ChainStep: 1, PrerequisiteQuestKey: 0 }
+      - { Quest: "Silence the Widow", QuestType: "Hunt", Danger: "High", RankRequired: "Gold", DangerOrder: 3, RankRequiredOrder: 4, DangerColor: "#F97316", ChainName: "The Widow's Web", ChainStep: 3, PrerequisiteQuestKey: 9 }
+      - { Quest: "Chart the Verdant Deep", QuestType: "Delve", Danger: "High", RankRequired: "Gold", DangerOrder: 3, RankRequiredOrder: 4, DangerColor: "#F97316", ChainName: "Into the Deep", ChainStep: 2, PrerequisiteQuestKey: 12 }
+      - { Quest: "Siege of Ashfall Reach", QuestType: "Raid", Danger: "Extreme", RankRequired: "Gold", DangerOrder: 4, RankRequiredOrder: 4, DangerColor: "#E03131", ChainName: "The Ashfall Wars", ChainStep: 2, PrerequisiteQuestKey: 13 }
+      - { Quest: "The Wyrm of Emberwaste", QuestType: "Raid", Danger: "Extreme", RankRequired: "Gold", DangerOrder: 4, RankRequiredOrder: 4, DangerColor: "#E03131", ChainName: "Wyrmsong", ChainStep: 4, PrerequisiteQuestKey: 10 }
+      - { Quest: "Vorrak's Descent", QuestType: "Raid", Danger: "Extreme", RankRequired: "Gold", DangerOrder: 4, RankRequiredOrder: 4, DangerColor: "#E03131", ChainName: "The Widow's Web", ChainStep: 4, PrerequisiteQuestKey: 14 }
+      - { Quest: "Rimeheart's Lair", QuestType: "Raid", Danger: "Extreme", RankRequired: "Gold", DangerOrder: 4, RankRequiredOrder: 4, DangerColor: "#E03131", ChainName: "The Frozen Crown", ChainStep: 1, PrerequisiteQuestKey: 0 }
+      - { Quest: "The Maw Awakens", QuestType: "Raid", Danger: "Extreme", RankRequired: "Gold", DangerOrder: 4, RankRequiredOrder: 4, DangerColor: "#E03131", ChainName: "Into the Deep", ChainStep: 3, PrerequisiteQuestKey: 15 }
 
   Item:
     key: ItemKey
     members:
-      - { Item: "Iron Shortsword",         Category: Weapon,  Rarity: Common,    Slot: MainHand }
-      - { Item: "Ashwood Bow",             Category: Weapon,  Rarity: Common,    Slot: MainHand }
-      - { Item: "Pitted Warhammer",        Category: Weapon,  Rarity: Common,    Slot: MainHand }
-      - { Item: "Thornsteel Blade",        Category: Weapon,  Rarity: Uncommon,  Slot: MainHand }
-      - { Item: "Brineglass Dagger",       Category: Weapon,  Rarity: Uncommon,  Slot: OffHand }
-      - { Item: "Emberforge Axe",          Category: Weapon,  Rarity: Uncommon,  Slot: MainHand }
-      - { Item: "Stormcaller Staff",       Category: Weapon,  Rarity: Rare,      Slot: MainHand }
-      - { Item: "Wyrmbone Greatsword",     Category: Weapon,  Rarity: Rare,      Slot: MainHand }
-      - { Item: "Gloamsteel Rapier",       Category: Weapon,  Rarity: Rare,      Slot: MainHand }
-      - { Item: "Fang of Emberfang",       Category: Weapon,  Rarity: Epic,      Slot: MainHand }
-      - { Item: "Rimeheart Glaive",        Category: Weapon,  Rarity: Epic,      Slot: MainHand }
-      - { Item: "Crownsplitter",           Category: Weapon,  Rarity: Legendary, Slot: MainHand }
-      - { Item: "Padded Jerkin",           Category: Armour,  Rarity: Common,    Slot: Chest }
-      - { Item: "Rusted Mail",             Category: Armour,  Rarity: Common,    Slot: Chest }
-      - { Item: "Traveller's Cloak",       Category: Armour,  Rarity: Common,    Slot: Back }
-      - { Item: "Thornhide Vest",          Category: Armour,  Rarity: Uncommon,  Slot: Chest }
-      - { Item: "Saltforged Greaves",      Category: Armour,  Rarity: Uncommon,  Slot: Legs }
-      - { Item: "Emberplate Helm",         Category: Armour,  Rarity: Uncommon,  Slot: Head }
-      - { Item: "Obsidian Cuirass",        Category: Armour,  Rarity: Rare,      Slot: Chest }
-      - { Item: "Duskweave Mantle",        Category: Armour,  Rarity: Rare,      Slot: Back }
-      - { Item: "Scale of Glacius",        Category: Armour,  Rarity: Epic,      Slot: Chest }
-      - { Item: "Hollow Crown",            Category: Armour,  Rarity: Legendary, Slot: Head }
-      - { Item: "Minor Healing Draught",   Category: Potion,  Rarity: Common,    Slot: Consumable }
-      - { Item: "Antivenom Vial",          Category: Potion,  Rarity: Common,    Slot: Consumable }
-      - { Item: "Torchfire Flask",         Category: Potion,  Rarity: Common,    Slot: Consumable }
-      - { Item: "Greater Healing Draught", Category: Potion,  Rarity: Uncommon,  Slot: Consumable }
-      - { Item: "Elixir of Frostward",     Category: Potion,  Rarity: Uncommon,  Slot: Consumable }
-      - { Item: "Tonic of Swift Step",     Category: Potion,  Rarity: Uncommon,  Slot: Consumable }
-      - { Item: "Draught of Iron Skin",    Category: Potion,  Rarity: Rare,      Slot: Consumable }
-      - { Item: "Philtre of True Sight",   Category: Potion,  Rarity: Rare,      Slot: Consumable }
-      - { Item: "Dragonsblood Tincture",   Category: Potion,  Rarity: Epic,      Slot: Consumable }
-      - { Item: "Phial of Second Dawn",    Category: Potion,  Rarity: Legendary, Slot: Consumable }
-      - { Item: "Emberbloom Petal",        Category: Reagent, Rarity: Common,    Slot: Material }
-      - { Item: "Bog Spore",               Category: Reagent, Rarity: Common,    Slot: Material }
-      - { Item: "Salt Crystal",            Category: Reagent, Rarity: Common,    Slot: Material }
-      - { Item: "Rimefrost Sap",           Category: Reagent, Rarity: Uncommon,  Slot: Material }
-      - { Item: "Gloamcap Fungus",         Category: Reagent, Rarity: Uncommon,  Slot: Material }
-      - { Item: "Thornvine Coil",          Category: Reagent, Rarity: Uncommon,  Slot: Material }
-      - { Item: "Sparkmite Dust",          Category: Reagent, Rarity: Rare,      Slot: Material }
-      - { Item: "Revenant Ash",            Category: Reagent, Rarity: Rare,      Slot: Material }
-      - { Item: "Wyrmscale Shard",         Category: Reagent, Rarity: Epic,      Slot: Material }
-      - { Item: "Heartcinder",             Category: Reagent, Rarity: Legendary, Slot: Material }
-      - { Item: "Gnoll Fang Necklace",     Category: Trophy,  Rarity: Common,    Slot: Trophy }
-      - { Item: "Harpy Plume",             Category: Trophy,  Rarity: Common,    Slot: Trophy }
-      - { Item: "Chimera Horn",            Category: Trophy,  Rarity: Rare,      Slot: Trophy }
-      - { Item: "Sentinel Core",           Category: Trophy,  Rarity: Rare,      Slot: Trophy }
-      - { Item: "Widow's Eye",             Category: Trophy,  Rarity: Epic,      Slot: Trophy }
-      - { Item: "Maw Tooth",               Category: Trophy,  Rarity: Legendary, Slot: Trophy }
+      - { Item: "Iron Shortsword", Category: "Weapon", Rarity: "Common", Slot: "MainHand", RarityOrder: 1, Icon: "🗡", RarityColor: "#9AA3B2" }
+      - { Item: "Ashwood Bow", Category: "Weapon", Rarity: "Common", Slot: "MainHand", RarityOrder: 1, Icon: "🏹", RarityColor: "#9AA3B2" }
+      - { Item: "Pitted Warhammer", Category: "Weapon", Rarity: "Common", Slot: "MainHand", RarityOrder: 1, Icon: "🔨", RarityColor: "#9AA3B2" }
+      - { Item: "Thornsteel Blade", Category: "Weapon", Rarity: "Uncommon", Slot: "MainHand", RarityOrder: 2, Icon: "🗡", RarityColor: "#4CAF7D" }
+      - { Item: "Brineglass Dagger", Category: "Weapon", Rarity: "Uncommon", Slot: "OffHand", RarityOrder: 2, Icon: "🔪", RarityColor: "#4CAF7D" }
+      - { Item: "Emberforge Axe", Category: "Weapon", Rarity: "Uncommon", Slot: "MainHand", RarityOrder: 2, Icon: "🪓", RarityColor: "#4CAF7D" }
+      - { Item: "Stormcaller Staff", Category: "Weapon", Rarity: "Rare", Slot: "MainHand", RarityOrder: 3, Icon: "🪄", RarityColor: "#3B82F6" }
+      - { Item: "Wyrmbone Greatsword", Category: "Weapon", Rarity: "Rare", Slot: "MainHand", RarityOrder: 3, Icon: "⚔", RarityColor: "#3B82F6" }
+      - { Item: "Gloamsteel Rapier", Category: "Weapon", Rarity: "Rare", Slot: "MainHand", RarityOrder: 3, Icon: "🤺", RarityColor: "#3B82F6" }
+      - { Item: "Fang of Emberfang", Category: "Weapon", Rarity: "Epic", Slot: "MainHand", RarityOrder: 4, Icon: "🗡", RarityColor: "#A855F7" }
+      - { Item: "Rimeheart Glaive", Category: "Weapon", Rarity: "Epic", Slot: "MainHand", RarityOrder: 4, Icon: "🔱", RarityColor: "#A855F7" }
+      - { Item: "Crownsplitter", Category: "Weapon", Rarity: "Legendary", Slot: "MainHand", RarityOrder: 5, Icon: "⚔", RarityColor: "#F59E0B" }
+      - { Item: "Padded Jerkin", Category: "Armour", Rarity: "Common", Slot: "Chest", RarityOrder: 1, Icon: "🎽", RarityColor: "#9AA3B2" }
+      - { Item: "Rusted Mail", Category: "Armour", Rarity: "Common", Slot: "Chest", RarityOrder: 1, Icon: "🛡", RarityColor: "#9AA3B2" }
+      - { Item: "Traveller's Cloak", Category: "Armour", Rarity: "Common", Slot: "Back", RarityOrder: 1, Icon: "🧥", RarityColor: "#9AA3B2" }
+      - { Item: "Thornhide Vest", Category: "Armour", Rarity: "Uncommon", Slot: "Chest", RarityOrder: 2, Icon: "🦺", RarityColor: "#4CAF7D" }
+      - { Item: "Saltforged Greaves", Category: "Armour", Rarity: "Uncommon", Slot: "Legs", RarityOrder: 2, Icon: "🥾", RarityColor: "#4CAF7D" }
+      - { Item: "Emberplate Helm", Category: "Armour", Rarity: "Uncommon", Slot: "Head", RarityOrder: 2, Icon: "⛑", RarityColor: "#4CAF7D" }
+      - { Item: "Obsidian Cuirass", Category: "Armour", Rarity: "Rare", Slot: "Chest", RarityOrder: 3, Icon: "🛡", RarityColor: "#3B82F6" }
+      - { Item: "Duskweave Mantle", Category: "Armour", Rarity: "Rare", Slot: "Back", RarityOrder: 3, Icon: "🧙", RarityColor: "#3B82F6" }
+      - { Item: "Scale of Glacius", Category: "Armour", Rarity: "Epic", Slot: "Chest", RarityOrder: 4, Icon: "🐲", RarityColor: "#A855F7" }
+      - { Item: "Hollow Crown", Category: "Armour", Rarity: "Legendary", Slot: "Head", RarityOrder: 5, Icon: "👑", RarityColor: "#F59E0B" }
+      - { Item: "Minor Healing Draught", Category: "Potion", Rarity: "Common", Slot: "Consumable", RarityOrder: 1, Icon: "🧪", RarityColor: "#9AA3B2" }
+      - { Item: "Antivenom Vial", Category: "Potion", Rarity: "Common", Slot: "Consumable", RarityOrder: 1, Icon: "💉", RarityColor: "#9AA3B2" }
+      - { Item: "Torchfire Flask", Category: "Potion", Rarity: "Common", Slot: "Consumable", RarityOrder: 1, Icon: "🔥", RarityColor: "#9AA3B2" }
+      - { Item: "Greater Healing Draught", Category: "Potion", Rarity: "Uncommon", Slot: "Consumable", RarityOrder: 2, Icon: "🧪", RarityColor: "#4CAF7D" }
+      - { Item: "Elixir of Frostward", Category: "Potion", Rarity: "Uncommon", Slot: "Consumable", RarityOrder: 2, Icon: "❄", RarityColor: "#4CAF7D" }
+      - { Item: "Tonic of Swift Step", Category: "Potion", Rarity: "Uncommon", Slot: "Consumable", RarityOrder: 2, Icon: "💨", RarityColor: "#4CAF7D" }
+      - { Item: "Draught of Iron Skin", Category: "Potion", Rarity: "Rare", Slot: "Consumable", RarityOrder: 3, Icon: "🛡", RarityColor: "#3B82F6" }
+      - { Item: "Philtre of True Sight", Category: "Potion", Rarity: "Rare", Slot: "Consumable", RarityOrder: 3, Icon: "👁", RarityColor: "#3B82F6" }
+      - { Item: "Dragonsblood Tincture", Category: "Potion", Rarity: "Epic", Slot: "Consumable", RarityOrder: 4, Icon: "🩸", RarityColor: "#A855F7" }
+      - { Item: "Phial of Second Dawn", Category: "Potion", Rarity: "Legendary", Slot: "Consumable", RarityOrder: 5, Icon: "🌅", RarityColor: "#F59E0B" }
+      - { Item: "Emberbloom Petal", Category: "Reagent", Rarity: "Common", Slot: "Material", RarityOrder: 1, Icon: "🌺", RarityColor: "#9AA3B2" }
+      - { Item: "Bog Spore", Category: "Reagent", Rarity: "Common", Slot: "Material", RarityOrder: 1, Icon: "🍄", RarityColor: "#9AA3B2" }
+      - { Item: "Salt Crystal", Category: "Reagent", Rarity: "Common", Slot: "Material", RarityOrder: 1, Icon: "🧂", RarityColor: "#9AA3B2" }
+      - { Item: "Rimefrost Sap", Category: "Reagent", Rarity: "Uncommon", Slot: "Material", RarityOrder: 2, Icon: "🧊", RarityColor: "#4CAF7D" }
+      - { Item: "Gloamcap Fungus", Category: "Reagent", Rarity: "Uncommon", Slot: "Material", RarityOrder: 2, Icon: "🍄", RarityColor: "#4CAF7D" }
+      - { Item: "Thornvine Coil", Category: "Reagent", Rarity: "Uncommon", Slot: "Material", RarityOrder: 2, Icon: "🌿", RarityColor: "#4CAF7D" }
+      - { Item: "Sparkmite Dust", Category: "Reagent", Rarity: "Rare", Slot: "Material", RarityOrder: 3, Icon: "✨", RarityColor: "#3B82F6" }
+      - { Item: "Revenant Ash", Category: "Reagent", Rarity: "Rare", Slot: "Material", RarityOrder: 3, Icon: "🖤", RarityColor: "#3B82F6" }
+      - { Item: "Wyrmscale Shard", Category: "Reagent", Rarity: "Epic", Slot: "Material", RarityOrder: 4, Icon: "🐲", RarityColor: "#A855F7" }
+      - { Item: "Heartcinder", Category: "Reagent", Rarity: "Legendary", Slot: "Material", RarityOrder: 5, Icon: "💎", RarityColor: "#F59E0B" }
+      - { Item: "Gnoll Fang Necklace", Category: "Trophy", Rarity: "Common", Slot: "Trophy", RarityOrder: 1, Icon: "📿", RarityColor: "#9AA3B2" }
+      - { Item: "Harpy Plume", Category: "Trophy", Rarity: "Common", Slot: "Trophy", RarityOrder: 1, Icon: "🪶", RarityColor: "#9AA3B2" }
+      - { Item: "Chimera Horn", Category: "Trophy", Rarity: "Rare", Slot: "Trophy", RarityOrder: 3, Icon: "🐏", RarityColor: "#3B82F6" }
+      - { Item: "Sentinel Core", Category: "Trophy", Rarity: "Rare", Slot: "Trophy", RarityOrder: 3, Icon: "💠", RarityColor: "#3B82F6" }
+      - { Item: "Widow's Eye", Category: "Trophy", Rarity: "Epic", Slot: "Trophy", RarityOrder: 4, Icon: "👁", RarityColor: "#A855F7" }
+      - { Item: "Maw Tooth", Category: "Trophy", Rarity: "Legendary", Slot: "Trophy", RarityOrder: 5, Icon: "🦷", RarityColor: "#F59E0B" }
 
 facts:
 

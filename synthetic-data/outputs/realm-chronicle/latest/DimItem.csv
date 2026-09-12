@@ -1,49 +1,49 @@
-ItemKey,Item,Category,Rarity,Slot
-1,Iron Shortsword,Weapon,Common,MainHand
-2,Ashwood Bow,Weapon,Common,MainHand
-3,Pitted Warhammer,Weapon,Common,MainHand
-4,Thornsteel Blade,Weapon,Uncommon,MainHand
-5,Brineglass Dagger,Weapon,Uncommon,OffHand
-6,Emberforge Axe,Weapon,Uncommon,MainHand
-7,Stormcaller Staff,Weapon,Rare,MainHand
-8,Wyrmbone Greatsword,Weapon,Rare,MainHand
-9,Gloamsteel Rapier,Weapon,Rare,MainHand
-10,Fang of Emberfang,Weapon,Epic,MainHand
-11,Rimeheart Glaive,Weapon,Epic,MainHand
-12,Crownsplitter,Weapon,Legendary,MainHand
-13,Padded Jerkin,Armour,Common,Chest
-14,Rusted Mail,Armour,Common,Chest
-15,Traveller's Cloak,Armour,Common,Back
-16,Thornhide Vest,Armour,Uncommon,Chest
-17,Saltforged Greaves,Armour,Uncommon,Legs
-18,Emberplate Helm,Armour,Uncommon,Head
-19,Obsidian Cuirass,Armour,Rare,Chest
-20,Duskweave Mantle,Armour,Rare,Back
-21,Scale of Glacius,Armour,Epic,Chest
-22,Hollow Crown,Armour,Legendary,Head
-23,Minor Healing Draught,Potion,Common,Consumable
-24,Antivenom Vial,Potion,Common,Consumable
-25,Torchfire Flask,Potion,Common,Consumable
-26,Greater Healing Draught,Potion,Uncommon,Consumable
-27,Elixir of Frostward,Potion,Uncommon,Consumable
-28,Tonic of Swift Step,Potion,Uncommon,Consumable
-29,Draught of Iron Skin,Potion,Rare,Consumable
-30,Philtre of True Sight,Potion,Rare,Consumable
-31,Dragonsblood Tincture,Potion,Epic,Consumable
-32,Phial of Second Dawn,Potion,Legendary,Consumable
-33,Emberbloom Petal,Reagent,Common,Material
-34,Bog Spore,Reagent,Common,Material
-35,Salt Crystal,Reagent,Common,Material
-36,Rimefrost Sap,Reagent,Uncommon,Material
-37,Gloamcap Fungus,Reagent,Uncommon,Material
-38,Thornvine Coil,Reagent,Uncommon,Material
-39,Sparkmite Dust,Reagent,Rare,Material
-40,Revenant Ash,Reagent,Rare,Material
-41,Wyrmscale Shard,Reagent,Epic,Material
-42,Heartcinder,Reagent,Legendary,Material
-43,Gnoll Fang Necklace,Trophy,Common,Trophy
-44,Harpy Plume,Trophy,Common,Trophy
-45,Chimera Horn,Trophy,Rare,Trophy
-46,Sentinel Core,Trophy,Rare,Trophy
-47,Widow's Eye,Trophy,Epic,Trophy
-48,Maw Tooth,Trophy,Legendary,Trophy
+ItemKey,Item,Category,Rarity,Slot,RarityOrder,Icon,RarityColor
+1,Iron Shortsword,Weapon,Common,MainHand,1,🗡,#9AA3B2
+2,Ashwood Bow,Weapon,Common,MainHand,1,🏹,#9AA3B2
+3,Pitted Warhammer,Weapon,Common,MainHand,1,🔨,#9AA3B2
+4,Thornsteel Blade,Weapon,Uncommon,MainHand,2,🗡,#4CAF7D
+5,Brineglass Dagger,Weapon,Uncommon,OffHand,2,🔪,#4CAF7D
+6,Emberforge Axe,Weapon,Uncommon,MainHand,2,🪓,#4CAF7D
+7,Stormcaller Staff,Weapon,Rare,MainHand,3,🪄,#3B82F6
+8,Wyrmbone Greatsword,Weapon,Rare,MainHand,3,⚔,#3B82F6
+9,Gloamsteel Rapier,Weapon,Rare,MainHand,3,🤺,#3B82F6
+10,Fang of Emberfang,Weapon,Epic,MainHand,4,🗡,#A855F7
+11,Rimeheart Glaive,Weapon,Epic,MainHand,4,🔱,#A855F7
+12,Crownsplitter,Weapon,Legendary,MainHand,5,⚔,#F59E0B
+13,Padded Jerkin,Armour,Common,Chest,1,🎽,#9AA3B2
+14,Rusted Mail,Armour,Common,Chest,1,🛡,#9AA3B2
+15,Traveller's Cloak,Armour,Common,Back,1,🧥,#9AA3B2
+16,Thornhide Vest,Armour,Uncommon,Chest,2,🦺,#4CAF7D
+17,Saltforged Greaves,Armour,Uncommon,Legs,2,🥾,#4CAF7D
+18,Emberplate Helm,Armour,Uncommon,Head,2,⛑,#4CAF7D
+19,Obsidian Cuirass,Armour,Rare,Chest,3,🛡,#3B82F6
+20,Duskweave Mantle,Armour,Rare,Back,3,🧙,#3B82F6
+21,Scale of Glacius,Armour,Epic,Chest,4,🐲,#A855F7
+22,Hollow Crown,Armour,Legendary,Head,5,👑,#F59E0B
+23,Minor Healing Draught,Potion,Common,Consumable,1,🧪,#9AA3B2
+24,Antivenom Vial,Potion,Common,Consumable,1,💉,#9AA3B2
+25,Torchfire Flask,Potion,Common,Consumable,1,🔥,#9AA3B2
+26,Greater Healing Draught,Potion,Uncommon,Consumable,2,🧪,#4CAF7D
+27,Elixir of Frostward,Potion,Uncommon,Consumable,2,❄,#4CAF7D
+28,Tonic of Swift Step,Potion,Uncommon,Consumable,2,💨,#4CAF7D
+29,Draught of Iron Skin,Potion,Rare,Consumable,3,🛡,#3B82F6
+30,Philtre of True Sight,Potion,Rare,Consumable,3,👁,#3B82F6
+31,Dragonsblood Tincture,Potion,Epic,Consumable,4,🩸,#A855F7
+32,Phial of Second Dawn,Potion,Legendary,Consumable,5,🌅,#F59E0B
+33,Emberbloom Petal,Reagent,Common,Material,1,🌺,#9AA3B2
+34,Bog Spore,Reagent,Common,Material,1,🍄,#9AA3B2
+35,Salt Crystal,Reagent,Common,Material,1,🧂,#9AA3B2
+36,Rimefrost Sap,Reagent,Uncommon,Material,2,🧊,#4CAF7D
+37,Gloamcap Fungus,Reagent,Uncommon,Material,2,🍄,#4CAF7D
+38,Thornvine Coil,Reagent,Uncommon,Material,2,🌿,#4CAF7D
+39,Sparkmite Dust,Reagent,Rare,Material,3,✨,#3B82F6
+40,Revenant Ash,Reagent,Rare,Material,3,🖤,#3B82F6
+41,Wyrmscale Shard,Reagent,Epic,Material,4,🐲,#A855F7
+42,Heartcinder,Reagent,Legendary,Material,5,💎,#F59E0B
+43,Gnoll Fang Necklace,Trophy,Common,Trophy,1,📿,#9AA3B2
+44,Harpy Plume,Trophy,Common,Trophy,1,🪶,#9AA3B2
+45,Chimera Horn,Trophy,Rare,Trophy,3,🐏,#3B82F6
+46,Sentinel Core,Trophy,Rare,Trophy,3,💠,#3B82F6
+47,Widow's Eye,Trophy,Epic,Trophy,4,👁,#A855F7
+48,Maw Tooth,Trophy,Legendary,Trophy,5,🦷,#F59E0B

@@ -1,9 +1,9 @@
-RealmKey,Realm,Terrain,ThreatBand
-1,Emberwaste,Volcanic,High
-2,Hollowmere,Swamp,High
-3,Thornveil,Forest,Medium
-4,Saltreach,Coast,Medium
-5,Gloamspire,Cavern,Medium
-6,Frosthollow,Tundra,High
-7,Ashfall Reach,Wasteland,Extreme
-8,Verdant Deep,Jungle,Extreme
+RealmKey,Realm,Terrain,ThreatBand,Region,Latitude,Longitude
+1,Emberwaste,Volcanic,High,Rimeward Reaches,64.8,-18.5
+2,Hollowmere,Swamp,High,Southern Marches,45.18,29.12
+3,Thornveil,Forest,Medium,The Heartlands,48.27,8.18
+4,Saltreach,Coast,Medium,Western Shores,38.71,-9.41
+5,Gloamspire,Cavern,Medium,The Heartlands,45.78,14.2
+6,Frosthollow,Tundra,High,Rimeward Reaches,69.65,18.96
+7,Ashfall Reach,Wasteland,Extreme,Southern Marches,37.75,14.99
+8,Verdant Deep,Jungle,Extreme,Western Shores,37.74,-25.67

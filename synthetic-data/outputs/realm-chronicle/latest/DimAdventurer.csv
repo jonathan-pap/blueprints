@@ -1,61 +1,61 @@
-AdventurerKey,Adventurer,Guild,Class,Rank
-1,Brannoc Steelvow,Ironpact,Warrior,Gold
-2,Mira Ironsong,Ironpact,Cleric,Silver
-3,Dagen Hollowshield,Ironpact,Warden,Silver
-4,Sera Vantel,Ironpact,Mage,Bronze
-5,Korrin Blackanvil,Ironpact,Warrior,Bronze
-6,Ysolde Grimm,Ironpact,Rogue,Copper
-7,Kael Emberlin,Emberwatch,Mage,Gold
-8,Thessa Brightcoal,Emberwatch,Cleric,Silver
-9,Roderic Ash,Emberwatch,Warrior,Silver
-10,Nima Flintwhisper,Emberwatch,Rogue,Bronze
-11,Garreth Cinder,Emberwatch,Warden,Bronze
-12,Alvia Pyre,Emberwatch,Ranger,Copper
-13,Wren Tallowmere,Silver Compass,Ranger,Gold
-14,Jorin Saltkey,Silver Compass,Rogue,Silver
-15,Isbeth Fairwind,Silver Compass,Mage,Bronze
-16,Calder Mapp,Silver Compass,Warden,Bronze
-17,Nyssa Farstride,Silver Compass,Ranger,Copper
-18,Ovid Quill,Silver Compass,Cleric,Copper
-19,Bram Thornwood,Thornguard,Warden,Gold
-20,Elowen Briar,Thornguard,Ranger,Silver
-21,Hask Ivyfell,Thornguard,Warrior,Silver
-22,Marta Greenspar,Thornguard,Cleric,Bronze
-23,Dorn Bramblehelm,Thornguard,Warrior,Bronze
-24,Sylva Nettle,Thornguard,Mage,Copper
-25,Vex Goldtooth,Gilded Fang,Rogue,Gold
-26,Ravella Sly,Gilded Fang,Rogue,Silver
-27,Toma Coinbite,Gilded Fang,Ranger,Bronze
-28,Dessa Marrow,Gilded Fang,Mage,Bronze
-29,Fenn Gildspur,Gilded Fang,Warrior,Copper
-30,Ambrose Knave,Gilded Fang,Cleric,Copper
-31,Corvin Duskbane,Nightwardens,Rogue,Gold
-32,Lys Shadowmere,Nightwardens,Mage,Silver
-33,Orin Nightfell,Nightwardens,Warden,Silver
-34,Perra Gloam,Nightwardens,Ranger,Bronze
-35,Sabel Vane,Nightwardens,Cleric,Bronze
-36,Thane Blackmoor,Nightwardens,Warrior,Copper
-37,Aerin Skyrend,Stormcallers,Mage,Gold
-38,Bolt Vanharrow,Stormcallers,Mage,Silver
-39,Ceria Thunderglass,Stormcallers,Cleric,Bronze
-40,Dain Galewright,Stormcallers,Warrior,Bronze
-41,Ellis Stormcrow,Stormcallers,Ranger,Copper
-42,Fira Levin,Stormcallers,Rogue,Copper
-43,Anselm Truevow,Oathkeepers,Cleric,Gold
-44,Beatrix Hale,Oathkeepers,Warden,Silver
-45,Cedric Oathbright,Oathkeepers,Warrior,Bronze
-46,Dara Pledgemoor,Oathkeepers,Ranger,Bronze
-47,Edran Sworn,Oathkeepers,Warrior,Copper
-48,Fiora Kept,Oathkeepers,Mage,Copper
-49,Gorran Drakebane,Wyrmbane,Warrior,Gold
-50,Hilde Scalebreak,Wyrmbane,Warrior,Silver
-51,Ivor Wyrmsong,Wyrmbane,Mage,Silver
-52,Jessa Dracont,Wyrmbane,Ranger,Bronze
-53,Kestrel Fang,Wyrmbane,Rogue,Bronze
-54,Lorca Vhal,Wyrmbane,Cleric,Copper
-55,Malchor Hollow,Hollow Crown,Warden,Gold
-56,Nerys Crownfall,Hollow Crown,Mage,Silver
-57,Osric Pale,Hollow Crown,Cleric,Bronze
-58,Petra Vaultborn,Hollow Crown,Warrior,Bronze
-59,Quill Ashen,Hollow Crown,Rogue,Copper
-60,Rook Emberless,Hollow Crown,Ranger,Copper
+AdventurerKey,Adventurer,Guild,Class,Rank,RankOrder
+1,Brannoc Steelvow,Ironpact,Warrior,Gold,4
+2,Mira Ironsong,Ironpact,Cleric,Silver,3
+3,Dagen Hollowshield,Ironpact,Warden,Silver,3
+4,Sera Vantel,Ironpact,Mage,Bronze,2
+5,Korrin Blackanvil,Ironpact,Warrior,Bronze,2
+6,Ysolde Grimm,Ironpact,Rogue,Copper,1
+7,Kael Emberlin,Emberwatch,Mage,Gold,4
+8,Thessa Brightcoal,Emberwatch,Cleric,Silver,3
+9,Roderic Ash,Emberwatch,Warrior,Silver,3
+10,Nima Flintwhisper,Emberwatch,Rogue,Bronze,2
+11,Garreth Cinder,Emberwatch,Warden,Bronze,2
+12,Alvia Pyre,Emberwatch,Ranger,Copper,1
+13,Wren Tallowmere,Silver Compass,Ranger,Gold,4
+14,Jorin Saltkey,Silver Compass,Rogue,Silver,3
+15,Isbeth Fairwind,Silver Compass,Mage,Bronze,2
+16,Calder Mapp,Silver Compass,Warden,Bronze,2
+17,Nyssa Farstride,Silver Compass,Ranger,Copper,1
+18,Ovid Quill,Silver Compass,Cleric,Copper,1
+19,Bram Thornwood,Thornguard,Warden,Gold,4
+20,Elowen Briar,Thornguard,Ranger,Silver,3
+21,Hask Ivyfell,Thornguard,Warrior,Silver,3
+22,Marta Greenspar,Thornguard,Cleric,Bronze,2
+23,Dorn Bramblehelm,Thornguard,Warrior,Bronze,2
+24,Sylva Nettle,Thornguard,Mage,Copper,1
+25,Vex Goldtooth,Gilded Fang,Rogue,Gold,4
+26,Ravella Sly,Gilded Fang,Rogue,Silver,3
+27,Toma Coinbite,Gilded Fang,Ranger,Bronze,2
+28,Dessa Marrow,Gilded Fang,Mage,Bronze,2
+29,Fenn Gildspur,Gilded Fang,Warrior,Copper,1
+30,Ambrose Knave,Gilded Fang,Cleric,Copper,1
+31,Corvin Duskbane,Nightwardens,Rogue,Gold,4
+32,Lys Shadowmere,Nightwardens,Mage,Silver,3
+33,Orin Nightfell,Nightwardens,Warden,Silver,3
+34,Perra Gloam,Nightwardens,Ranger,Bronze,2
+35,Sabel Vane,Nightwardens,Cleric,Bronze,2
+36,Thane Blackmoor,Nightwardens,Warrior,Copper,1
+37,Aerin Skyrend,Stormcallers,Mage,Gold,4
+38,Bolt Vanharrow,Stormcallers,Mage,Silver,3
+39,Ceria Thunderglass,Stormcallers,Cleric,Bronze,2
+40,Dain Galewright,Stormcallers,Warrior,Bronze,2
+41,Ellis Stormcrow,Stormcallers,Ranger,Copper,1
+42,Fira Levin,Stormcallers,Rogue,Copper,1
+43,Anselm Truevow,Oathkeepers,Cleric,Gold,4
+44,Beatrix Hale,Oathkeepers,Warden,Silver,3
+45,Cedric Oathbright,Oathkeepers,Warrior,Bronze,2
+46,Dara Pledgemoor,Oathkeepers,Ranger,Bronze,2
+47,Edran Sworn,Oathkeepers,Warrior,Copper,1
+48,Fiora Kept,Oathkeepers,Mage,Copper,1
+49,Gorran Drakebane,Wyrmbane,Warrior,Gold,4
+50,Hilde Scalebreak,Wyrmbane,Warrior,Silver,3
+51,Ivor Wyrmsong,Wyrmbane,Mage,Silver,3
+52,Jessa Dracont,Wyrmbane,Ranger,Bronze,2
+53,Kestrel Fang,Wyrmbane,Rogue,Bronze,2
+54,Lorca Vhal,Wyrmbane,Cleric,Copper,1
+55,Malchor Hollow,Hollow Crown,Warden,Gold,4
+56,Nerys Crownfall,Hollow Crown,Mage,Silver,3
+57,Osric Pale,Hollow Crown,Cleric,Bronze,2
+58,Petra Vaultborn,Hollow Crown,Warrior,Bronze,2
+59,Quill Ashen,Hollow Crown,Rogue,Copper,1
+60,Rook Emberless,Hollow Crown,Ranger,Copper,1

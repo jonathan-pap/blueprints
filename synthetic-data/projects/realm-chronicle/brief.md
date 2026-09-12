@@ -43,7 +43,17 @@ Declared, not hand-written: `config.yaml` in this folder, run through the room e
 - **Quest** (20) — `QuestType` (Hunt/Escort/Gather/Delve/Raid), `Danger` (Low→Extreme), `RankRequired`.
 - **Item** (48) — `Category` (Weapon/Armour/Potion/Reagent/Trophy), `Rarity`
   (Common→Legendary), `Slot`.
-- **Realm** (8) — `Terrain`, `ThreatBand`. The market's trading posts.
+- **Realm** (8) — `Terrain`, `ThreatBand`, `Region`, `Latitude`, `Longitude`. The market's trading posts.
+
+**Report-ready columns** (added so the dataset exercises Power BI features, not just totals):
+
+| Column(s) | On | Exists so you can test |
+|---|---|---|
+| `RankOrder`, `RarityOrder`, `DangerOrder`, `KindOrder`, `RankRequiredOrder` | Adventurer, Item, Quest, Monster | **Sort-by-column.** Without these every chart sorts alphabetically — "Bronze, Copper, Gold, Silver" and "Common, Epic, Legendary, Rare, Uncommon". These are literal columns, never derived from the column they sort, which is the circular-dependency trap in `power-bi/02-build/report/validate/build-traps.md` #3. |
+| `Latitude`, `Longitude`, `Region` | Realm | **Azure Map / filled map / bubble map**, and a `Region → Realm` drill path. Each realm sits on a real location whose terrain matches its lore — Emberwaste on volcanic Iceland, Frosthollow in Arctic Norway, Hollowmere on the Danube delta — so the basemap reads sensibly instead of dropping pins in open ocean. |
+| `ChainName`, `ChainStep`, `PrerequisiteQuestKey` | Quest | **`PATH()` / `PATHITEM()`**, parent-child hierarchies, decomposition tree, hierarchical matrix. 7 chains, 20 quests, `0` marks a chain head. Verified: no broken links. |
+| `Icon` | Monster, Item | Emoji glyph per member — labels in tables/matrices, card decoration, Q&A results that read as objects rather than rows. |
+| `KindColor`, `RarityColor`, `DangerColor` | Monster, Item, Quest | **Conditional formatting by field value** (colour a bar or table cell straight from the model), and the colour input for the SVG chart-in-cell measures in `power-bi/02-build/visuals/svg/`. Stored as hex tokens rather than baked SVG, because the SVG belongs in a DAX measure. |
 
 **Declared marginals** (the story the engine rakes to):
 

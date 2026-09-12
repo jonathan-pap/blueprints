@@ -1,21 +1,21 @@
-QuestKey,Quest,QuestType,Danger,RankRequired
-1,Cull the Gnoll Warren,Hunt,Low,Copper
-2,Escort the Salt Caravan,Escort,Low,Copper
-3,Gather Emberbloom,Gather,Low,Copper
-4,Clear the Old Mill,Hunt,Low,Bronze
-5,Map the Gloamspire Tunnels,Delve,Medium,Bronze
-6,Ward the Thornveil Road,Escort,Medium,Bronze
-7,Harvest Rimefrost Sap,Gather,Medium,Bronze
-8,Break the Bog Siege,Hunt,Medium,Silver
-9,Recover the Sunken Ledger,Delve,Medium,Silver
-10,Hunt the Ironjaw,Hunt,High,Silver
-11,Escort the Ambassador,Escort,High,Silver
-12,Delve the Obsidian Vault,Delve,High,Silver
-13,Purge the Ashfall Crypts,Hunt,High,Gold
-14,Silence the Widow,Hunt,High,Gold
-15,Chart the Verdant Deep,Delve,High,Gold
-16,Siege of Ashfall Reach,Raid,Extreme,Gold
-17,The Wyrm of Emberwaste,Raid,Extreme,Gold
-18,Vorrak's Descent,Raid,Extreme,Gold
-19,Rimeheart's Lair,Raid,Extreme,Gold
-20,The Maw Awakens,Raid,Extreme,Gold
+QuestKey,Quest,QuestType,Danger,RankRequired,DangerOrder,RankRequiredOrder,DangerColor,ChainName,ChainStep,PrerequisiteQuestKey
+1,Cull the Gnoll Warren,Hunt,Low,Copper,1,1,#4CAF7D,The Gnoll Uprising,1,0
+2,Escort the Salt Caravan,Escort,Low,Copper,1,1,#4CAF7D,The Long Road,1,0
+3,Gather Emberbloom,Gather,Low,Copper,1,1,#4CAF7D,Wyrmsong,1,0
+4,Clear the Old Mill,Hunt,Low,Bronze,1,2,#4CAF7D,The Gnoll Uprising,2,1
+5,Map the Gloamspire Tunnels,Delve,Medium,Bronze,2,2,#F2C037,The Widow's Web,1,0
+6,Ward the Thornveil Road,Escort,Medium,Bronze,2,2,#F2C037,The Long Road,2,2
+7,Harvest Rimefrost Sap,Gather,Medium,Bronze,2,2,#F2C037,Wyrmsong,2,3
+8,Break the Bog Siege,Hunt,Medium,Silver,2,3,#F2C037,The Gnoll Uprising,3,4
+9,Recover the Sunken Ledger,Delve,Medium,Silver,2,3,#F2C037,The Widow's Web,2,5
+10,Hunt the Ironjaw,Hunt,High,Silver,3,3,#F97316,Wyrmsong,3,7
+11,Escort the Ambassador,Escort,High,Silver,3,3,#F97316,The Long Road,3,6
+12,Delve the Obsidian Vault,Delve,High,Silver,3,3,#F97316,Into the Deep,1,0
+13,Purge the Ashfall Crypts,Hunt,High,Gold,3,4,#F97316,The Ashfall Wars,1,0
+14,Silence the Widow,Hunt,High,Gold,3,4,#F97316,The Widow's Web,3,9
+15,Chart the Verdant Deep,Delve,High,Gold,3,4,#F97316,Into the Deep,2,12
+16,Siege of Ashfall Reach,Raid,Extreme,Gold,4,4,#E03131,The Ashfall Wars,2,13
+17,The Wyrm of Emberwaste,Raid,Extreme,Gold,4,4,#E03131,Wyrmsong,4,10
+18,Vorrak's Descent,Raid,Extreme,Gold,4,4,#E03131,The Widow's Web,4,14
+19,Rimeheart's Lair,Raid,Extreme,Gold,4,4,#E03131,The Frozen Crown,1,0
+20,The Maw Awakens,Raid,Extreme,Gold,4,4,#E03131,Into the Deep,3,15
