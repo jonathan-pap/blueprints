@@ -1,0 +1,17 @@
+{
+  "generated": "2026-09-12T09:59:59",
+  "seed": 20260912,
+  "config": "config.yaml",
+  "tables": {
+    "DimDate": 1461,
+    "DimRealm": 8,
+    "DimAdventurer": 60,
+    "DimMonster": 32,
+    "DimQuest": 20,
+    "DimItem": 48,
+    "FactMonsterKills": 196241,
+    "FactQuests": 105030,
+    "FactLootDrops": 67180,
+    "FactMarketTrades": 308786
+  }
+}

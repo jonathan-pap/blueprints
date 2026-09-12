@@ -1,0 +1,336 @@
+# Realm Chronicle — one RPG world, four ledgers.
+# Guild quests + monster hunting + loot drops + the grand exchange, on conformed dimensions.
+# Grammar: ../../02-schema/config-schema.md   Method: ../../03-generate/engine-share-allocation.md
+
+name: realm-chronicle
+seed: 20260912
+output: { dir: outputs/realm-chronicle/latest }
+
+dimensions:
+
+  Date: { type: calendar, range: [2023-01-01, 2026-12-31], grain: day }
+
+  Realm:
+    key: RealmKey
+    members:
+      - { Realm: Emberwaste,    Terrain: Volcanic,   ThreatBand: High }
+      - { Realm: Hollowmere,    Terrain: Swamp,      ThreatBand: High }
+      - { Realm: Thornveil,     Terrain: Forest,     ThreatBand: Medium }
+      - { Realm: Saltreach,     Terrain: Coast,      ThreatBand: Medium }
+      - { Realm: Gloamspire,    Terrain: Cavern,     ThreatBand: Medium }
+      - { Realm: Frosthollow,   Terrain: Tundra,     ThreatBand: High }
+      - { Realm: "Ashfall Reach", Terrain: Wasteland, ThreatBand: Extreme }
+      - { Realm: "Verdant Deep", Terrain: Jungle,    ThreatBand: Extreme }
+
+  # A player belongs to exactly ONE guild, so Guild rides here as an attribute rather than
+  # becoming a grain dimension (see brief.md §4). Roll up by Guild, drill to Adventurer.
+  Adventurer:
+    key: AdventurerKey
+    members:
+      - { Adventurer: "Brannoc Steelvow",    Guild: Ironpact,        Class: Warrior, Rank: Gold }
+      - { Adventurer: "Mira Ironsong",       Guild: Ironpact,        Class: Cleric,  Rank: Silver }
+      - { Adventurer: "Dagen Hollowshield",  Guild: Ironpact,        Class: Warden,  Rank: Silver }
+      - { Adventurer: "Sera Vantel",         Guild: Ironpact,        Class: Mage,    Rank: Bronze }
+      - { Adventurer: "Korrin Blackanvil",   Guild: Ironpact,        Class: Warrior, Rank: Bronze }
+      - { Adventurer: "Ysolde Grimm",        Guild: Ironpact,        Class: Rogue,   Rank: Copper }
+      - { Adventurer: "Kael Emberlin",       Guild: Emberwatch,      Class: Mage,    Rank: Gold }
+      - { Adventurer: "Thessa Brightcoal",   Guild: Emberwatch,      Class: Cleric,  Rank: Silver }
+      - { Adventurer: "Roderic Ash",         Guild: Emberwatch,      Class: Warrior, Rank: Silver }
+      - { Adventurer: "Nima Flintwhisper",   Guild: Emberwatch,      Class: Rogue,   Rank: Bronze }
+      - { Adventurer: "Garreth Cinder",      Guild: Emberwatch,      Class: Warden,  Rank: Bronze }
+      - { Adventurer: "Alvia Pyre",          Guild: Emberwatch,      Class: Ranger,  Rank: Copper }
+      - { Adventurer: "Wren Tallowmere",     Guild: "Silver Compass", Class: Ranger,  Rank: Gold }
+      - { Adventurer: "Jorin Saltkey",       Guild: "Silver Compass", Class: Rogue,   Rank: Silver }
+      - { Adventurer: "Isbeth Fairwind",     Guild: "Silver Compass", Class: Mage,    Rank: Bronze }
+      - { Adventurer: "Calder Mapp",         Guild: "Silver Compass", Class: Warden,  Rank: Bronze }
+      - { Adventurer: "Nyssa Farstride",     Guild: "Silver Compass", Class: Ranger,  Rank: Copper }
+      - { Adventurer: "Ovid Quill",          Guild: "Silver Compass", Class: Cleric,  Rank: Copper }
+      - { Adventurer: "Bram Thornwood",      Guild: Thornguard,      Class: Warden,  Rank: Gold }
+      - { Adventurer: "Elowen Briar",        Guild: Thornguard,      Class: Ranger,  Rank: Silver }
+      - { Adventurer: "Hask Ivyfell",        Guild: Thornguard,      Class: Warrior, Rank: Silver }
+      - { Adventurer: "Marta Greenspar",     Guild: Thornguard,      Class: Cleric,  Rank: Bronze }
+      - { Adventurer: "Dorn Bramblehelm",    Guild: Thornguard,      Class: Warrior, Rank: Bronze }
+      - { Adventurer: "Sylva Nettle",        Guild: Thornguard,      Class: Mage,    Rank: Copper }
+      - { Adventurer: "Vex Goldtooth",       Guild: "Gilded Fang",   Class: Rogue,   Rank: Gold }
+      - { Adventurer: "Ravella Sly",         Guild: "Gilded Fang",   Class: Rogue,   Rank: Silver }
+      - { Adventurer: "Toma Coinbite",       Guild: "Gilded Fang",   Class: Ranger,  Rank: Bronze }
+      - { Adventurer: "Dessa Marrow",        Guild: "Gilded Fang",   Class: Mage,    Rank: Bronze }
+      - { Adventurer: "Fenn Gildspur",       Guild: "Gilded Fang",   Class: Warrior, Rank: Copper }
+      - { Adventurer: "Ambrose Knave",       Guild: "Gilded Fang",   Class: Cleric,  Rank: Copper }
+      - { Adventurer: "Corvin Duskbane",     Guild: Nightwardens,    Class: Rogue,   Rank: Gold }
+      - { Adventurer: "Lys Shadowmere",      Guild: Nightwardens,    Class: Mage,    Rank: Silver }
+      - { Adventurer: "Orin Nightfell",      Guild: Nightwardens,    Class: Warden,  Rank: Silver }
+      - { Adventurer: "Perra Gloam",         Guild: Nightwardens,    Class: Ranger,  Rank: Bronze }
+      - { Adventurer: "Sabel Vane",          Guild: Nightwardens,    Class: Cleric,  Rank: Bronze }
+      - { Adventurer: "Thane Blackmoor",     Guild: Nightwardens,    Class: Warrior, Rank: Copper }
+      - { Adventurer: "Aerin Skyrend",       Guild: Stormcallers,    Class: Mage,    Rank: Gold }
+      - { Adventurer: "Bolt Vanharrow",      Guild: Stormcallers,    Class: Mage,    Rank: Silver }
+      - { Adventurer: "Ceria Thunderglass",  Guild: Stormcallers,    Class: Cleric,  Rank: Bronze }
+      - { Adventurer: "Dain Galewright",     Guild: Stormcallers,    Class: Warrior, Rank: Bronze }
+      - { Adventurer: "Ellis Stormcrow",     Guild: Stormcallers,    Class: Ranger,  Rank: Copper }
+      - { Adventurer: "Fira Levin",          Guild: Stormcallers,    Class: Rogue,   Rank: Copper }
+      - { Adventurer: "Anselm Truevow",      Guild: Oathkeepers,     Class: Cleric,  Rank: Gold }
+      - { Adventurer: "Beatrix Hale",        Guild: Oathkeepers,     Class: Warden,  Rank: Silver }
+      - { Adventurer: "Cedric Oathbright",   Guild: Oathkeepers,     Class: Warrior, Rank: Bronze }
+      - { Adventurer: "Dara Pledgemoor",     Guild: Oathkeepers,     Class: Ranger,  Rank: Bronze }
+      - { Adventurer: "Edran Sworn",         Guild: Oathkeepers,     Class: Warrior, Rank: Copper }
+      - { Adventurer: "Fiora Kept",          Guild: Oathkeepers,     Class: Mage,    Rank: Copper }
+      - { Adventurer: "Gorran Drakebane",    Guild: Wyrmbane,        Class: Warrior, Rank: Gold }
+      - { Adventurer: "Hilde Scalebreak",    Guild: Wyrmbane,        Class: Warrior, Rank: Silver }
+      - { Adventurer: "Ivor Wyrmsong",       Guild: Wyrmbane,        Class: Mage,    Rank: Silver }
+      - { Adventurer: "Jessa Dracont",       Guild: Wyrmbane,        Class: Ranger,  Rank: Bronze }
+      - { Adventurer: "Kestrel Fang",        Guild: Wyrmbane,        Class: Rogue,   Rank: Bronze }
+      - { Adventurer: "Lorca Vhal",          Guild: Wyrmbane,        Class: Cleric,  Rank: Copper }
+      - { Adventurer: "Malchor Hollow",      Guild: "Hollow Crown",  Class: Warden,  Rank: Gold }
+      - { Adventurer: "Nerys Crownfall",     Guild: "Hollow Crown",  Class: Mage,    Rank: Silver }
+      - { Adventurer: "Osric Pale",          Guild: "Hollow Crown",  Class: Cleric,  Rank: Bronze }
+      - { Adventurer: "Petra Vaultborn",     Guild: "Hollow Crown",  Class: Warrior, Rank: Bronze }
+      - { Adventurer: "Quill Ashen",         Guild: "Hollow Crown",  Class: Rogue,   Rank: Copper }
+      - { Adventurer: "Rook Emberless",      Guild: "Hollow Crown",  Class: Ranger,  Rank: Copper }
+
+  Monster:
+    key: MonsterKey
+    members:
+      # --- Field (20): the rank and file ---
+      - { Monster: "Mossback Gnoll",      Kind: Field, Family: Beast,     Tier: 1, Habitat: Thornveil }
+      - { Monster: "Cinder Rat",          Kind: Field, Family: Beast,     Tier: 1, Habitat: Emberwaste }
+      - { Monster: "Grave Tick",          Kind: Field, Family: Undead,    Tier: 1, Habitat: Hollowmere }
+      - { Monster: "Sparkmite Swarm",     Kind: Field, Family: Elemental, Tier: 1, Habitat: Gloamspire }
+      - { Monster: "Thorn Sprite",        Kind: Field, Family: Elemental, Tier: 1, Habitat: Thornveil }
+      - { Monster: "Gloamrat Pack",       Kind: Field, Family: Beast,     Tier: 1, Habitat: Gloamspire }
+      - { Monster: "Bog Shambler",        Kind: Field, Family: Undead,    Tier: 2, Habitat: Hollowmere }
+      - { Monster: "Dustwing Harpy",      Kind: Field, Family: Beast,     Tier: 2, Habitat: Emberwaste }
+      - { Monster: "Rimefang Wolf",       Kind: Field, Family: Beast,     Tier: 2, Habitat: Frosthollow }
+      - { Monster: "Brine Lurker",        Kind: Field, Family: Beast,     Tier: 2, Habitat: Saltreach }
+      - { Monster: "Glass Scarab",        Kind: Field, Family: Construct, Tier: 2, Habitat: Gloamspire }
+      - { Monster: "Emberhound",          Kind: Field, Family: Elemental, Tier: 2, Habitat: Emberwaste }
+      - { Monster: "Verdant Creeper",     Kind: Field, Family: Beast,     Tier: 2, Habitat: "Verdant Deep" }
+      - { Monster: "Frostgale Imp",       Kind: Field, Family: Demon,     Tier: 2, Habitat: Frosthollow }
+      - { Monster: "Hexwisp",             Kind: Field, Family: Demon,     Tier: 2, Habitat: Thornveil }
+      - { Monster: "Ashen Ghoul",         Kind: Field, Family: Undead,    Tier: 3, Habitat: "Ashfall Reach" }
+      - { Monster: "Mudlarker Troll",     Kind: Field, Family: Beast,     Tier: 3, Habitat: Hollowmere }
+      - { Monster: "Salt Wraith",         Kind: Field, Family: Undead,    Tier: 3, Habitat: Saltreach }
+      - { Monster: "Rust Golemling",      Kind: Field, Family: Construct, Tier: 3, Habitat: "Ashfall Reach" }
+      - { Monster: "Spinevine Stalker",   Kind: Field, Family: Beast,     Tier: 3, Habitat: "Verdant Deep" }
+      # --- Elite (8): the ones that need a party ---
+      - { Monster: "Ironjaw Chimera",     Kind: Elite, Family: Beast,     Tier: 4, Habitat: Thornveil }
+      - { Monster: "Widow of Hollowmere", Kind: Elite, Family: Undead,    Tier: 4, Habitat: Hollowmere }
+      - { Monster: "Sunder Elemental",    Kind: Elite, Family: Elemental, Tier: 4, Habitat: Emberwaste }
+      - { Monster: "Brinelord Serpent",   Kind: Elite, Family: Beast,     Tier: 4, Habitat: Saltreach }
+      - { Monster: "Palefrost Revenant",  Kind: Elite, Family: Undead,    Tier: 4, Habitat: Frosthollow }
+      - { Monster: "Obsidian Sentinel",   Kind: Elite, Family: Construct, Tier: 4, Habitat: "Ashfall Reach" }
+      - { Monster: "Duskmaw Alpha",       Kind: Elite, Family: Beast,     Tier: 4, Habitat: Gloamspire }
+      - { Monster: "Thornking Dryad",     Kind: Elite, Family: Elemental, Tier: 4, Habitat: "Verdant Deep" }
+      # --- Boss (4): the raid targets ---
+      - { Monster: "Emberfang the Wyrm",  Kind: Boss,  Family: Dragon,    Tier: 5, Habitat: Emberwaste }
+      - { Monster: "Vorrak, Hollow Crown", Kind: Boss, Family: Demon,     Tier: 5, Habitat: Hollowmere }
+      - { Monster: "Glacius Rimeheart",   Kind: Boss,  Family: Dragon,    Tier: 5, Habitat: Frosthollow }
+      - { Monster: "The Verdant Maw",     Kind: Boss,  Family: Dragon,    Tier: 5, Habitat: "Verdant Deep" }
+
+  Quest:
+    key: QuestKey
+    members:
+      - { Quest: "Cull the Gnoll Warren",       QuestType: Hunt,   Danger: Low,     RankRequired: Copper }
+      - { Quest: "Escort the Salt Caravan",     QuestType: Escort, Danger: Low,     RankRequired: Copper }
+      - { Quest: "Gather Emberbloom",           QuestType: Gather, Danger: Low,     RankRequired: Copper }
+      - { Quest: "Clear the Old Mill",          QuestType: Hunt,   Danger: Low,     RankRequired: Bronze }
+      - { Quest: "Map the Gloamspire Tunnels",  QuestType: Delve,  Danger: Medium,  RankRequired: Bronze }
+      - { Quest: "Ward the Thornveil Road",     QuestType: Escort, Danger: Medium,  RankRequired: Bronze }
+      - { Quest: "Harvest Rimefrost Sap",       QuestType: Gather, Danger: Medium,  RankRequired: Bronze }
+      - { Quest: "Break the Bog Siege",         QuestType: Hunt,   Danger: Medium,  RankRequired: Silver }
+      - { Quest: "Recover the Sunken Ledger",   QuestType: Delve,  Danger: Medium,  RankRequired: Silver }
+      - { Quest: "Hunt the Ironjaw",            QuestType: Hunt,   Danger: High,    RankRequired: Silver }
+      - { Quest: "Escort the Ambassador",       QuestType: Escort, Danger: High,    RankRequired: Silver }
+      - { Quest: "Delve the Obsidian Vault",    QuestType: Delve,  Danger: High,    RankRequired: Silver }
+      - { Quest: "Purge the Ashfall Crypts",    QuestType: Hunt,   Danger: High,    RankRequired: Gold }
+      - { Quest: "Silence the Widow",           QuestType: Hunt,   Danger: High,    RankRequired: Gold }
+      - { Quest: "Chart the Verdant Deep",      QuestType: Delve,  Danger: High,    RankRequired: Gold }
+      - { Quest: "Siege of Ashfall Reach",      QuestType: Raid,   Danger: Extreme, RankRequired: Gold }
+      - { Quest: "The Wyrm of Emberwaste",      QuestType: Raid,   Danger: Extreme, RankRequired: Gold }
+      - { Quest: "Vorrak's Descent",            QuestType: Raid,   Danger: Extreme, RankRequired: Gold }
+      - { Quest: "Rimeheart's Lair",            QuestType: Raid,   Danger: Extreme, RankRequired: Gold }
+      - { Quest: "The Maw Awakens",             QuestType: Raid,   Danger: Extreme, RankRequired: Gold }
+
+  Item:
+    key: ItemKey
+    members:
+      - { Item: "Iron Shortsword",         Category: Weapon,  Rarity: Common,    Slot: MainHand }
+      - { Item: "Ashwood Bow",             Category: Weapon,  Rarity: Common,    Slot: MainHand }
+      - { Item: "Pitted Warhammer",        Category: Weapon,  Rarity: Common,    Slot: MainHand }
+      - { Item: "Thornsteel Blade",        Category: Weapon,  Rarity: Uncommon,  Slot: MainHand }
+      - { Item: "Brineglass Dagger",       Category: Weapon,  Rarity: Uncommon,  Slot: OffHand }
+      - { Item: "Emberforge Axe",          Category: Weapon,  Rarity: Uncommon,  Slot: MainHand }
+      - { Item: "Stormcaller Staff",       Category: Weapon,  Rarity: Rare,      Slot: MainHand }
+      - { Item: "Wyrmbone Greatsword",     Category: Weapon,  Rarity: Rare,      Slot: MainHand }
+      - { Item: "Gloamsteel Rapier",       Category: Weapon,  Rarity: Rare,      Slot: MainHand }
+      - { Item: "Fang of Emberfang",       Category: Weapon,  Rarity: Epic,      Slot: MainHand }
+      - { Item: "Rimeheart Glaive",        Category: Weapon,  Rarity: Epic,      Slot: MainHand }
+      - { Item: "Crownsplitter",           Category: Weapon,  Rarity: Legendary, Slot: MainHand }
+      - { Item: "Padded Jerkin",           Category: Armour,  Rarity: Common,    Slot: Chest }
+      - { Item: "Rusted Mail",             Category: Armour,  Rarity: Common,    Slot: Chest }
+      - { Item: "Traveller's Cloak",       Category: Armour,  Rarity: Common,    Slot: Back }
+      - { Item: "Thornhide Vest",          Category: Armour,  Rarity: Uncommon,  Slot: Chest }
+      - { Item: "Saltforged Greaves",      Category: Armour,  Rarity: Uncommon,  Slot: Legs }
+      - { Item: "Emberplate Helm",         Category: Armour,  Rarity: Uncommon,  Slot: Head }
+      - { Item: "Obsidian Cuirass",        Category: Armour,  Rarity: Rare,      Slot: Chest }
+      - { Item: "Duskweave Mantle",        Category: Armour,  Rarity: Rare,      Slot: Back }
+      - { Item: "Scale of Glacius",        Category: Armour,  Rarity: Epic,      Slot: Chest }
+      - { Item: "Hollow Crown",            Category: Armour,  Rarity: Legendary, Slot: Head }
+      - { Item: "Minor Healing Draught",   Category: Potion,  Rarity: Common,    Slot: Consumable }
+      - { Item: "Antivenom Vial",          Category: Potion,  Rarity: Common,    Slot: Consumable }
+      - { Item: "Torchfire Flask",         Category: Potion,  Rarity: Common,    Slot: Consumable }
+      - { Item: "Greater Healing Draught", Category: Potion,  Rarity: Uncommon,  Slot: Consumable }
+      - { Item: "Elixir of Frostward",     Category: Potion,  Rarity: Uncommon,  Slot: Consumable }
+      - { Item: "Tonic of Swift Step",     Category: Potion,  Rarity: Uncommon,  Slot: Consumable }
+      - { Item: "Draught of Iron Skin",    Category: Potion,  Rarity: Rare,      Slot: Consumable }
+      - { Item: "Philtre of True Sight",   Category: Potion,  Rarity: Rare,      Slot: Consumable }
+      - { Item: "Dragonsblood Tincture",   Category: Potion,  Rarity: Epic,      Slot: Consumable }
+      - { Item: "Phial of Second Dawn",    Category: Potion,  Rarity: Legendary, Slot: Consumable }
+      - { Item: "Emberbloom Petal",        Category: Reagent, Rarity: Common,    Slot: Material }
+      - { Item: "Bog Spore",               Category: Reagent, Rarity: Common,    Slot: Material }
+      - { Item: "Salt Crystal",            Category: Reagent, Rarity: Common,    Slot: Material }
+      - { Item: "Rimefrost Sap",           Category: Reagent, Rarity: Uncommon,  Slot: Material }
+      - { Item: "Gloamcap Fungus",         Category: Reagent, Rarity: Uncommon,  Slot: Material }
+      - { Item: "Thornvine Coil",          Category: Reagent, Rarity: Uncommon,  Slot: Material }
+      - { Item: "Sparkmite Dust",          Category: Reagent, Rarity: Rare,      Slot: Material }
+      - { Item: "Revenant Ash",            Category: Reagent, Rarity: Rare,      Slot: Material }
+      - { Item: "Wyrmscale Shard",         Category: Reagent, Rarity: Epic,      Slot: Material }
+      - { Item: "Heartcinder",             Category: Reagent, Rarity: Legendary, Slot: Material }
+      - { Item: "Gnoll Fang Necklace",     Category: Trophy,  Rarity: Common,    Slot: Trophy }
+      - { Item: "Harpy Plume",             Category: Trophy,  Rarity: Common,    Slot: Trophy }
+      - { Item: "Chimera Horn",            Category: Trophy,  Rarity: Rare,      Slot: Trophy }
+      - { Item: "Sentinel Core",           Category: Trophy,  Rarity: Rare,      Slot: Trophy }
+      - { Item: "Widow's Eye",             Category: Trophy,  Rarity: Epic,      Slot: Trophy }
+      - { Item: "Maw Tooth",               Category: Trophy,  Rarity: Legendary, Slot: Trophy }
+
+facts:
+
+  # ── The headline: who slew what. Guild rivalry + player leaderboards + field vs boss. ──
+  MonsterKills:
+    grain: [Date, Adventurer, Monster]
+    sparsity: 0.93
+    measures:
+      MonstersSlain:
+        total: 2400000
+        min: 1
+        max: 80
+        noise: 0.40
+        trend: { yoy: 0.12 }
+        shares:
+          # exact on Monster; `Monster: pareto` then ranks individuals *within* each Kind
+          Kind:    { Field: 0.82, Elite: 0.15, Boss: 0.03 }
+          Monster: pareto
+          # exact on Adventurer; `Adventurer: pareto` ranks players within their guild
+          Guild:
+            Ironpact: 0.155
+            Emberwatch: 0.140
+            Wyrmbane: 0.125
+            Thornguard: 0.110
+            Nightwardens: 0.100
+            Stormcallers: 0.090
+            "Gilded Fang": 0.085
+            "Silver Compass": 0.080
+            Oathkeepers: 0.070
+            "Hollow Crown": 0.045
+          Adventurer: pareto
+      GoldEarned:
+        derived: "np.round(MonstersSlain * gold_per_kill)"
+        gold_per_kill: { min: 6, max: 140 }
+      DamageDealt:
+        derived: "np.round(MonstersSlain * damage_per_kill)"
+        damage_per_kill: { min: 90, max: 1200 }
+      # Allocated, NOT derived from MonstersSlain: a per-row `floor(slain / n)` collapses to zero on
+      # low-volume rows, so small guilds showed ~1 wipe per 18,000 kills against the leaders' 1 per 329.
+      # Declaring it lets the engine rake it, and buys a better story: wipes concentrate on hard
+      # content, and the reckless guilds wipe far above their kill share.
+      PartyWipes:
+        total: 9000
+        min: 1
+        max: 14
+        noise: 0.55
+        shares:
+          Kind: { Field: 0.22, Elite: 0.40, Boss: 0.38 }
+          Guild:
+            "Gilded Fang": 0.16
+            Stormcallers: 0.14
+            Ironpact: 0.13
+            Nightwardens: 0.11
+            Emberwatch: 0.10
+            Wyrmbane: 0.09
+            Thornguard: 0.08
+            "Silver Compass": 0.07
+            "Hollow Crown": 0.07
+            Oathkeepers: 0.05
+
+  # ── Guild contracts: bounty scales with danger, and rank gates the good work. ──
+  Quests:
+    grain: [Date, Adventurer, Quest]
+    sparsity: 0.94
+    measures:
+      BountyGold:
+        total: 18000000
+        min: 50
+        max: 9000
+        noise: 0.30
+        trend: { yoy: 0.09 }
+        shares:
+          Danger: { Low: 0.12, Medium: 0.28, High: 0.36, Extreme: 0.24 }
+          Quest:  pareto
+          Rank:   { Gold: 0.40, Silver: 0.30, Bronze: 0.20, Copper: 0.10 }
+          MonthName: seasonal
+      QuestsCompleted:
+        derived: "np.maximum(1, np.round(BountyGold / bounty_per_quest))"
+        bounty_per_quest: { min: 220, max: 1400 }
+      DaysOnQuest:
+        derived: "np.maximum(1, np.round(QuestsCompleted * days_each))"
+        days_each: { min: 1, max: 9 }
+
+  # ── The loot economy: what fell off which monster. Links combat to the exchange. ──
+  LootDrops:
+    grain: [Date, Monster, Item]
+    sparsity: 0.97
+    measures:
+      DropCount:
+        total: 900000
+        min: 1
+        max: 45
+        noise: 0.45
+        trend: { yoy: 0.10 }
+        shares:
+          Rarity: { Common: 0.55, Uncommon: 0.25, Rare: 0.13, Epic: 0.055, Legendary: 0.015 }
+          Item:   pareto
+          Kind:   { Field: 0.60, Elite: 0.28, Boss: 0.12 }
+          Monster: pareto
+      LootGoldValue:
+        derived: "np.round(DropCount * unit_value)"
+        unit_value: { min: 5, max: 260 }
+
+  # ── The grand exchange: goods moving through the realms' trading posts. ──
+  MarketTrades:
+    grain: [Date, Item, Realm]
+    sparsity: 0.45
+    measures:
+      GoldVolume:
+        total: 40000000
+        min: 10
+        max: 30000
+        noise: 0.35
+        trend: { yoy: 0.15 }
+        shares:
+          Category: { Weapon: 0.28, Armour: 0.24, Potion: 0.20, Reagent: 0.16, Trophy: 0.12 }
+          Item:     pareto
+          Realm:
+            Saltreach: 0.18
+            Gloamspire: 0.15
+            Thornveil: 0.14
+            Emberwaste: 0.13
+            Hollowmere: 0.12
+            Frosthollow: 0.11
+            "Verdant Deep": 0.09
+            "Ashfall Reach": 0.08
+          MonthName: seasonal
+      QuantityTraded:
+        derived: "np.maximum(1, np.round(GoldVolume / unit_price))"
+        unit_price: { min: 12, max: 900 }
+      AvgUnitPrice:
+        derived: "np.round(GoldVolume / np.maximum(1, QuantityTraded))"

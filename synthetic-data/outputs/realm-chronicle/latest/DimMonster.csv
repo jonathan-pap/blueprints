@@ -1,0 +1,33 @@
+MonsterKey,Monster,Kind,Family,Tier,Habitat
+1,Mossback Gnoll,Field,Beast,1,Thornveil
+2,Cinder Rat,Field,Beast,1,Emberwaste
+3,Grave Tick,Field,Undead,1,Hollowmere
+4,Sparkmite Swarm,Field,Elemental,1,Gloamspire
+5,Thorn Sprite,Field,Elemental,1,Thornveil
+6,Gloamrat Pack,Field,Beast,1,Gloamspire
+7,Bog Shambler,Field,Undead,2,Hollowmere
+8,Dustwing Harpy,Field,Beast,2,Emberwaste
+9,Rimefang Wolf,Field,Beast,2,Frosthollow
+10,Brine Lurker,Field,Beast,2,Saltreach
+11,Glass Scarab,Field,Construct,2,Gloamspire
+12,Emberhound,Field,Elemental,2,Emberwaste
+13,Verdant Creeper,Field,Beast,2,Verdant Deep
+14,Frostgale Imp,Field,Demon,2,Frosthollow
+15,Hexwisp,Field,Demon,2,Thornveil
+16,Ashen Ghoul,Field,Undead,3,Ashfall Reach
+17,Mudlarker Troll,Field,Beast,3,Hollowmere
+18,Salt Wraith,Field,Undead,3,Saltreach
+19,Rust Golemling,Field,Construct,3,Ashfall Reach
+20,Spinevine Stalker,Field,Beast,3,Verdant Deep
+21,Ironjaw Chimera,Elite,Beast,4,Thornveil
+22,Widow of Hollowmere,Elite,Undead,4,Hollowmere
+23,Sunder Elemental,Elite,Elemental,4,Emberwaste
+24,Brinelord Serpent,Elite,Beast,4,Saltreach
+25,Palefrost Revenant,Elite,Undead,4,Frosthollow
+26,Obsidian Sentinel,Elite,Construct,4,Ashfall Reach
+27,Duskmaw Alpha,Elite,Beast,4,Gloamspire
+28,Thornking Dryad,Elite,Elemental,4,Verdant Deep
+29,Emberfang the Wyrm,Boss,Dragon,5,Emberwaste
+30,"Vorrak, Hollow Crown",Boss,Demon,5,Hollowmere
+31,Glacius Rimeheart,Boss,Dragon,5,Frosthollow
+32,The Verdant Maw,Boss,Dragon,5,Verdant Deep
