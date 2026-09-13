@@ -318,20 +318,13 @@ def _pill(var, colour, label):
             f"<div class='l'><i style='background:{colour}'></i>{label}</div></div>\" &")
 
 
-def bestiary_header(w, h):
+def page_header(w, h, measure, desc, eyebrow, title, var_lines, pills):
+    """The header band every inner page shares: eyebrow + serif title on the left, four stat pills on
+    the right. pills: [(dax_expression, colour, label), ...]."""
     rw = 1840
     rh = round(rw * h / w)
-    return ("Bestiary Header HTML",
-            "HTML-in-SVG header for the Bestiary page: the title, and monster kills split by kind (Field, Elite, "
-            "Boss) with the number of creatures catalogued. ImageUrl measure; host in an Image visual.",
-            [
-     'VAR _f = CALCULATE ( [Total MonstersSlain], DimMonster[Kind] = "Field" )',
-     'VAR _e = CALCULATE ( [Total MonstersSlain], DimMonster[Kind] = "Elite" )',
-     'VAR _b = CALCULATE ( [Total MonstersSlain], DimMonster[Kind] = "Boss" )',
-     'VAR _n = COUNTROWS ( DimMonster )',
-     f'VAR _fv = {_compact("_f")}',
-     f'VAR _ev = {_compact("_e")}',
-     f'VAR _bv = {_compact("_b")}',
+    return (measure, desc, [
+     *var_lines,
      'RETURN',
      *_svg_open(w, h, rw, rh),
      "    \"<div xmlns='http://www.w3.org/1999/xhtml' class='hb'>\" &",
@@ -341,18 +334,31 @@ def bestiary_header(w, h):
      '    ".hb .t{font-family:Georgia,Cambria,serif;font-size:60px;font-weight:700;letter-spacing:8px;line-height:1.05;color:#f0cf5e;text-shadow:0 0 24px rgba(232,195,73,0.3),0 3px 0 #5e470f;margin-top:4px}" &',
      '    ".hb .ks{display:flex;gap:16px}" &',
      '    ".hb .k{box-sizing:border-box;min-width:180px;padding:14px 20px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid #2a3953}" &',
-     '    ".hb .v{font-size:34px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}" &',
+     '    ".hb .v{font-size:34px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}" &',
      '    ".hb .l{font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#8aa0c0;margin-top:7px}" &',
      '    ".hb .l i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:8px}" &',
      '    "</style>" &',
-     "    \"<div><div class='ey'>The Hunt &#183; a field guide to the realm</div><div class='t'>THE BESTIARY</div></div>\" &",
+     f"    \"<div><div class='ey'>{eyebrow}</div><div class='t'>{title}</div></div>\" &",
      "    \"<div class='ks'>\" &",
-     _pill("_fv", "#8fcf97", "Field slain"),
-     _pill("_ev", "#c89bff", "Elite slain"),
-     _pill("_bv", "#ff7b7b", "Boss slain"),
-     _pill("_n", "#e8c349", "Creatures"),
+     *[_pill(expr, colour, label) for expr, colour, label in pills],
      '    "</div></div></foreignObject></svg>"',
-            ])
+    ])
+
+
+def bestiary_header(w, h):
+    return page_header(
+        w, h, "Bestiary Header HTML",
+        "HTML-in-SVG header for the Bestiary page: the title, and monster kills split by kind (Field, Elite, "
+        "Boss) with the number of creatures catalogued. ImageUrl measure; host in an Image visual.",
+        "The Hunt &#183; a field guide to the realm", "THE BESTIARY",
+        ['VAR _f = CALCULATE ( [Total MonstersSlain], DimMonster[Kind] = "Field" )',
+         'VAR _e = CALCULATE ( [Total MonstersSlain], DimMonster[Kind] = "Elite" )',
+         'VAR _b = CALCULATE ( [Total MonstersSlain], DimMonster[Kind] = "Boss" )',
+         'VAR _n = COUNTROWS ( DimMonster )'],
+        [(_compact("_f"), "#8fcf97", "Field slain"),
+         (_compact("_e"), "#c89bff", "Elite slain"),
+         (_compact("_b"), "#ff7b7b", "Boss slain"),
+         ("_n", "#e8c349", "Creatures")])
 
 
 def _cards(kind, css_class, icons):
@@ -493,6 +499,425 @@ def bestiary_families(w, h):
      "    \"<div class='dd'><div class='lb'>&#9760; Deadliest creature</div><div class='nm'>\" & _dName & \"</div><div class='mt'>\" & _dMeta & \"</div><div class='rt'>\" & _dRate & \" wipes per 1k kills</div></div>\" &",
      '    "</div></foreignObject></svg>"',
             ])
+
+
+# ---- shared: a ranked bar list (danger, rank, category, rarity) --------------------------------
+
+def bar_panel(w, h, measure, desc, title, subtitle, table, columns, label, colour, value, value_unit,
+              extra, extra_unit, order_by, order_dir, border="#2a3953"):
+    """A titled list of bars, one per member: label with a colour dot, compact value, a relative bar,
+    and a meta line (share of total + a second measure). Rows share the panel height."""
+    rw = 896 if w > 450 else 560
+    rh = round(rw * h / w)
+    return (measure, desc, [
+     'VAR _T =',
+     '    ADDCOLUMNS (',
+     f'        SUMMARIZE ( ALLSELECTED ( {table} ), {", ".join(columns)} ),',
+     f'        "@v", {value},',
+     f'        "@x", {extra}',
+     '    )',
+     'VAR _Tot = SUMX ( _T, [@v] )',
+     'VAR _Max = MAXX ( _T, [@v] )',
+     'VAR _Rows =',
+     '    CONCATENATEX (',
+     '        _T,',
+     f'        VAR _c = {colour}',
+     '        VAR _pct = INT ( DIVIDE ( [@v], _Max ) * 100 )',
+     '        RETURN',
+     f"            \"<div class='r'><div class='rh'><span class='nm'><i style='background:\" & _c & \"'></i>\" & {label} & \"</span><span class='v'>\" & {_compact('[@v]')} & \"<span class='u'>{value_unit}</span></span></div>\" &",
+     "            \"<div class='bb'><span style='width:\" & _pct & \"%;background:\" & _c & \"'></span></div>\" &",
+     f"            \"<div class='m'>\" & {_tidy('DIVIDE ( [@v], _Tot ) * 100', '0.0', '0')} & \"% of total &#183; \" & {_compact('[@x]')} & \"{extra_unit}</div></div>\",",
+     '        "",',
+     f'        {order_by}, {order_dir}',
+     '    )',
+     'RETURN',
+     *_svg_open(w, h, rw, rh),
+     "    \"<div xmlns='http://www.w3.org/1999/xhtml' class='bp'>\" &",
+     '    "<style>" &',
+     f'    ".bp{{width:{rw}px;height:{rh}px;box-sizing:border-box;display:flex;flex-direction:column;border-radius:16px;border:1px solid {border};background:linear-gradient(180deg,#141d2f,#0c1220);padding:20px 28px 22px;font-family:Segoe UI,Arial,sans-serif;color:#e8edf5}}" &',
+     '    ".bp .hd{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid #2c3a52;padding-bottom:10px;margin-bottom:4px}" &',
+     '    ".bp .ttl{font-family:Georgia,Cambria,serif;font-size:26px;font-weight:700;letter-spacing:3px;color:#e8c349}" &',
+     '    ".bp .sub{font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#8aa0c0}" &',
+     '    ".bp .r{flex:1;display:flex;flex-direction:column;justify-content:center;border-bottom:1px solid #1b243a}.bp .r:last-child{border-bottom:none}" &',
+     '    ".bp .rh{display:flex;align-items:baseline;justify-content:space-between}" &',
+     '    ".bp .nm{font-size:20px;font-weight:600}.bp .nm i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:10px}" &',
+     '    ".bp .v{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}.bp .u{font-size:14px;font-weight:400;color:#8aa0c0}" &',
+     '    ".bp .bb{height:8px;background:#1f2a3d;border-radius:5px;overflow:hidden;margin-top:7px}.bp .bb span{display:block;height:100%}" &',
+     '    ".bp .m{font-size:15px;color:#8aa0c0;margin-top:5px;font-variant-numeric:tabular-nums}" &',
+     '    "</style>" &',
+     f"    \"<div class='hd'><div class='ttl'>{title}</div><div class='sub'>{subtitle}</div></div>\" &",
+     '    _Rows &',
+     '    "</div></foreignObject></svg>"',
+    ])
+
+
+def _dataset_icons(table, key):
+    import csv
+    with io.open(os.path.join(DATASET, table + ".csv"), encoding="utf-8", newline="") as f:
+        return {r[key]: "&#x%X;" % ord(r["Icon"][0]) for r in csv.DictReader(f)}
+
+
+RANK_COLOUR = {"Gold": "#f4d770", "Silver": "#cfd8e3", "Bronze": "#d08a4c", "Copper": "#b87333"}
+CATEGORY_COLOUR = {"Weapon": "#ff7b7b", "Armour": "#7cc8ff", "Potion": "#6fd49b",
+                   "Reagent": "#c89bff", "Trophy": "#f4d770"}
+THREAT_COLOUR = {"Medium": "#f2c037", "High": "#f97316", "Extreme": "#ff5a5a"}
+
+
+# ---- Quest Board -------------------------------------------------------------------------------
+
+def quests_header(w, h):
+    return page_header(
+        w, h, "Quests Header HTML",
+        "HTML-in-SVG header for the Quest Board: bounty gold, quests completed, gold per quest and days per "
+        "quest. ImageUrl measure; host in an Image visual.",
+        "Guild contracts &#183; what the realm pays for", "THE QUEST BOARD",
+        ['VAR _b = [Total BountyGold]',
+         'VAR _q = [Total QuestsCompleted]',
+         'VAR _days = DIVIDE ( [Total DaysOnQuest], _q )'],
+        [(_compact("_b"), "#f4d770", "Bounty gold"),
+         (_compact("_q"), "#6fd49b", "Quests done"),
+         ('FORMAT ( DIVIDE ( _b, _q ), "#,0" )', "#e8c349", "Gold per quest"),
+         (_tidy("_days", "0.0", "0"), "#7cc8ff", "Days per quest")])
+
+
+def quest_chains(w, h):
+    rw = 1300
+    rh = round(rw * h / w)
+    return ("Quests Chains HTML",
+            "HTML-in-SVG view of the quest chains: each chain as a row of its quests in prerequisite order, with "
+            "danger, type, bounty and a relative bar. Chains ordered by total bounty. ImageUrl measure; Image visual.",
+            [
+     'VAR _C =',
+     '    ADDCOLUMNS (',
+     '        SUMMARIZE ( ALLSELECTED ( DimQuest ), DimQuest[ChainName] ),',
+     '        "@bounty", [Total BountyGold]',
+     '    )',
+     'VAR _Max = MAXX ( ALLSELECTED ( DimQuest ), [Total BountyGold] )',
+     'VAR _Rows =',
+     '    CONCATENATEX (',
+     '        _C,',
+     '        VAR _chain = DimQuest[ChainName]',
+     '        VAR _steps = FILTER ( ALLSELECTED ( DimQuest ), DimQuest[ChainName] = _chain )',
+     '        VAR _n = COUNTROWS ( _steps )',
+     '        VAR _cards =',
+     '            CONCATENATEX (',
+     '                _steps,',
+     '                VAR _bq = [Total BountyGold]',
+     '                VAR _pct = INT ( DIVIDE ( _bq, _Max ) * 100 )',
+     '                RETURN',
+     "                    \"<div class='q'><div class='qt'><i style='background:\" & DimQuest[DangerColor] & \"'></i>\" & DimQuest[Danger] & \" &#183; \" & DimQuest[QuestType] & \"</div>\" &",
+     "                    \"<div class='qn'>\" & SUBSTITUTE ( DimQuest[Quest], \"&\", \"&amp;\" ) & \"</div>\" &",
+     f"                    \"<div class='qb'>\" & {_compact('_bq')} & \" gold</div>\" &",
+     "                    \"<div class='bb'><span style='width:\" & _pct & \"%;background:\" & DimQuest[DangerColor] & \"'></span></div></div>\",",
+     "                \"<div class='ar'>&#9656;</div>\",",
+     '                DimQuest[ChainStep], ASC',
+     '            )',
+     '        RETURN',
+     f"            \"<div class='ch'><div><div class='cn'>\" & SUBSTITUTE ( _chain, \"&\", \"&amp;\" ) & \"</div><div class='cm'>\" & _n & IF ( _n = 1, \" quest\", \" quests\" ) & \" &#183; \" & {_compact('[@bounty]')} & \" gold</div></div><div class='cs'>\" & _cards & \"</div></div>\",",
+     '        "",',
+     '        [@bounty], DESC',
+     '    )',
+     'RETURN',
+     *_svg_open(w, h, rw, rh),
+     "    \"<div xmlns='http://www.w3.org/1999/xhtml' class='qc'>\" &",
+     '    "<style>" &',
+     f'    ".qc{{width:{rw}px;height:{rh}px;box-sizing:border-box;display:flex;flex-direction:column;border-radius:16px;border:1px solid #2a3953;background:linear-gradient(180deg,#141d2f,#0c1220);padding:22px 26px 20px;font-family:Segoe UI,Arial,sans-serif;color:#e8edf5}}" &',
+     '    ".qc .hd{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid #2c3a52;padding-bottom:10px;margin-bottom:4px}" &',
+     '    ".qc .ttl{font-family:Georgia,Cambria,serif;font-size:28px;font-weight:700;letter-spacing:3px;color:#e8c349}" &',
+     '    ".qc .sub{font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#8aa0c0}" &',
+     '    ".qc .ch{flex:1;display:grid;grid-template-columns:200px 1fr;align-items:center;column-gap:16px;border-bottom:1px solid #1b243a}.qc .ch:last-child{border-bottom:none}" &',
+     '    ".qc .cn{font-family:Georgia,Cambria,serif;font-size:19px;font-weight:700;color:#f0cf5e}" &',
+     '    ".qc .cm{font-size:13px;color:#8aa0c0;margin-top:3px}" &',
+     '    ".qc .cs{display:flex;align-items:center;gap:6px}" &',
+     '    ".qc .q{flex:0 0 228px;box-sizing:border-box;border-radius:9px;background:rgba(255,255,255,0.035);border:1px solid #243149;padding:8px 11px}" &',
+     '    ".qc .qt{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#8aa0c0;display:flex;align-items:center;gap:6px;white-space:nowrap}" &',
+     '    ".qc .qt i{display:inline-block;width:8px;height:8px;border-radius:50%}" &',
+     '    ".qc .qn{font-size:14px;font-weight:600;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" &',
+     '    ".qc .qb{font-size:13px;color:#f4d770;margin-top:3px;font-variant-numeric:tabular-nums}" &',
+     '    ".qc .bb{height:4px;background:#1f2a3d;border-radius:3px;overflow:hidden;margin-top:5px}.qc .bb span{display:block;height:100%}" &',
+     '    ".qc .ar{color:#8aa0c0;font-size:22px;line-height:1}" &',
+     '    "</style>" &',
+     "    \"<div class='hd'><div class='ttl'>QUEST CHAINS</div><div class='sub'>Each quest unlocks the next</div></div>\" &",
+     '    _Rows &',
+     '    "</div></foreignObject></svg>"',
+            ])
+
+
+def quest_danger(w, h):
+    return bar_panel(
+        w, h, "Quests Danger HTML",
+        "HTML-in-SVG bars of bounty gold by quest danger, Low to Extreme, with share and quests completed. "
+        "ImageUrl measure; host in an Image visual.",
+        "BY DANGER", "Risk sets the price", "DimQuest",
+        ["DimQuest[Danger]", "DimQuest[DangerOrder]", "DimQuest[DangerColor]"],
+        "DimQuest[Danger]", "DimQuest[DangerColor]",
+        "[Total BountyGold]", " gold", "[Total QuestsCompleted]", " quests",
+        "DimQuest[DangerOrder]", "ASC")
+
+
+def quest_rank(w, h):
+    return bar_panel(
+        w, h, "Quests Rank HTML",
+        "HTML-in-SVG bars of bounty gold by adventurer rank, Gold to Copper, with share and quests completed. "
+        "ImageUrl measure; host in an Image visual.",
+        "BY RANK", "Who takes the contracts", "DimAdventurer",
+        ["DimAdventurer[Rank]", "DimAdventurer[RankOrder]"],
+        "DimAdventurer[Rank]", _switch("DimAdventurer[Rank]", RANK_COLOUR, "#8aa0c0"),
+        "[Total BountyGold]", " gold", "[Total QuestsCompleted]", " quests",
+        "DimAdventurer[RankOrder]", "DESC")
+
+
+# ---- The Exchange ------------------------------------------------------------------------------
+
+def exchange_header(w, h):
+    return page_header(
+        w, h, "Exchange Header HTML",
+        "HTML-in-SVG header for The Exchange: gold traded, units exchanged, gold per unit and legendary loot "
+        "drops. ImageUrl measure; host in an Image visual.",
+        "Trading posts of the realm &#183; the grand exchange", "THE EXCHANGE",
+        ['VAR _g = [Total GoldVolume]',
+         'VAR _u = [Total QuantityTraded]',
+         'VAR _leg = CALCULATE ( [Total DropCount], DimItem[Rarity] = "Legendary" )'],
+        [(_compact("_g"), "#6fd49b", "Gold traded"),
+         (_compact("_u"), "#7cc8ff", "Units traded"),
+         ('FORMAT ( DIVIDE ( _g, _u ), "#,0" )', "#e8c349", "Gold per unit"),
+         (_compact("_leg"), "#F59E0B", "Legendary drops")])
+
+
+def market_board(w, h):
+    rw = 896
+    rh = round(rw * h / w)
+    icons = _dataset_icons("DimItem", "Item")
+    return ("Exchange Board HTML",
+            "HTML-in-SVG market board: the twelve items with the most gold traded, rarity-coloured, with category, "
+            "units and a relative bar. Respects outer filters via ALLSELECTED. ImageUrl measure; Image visual.",
+            [
+     'VAR _I =',
+     '    ADDCOLUMNS (',
+     '        SUMMARIZE ( ALLSELECTED ( DimItem ), DimItem[ItemKey], DimItem[Item], DimItem[Category], DimItem[Rarity], DimItem[RarityColor] ),',
+     '        "@g", [Total GoldVolume],',
+     '        "@u", [Total QuantityTraded]',
+     '    )',
+     'VAR _Top = TOPN ( 12, FILTER ( _I, [@g] > 0 ), [@g], DESC )',
+     'VAR _Max = MAXX ( _Top, [@g] )',
+     'VAR _Rows =',
+     '    CONCATENATEX (',
+     '        _Top,',
+     '        VAR _pos = RANKX ( _Top, [@g], , DESC )',
+     f'        VAR _ic = {_switch("DimItem[Item]", icons, "&#9733;")}',
+     '        VAR _pct = INT ( DIVIDE ( [@g], _Max ) * 100 )',
+     '        RETURN',
+     "            \"<div class='r'><div class='ps'>\" & _pos & \"</div><div class='ic'>\" & _ic & \"</div>\" &",
+     "            \"<div class='who'><div class='nm' style='color:\" & DimItem[RarityColor] & \"'>\" & SUBSTITUTE ( DimItem[Item], \"&\", \"&amp;\" ) & \"</div><div class='mt'>\" & DimItem[Rarity] & \" &#183; \" & DimItem[Category] & \"</div></div>\" &",
+     f"            \"<div class='nu'><div class='kv'>\" & {_compact('[@g]')} & \"<span class='u'> gold</span></div><div class='bb'><span style='width:\" & _pct & \"%'></span></div><div class='mt'>\" & FORMAT ( [@u], \"#,0\" ) & \" units</div></div></div>\",",
+     '        "",',
+     '        [@g], DESC',
+     '    )',
+     'RETURN',
+     *_svg_open(w, h, rw, rh),
+     "    \"<div xmlns='http://www.w3.org/1999/xhtml' class='mb'>\" &",
+     '    "<style>" &',
+     f'    ".mb{{width:{rw}px;height:{rh}px;box-sizing:border-box;display:flex;flex-direction:column;border-radius:16px;border:2px solid #c9a227;background:linear-gradient(180deg,#1b2436,#0d1422);padding:20px 28px 22px;font-family:Segoe UI,Arial,sans-serif;color:#e8edf5}}" &',
+     '    ".mb .hd{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid #2c3a52;padding-bottom:10px;margin-bottom:4px}" &',
+     '    ".mb .ttl{font-family:Georgia,Cambria,serif;font-size:26px;font-weight:700;letter-spacing:3px;color:#e8c349}" &',
+     '    ".mb .sub{font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#8aa0c0}" &',
+     '    ".mb .r{flex:1;display:grid;grid-template-columns:30px 40px 1fr 230px;align-items:center;column-gap:12px;border-bottom:1px solid #1b243a}.mb .r:last-child{border-bottom:none}" &',
+     '    ".mb .ps{font-size:15px;font-weight:700;color:#56688a;text-align:right;font-variant-numeric:tabular-nums}" &',
+     '    ".mb .ic{font-size:26px;line-height:1;text-align:center}" &',
+     '    ".mb .nm{font-size:18px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" &',
+     '    ".mb .mt{font-size:13px;color:#8aa0c0;margin-top:1px}" &',
+     '    ".mb .nu{text-align:right}.mb .kv{font-size:18px;font-weight:700;color:#6fd49b;font-variant-numeric:tabular-nums}.mb .u{font-size:13px;font-weight:400;color:#8aa0c0}" &',
+     '    ".mb .bb{height:5px;background:#1f2a3d;border-radius:3px;overflow:hidden;margin:4px 0 2px}.mb .bb span{display:block;height:100%;background:linear-gradient(90deg,#2f7a52,#6fd49b)}" &',
+     '    "</style>" &',
+     "    \"<div class='hd'><div class='ttl'>&#9878; MARKET BOARD</div><div class='sub'>Most gold traded</div></div>\" &",
+     '    _Rows &',
+     '    "</div></foreignObject></svg>"',
+            ])
+
+
+def exchange_category(w, h):
+    return bar_panel(
+        w, h, "Exchange Category HTML",
+        "HTML-in-SVG bars of gold traded by item category, with share and units traded. ImageUrl measure; "
+        "host in an Image visual.",
+        "BY CATEGORY", "Where the gold goes", "DimItem",
+        ["DimItem[Category]"],
+        "DimItem[Category]", _switch("DimItem[Category]", CATEGORY_COLOUR, "#8aa0c0"),
+        "[Total GoldVolume]", " gold", "[Total QuantityTraded]", " units",
+        "[@v]", "DESC")
+
+
+def exchange_rarity(w, h):
+    return bar_panel(
+        w, h, "Exchange Rarity HTML",
+        "HTML-in-SVG bars of loot drops by rarity, Common to Legendary, with share and the gold value of what "
+        "dropped - the loot that feeds the exchange. ImageUrl measure; host in an Image visual.",
+        "LOOT BY RARITY", "What falls before it trades", "DimItem",
+        ["DimItem[Rarity]", "DimItem[RarityOrder]", "DimItem[RarityColor]"],
+        "DimItem[Rarity]", "DimItem[RarityColor]",
+        "[Total DropCount]", " drops", "[Total LootGoldValue]", " gold value",
+        "DimItem[RarityOrder]", "ASC")
+
+
+# ---- Realm Map ---------------------------------------------------------------------------------
+
+def realms_header(w, h):
+    return page_header(
+        w, h, "Realms Header HTML",
+        "HTML-in-SVG header for the Realm Map: number of realms and regions, the busiest trading post and how "
+        "many realms carry an Extreme threat. ImageUrl measure; host in an Image visual.",
+        "Eight realms &#183; four regions &#183; one chronicle", "THE REALM MAP",
+        ['VAR _n = COUNTROWS ( DimRealm )',
+         'VAR _reg = DISTINCTCOUNT ( DimRealm[Region] )',
+         'VAR _top = MAXX ( TOPN ( 1, ADDCOLUMNS ( VALUES ( DimRealm[Realm] ), "@g", [Total GoldVolume] ), [@g], DESC ), DimRealm[Realm] )',
+         'VAR _ext = CALCULATE ( COUNTROWS ( DimRealm ), DimRealm[ThreatBand] = "Extreme" )'],
+        [("_n", "#e8c349", "Realms"),
+         ("_reg", "#7cc8ff", "Regions"),
+         ("_top", "#6fd49b", "Busiest post"),
+         ("_ext", "#ff5a5a", "Extreme threat")])
+
+
+def realm_map(w, h):
+    """Pure SVG - no foreignObject - so the map survives PDF/PowerPoint export."""
+    rw = 1000
+    rh = round(rw * h / w)
+    L, R, TOP, BOT = 130, 130, 90, 140          # plot margins inside the drawing, room for labels
+    pw, ph = rw - L - R, rh - TOP - BOT
+    return ("Realms Map HTML",
+            "Pure-SVG map of the realms plotted from latitude and longitude: bubbles sized by gold traded, coloured "
+            "by threat band, dashed links within each region, graticule and compass. ImageUrl measure; Image visual.",
+            [
+     'VAR _R0 =',
+     '    ADDCOLUMNS (',
+     '        SUMMARIZE ( ALLSELECTED ( DimRealm ), DimRealm[Realm], DimRealm[Region], DimRealm[ThreatBand], DimRealm[Latitude], DimRealm[Longitude] ),',
+     '        "@g", [Total GoldVolume],',
+     '        "@k", VAR _nm = DimRealm[Realm] RETURN CALCULATE ( [Total MonstersSlain], DimMonster[Habitat] = _nm )',
+     '    )',
+     'VAR _lo0 = MINX ( _R0, DimRealm[Longitude] )',
+     'VAR _lo1 = MAXX ( _R0, DimRealm[Longitude] )',
+     'VAR _la0 = MINX ( _R0, DimRealm[Latitude] )',
+     'VAR _la1 = MAXX ( _R0, DimRealm[Latitude] )',
+     'VAR _gMax = MAXX ( _R0, [@g] )',
+     'VAR _R =',
+     '    ADDCOLUMNS (',
+     '        _R0,',
+     f'        "@x", {L} + DIVIDE ( DimRealm[Longitude] - _lo0, _lo1 - _lo0 ) * {pw},',
+     f'        "@y", {TOP} + DIVIDE ( _la1 - DimRealm[Latitude], _la1 - _la0 ) * {ph},',
+     '        "@r", 8 + 22 * SQRT ( DIVIDE ( [@g], _gMax ) )',
+     '    )',
+     'VAR _GridV =',
+     '    CONCATENATEX (',
+     '        GENERATESERIES ( ROUNDUP ( _lo0 / 10, 0 ) * 10, _lo1, 10 ),',
+     f'        VAR _x = FORMAT ( {L} + DIVIDE ( [Value] - _lo0, _lo1 - _lo0 ) * {pw}, "0" )',
+     f"        RETURN \"<line x1='\" & _x & \"' y1='40' x2='\" & _x & \"' y2='{rh - 40}' stroke='#1c2840' stroke-width='1'/>\",",
+     '        ""',
+     '    )',
+     'VAR _GridH =',
+     '    CONCATENATEX (',
+     '        GENERATESERIES ( ROUNDUP ( _la0 / 5, 0 ) * 5, _la1, 5 ),',
+     f'        VAR _y = FORMAT ( {TOP} + DIVIDE ( _la1 - [Value], _la1 - _la0 ) * {ph}, "0" )',
+     f"        RETURN \"<line x1='40' y1='\" & _y & \"' x2='{rw - 40}' y2='\" & _y & \"' stroke='#1c2840' stroke-width='1'/>\",",
+     '        ""',
+     '    )',
+     'VAR _Links =',
+     '    CONCATENATEX (',
+     '        SUMMARIZE ( _R, DimRealm[Region] ),',
+     '        VAR _reg = DimRealm[Region]',
+     '        VAR _pts = FILTER ( _R, DimRealm[Region] = _reg )',
+     '        VAR _a = TOPN ( 1, _pts, [@x], ASC )',
+     '        VAR _b = TOPN ( 1, _pts, [@x], DESC )',
+     '        VAR _x1 = MINX ( _a, [@x] ) VAR _y1 = MINX ( _a, [@y] )',
+     '        VAR _x2 = MINX ( _b, [@x] ) VAR _y2 = MINX ( _b, [@y] )',
+     '        RETURN',
+     "            \"<line x1='\" & FORMAT ( _x1, \"0\" ) & \"' y1='\" & FORMAT ( _y1, \"0\" ) & \"' x2='\" & FORMAT ( _x2, \"0\" ) & \"' y2='\" & FORMAT ( _y2, \"0\" ) & \"' stroke='#c9a227' stroke-opacity='0.45' stroke-width='2' stroke-dasharray='6 7'/>\" &",
+     "            \"<text x='\" & FORMAT ( ( _x1 + _x2 ) / 2, \"0\" ) & \"' y='\" & FORMAT ( MAX ( MIN ( _y1, _y2 ) - MAXX ( _pts, [@r] ) - 14, 96 ), \"0\" ) & \"' text-anchor='middle' font-family='Georgia,serif' font-size='13' letter-spacing='3' fill='#b8952a' stroke='#090e19' stroke-width='4' stroke-linejoin='round' paint-order='stroke'>\" & UPPER ( _reg ) & \"</text>\",",
+     '        ""',
+     '    )',
+     'VAR _Marks =',
+     '    CONCATENATEX (',
+     '        _R,',
+     f'        VAR _c = {_switch("DimRealm[ThreatBand]", THREAT_COLOUR, "#8aa0c0")}',
+     '        VAR _cx = FORMAT ( [@x], "0" ) VAR _cy = FORMAT ( [@y], "0" )',
+     '        RETURN',
+     "            \"<circle cx='\" & _cx & \"' cy='\" & _cy & \"' r='\" & FORMAT ( [@r], \"0\" ) & \"' fill='\" & _c & \"' fill-opacity='0.2' stroke='\" & _c & \"' stroke-width='2'/>\" &",
+     "            \"<circle cx='\" & _cx & \"' cy='\" & _cy & \"' r='4' fill='\" & _c & \"'/>\" &",
+     "            \"<text x='\" & _cx & \"' y='\" & FORMAT ( [@y] + [@r] + 18, \"0\" ) & \"' text-anchor='middle' font-family='Georgia,serif' font-size='17' font-weight='700' fill='#f0cf5e' stroke='#090e19' stroke-width='4' stroke-linejoin='round' paint-order='stroke'>\" & DimRealm[Realm] & \"</text>\" &",
+     f"            \"<text x='\" & _cx & \"' y='\" & FORMAT ( [@y] + [@r] + 34, \"0\" ) & \"' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='12' fill='#9fb3d1' stroke='#090e19' stroke-width='4' stroke-linejoin='round' paint-order='stroke'>\" & {_compact('[@g]')} & \" gold &#183; \" & {_compact('[@k]')} & \" slain</text>\",",
+     '        ""',
+     '    )',
+     'RETURN',
+     '    "data:image/svg+xml;utf8," &',
+     f"    \"<svg xmlns='http://www.w3.org/2000/svg' width='{w}' height='{h}' viewBox='0 0 {rw} {rh}'>\" &",
+     f"    \"<defs><radialGradient id='sea' cx='0.5' cy='0.45' r='0.75'><stop offset='0' stop-color='#15203a'/><stop offset='1' stop-color='#090e19'/></radialGradient></defs>\" &",
+     f"    \"<rect x='1' y='1' width='{rw - 2}' height='{rh - 2}' rx='16' fill='url(#sea)' stroke='#2a3953' stroke-width='2'/>\" &",
+     '    _GridV & _GridH & _Links & _Marks &',
+     f"    \"<text x='36' y='52' font-family='Georgia,serif' font-size='28' font-weight='700' letter-spacing='3' fill='#e8c349'>THE KNOWN REALMS</text>\" &",
+     f"    \"<g transform='translate({rw - 70},72)'><circle r='30' fill='none' stroke='#2a3953' stroke-width='1.5'/><path d='M0 -38 L7 0 L0 38 L-7 0 Z' fill='#c9a227' fill-opacity='0.85'/><path d='M-38 0 L0 7 L38 0 L0 -7 Z' fill='#56688a'/><text y='-44' text-anchor='middle' font-family='Georgia,serif' font-size='14' fill='#c9a227'>N</text></g>\" &",
+     f"    \"<g font-family='Segoe UI,Arial,sans-serif' font-size='13' fill='#8aa0c0'><circle cx='44' cy='{rh - 40}' r='6' fill='#f2c037'/><text x='56' y='{rh - 35}'>Medium</text><circle cx='134' cy='{rh - 40}' r='6' fill='#f97316'/><text x='146' y='{rh - 35}'>High</text><circle cx='208' cy='{rh - 40}' r='6' fill='#ff5a5a'/><text x='220' y='{rh - 35}'>Extreme threat &#183; bubble = gold traded</text></g>\" &",
+     '    "</svg>"',
+            ])
+
+
+def realm_ledger(w, h):
+    rw = 560
+    rh = round(rw * h / w)
+    return ("Realms Ledger HTML",
+            "HTML-in-SVG ledger of the eight realms ordered by gold traded: region, terrain, threat band, a "
+            "relative bar, gold traded and monsters slain in that habitat. ImageUrl measure; Image visual.",
+            [
+     'VAR _R =',
+     '    ADDCOLUMNS (',
+     '        SUMMARIZE ( ALLSELECTED ( DimRealm ), DimRealm[Realm], DimRealm[Region], DimRealm[Terrain], DimRealm[ThreatBand] ),',
+     '        "@g", [Total GoldVolume],',
+     '        "@k", VAR _nm = DimRealm[Realm] RETURN CALCULATE ( [Total MonstersSlain], DimMonster[Habitat] = _nm )',
+     '    )',
+     'VAR _Max = MAXX ( _R, [@g] )',
+     'VAR _Rows =',
+     '    CONCATENATEX (',
+     '        _R,',
+     f'        VAR _c = {_switch("DimRealm[ThreatBand]", THREAT_COLOUR, "#8aa0c0")}',
+     '        VAR _pct = INT ( DIVIDE ( [@g], _Max ) * 100 )',
+     '        RETURN',
+     "            \"<div class='r'><div class='rh'><span class='nm'>\" & DimRealm[Realm] & \"</span><span class='th' style='color:\" & _c & \";border-color:\" & _c & \"'>\" & DimRealm[ThreatBand] & \"</span></div>\" &",
+     "            \"<div class='mt'>\" & DimRealm[Region] & \" &#183; \" & DimRealm[Terrain] & \"</div>\" &",
+     "            \"<div class='bb'><span style='width:\" & _pct & \"%'></span></div>\" &",
+     f"            \"<div class='fm'>\" & {_compact('[@g]')} & \" gold traded &#183; \" & {_compact('[@k]')} & \" slain here</div></div>\",",
+     '        "",',
+     '        [@g], DESC',
+     '    )',
+     'RETURN',
+     *_svg_open(w, h, rw, rh),
+     "    \"<div xmlns='http://www.w3.org/1999/xhtml' class='rl'>\" &",
+     '    "<style>" &',
+     f'    ".rl{{width:{rw}px;height:{rh}px;box-sizing:border-box;display:flex;flex-direction:column;border-radius:16px;border:1px solid #2a3953;background:linear-gradient(180deg,#141d2f,#0c1220);padding:24px 30px 22px;font-family:Segoe UI,Arial,sans-serif;color:#e8edf5}}" &',
+     '    ".rl .hd{font-family:Georgia,Cambria,serif;font-size:30px;font-weight:700;letter-spacing:3px;color:#e8c349;border-bottom:1px solid #2c3a52;padding-bottom:12px;margin-bottom:4px}" &',
+     '    ".rl .r{flex:1;display:flex;flex-direction:column;justify-content:center;border-bottom:1px solid #1b243a}.rl .r:last-child{border-bottom:none}" &',
+     '    ".rl .rh{display:flex;align-items:center;justify-content:space-between}" &',
+     '    ".rl .nm{font-family:Georgia,Cambria,serif;font-size:22px;font-weight:700;color:#f0cf5e}" &',
+     '    ".rl .th{font-size:12px;letter-spacing:2px;text-transform:uppercase;border:1px solid;border-radius:999px;padding:2px 10px}" &',
+     '    ".rl .mt{font-size:15px;color:#8aa0c0;margin-top:2px}" &',
+     '    ".rl .bb{height:7px;background:#1f2a3d;border-radius:4px;overflow:hidden;margin-top:6px}.rl .bb span{display:block;height:100%;background:linear-gradient(90deg,#2f7a52,#6fd49b)}" &',
+     '    ".rl .fm{font-size:15px;color:#b9c6da;margin-top:5px;font-variant-numeric:tabular-nums}" &',
+     '    "</style>" &',
+     "    \"<div class='hd'>REALM LEDGER</div>\" &",
+     '    _Rows &',
+     '    "</div></foreignObject></svg>"',
+            ])
+
+
+def quests_group(regions):
+    return ("Quests", [fn(r["width"], r["height"]) for fn, r in
+                       zip((quests_header, quest_chains, quest_danger, quest_rank), regions)])
+
+
+def exchange_group(regions):
+    return ("Exchange", [fn(r["width"], r["height"]) for fn, r in
+                         zip((exchange_header, market_board, exchange_category, exchange_rarity), regions)])
+
+
+def realms_group(regions):
+    return ("Realms", [fn(r["width"], r["height"]) for fn, r in
+                       zip((realms_header, realm_map, realm_ledger), regions)])
 
 
 # ---- write -------------------------------------------------------------------------------------

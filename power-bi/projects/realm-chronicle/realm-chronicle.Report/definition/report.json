@@ -64,6 +64,21 @@
           "name": "navRail-bestiary.svg",
           "path": "navRail-bestiary.svg",
           "type": "Image"
+        },
+        {
+          "name": "navRail-quests.svg",
+          "path": "navRail-quests.svg",
+          "type": "Image"
+        },
+        {
+          "name": "navRail-exchange.svg",
+          "path": "navRail-exchange.svg",
+          "type": "Image"
+        },
+        {
+          "name": "navRail-realms.svg",
+          "path": "navRail-realms.svg",
+          "type": "Image"
         }
       ]
     }

@@ -72,7 +72,10 @@ def retire_pages():
 
 def write_measures():
     groups = [html_measures.intro_group(K.rects("intro")),
-              html_measures.bestiary_group(K.rects("bestiary"))]
+              html_measures.bestiary_group(K.rects("bestiary")),
+              html_measures.quests_group(K.rects("quests")),
+              html_measures.exchange_group(K.rects("exchange")),
+              html_measures.realms_group(K.rects("realms"))]
     for folder, name in html_measures.write_measures(HTML_TMDL, groups):
         print("  measure %-9s %s" % (folder, name))
 
@@ -119,6 +122,51 @@ def build_bestiary():
     return d
 
 
+def build_page(pid, display, layout, panels):
+    """One inner page: clear, create, dark canvas, rail, then each panel onto its region in order.
+    panels: [(visual name, measure name, alt text), ...] matching the layout's regions."""
+    clear_page(pid)
+    d = K.add_page(pid, display, w=PAGE_W, h=PAGE_H)
+    dark_canvas(d)
+    nav_rail(d, pid)
+    rects = K.rects(layout)
+    assert len(rects) == len(panels), "%s: %d regions, %d panels" % (layout, len(rects), len(panels))
+    place(d, [(n, r, m, a) for (n, m, a), r in zip(panels, rects)])
+    return d
+
+
+def build_quests():
+    return build_page("quests", "Quest Board", "quests", [
+        ("questsHeader", "Quests Header HTML",
+         "The Quest Board: bounty gold, quests completed, gold per quest and days per quest"),
+        ("questsChains", "Quests Chains HTML",
+         "The quest chains, each a row of its quests in prerequisite order with danger, type and bounty"),
+        ("questsDanger", "Quests Danger HTML", "Bounty gold by quest danger, Low to Extreme"),
+        ("questsRank",   "Quests Rank HTML",   "Bounty gold by adventurer rank, Gold to Copper"),
+    ])
+
+
+def build_exchange():
+    return build_page("exchange", "The Exchange", "exchange", [
+        ("exchangeHeader",   "Exchange Header HTML",
+         "The Exchange: gold traded, units traded, gold per unit and legendary loot drops"),
+        ("exchangeBoard",    "Exchange Board HTML",    "Market board: the twelve items with the most gold traded"),
+        ("exchangeCategory", "Exchange Category HTML", "Gold traded by item category"),
+        ("exchangeRarity",   "Exchange Rarity HTML",   "Loot drops by rarity, Common to Legendary, with gold value"),
+    ])
+
+
+def build_realms():
+    return build_page("realms", "Realm Map", "realms", [
+        ("realmsHeader", "Realms Header HTML",
+         "The Realm Map: realms, regions, the busiest trading post and realms at Extreme threat"),
+        ("realmsMap",    "Realms Map HTML",
+         "Map of the eight realms plotted by latitude and longitude, bubbles sized by gold traded and coloured by threat"),
+        ("realmsLedger", "Realms Ledger HTML",
+         "Realm ledger: each realm's region, terrain, threat, gold traded and monsters slain there"),
+    ])
+
+
 def finalize_order():
     """Rebuilding a page re-appends it, so order drifts on every re-run unless it's set last.
     Report pages follow chroniclekit.PAGES; any page not in the registry keeps its place after them."""
@@ -137,5 +185,8 @@ if __name__ == "__main__":
     write_measures()
     build_intro()
     build_bestiary()
+    build_quests()
+    build_exchange()
+    build_realms()
     finalize_order()
     print("done - validate: pbir validate + 04-review/hooks/lint-report-traps.sh per page")

@@ -52,9 +52,9 @@ def dark_canvas(page_dir):
 PAGES = [
     {"id": "intro",    "display": "Intro",        "label": "INTRO",    "icon": "intro", "built": True},
     {"id": "bestiary", "display": "The Bestiary", "label": "BESTIARY", "icon": "claw",  "built": True},
-    {"id": "quests",   "display": "Quest Board",  "label": "QUESTS",   "icon": "quest", "built": False},
-    {"id": "exchange", "display": "The Exchange", "label": "EXCHANGE", "icon": "trade", "built": False},
-    {"id": "realms",   "display": "Realm Map",    "label": "REALMS",   "icon": "map",   "built": False},
+    {"id": "quests",   "display": "Quest Board",  "label": "QUESTS",   "icon": "quest", "built": True},
+    {"id": "exchange", "display": "The Exchange", "label": "EXCHANGE", "icon": "trade", "built": True},
+    {"id": "realms",   "display": "Realm Map",    "label": "REALMS",   "icon": "map",   "built": True},
 ]
 
 # Rail size comes FROM design-system.yaml - width is meta.chrome.left (the same number the grid resolver

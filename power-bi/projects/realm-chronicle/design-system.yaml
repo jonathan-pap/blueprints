@@ -52,6 +52,15 @@ layouts:
   #   [2] families — kills + deadliness by family, deadliest    rows 3-12  cols 10-12
   bestiary:       [ [1,1,13,3], [1,3,10,13], [10,3,13,13] ]
 
+  # Quest Board: header · the quest chains, step by step · bounty by danger · bounty by rank
+  quests:         [ [1,1,13,3], [1,3,9,13], [9,3,13,8], [9,8,13,13] ]
+
+  # The Exchange: header · market board (top items) · gold by category · loot by rarity
+  exchange:       [ [1,1,13,3], [1,3,7,13], [7,3,13,8], [7,8,13,13] ]
+
+  # Realm Map: header · the map, plotted from lat/long · the realm ledger
+  realms:         [ [1,1,13,3], [1,3,9,13], [9,3,13,13] ]
+
 # Navigation rail (design A "Gilded Rail", approved 2026-09-13) is report CHROME, not content: a fixed
 # 80px strip at x=0 on EVERY page, declared above as meta.chrome.left so the resolver lays the grid
 # out to its right (content starts at 80 + margin = 104). Rail geometry lives in build/chroniclekit.py
