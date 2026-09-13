@@ -82,3 +82,4 @@ table DimQuest
 				    Typed = Table.TransformColumnTypes(Promoted, {{"QuestKey", Int64.Type}, {"Quest", type text}, {"QuestType", type text}, {"Danger", type text}, {"RankRequired", type text}, {"DangerOrder", Int64.Type}, {"RankRequiredOrder", Int64.Type}, {"DangerColor", type text}, {"ChainName", type text}, {"ChainStep", Int64.Type}, {"PrerequisiteQuestKey", Int64.Type}})
 				in
 				    Typed
+

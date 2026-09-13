@@ -61,3 +61,4 @@ table DimItem
 				    Typed = Table.TransformColumnTypes(Promoted, {{"ItemKey", Int64.Type}, {"Item", type text}, {"Category", type text}, {"Rarity", type text}, {"Slot", type text}, {"RarityOrder", Int64.Type}, {"Icon", type text}, {"RarityColor", type text}})
 				in
 				    Typed
+

@@ -49,3 +49,4 @@ table DimAdventurer
 				    Typed = Table.TransformColumnTypes(Promoted, {{"AdventurerKey", Int64.Type}, {"Adventurer", type text}, {"Guild", type text}, {"Class", type text}, {"Rank", type text}, {"RankOrder", Int64.Type}})
 				in
 				    Typed
+

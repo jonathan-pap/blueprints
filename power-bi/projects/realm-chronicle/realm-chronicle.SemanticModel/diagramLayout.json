@@ -7,7 +7,164 @@
         "x": 0,
         "y": 0
       },
-      "nodes": [],
+      "nodes": [
+        {
+          "location": {
+            "x": 1556.8353512455037,
+            "y": 419.04825145556515
+          },
+          "nodeIndex": "_HTML",
+          "nodeLineageTag": "cfe6c90c-e8dd-49fa-b44c-d38ccdb6bfc9",
+          "size": {
+            "height": 296,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1840.8353512455037,
+            "y": 417.04825145556515
+          },
+          "nodeIndex": "_Measures",
+          "nodeLineageTag": "2a55ab8d-2be7-4a53-8e62-6f9703208c7c",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 453.51192966052315,
+            "y": 655.54282482265012
+          },
+          "nodeIndex": "DimAdventurer",
+          "nodeLineageTag": "446c1f1f-730b-4f36-be9a-e8f0a20613f6",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 744.14521495376937,
+            "y": -17.374956395599156
+          },
+          "nodeIndex": "DimDate",
+          "nodeLineageTag": "8e3136bd-5734-4b4f-bc5e-173414f57511",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1213.6786952630778,
+            "y": 786.15150968623936
+          },
+          "nodeIndex": "DimItem",
+          "nodeLineageTag": "a165dab8-8784-4b66-8e05-ff5ef685ece3",
+          "size": {
+            "height": 272,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 865.153303883121,
+            "y": 788.0965029111303
+          },
+          "nodeIndex": "DimMonster",
+          "nodeLineageTag": "e0e5da0c-3db0-4bef-ae4c-4fa9a6122dfc",
+          "size": {
+            "height": 296,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 50,
+            "y": -50
+          },
+          "nodeIndex": "DimQuest",
+          "nodeLineageTag": "e8fe378a-87a8-46ba-b1a5-d27365f4f91a",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1322.8353512455037,
+            "y": -34.139308666803572
+          },
+          "nodeIndex": "DimRealm",
+          "nodeLineageTag": "bd0aa109-e209-466d-af6e-6f2ec252985d",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1111.4982171894248,
+            "y": 507.87299325378774
+          },
+          "nodeIndex": "FactLootDrops",
+          "nodeLineageTag": "f4bafb25-9941-480a-af78-eb0662c5334f",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1032.922391637871,
+            "y": 205.17827842753252
+          },
+          "nodeIndex": "FactMarketTrades",
+          "nodeLineageTag": "519461af-9ab7-47f5-8390-efffec41aa12",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 454.26469850811719,
+            "y": 329.69391280823254
+          },
+          "nodeIndex": "FactMonsterKills",
+          "nodeLineageTag": "1ef3e1c5-609d-46b0-ae65-399da823a826",
+          "size": {
+            "height": 272,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 336.83576967482247,
+            "y": 25.140201395812255
+          },
+          "nodeIndex": "FactQuests",
+          "nodeLineageTag": "4930bbd3-fb7d-4d90-83f0-873291f157ff",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
       "name": "All tables",
       "zoomValue": 100,
       "pinKeyFieldsToTop": false,

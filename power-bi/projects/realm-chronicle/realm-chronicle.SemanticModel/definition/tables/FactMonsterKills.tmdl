@@ -72,3 +72,4 @@ table FactMonsterKills
 				    Rounded = Table.TransformColumns(Typed, {{"MonstersSlain", each Number.Round(_, 2), type number}, {"PartyWipes", each Number.Round(_, 2), type number}, {"GoldEarned", each Number.Round(_, 2), type number}, {"DamageDealt", each Number.Round(_, 2), type number}})
 				in
 				    Rounded
+

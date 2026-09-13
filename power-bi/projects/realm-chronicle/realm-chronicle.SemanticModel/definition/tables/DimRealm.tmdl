@@ -54,3 +54,4 @@ table DimRealm
 				    Typed = Table.TransformColumnTypes(Promoted, {{"RealmKey", Int64.Type}, {"Realm", type text}, {"Terrain", type text}, {"ThreatBand", type text}, {"Region", type text}, {"Latitude", type number}, {"Longitude", type number}})
 				in
 				    Typed
+

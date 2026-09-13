@@ -82,3 +82,4 @@ table DimDate
 				    Typed = Table.TransformColumnTypes(Promoted, {{"Date", type date}, {"DateKey", Int64.Type}, {"Year", Int64.Type}, {"Quarter", type text}, {"Month", Int64.Type}, {"MonthName", type text}, {"DayName", type text}, {"DayNum", Int64.Type}, {"YearMonth", Int64.Type}, {"MonthYear", type text}})
 				in
 				    Typed
+

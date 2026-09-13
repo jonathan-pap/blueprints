@@ -222,6 +222,64 @@ def image_svg(name, rect, measure_name, z=100):
                vco=noframe())
 
 
+def register_image(item_name, content):
+    """Package a static image INTO the report (StaticResources/RegisteredResources) and list it in
+    report.json. Idempotent: rewrites the file, adds the registration once. For report chrome that
+    isn't data - a literal data: URL in an image's imageUrl does NOT render (broken-image icon,
+    verified 2026-09-13), so a fixed image has to be a registered resource."""
+    rr = os.path.join(REPORT, "StaticResources", "RegisteredResources")
+    os.makedirs(rr, exist_ok=True)
+    mode = "wb" if isinstance(content, bytes) else "w"
+    with open(os.path.join(rr, item_name), mode, **({} if mode == "wb" else {"encoding": "utf-8", "newline": "\n"})) as f:
+        f.write(content)
+    rp = os.path.join(REPORT, "definition", "report.json")
+    rep = json.load(open(rp, encoding="utf-8"))
+    pkgs = rep.setdefault("resourcePackages", [])
+    pkg = next((p for p in pkgs if p.get("name") == "RegisteredResources"), None)
+    if pkg is None:
+        pkg = {"name": "RegisteredResources", "type": "RegisteredResources", "items": []}
+        pkgs.append(pkg)
+    if not any(i.get("name") == item_name for i in pkg["items"]):
+        pkg["items"].append({"name": item_name, "path": item_name, "type": "Image"})
+        json.dump(rep, open(rp, "w", encoding="utf-8", newline="\n"), indent=2)
+
+
+def image_resource(name, rect, item_name, alt, z=100, tab=1):
+    """Image visual showing a registered resource (see register_image). Binding shape from the
+    room template ../examples/visuals/default/image.json. Data-driven images use image_svg()."""
+    vco = noframe()
+    vco["general"] = [{"properties": {"altText": lit("'%s'" % alt.replace("'", "''"))}}]
+    # transparency + effects must be explicit: left unset, the image visual rendered the resource at
+    # roughly 8% opacity (brightest gold pixel 18,20,23 instead of 232,195,73) - verified 2026-09-13.
+    return vis(name, "image", rect, z,
+               objects={"general": [{"properties": {"imageUrl": {"expr": {"ResourcePackageItem": {
+                   "PackageName": "RegisteredResources", "PackageType": 1, "ItemName": item_name}}}}}],
+                        "image": [{"properties": {"transparency": lit("0D"), "effects": lit("false")}}]},
+               vco=vco, tab=tab)
+
+
+def nav_button(name, rect, target_page, tooltip, z=500, tab=1, hover=None, hover_transparency=88):
+    """A transparent PageNavigation button laid over artwork: invisible at rest, a faint wash on
+    hover. The artwork carries the look; the button carries the click, keyboard focus and tooltip.
+    `target_page` is the page NAME (its folder id), not the display name."""
+    off = [{"properties": {"show": lit("false")}}]
+    fill = [{"properties": {"show": lit("true")}},
+            {"selector": {"id": "default"},
+             "properties": {"fillColor": solid("#000000"), "transparency": lit("100D")}}]
+    if hover:
+        fill.append({"selector": {"id": "hover"},
+                     "properties": {"fillColor": solid(hover),
+                                    "transparency": lit("%dD" % hover_transparency)}})
+    vco = noframe()
+    vco["visualLink"] = [{"properties": {
+        "show": lit("true"), "type": lit("'PageNavigation'"),
+        "navigationSection": lit("'%s'" % target_page),
+        "tooltip": lit("'%s'" % tooltip.replace("'", "''"))}}]
+    return vis(name, "actionButton", rect, z,
+               objects={"icon": off, "outline": off, "text": off, "fill": fill},
+               vco=vco, tab=tab)
+
+
 def slicer(name, rect, prop, group, tab=1, entity=None):
     """Dropdown slicer on entity.prop (entity defaults to the configured FACT), synced across
     pages via syncGroup - a SIBLING of visualType, not an object. Without it every page keeps

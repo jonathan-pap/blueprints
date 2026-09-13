@@ -56,3 +56,4 @@ table FactLootDrops
 				    Rounded = Table.TransformColumns(Typed, {{"DropCount", each Number.Round(_, 2), type number}, {"LootGoldValue", each Number.Round(_, 2), type number}})
 				in
 				    Rounded
+

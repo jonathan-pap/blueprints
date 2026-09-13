@@ -68,3 +68,4 @@ table DimMonster
 				    Typed = Table.TransformColumnTypes(Promoted, {{"MonsterKey", Int64.Type}, {"Monster", type text}, {"Kind", type text}, {"Family", type text}, {"Tier", Int64.Type}, {"Habitat", type text}, {"KindOrder", Int64.Type}, {"Icon", type text}, {"KindColor", type text}})
 				in
 				    Typed
+

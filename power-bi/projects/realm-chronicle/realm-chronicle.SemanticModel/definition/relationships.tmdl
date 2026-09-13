@@ -45,3 +45,4 @@ relationship FactMarketTrades_DimItem
 relationship FactMarketTrades_DimRealm
 	fromColumn: FactMarketTrades.RealmKey
 	toColumn: DimRealm.RealmKey
+

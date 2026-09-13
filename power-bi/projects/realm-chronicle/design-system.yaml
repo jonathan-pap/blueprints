@@ -42,4 +42,15 @@ layouts:
   #   [3] bosses   — the boss roll, the four raid targets       rows 8-12  right half
   intro:          [ [1,1,13,5], [1,5,13,8], [1,8,7,13], [7,8,13,13] ]
 
-overrides: []
+# Navigation rail (design A "Gilded Rail", approved 2026-09-13) is report CHROME, not content: a fixed
+# 88px strip at x=0 on every page except the cover, deliberately outside the grid margins. Its
+# geometry lives in build/chroniclekit.py (RAIL_W, ITEM_TOP, ITEM_STEP), every edge on the 8px snap.
+# Content on a rail page must start at x >= 88 + margin (120) - the grid resolver has no left-chrome
+# offset yet, so a rail-aware layout is needed before The Hunt gets its visuals.
+overrides:
+  - { visual: "navRail",     reason: "nav rail artwork - fixed 88x1080 chrome outside the content grid" }
+  - { visual: "navIntro",    reason: "nav rail click target - sits on its rail item, not a grid region" }
+  - { visual: "navHunt",     reason: "nav rail click target - sits on its rail item, not a grid region" }
+  - { visual: "navQuests",   reason: "nav rail click target - sits on its rail item, not a grid region" }
+  - { visual: "navExchange", reason: "nav rail click target - sits on its rail item, not a grid region" }
+  - { visual: "navRealms",   reason: "nav rail click target - sits on its rail item, not a grid region" }

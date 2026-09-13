@@ -9,7 +9,9 @@ is data). If a helper is useful to a second project, it belongs here, not copied
   (geometry from the grid), `lit`/`solid`/`measure`/`col`/`proj_m`/`proj_c` (expressions +
   projections), `vis`/`textbox`/`head_tb`/`heading`/`image_svg`/`slicer` (visual JSON),
   `panel`/`noframe`/`axis`/`sort_by`/`in_filter` (formatting + filters), `add_page`/`write`/`run`
-  (pages, files, `pbir` calls). Docstring shows the 6-line project wiring.
+  (pages, files, `pbir` calls), `register_image`/`image_resource` (package a fixed image into the
+  report and show it — build traps 16–17 are why it isn't a literal URL), `nav_button` (a transparent
+  PageNavigation click target over artwork, with a hover wash). Docstring shows the 6-line project wiring.
 - `resolve_layout.py` — regions → snapped pixel rects from a project's `design-system.yaml`
   (CLI: `python resolve_layout.py <design-system.yaml> [layout …]`).
 

@@ -40,9 +40,9 @@ table _HTML
 			    "<circle cx='1614' cy='46' r='6' fill='#2ecc71'><animate attributeName='r' values='5;8;5' dur='1.6s' repeatCount='indefinite'/><animate attributeName='opacity' values='1;0.45;1' dur='1.6s' repeatCount='indefinite'/></circle>" &
 			    "<text x='1630' y='51' font-family='Segoe UI,Arial,sans-serif' font-size='13' letter-spacing='2' fill='#8aa0c0'>THE REALM ENDURES</text>" &
 			    "</svg>"
-		dataCategory: ImageUrl
 		displayFolder: Intro
 		lineageTag: bbda5642-29c2-4543-8d49-a2c05dfac969
+		dataCategory: ImageUrl
 
 	/// HTML-in-SVG strip of four stat tiles, one per fact table (kills, bounties, loot, exchange), each with a year-over-year chip for the latest year. ImageUrl measure; host in an Image visual, 1840x224.
 	measure 'Intro Ledgers HTML' =
@@ -87,9 +87,9 @@ table _HTML
 			    "<div class='c'><div class='bar' style='background:#c89bff'></div><div class='top'><span class='ic'>&#x1F48E;</span>" & _dc & "</div><div class='v' style='color:#c89bff'>" & _dv & "</div><div class='lb'>Loot drops</div><div class='sb'>" & FORMAT ( _leg, "#,0" ) & " legendary" & "</div></div>" &
 			    "<div class='c'><div class='bar' style='background:#6fd49b'></div><div class='top'><span class='ic'>&#9878;</span>" & _tc & "</div><div class='v' style='color:#6fd49b'>" & _tv & "</div><div class='lb'>Gold traded</div><div class='sb'>" & FORMAT ( [Total QuantityTraded], "#,0" ) & " units exchanged" & "</div></div>" &
 			    "</div></foreignObject></svg>"
-		dataCategory: ImageUrl
 		displayFolder: Intro
 		lineageTag: 184a574a-8c95-4fd4-8d39-53c6bc552bb0
+		dataCategory: ImageUrl
 
 	/// HTML-in-SVG leaderboard of the top five slayers: rank medal, name, class, guild and rank, kills with a relative bar. Respects outer filters via ALLSELECTED. ImageUrl measure; host in an Image visual, 896x392.
 	measure 'Intro Legends HTML' =
@@ -140,9 +140,9 @@ table _HTML
 			    "<div class='hd'><div class='ttl'>&#9819; HALL OF LEGENDS</div><div class='sub'>Top slayers &#183; all time</div></div>" &
 			    _Rows &
 			    "</div></foreignObject></svg>"
-		dataCategory: ImageUrl
 		displayFolder: Intro
 		lineageTag: 0ef160a8-3762-4a0d-8b31-cc93d7b8652b
+		dataCategory: ImageUrl
 
 	/// HTML-in-SVG roll of the four raid bosses: kills, and deadliness as party wipes per 1,000 kills with a relative bar, accented by habitat. ImageUrl measure; host in an Image visual, 896x392.
 	measure 'Intro Bosses HTML' =
@@ -195,10 +195,16 @@ table _HTML
 			    "<div class='hd'><div class='ttl'>&#9760; THE BOSS ROLL</div><div class='sub'>Raid targets &#183; deadliness</div></div>" &
 			    _Rows &
 			    "</div></foreignObject></svg>"
-		dataCategory: ImageUrl
 		displayFolder: Intro
 		lineageTag: 0d2bb0d5-f1d6-4b34-ae0d-61b50a5f5319
+		dataCategory: ImageUrl
+
+	column _
+		lineageTag: e76a1a27-f22b-49a5-a69e-3ea523236ff4
+		isNameInferred
+		sourceColumn: [_]
 
 	partition _HTML = calculated
 		mode: import
 		source = ROW ( "_", "" )
+

@@ -64,3 +64,4 @@ table FactQuests
 				    Rounded = Table.TransformColumns(Typed, {{"BountyGold", each Number.Round(_, 2), type number}, {"QuestsCompleted", each Number.Round(_, 2), type number}, {"DaysOnQuest", each Number.Round(_, 2), type number}})
 				in
 				    Rounded
+

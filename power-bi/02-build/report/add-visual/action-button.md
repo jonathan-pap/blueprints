@@ -11,28 +11,31 @@ pbir add visual actionButton "<project>.Report/Overview.Page" --title "View Deta
 
 ## Configure the action
 
-In `visual.json`, set the `actionButton` object's `action.type` to one of:
+A click's behaviour lives in the **container** object `visualLink` (inside `visual`, under
+`visualContainerObjects`) — not in the button's own `objects`. `type` is one of `PageNavigation`,
+`Bookmark`, `Drillthrough`, `Back`, `WebUrl`, `QnA`. Because `visualLink` is a container object, any
+visual can carry an action, not only buttons.
 
-- `Bookmark` — switch to a named bookmark
-- `PageNavigation` — jump to another page
-- `DrillThrough` — drill to a target page filtered by current context
-- `WebUrl` — open an external link
-- `QnA` — open Power BI Q&A overlay
-
-Example bookmark action:
+Page navigation — verified rendering and wired on the Realm Chronicle nav rail, 2026-09-13:
 
 ```json
-"objects": {
-  "actionButton": [{
-    "properties": {
-      "action": {
-        "type": "Bookmark",
-        "bookmark": "Quarterly View"
-      }
-    }
-  }]
+"visualContainerObjects": {
+  "visualLink": [{ "properties": {
+    "show":              { "expr": { "Literal": { "Value": "true" } } },
+    "type":              { "expr": { "Literal": { "Value": "'PageNavigation'" } } },
+    "navigationSection": { "expr": { "Literal": { "Value": "'intro'" } } },
+    "tooltip":           { "expr": { "Literal": { "Value": "'Go to Intro'" } } }
+  }}]
 }
 ```
+
+- `navigationSection` is the target page's **name** (its folder id), not its display name.
+- For a bookmark: `type: 'Bookmark'` + `bookmark: '<bookmark name>'`.
+- **In Desktop, buttons need Ctrl+click** while editing; a plain click selects the visual. Readers
+  in the Service click normally.
+- Per-state styling uses `selector: {"id": "default"}` / `{"id": "hover"}` on `fill`, `text`,
+  `icon` entries (see the template). A transparent click target laid over artwork:
+  `pbirkit.nav_button()`.
 
 ## Templates
 

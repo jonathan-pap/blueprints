@@ -4,10 +4,12 @@ Run with Power BI Desktop CLOSED - Desktop overwrites files that change on disk 
 
     python power-bi/projects/realm-chronicle/build/build.py
 
-Pages
+Pages (rail order lives in chroniclekit.PAGES)
   intro  THE REALM CHRONICLE cover - four HTML-in-SVG components on the `intro` grid layout
          (design-system.yaml): hero, the four ledgers, hall of legends, the boss roll.
          Doctrine: ../../../02-build/visuals/svg/html-in-svg.md. Measures: model table _HTML.
+         No rail - it's the cover.
+  hunt   THE HUNT - carries the navigation rail (design A). Content not built yet.
 """
 import json
 import os
@@ -15,7 +17,7 @@ import shutil
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from chroniclekit import K, dark_canvas, svg_panel  # noqa: E402
+from chroniclekit import K, PAGES, dark_canvas, nav_rail, svg_panel  # noqa: E402
 
 
 def _pages_meta():
@@ -73,7 +75,30 @@ def build_intro():
     return d
 
 
+def build_hunt():
+    clear_page("hunt")
+    d = K.add_page("hunt", "The Hunt", w=1920, h=1080)
+    dark_canvas(d)
+    nav_rail(d, "hunt")
+    print("  navRail + buttons for %s" % ", ".join(p["id"] for p in PAGES if p["built"] and p["id"] != "hunt"))
+    return d
+
+
+def finalize_order():
+    """Rebuilding a page re-appends it, so order drifts on every re-run unless it's set last.
+    Report pages follow chroniclekit.PAGES; any page not in the registry keeps its place after them."""
+    meta = json.load(open(_pages_meta(), encoding="utf-8"))
+    live = {e for e in os.listdir(K.PAGES) if os.path.isdir(os.path.join(K.PAGES, e))}
+    known = [p["id"] for p in PAGES if p["id"] in live]
+    meta["pageOrder"] = known + [x for x in meta["pageOrder"] if x in live and x not in known]
+    meta["activePageName"] = meta["pageOrder"][0]
+    json.dump(meta, open(_pages_meta(), "w", encoding="utf-8", newline="\n"), indent=2)
+    print("  page order: %s" % " > ".join(meta["pageOrder"]))
+
+
 if __name__ == "__main__":
     print("building realm-chronicle")
     build_intro()
-    print("done - validate: pbir validate + 04-review/hooks/lint-report-traps.sh --page Intro")
+    build_hunt()
+    finalize_order()
+    print("done - validate: pbir validate + 04-review/hooks/lint-report-traps.sh per page")

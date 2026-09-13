@@ -10,6 +10,8 @@
 #   T1  default sort by MEASURE descending      - silently inverts a time series
 #   T15 container title shown on a chart        - renders your title AND the auto title, stacked
 #   T9  filterConfig nested inside `visual`     - belongs at the root of visual.json
+#   T17 literal data: URL as an image sourceUrl - renders a broken-image icon
+#   T16 registered image, no image.transparency - renders at ~8% opacity (reads as "dark design")
 #
 # WARN (heuristic; check the render before acting):
 #   T5  textbox font too large for its box      - text overflows, Power BI adds a scrollbar
@@ -186,6 +188,20 @@ for page_dir in sorted(glob.glob(os.path.join(pages_dir, "*"))):
                 add("WARN", page, name, "T5",
                     f"{int(max(sizes))}pt text in a {int(h)}px box - likely overflows and adds a "
                     f"scrollbar; ~16pt fits 48px")
+
+        # --- T16 / T17: how an image visual is sourced ---
+        if vt == "image":
+            ob = v.get("objects", {}) or {}
+            img = ((ob.get("image") or [{}])[0].get("properties", {})) or {}
+            gen = ((ob.get("general") or [{}])[0].get("properties", {})) or {}
+            if str(lit(img, "sourceUrl") or "").startswith("data:"):
+                add("ERR", page, name, "T17",
+                    "literal data: URL as the image sourceUrl renders a broken-image icon - bind a measure "
+                    "(sourceType imageData + sourceField) or package the file as a registered resource")
+            if "ResourcePackageItem" in json.dumps(gen.get("imageUrl", {})) and lit(img, "transparency") is None:
+                add("ERR", page, name, "T16",
+                    "registered image with no explicit image.transparency renders at ~8% opacity - "
+                    "set image.transparency 0D and image.effects false")
 
         # --- T14: horizontal bars need ~32px each or the chart scrolls silently ---
         if vt in BAR and h:

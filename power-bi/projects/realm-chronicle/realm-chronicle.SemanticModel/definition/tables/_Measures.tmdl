@@ -142,6 +142,12 @@ table _Measures
 		displayFolder: Core
 		lineageTag: bc540ac7-af0a-4945-8de3-450b82ed5932
 
+	column _
+		lineageTag: b5113f9d-d207-40fa-8021-0199f0851762
+		isNameInferred
+		sourceColumn: [_]
+
 	partition _Measures = calculated
 		mode: import
 		source = ROW ( "_", "" )
+

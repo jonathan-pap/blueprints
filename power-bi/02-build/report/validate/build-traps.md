@@ -3,10 +3,11 @@
 > Every entry here cost real time on a build and none of them are caught by `pbir validate`.
 > Read this before a report build, not after.
 >
-> **Eight of them are now checked mechanically** by
+> **Ten of them are now checked mechanically** by
 > [`../../../04-review/hooks/lint-report-traps.sh`](../../../04-review/hooks/lint-report-traps.sh) —
 > run it **per page as you build** (`--page <name>`), not once at the end:
-> ERR on 1 (default measure-descending sort), 9 (`filterConfig` nested), 15 (stacked container title);
+> ERR on 1 (default measure-descending sort), 9 (`filterConfig` nested), 15 (stacked container title),
+> 16 (registered image with no explicit transparency), 17 (literal `data:` URL on an image);
 > WARN on 5, 6, 11, 14. The rest still need your eyes on a render — 2, 3, 4, 7, 8, 10, 12, 13 depend on
 > the model, the rendered pixels, or a CLI error message. The linter is a floor, not the ceiling.
 
@@ -159,6 +160,24 @@ Setting `visualContainerObjects.title.text` on a chart makes Power BI render the
 `pbir validate` passes; the render is a two-line title mess. Fix: keep the container title
 `show: false` on every chart and put headings in a **textbox** instead — deterministic, and the
 pattern `tools/pbirkit.py` (`panel()`, `head_tb()`) already enforces in scripted builds.
+
+## 16. A registered image renders at ~8% opacity unless transparency is set explicitly
+
+An image visual bound to a packaged resource (`general.imageUrl` → `ResourcePackageItem`) with no
+`image` object rendered every pixel of an SVG nav rail almost black — the brightest gold measured
+`(18,20,23)` instead of `(232,195,73)`. Geometry perfect, so it reads as "dark design", not a bug.
+`pbir validate` passes. Fix: set `image.transparency = 0D` and `image.effects = false` explicitly —
+which is why the room template `image-svg-measure.json` spells both out. `pbirkit.image_resource()`
+does. Found on the Realm Chronicle nav rail, 2026-09-13.
+
+## 17. A literal `data:` URL in an image's `imageUrl` shows a broken-image icon
+
+`sourceType: 'imageUrl'` with `sourceUrl` set to a literal `data:image/svg+xml;base64,…` renders a
+broken image with the alt text spilling out — valid JSON, valid schema, no warning. The image visual
+won't load a data URI from a literal. Two routes that do render: **data-driven** → a DAX measure with
+`dataCategory: ImageUrl` via `sourceType: 'imageData'` + `sourceField` (`pbirkit.image_svg()`);
+**fixed** → package the file as a registered resource (`pbirkit.register_image()` +
+`image_resource()`). Found on the same rail, 2026-09-13.
 
 ## See also
 
