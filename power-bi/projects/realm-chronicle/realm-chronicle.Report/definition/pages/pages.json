@@ -5,7 +5,10 @@
     "bestiary",
     "quests",
     "exchange",
-    "realms"
+    "realms",
+    "huntlive",
+    "questlive",
+    "marketlive"
   ],
   "activePageName": "intro"
 }

@@ -179,6 +179,23 @@ won't load a data URI from a literal. Two routes that do render: **data-driven**
 **fixed** → package the file as a registered resource (`pbirkit.register_image()` +
 `image_resource()`). Found on the same rail, 2026-09-13.
 
+## 18. A theme's wildcard padding shrinks every image visual - HTML panels and nav rails included
+
+A theme with `visualStyles["*"]["*"].padding` (e.g. 10/12px, so native charts breathe) cascades to
+**image** visuals too. An HTML-in-SVG panel or an SVG nav rail then scales down to fit inside the
+padding: shrunken, off-centre, uneven gaps. The visual itself sets title/background/border off, so it
+looks immune - padding still cascades. Fix: in the theme, give `image`, `actionButton`, `textbox` and
+`shape` an explicit `padding` of 0 alongside their chrome-off overrides. Found when a dark theme was
+added under the Realm Chronicle HTML pages, 2026-09-13.
+
+## 19. `MAXX(ALLSELECTED(Dim[Col]), ...)` in an in-cell bar is only "max per group" - every bar looks full
+
+An in-cell SVG bar that scales against `MAXX ( ALLSELECTED ( DimAdventurer[Adventurer] ), [m] )`
+in a table that also shows Guild and Rank: the max is evaluated inside each row's Guild/Rank
+context, so most rows are their own maximum and nearly every bar renders full. Scale against the
+**whole table** instead: `MAXX ( ALLSELECTED ( DimAdventurer ), [m] )`. It still honours slicers,
+and the top row fills the cell. Found on Realm Chronicle Hunt Command, 2026-09-13.
+
 ## See also
 
 - `../../../04-review/audit/pbip-schema-drift.md` — Desktop strips `$schema` on every save

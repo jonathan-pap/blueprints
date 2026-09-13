@@ -3,10 +3,10 @@
   "name": "navRealms",
   "position": {
     "x": 0,
-    "y": 328,
+    "y": 296,
     "z": 64,
     "width": 80,
-    "height": 56,
+    "height": 48,
     "tabOrder": 4
   },
   "visual": {

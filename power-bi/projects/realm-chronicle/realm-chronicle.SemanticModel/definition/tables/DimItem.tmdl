@@ -26,6 +26,7 @@ table DimItem
 		lineageTag: 91c09730-a039-4b75-b304-6fef8f0a4648
 		summarizeBy: none
 		sourceColumn: Rarity
+		sortByColumn: RarityOrder
 
 	column Slot
 		dataType: string
@@ -35,6 +36,7 @@ table DimItem
 
 	column RarityOrder
 		dataType: int64
+		isHidden
 		formatString: 0
 		lineageTag: a1d52838-d93b-4185-82f7-7b284844dddd
 		summarizeBy: none

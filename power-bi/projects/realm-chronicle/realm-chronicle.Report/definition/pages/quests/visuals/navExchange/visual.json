@@ -3,10 +3,10 @@
   "name": "navExchange",
   "position": {
     "x": 0,
-    "y": 264,
+    "y": 240,
     "z": 63,
     "width": 80,
-    "height": 56,
+    "height": 48,
     "tabOrder": 3
   },
   "visual": {

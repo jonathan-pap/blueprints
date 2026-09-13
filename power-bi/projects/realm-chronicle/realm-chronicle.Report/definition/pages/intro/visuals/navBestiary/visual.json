@@ -3,10 +3,10 @@
   "name": "navBestiary",
   "position": {
     "x": 0,
-    "y": 136,
+    "y": 128,
     "z": 61,
     "width": 80,
-    "height": 56,
+    "height": 48,
     "tabOrder": 1
   },
   "visual": {

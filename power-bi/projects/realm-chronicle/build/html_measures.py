@@ -920,6 +920,97 @@ def realms_group(regions):
                        zip((realms_header, realm_map, realm_ledger), regions)])
 
 
+# ---- LIVE pages ------------------------------------------------------------------------------
+# Native visuals start every interaction on these pages; these measures only RESPOND to filters.
+
+def hunt_live_header(w, h):
+    return page_header(
+        w, h, "Hunt Live Header HTML",
+        "HTML-in-SVG header for Hunt Command. Every figure follows the page's slicers and cross-filters, so a "
+        "click on a guild or a month re-states the totals. ImageUrl measure; host in an Image visual.",
+        "Live &#183; click a guild, a month or an adventurer to filter", "HUNT COMMAND",
+        ['VAR _s = [Total MonstersSlain]',
+         'VAR _b = CALCULATE ( [Total MonstersSlain], DimMonster[Kind] = "Boss" )',
+         'VAR _w = [Total PartyWipes]',
+         'VAR _g = [Total GoldEarned]'],
+        [(_compact("_s"), "#ff7b7b", "Monsters slain"),
+         (_compact("_b"), "#c89bff", "Bosses slain"),
+         (_compact("_w"), "#f2c037", "Party wipes"),
+         (_compact("_g"), "#e8c349", "Gold earned")])
+
+
+def row_bar_svg(name, desc, measure, table, colour):
+    """In-cell bar for a table row: this row's value relative to the top row in the current selection.
+    The max is taken over ALLSELECTED of the WHOLE table, not one column: a table visual that also shows
+    other columns of the same dimension (Guild, Rank...) keeps those filters on each row, so a max over
+    just the key column is computed per group and every group's leader draws a full bar (seen on Hunt
+    Command, 2026-09-13). A fixed viewBox keeps the cell from rendering as a grey box at other widths."""
+    return (name, desc, [
+     f'VAR _v = {measure}',
+     f'VAR _max = MAXX ( ALLSELECTED ( {table} ), {measure} )',
+     'VAR _w = INT ( DIVIDE ( _v, _max ) * 120 )',
+     'RETURN',
+     '    IF (',
+     '        ISBLANK ( _v ),',
+     '        BLANK (),',
+     "        \"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='12' viewBox='0 0 120 12'>\" &",
+     "        \"<rect x='0' y='2' width='120' height='8' rx='4' fill='#1f2a3d'/>\" &",
+     f"        \"<rect x='0' y='2' width='\" & _w & \"' height='8' rx='4' fill='{colour}'/></svg>\"",
+     '    )',
+    ])
+
+
+def kill_bar_svg():
+    return row_bar_svg("Kill Bar SVG",
+                       "In-cell SVG bar: this adventurer's monster kills relative to the top adventurer in the current "
+                       "selection. ImageUrl measure; place in a tableEx with grid image size 120x12.",
+                       "[Total MonstersSlain]", "DimAdventurer", "#ff7b7b")
+
+
+def gold_bar_svg():
+    return row_bar_svg("Gold Bar SVG",
+                       "In-cell SVG bar: this item's gold traded relative to the top item in the current selection. "
+                       "ImageUrl measure; place in a tableEx with grid image size 120x12.",
+                       "[Total GoldVolume]", "DimItem", "#6fd49b")
+
+
+def quest_live_header(w, h):
+    return page_header(
+        w, h, "Quest Live Header HTML",
+        "HTML-in-SVG header for Quest Command. Every figure follows the page's slicers and cross-filters. "
+        "ImageUrl measure; host in an Image visual.",
+        "Live &#183; expand a chain, click a danger or a year to filter", "QUEST COMMAND",
+        ['VAR _b = [Total BountyGold]',
+         'VAR _q = [Total QuestsCompleted]',
+         'VAR _days = DIVIDE ( [Total DaysOnQuest], _q )'],
+        [(_compact("_b"), "#f4d770", "Bounty gold"),
+         (_compact("_q"), "#6fd49b", "Quests done"),
+         ('FORMAT ( DIVIDE ( _b, _q ), "#,0" )', "#e8c349", "Gold per quest"),
+         (_tidy("_days", "0.0", "0"), "#7cc8ff", "Days per quest")])
+
+
+def market_live_header(w, h):
+    return page_header(
+        w, h, "Market Live Header HTML",
+        "HTML-in-SVG header for Market Command. Every figure follows the page's slicers and cross-filters. "
+        "ImageUrl measure; host in an Image visual.",
+        "Live &#183; click an item, a category or a year to filter", "MARKET COMMAND",
+        ['VAR _g = [Total GoldVolume]',
+         'VAR _u = [Total QuantityTraded]',
+         'VAR _leg = CALCULATE ( [Total DropCount], DimItem[Rarity] = "Legendary" )'],
+        [(_compact("_g"), "#6fd49b", "Gold traded"),
+         (_compact("_u"), "#7cc8ff", "Units traded"),
+         ('FORMAT ( DIVIDE ( _g, _u ), "#,0" )', "#e8c349", "Gold per unit"),
+         (_compact("_leg"), "#F59E0B", "Legendary drops")])
+
+
+def live_group(regions):
+    """regions: the resolved `live` layout - [0] is the header band shared by every LIVE page."""
+    w, h = regions[0]["width"], regions[0]["height"]
+    return ("Live", [hunt_live_header(w, h), quest_live_header(w, h), market_live_header(w, h),
+                     kill_bar_svg(), gold_bar_svg()])
+
+
 # ---- write -------------------------------------------------------------------------------------
 
 def write_measures(tmdl_path, groups):

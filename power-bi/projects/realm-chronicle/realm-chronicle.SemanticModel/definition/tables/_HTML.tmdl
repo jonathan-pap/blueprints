@@ -896,6 +896,134 @@ table _HTML
 		lineageTag: eeda3c83-d0fd-5f58-b1b0-8c31ed5fa7f7
 		dataCategory: ImageUrl
 
+	/// HTML-in-SVG header for Hunt Command. Every figure follows the page's slicers and cross-filters, so a click on a guild or a month re-states the totals. ImageUrl measure; host in an Image visual.
+	measure 'Hunt Live Header HTML' =
+			VAR _s = [Total MonstersSlain]
+			VAR _b = CALCULATE ( [Total MonstersSlain], DimMonster[Kind] = "Boss" )
+			VAR _w = [Total PartyWipes]
+			VAR _g = [Total GoldEarned]
+			RETURN
+			    "data:image/svg+xml;utf8," &
+			    "<svg xmlns='http://www.w3.org/2000/svg' width='1152' height='96' viewBox='0 0 1840 153'>" &
+			    "<foreignObject x='0' y='0' width='1840' height='153'>" &
+			    "<div xmlns='http://www.w3.org/1999/xhtml' class='hb'>" &
+			    "<style>" &
+			    ".hb{width:1840px;height:153px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;padding:0 44px;border-radius:16px;border:2px solid #c9a227;background:radial-gradient(ellipse at 10% 0%,#3d2c10 0%,transparent 60%),linear-gradient(180deg,#161f31,#0a0f1a);font-family:Segoe UI,Arial,sans-serif;color:#e8edf5}" &
+			    ".hb .ey{font-size:16px;letter-spacing:5px;text-transform:uppercase;color:#c9a227}" &
+			    ".hb .t{font-family:Georgia,Cambria,serif;font-size:60px;font-weight:700;letter-spacing:8px;line-height:1.05;color:#f0cf5e;text-shadow:0 0 24px rgba(232,195,73,0.3),0 3px 0 #5e470f;margin-top:4px}" &
+			    ".hb .ks{display:flex;gap:16px}" &
+			    ".hb .k{box-sizing:border-box;min-width:180px;padding:14px 20px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid #2a3953}" &
+			    ".hb .v{font-size:34px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}" &
+			    ".hb .l{font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#8aa0c0;margin-top:7px}" &
+			    ".hb .l i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:8px}" &
+			    "</style>" &
+			    "<div><div class='ey'>Live &#183; click a guild, a month or an adventurer to filter</div><div class='t'>HUNT COMMAND</div></div>" &
+			    "<div class='ks'>" &
+			    "<div class='k'><div class='v' style='color:#ff7b7b'>" & IF ( _s >= 1000000, IF ( _s / 1000000 >= 100, FORMAT ( _s / 1000000, "0" ), IF ( ROUND ( _s / 1000000, 1 ) = INT ( ROUND ( _s / 1000000, 1 ) ), FORMAT ( ROUND ( _s / 1000000, 1 ), "0" ), FORMAT ( _s / 1000000, "0.0" ) ) ) & "M", IF ( _s >= 1000, IF ( _s / 1000 >= 100, FORMAT ( _s / 1000, "0" ), IF ( ROUND ( _s / 1000, 1 ) = INT ( ROUND ( _s / 1000, 1 ) ), FORMAT ( ROUND ( _s / 1000, 1 ), "0" ), FORMAT ( _s / 1000, "0.0" ) ) ) & "K", FORMAT ( _s, "#,0" ) ) ) & "</div><div class='l'><i style='background:#ff7b7b'></i>Monsters slain</div></div>" &
+			    "<div class='k'><div class='v' style='color:#c89bff'>" & IF ( _b >= 1000000, IF ( _b / 1000000 >= 100, FORMAT ( _b / 1000000, "0" ), IF ( ROUND ( _b / 1000000, 1 ) = INT ( ROUND ( _b / 1000000, 1 ) ), FORMAT ( ROUND ( _b / 1000000, 1 ), "0" ), FORMAT ( _b / 1000000, "0.0" ) ) ) & "M", IF ( _b >= 1000, IF ( _b / 1000 >= 100, FORMAT ( _b / 1000, "0" ), IF ( ROUND ( _b / 1000, 1 ) = INT ( ROUND ( _b / 1000, 1 ) ), FORMAT ( ROUND ( _b / 1000, 1 ), "0" ), FORMAT ( _b / 1000, "0.0" ) ) ) & "K", FORMAT ( _b, "#,0" ) ) ) & "</div><div class='l'><i style='background:#c89bff'></i>Bosses slain</div></div>" &
+			    "<div class='k'><div class='v' style='color:#f2c037'>" & IF ( _w >= 1000000, IF ( _w / 1000000 >= 100, FORMAT ( _w / 1000000, "0" ), IF ( ROUND ( _w / 1000000, 1 ) = INT ( ROUND ( _w / 1000000, 1 ) ), FORMAT ( ROUND ( _w / 1000000, 1 ), "0" ), FORMAT ( _w / 1000000, "0.0" ) ) ) & "M", IF ( _w >= 1000, IF ( _w / 1000 >= 100, FORMAT ( _w / 1000, "0" ), IF ( ROUND ( _w / 1000, 1 ) = INT ( ROUND ( _w / 1000, 1 ) ), FORMAT ( ROUND ( _w / 1000, 1 ), "0" ), FORMAT ( _w / 1000, "0.0" ) ) ) & "K", FORMAT ( _w, "#,0" ) ) ) & "</div><div class='l'><i style='background:#f2c037'></i>Party wipes</div></div>" &
+			    "<div class='k'><div class='v' style='color:#e8c349'>" & IF ( _g >= 1000000, IF ( _g / 1000000 >= 100, FORMAT ( _g / 1000000, "0" ), IF ( ROUND ( _g / 1000000, 1 ) = INT ( ROUND ( _g / 1000000, 1 ) ), FORMAT ( ROUND ( _g / 1000000, 1 ), "0" ), FORMAT ( _g / 1000000, "0.0" ) ) ) & "M", IF ( _g >= 1000, IF ( _g / 1000 >= 100, FORMAT ( _g / 1000, "0" ), IF ( ROUND ( _g / 1000, 1 ) = INT ( ROUND ( _g / 1000, 1 ) ), FORMAT ( ROUND ( _g / 1000, 1 ), "0" ), FORMAT ( _g / 1000, "0.0" ) ) ) & "K", FORMAT ( _g, "#,0" ) ) ) & "</div><div class='l'><i style='background:#e8c349'></i>Gold earned</div></div>" &
+			    "</div></div></foreignObject></svg>"
+		displayFolder: Live
+		lineageTag: 5bec5371-d8b9-512b-8f83-1f80f647af67
+		dataCategory: ImageUrl
+
+	/// HTML-in-SVG header for Quest Command. Every figure follows the page's slicers and cross-filters. ImageUrl measure; host in an Image visual.
+	measure 'Quest Live Header HTML' =
+			VAR _b = [Total BountyGold]
+			VAR _q = [Total QuestsCompleted]
+			VAR _days = DIVIDE ( [Total DaysOnQuest], _q )
+			RETURN
+			    "data:image/svg+xml;utf8," &
+			    "<svg xmlns='http://www.w3.org/2000/svg' width='1152' height='96' viewBox='0 0 1840 153'>" &
+			    "<foreignObject x='0' y='0' width='1840' height='153'>" &
+			    "<div xmlns='http://www.w3.org/1999/xhtml' class='hb'>" &
+			    "<style>" &
+			    ".hb{width:1840px;height:153px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;padding:0 44px;border-radius:16px;border:2px solid #c9a227;background:radial-gradient(ellipse at 10% 0%,#3d2c10 0%,transparent 60%),linear-gradient(180deg,#161f31,#0a0f1a);font-family:Segoe UI,Arial,sans-serif;color:#e8edf5}" &
+			    ".hb .ey{font-size:16px;letter-spacing:5px;text-transform:uppercase;color:#c9a227}" &
+			    ".hb .t{font-family:Georgia,Cambria,serif;font-size:60px;font-weight:700;letter-spacing:8px;line-height:1.05;color:#f0cf5e;text-shadow:0 0 24px rgba(232,195,73,0.3),0 3px 0 #5e470f;margin-top:4px}" &
+			    ".hb .ks{display:flex;gap:16px}" &
+			    ".hb .k{box-sizing:border-box;min-width:180px;padding:14px 20px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid #2a3953}" &
+			    ".hb .v{font-size:34px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}" &
+			    ".hb .l{font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#8aa0c0;margin-top:7px}" &
+			    ".hb .l i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:8px}" &
+			    "</style>" &
+			    "<div><div class='ey'>Live &#183; expand a chain, click a danger or a year to filter</div><div class='t'>QUEST COMMAND</div></div>" &
+			    "<div class='ks'>" &
+			    "<div class='k'><div class='v' style='color:#f4d770'>" & IF ( _b >= 1000000, IF ( _b / 1000000 >= 100, FORMAT ( _b / 1000000, "0" ), IF ( ROUND ( _b / 1000000, 1 ) = INT ( ROUND ( _b / 1000000, 1 ) ), FORMAT ( ROUND ( _b / 1000000, 1 ), "0" ), FORMAT ( _b / 1000000, "0.0" ) ) ) & "M", IF ( _b >= 1000, IF ( _b / 1000 >= 100, FORMAT ( _b / 1000, "0" ), IF ( ROUND ( _b / 1000, 1 ) = INT ( ROUND ( _b / 1000, 1 ) ), FORMAT ( ROUND ( _b / 1000, 1 ), "0" ), FORMAT ( _b / 1000, "0.0" ) ) ) & "K", FORMAT ( _b, "#,0" ) ) ) & "</div><div class='l'><i style='background:#f4d770'></i>Bounty gold</div></div>" &
+			    "<div class='k'><div class='v' style='color:#6fd49b'>" & IF ( _q >= 1000000, IF ( _q / 1000000 >= 100, FORMAT ( _q / 1000000, "0" ), IF ( ROUND ( _q / 1000000, 1 ) = INT ( ROUND ( _q / 1000000, 1 ) ), FORMAT ( ROUND ( _q / 1000000, 1 ), "0" ), FORMAT ( _q / 1000000, "0.0" ) ) ) & "M", IF ( _q >= 1000, IF ( _q / 1000 >= 100, FORMAT ( _q / 1000, "0" ), IF ( ROUND ( _q / 1000, 1 ) = INT ( ROUND ( _q / 1000, 1 ) ), FORMAT ( ROUND ( _q / 1000, 1 ), "0" ), FORMAT ( _q / 1000, "0.0" ) ) ) & "K", FORMAT ( _q, "#,0" ) ) ) & "</div><div class='l'><i style='background:#6fd49b'></i>Quests done</div></div>" &
+			    "<div class='k'><div class='v' style='color:#e8c349'>" & FORMAT ( DIVIDE ( _b, _q ), "#,0" ) & "</div><div class='l'><i style='background:#e8c349'></i>Gold per quest</div></div>" &
+			    "<div class='k'><div class='v' style='color:#7cc8ff'>" & IF ( _days >= 100, FORMAT ( _days, "0" ), IF ( ROUND ( _days, 1 ) = INT ( ROUND ( _days, 1 ) ), FORMAT ( ROUND ( _days, 1 ), "0" ), FORMAT ( _days, "0.0" ) ) ) & "</div><div class='l'><i style='background:#7cc8ff'></i>Days per quest</div></div>" &
+			    "</div></div></foreignObject></svg>"
+		displayFolder: Live
+		lineageTag: 91150a27-ab27-5261-a3c0-197ae5a5c1ae
+		dataCategory: ImageUrl
+
+	/// HTML-in-SVG header for Market Command. Every figure follows the page's slicers and cross-filters. ImageUrl measure; host in an Image visual.
+	measure 'Market Live Header HTML' =
+			VAR _g = [Total GoldVolume]
+			VAR _u = [Total QuantityTraded]
+			VAR _leg = CALCULATE ( [Total DropCount], DimItem[Rarity] = "Legendary" )
+			RETURN
+			    "data:image/svg+xml;utf8," &
+			    "<svg xmlns='http://www.w3.org/2000/svg' width='1152' height='96' viewBox='0 0 1840 153'>" &
+			    "<foreignObject x='0' y='0' width='1840' height='153'>" &
+			    "<div xmlns='http://www.w3.org/1999/xhtml' class='hb'>" &
+			    "<style>" &
+			    ".hb{width:1840px;height:153px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;padding:0 44px;border-radius:16px;border:2px solid #c9a227;background:radial-gradient(ellipse at 10% 0%,#3d2c10 0%,transparent 60%),linear-gradient(180deg,#161f31,#0a0f1a);font-family:Segoe UI,Arial,sans-serif;color:#e8edf5}" &
+			    ".hb .ey{font-size:16px;letter-spacing:5px;text-transform:uppercase;color:#c9a227}" &
+			    ".hb .t{font-family:Georgia,Cambria,serif;font-size:60px;font-weight:700;letter-spacing:8px;line-height:1.05;color:#f0cf5e;text-shadow:0 0 24px rgba(232,195,73,0.3),0 3px 0 #5e470f;margin-top:4px}" &
+			    ".hb .ks{display:flex;gap:16px}" &
+			    ".hb .k{box-sizing:border-box;min-width:180px;padding:14px 20px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid #2a3953}" &
+			    ".hb .v{font-size:34px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}" &
+			    ".hb .l{font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#8aa0c0;margin-top:7px}" &
+			    ".hb .l i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:8px}" &
+			    "</style>" &
+			    "<div><div class='ey'>Live &#183; click an item, a category or a year to filter</div><div class='t'>MARKET COMMAND</div></div>" &
+			    "<div class='ks'>" &
+			    "<div class='k'><div class='v' style='color:#6fd49b'>" & IF ( _g >= 1000000, IF ( _g / 1000000 >= 100, FORMAT ( _g / 1000000, "0" ), IF ( ROUND ( _g / 1000000, 1 ) = INT ( ROUND ( _g / 1000000, 1 ) ), FORMAT ( ROUND ( _g / 1000000, 1 ), "0" ), FORMAT ( _g / 1000000, "0.0" ) ) ) & "M", IF ( _g >= 1000, IF ( _g / 1000 >= 100, FORMAT ( _g / 1000, "0" ), IF ( ROUND ( _g / 1000, 1 ) = INT ( ROUND ( _g / 1000, 1 ) ), FORMAT ( ROUND ( _g / 1000, 1 ), "0" ), FORMAT ( _g / 1000, "0.0" ) ) ) & "K", FORMAT ( _g, "#,0" ) ) ) & "</div><div class='l'><i style='background:#6fd49b'></i>Gold traded</div></div>" &
+			    "<div class='k'><div class='v' style='color:#7cc8ff'>" & IF ( _u >= 1000000, IF ( _u / 1000000 >= 100, FORMAT ( _u / 1000000, "0" ), IF ( ROUND ( _u / 1000000, 1 ) = INT ( ROUND ( _u / 1000000, 1 ) ), FORMAT ( ROUND ( _u / 1000000, 1 ), "0" ), FORMAT ( _u / 1000000, "0.0" ) ) ) & "M", IF ( _u >= 1000, IF ( _u / 1000 >= 100, FORMAT ( _u / 1000, "0" ), IF ( ROUND ( _u / 1000, 1 ) = INT ( ROUND ( _u / 1000, 1 ) ), FORMAT ( ROUND ( _u / 1000, 1 ), "0" ), FORMAT ( _u / 1000, "0.0" ) ) ) & "K", FORMAT ( _u, "#,0" ) ) ) & "</div><div class='l'><i style='background:#7cc8ff'></i>Units traded</div></div>" &
+			    "<div class='k'><div class='v' style='color:#e8c349'>" & FORMAT ( DIVIDE ( _g, _u ), "#,0" ) & "</div><div class='l'><i style='background:#e8c349'></i>Gold per unit</div></div>" &
+			    "<div class='k'><div class='v' style='color:#F59E0B'>" & IF ( _leg >= 1000000, IF ( _leg / 1000000 >= 100, FORMAT ( _leg / 1000000, "0" ), IF ( ROUND ( _leg / 1000000, 1 ) = INT ( ROUND ( _leg / 1000000, 1 ) ), FORMAT ( ROUND ( _leg / 1000000, 1 ), "0" ), FORMAT ( _leg / 1000000, "0.0" ) ) ) & "M", IF ( _leg >= 1000, IF ( _leg / 1000 >= 100, FORMAT ( _leg / 1000, "0" ), IF ( ROUND ( _leg / 1000, 1 ) = INT ( ROUND ( _leg / 1000, 1 ) ), FORMAT ( ROUND ( _leg / 1000, 1 ), "0" ), FORMAT ( _leg / 1000, "0.0" ) ) ) & "K", FORMAT ( _leg, "#,0" ) ) ) & "</div><div class='l'><i style='background:#F59E0B'></i>Legendary drops</div></div>" &
+			    "</div></div></foreignObject></svg>"
+		displayFolder: Live
+		lineageTag: 1029c6f9-4ba9-5140-a42e-d0d67f05566a
+		dataCategory: ImageUrl
+
+	/// In-cell SVG bar: this adventurer's monster kills relative to the top adventurer in the current selection. ImageUrl measure; place in a tableEx with grid image size 120x12.
+	measure 'Kill Bar SVG' =
+			VAR _v = [Total MonstersSlain]
+			VAR _max = MAXX ( ALLSELECTED ( DimAdventurer ), [Total MonstersSlain] )
+			VAR _w = INT ( DIVIDE ( _v, _max ) * 120 )
+			RETURN
+			    IF (
+			        ISBLANK ( _v ),
+			        BLANK (),
+			        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='12' viewBox='0 0 120 12'>" &
+			        "<rect x='0' y='2' width='120' height='8' rx='4' fill='#1f2a3d'/>" &
+			        "<rect x='0' y='2' width='" & _w & "' height='8' rx='4' fill='#ff7b7b'/></svg>"
+			    )
+		displayFolder: Live
+		lineageTag: 27ede206-0554-5acb-a3bf-f01371f51c5a
+		dataCategory: ImageUrl
+
+	/// In-cell SVG bar: this item's gold traded relative to the top item in the current selection. ImageUrl measure; place in a tableEx with grid image size 120x12.
+	measure 'Gold Bar SVG' =
+			VAR _v = [Total GoldVolume]
+			VAR _max = MAXX ( ALLSELECTED ( DimItem ), [Total GoldVolume] )
+			VAR _w = INT ( DIVIDE ( _v, _max ) * 120 )
+			RETURN
+			    IF (
+			        ISBLANK ( _v ),
+			        BLANK (),
+			        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='12' viewBox='0 0 120 12'>" &
+			        "<rect x='0' y='2' width='120' height='8' rx='4' fill='#1f2a3d'/>" &
+			        "<rect x='0' y='2' width='" & _w & "' height='8' rx='4' fill='#6fd49b'/></svg>"
+			    )
+		displayFolder: Live
+		lineageTag: 47144559-8b5d-5034-ac23-24dc94ef7e18
+		dataCategory: ImageUrl
+
 	column _
 		lineageTag: e76a1a27-f22b-49a5-a69e-3ea523236ff4
 		isNameInferred

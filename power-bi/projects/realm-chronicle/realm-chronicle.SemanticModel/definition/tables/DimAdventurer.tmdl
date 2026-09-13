@@ -32,9 +32,11 @@ table DimAdventurer
 		lineageTag: 4c8947c9-a7fb-46cf-9af5-ac50ab4ec533
 		summarizeBy: none
 		sourceColumn: Rank
+		sortByColumn: RankOrder
 
 	column RankOrder
 		dataType: int64
+		isHidden
 		formatString: 0
 		lineageTag: 580339fc-804d-4107-987b-b07bea1ce724
 		summarizeBy: none

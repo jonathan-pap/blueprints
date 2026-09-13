@@ -26,15 +26,18 @@ table DimQuest
 		lineageTag: db04901a-5347-4f0a-911a-fc08a2d79e60
 		summarizeBy: none
 		sourceColumn: Danger
+		sortByColumn: DangerOrder
 
 	column RankRequired
 		dataType: string
 		lineageTag: bfbacda8-6b51-47c9-b038-80b6c99fddc5
 		summarizeBy: none
 		sourceColumn: RankRequired
+		sortByColumn: RankRequiredOrder
 
 	column DangerOrder
 		dataType: int64
+		isHidden
 		formatString: 0
 		lineageTag: f5753fe6-0e23-4081-8b90-5eae13b120a2
 		summarizeBy: none
@@ -42,6 +45,7 @@ table DimQuest
 
 	column RankRequiredOrder
 		dataType: int64
+		isHidden
 		formatString: 0
 		lineageTag: 77f84a90-b315-4323-8f6d-a14be51b9086
 		summarizeBy: none

@@ -20,6 +20,7 @@ table DimMonster
 		lineageTag: d0b21a63-4389-4769-a2e7-9fc468843486
 		summarizeBy: none
 		sourceColumn: Kind
+		sortByColumn: KindOrder
 
 	column Family
 		dataType: string
@@ -42,6 +43,7 @@ table DimMonster
 
 	column KindOrder
 		dataType: int64
+		isHidden
 		formatString: 0
 		lineageTag: 89820f5e-3be7-4fba-b5e5-d7bd01e03e9e
 		summarizeBy: none

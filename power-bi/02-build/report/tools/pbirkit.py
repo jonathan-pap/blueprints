@@ -244,6 +244,32 @@ def register_image(item_name, content):
         json.dump(rep, open(rp, "w", encoding="utf-8", newline="\n"), indent=2)
 
 
+def register_theme(theme_path):
+    """Make a theme JSON the report's custom theme: copy it into RegisteredResources, list it as a
+    CustomTheme resource, and point themeCollection.customTheme at it. Idempotent. Shape from the room
+    example K201-MonthSlicer.Report. pbir 0.9.32 has no `theme apply <file>` (only apply-template), so
+    this writes the PBIR directly - the tool-independent route (file-map.md)."""
+    item = os.path.basename(theme_path)
+    rr = os.path.join(REPORT, "StaticResources", "RegisteredResources")
+    os.makedirs(rr, exist_ok=True)
+    shutil.copyfile(theme_path, os.path.join(rr, item))
+    rp = os.path.join(REPORT, "definition", "report.json")
+    rep = json.load(open(rp, encoding="utf-8"))
+    pkgs = rep.setdefault("resourcePackages", [])
+    pkg = next((p for p in pkgs if p.get("name") == "RegisteredResources"), None)
+    if pkg is None:
+        pkg = {"name": "RegisteredResources", "type": "RegisteredResources", "items": []}
+        pkgs.append(pkg)
+    if not any(i.get("name") == item for i in pkg["items"]):
+        pkg["items"].append({"name": item, "path": item, "type": "CustomTheme"})
+    tc = rep.setdefault("themeCollection", {})
+    base = tc.get("baseTheme", {}).get("reportVersionAtImport")
+    tc["customTheme"] = {"name": item,
+                         "reportVersionAtImport": base or {"visual": "2.12.0", "report": "3.4.0", "page": "2.3.1"},
+                         "type": "RegisteredResources"}
+    json.dump(rep, open(rp, "w", encoding="utf-8", newline="\n"), indent=2)
+
+
 def unregister_image(item_name):
     """Remove a registered image - the file and its report.json entry. Idempotent. Use when a page
     is retired, or the resource lingers and ships with the report."""

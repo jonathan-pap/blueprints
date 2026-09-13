@@ -9,6 +9,15 @@
         "page": "2.3.1"
       },
       "type": "SharedResources"
+    },
+    "customTheme": {
+      "name": "realm-chronicle-dark-v1.0.json",
+      "reportVersionAtImport": {
+        "visual": "2.12.0",
+        "report": "3.4.0",
+        "page": "2.3.1"
+      },
+      "type": "RegisteredResources"
     }
   },
   "objects": {
@@ -78,6 +87,26 @@
         {
           "name": "navRail-realms.svg",
           "path": "navRail-realms.svg",
+          "type": "Image"
+        },
+        {
+          "name": "realm-chronicle-dark-v1.0.json",
+          "path": "realm-chronicle-dark-v1.0.json",
+          "type": "CustomTheme"
+        },
+        {
+          "name": "navRail-huntlive.svg",
+          "path": "navRail-huntlive.svg",
+          "type": "Image"
+        },
+        {
+          "name": "navRail-questlive.svg",
+          "path": "navRail-questlive.svg",
+          "type": "Image"
+        },
+        {
+          "name": "navRail-marketlive.svg",
+          "path": "navRail-marketlive.svg",
           "type": "Image"
         }
       ]

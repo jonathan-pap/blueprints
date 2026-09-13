@@ -94,7 +94,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Page navigation. You are on The Exchange. Pages: Intro, The Bestiary, Quest Board, The Exchange, Realm Map.'"
+                  "Value": "'Page navigation. You are on The Exchange. Pages: Intro, The Bestiary, Quest Board, The Exchange, Realm Map, Hunt Command, Quest Command, Market Command.'"
                 }
               }
             }

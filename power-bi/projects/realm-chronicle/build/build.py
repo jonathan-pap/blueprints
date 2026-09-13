@@ -21,6 +21,8 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from chroniclekit import K, PAGES, dark_canvas, nav_rail, svg_panel  # noqa: E402
 import html_measures  # noqa: E402
+import model_tweaks  # noqa: E402
+import theme  # noqa: E402
 
 PAGE_W = int(K.DS["meta"]["page"]["width"])
 PAGE_H = int(K.DS["meta"]["page"]["height"])
@@ -75,7 +77,8 @@ def write_measures():
               html_measures.bestiary_group(K.rects("bestiary")),
               html_measures.quests_group(K.rects("quests")),
               html_measures.exchange_group(K.rects("exchange")),
-              html_measures.realms_group(K.rects("realms"))]
+              html_measures.realms_group(K.rects("realms")),
+              html_measures.live_group(K.rects("live"))]
     for folder, name in html_measures.write_measures(HTML_TMDL, groups):
         print("  measure %-9s %s" % (folder, name))
 
@@ -167,6 +170,135 @@ def build_realms():
     ])
 
 
+# ---- LIVE pages - native visuals start every interaction --------------------------------------
+
+M_TABLE = "_Measures"
+
+
+def _units(k=True):
+    """Data labels + value axis in thousands (372K, not 0.37M)."""
+    return {"labels": [{"properties": {"show": K.lit("true"), "labelDisplayUnits": K.lit("1000D"),
+                                       "labelPrecision": K.lit("0L")}}],
+            "valueAxis": [{"properties": {"labelDisplayUnits": K.lit("1000D")}}]} if k else \
+           {"labels": [{"properties": {"show": K.lit("true")}}]}
+
+
+def _year_drill(name, rect, measure, label, tab, thousands=True):
+    """Year > Month on a column chart: four readable columns, drill-down opens a year into months.
+    Sorted on the axis column ascending - never the CLI's measure-descending default (build trap 1)."""
+    v = K.vis(name, "clusteredColumnChart", rect, 300,
+              query={"Category": {"projections": [K.proj_c("DimDate", "Year", "Year"),
+                                                  K.proj_c("DimDate", "MonthYear", "Month")]},
+                     "Y": {"projections": [K.proj_m(measure, label, M_TABLE)]}},
+              objects=_units(thousands), tab=tab)
+    return K.sort_by(v, K.col("DimDate", "Year"), "Ascending")
+
+
+def _live_scaffold(pid, display, header_measure, header_alt, slicers):
+    """Every LIVE page: page, canvas, rail, the reacting HTML header, four synced dropdown slicers.
+    Returns the page dir and the three content rects. Chart titles come from theme + projection
+    displayNames - never a container title.text on a chart (build trap 15)."""
+    clear_page(pid)
+    d = K.add_page(pid, display, w=PAGE_W, h=PAGE_H)
+    dark_canvas(d)
+    nav_rail(d, pid)
+    header, s1, s2, s3, s4, main, top, bottom = K.rects("live")
+    K.write(d, pid + "Header", svg_panel(pid + "Header", header, header_measure, header_alt, z=100, tab=1))
+    for tab, ((entity, prop, group), rect) in enumerate(zip(slicers, (s1, s2, s3, s4)), start=2):
+        name = "sl" + prop
+        K.write(d, name, K.slicer(name, rect, prop, group, tab=tab, entity=entity))
+    return d, main, top, bottom
+
+
+def _report(*named):
+    for n, r in named:
+        print("  %-18s %4dx%-4d at (%d,%d)" % (n, r["width"], r["height"], r["x"], r["y"]))
+
+
+def build_huntlive():
+    """Hunt Command - the bar, the year chart and the table cross-filter each other and the header."""
+    d, bar, trend, table = _live_scaffold(
+        "huntlive", "Hunt Command", "Hunt Live Header HTML",
+        "Hunt Command totals - monsters slain, bosses slain, party wipes and gold earned - for the current filters",
+        [("DimDate", "Year", "year"), ("DimAdventurer", "Guild", "guild"),
+         ("DimMonster", "Habitat", "habitat"), ("DimMonster", "Kind", "kind")])
+    guild = K.vis("killsByGuild", "clusteredBarChart", bar, 300,
+                  query={"Category": {"projections": [K.proj_c("DimAdventurer", "Guild", "Guild")]},
+                         "Y": {"projections": [K.proj_m("Total MonstersSlain", "Monsters slain", M_TABLE)]}},
+                  objects=_units(), tab=6)
+    K.write(d, "killsByGuild", K.sort_by(guild, K.measure("Total MonstersSlain", M_TABLE), "Descending"))
+    K.write(d, "killsByYear", _year_drill("killsByYear", trend, "Total MonstersSlain", "Monsters slain", 7))
+    board = K.vis("leaderboard", "tableEx", table, 300,
+                  query={"Values": {"projections": [
+                      K.proj_c("DimAdventurer", "Adventurer", "Adventurer"),
+                      K.proj_c("DimAdventurer", "Guild", "Guild"),
+                      K.proj_c("DimAdventurer", "Rank", "Rank"),
+                      K.proj_m("Total MonstersSlain", "Slain", M_TABLE),
+                      K.proj_m("Kill Bar SVG", "Kills", "_HTML")]}},
+                  objects={"grid": [{"properties": {"imageHeight": K.lit("12D"), "imageWidth": K.lit("120D")}}],
+                           "total": [{"properties": {"totals": K.lit("false")}}]},
+                  vco={"title": [{"properties": {"show": K.lit("true"), "text": K.lit("'Top slayers'")}}]}, tab=8)
+    K.write(d, "leaderboard", K.sort_by(board, K.measure("Total MonstersSlain", M_TABLE), "Descending"))
+    _report(("killsByGuild", bar), ("killsByYear", trend), ("leaderboard", table))
+    return d
+
+
+def build_questlive():
+    """Quest Command - the chain matrix expands chain > quest; danger and year charts cross-filter it."""
+    d, main, top, bottom = _live_scaffold(
+        "questlive", "Quest Command", "Quest Live Header HTML",
+        "Quest Command totals - bounty gold, quests completed, gold per quest and days per quest - for the current filters",
+        [("DimDate", "Year", "year"), ("DimQuest", "Danger", "danger"),
+         ("DimQuest", "QuestType", "questtype"), ("DimAdventurer", "Rank", "rank")])
+    chains = K.vis("chainMatrix", "pivotTable", main, 300,
+                   query={"Rows": {"projections": [K.proj_c("DimQuest", "ChainName", "Chain"),
+                                                   K.proj_c("DimQuest", "Quest", "Quest")]},
+                          "Values": {"projections": [K.proj_m("Total BountyGold", "Bounty gold", M_TABLE),
+                                                     K.proj_m("Total QuestsCompleted", "Quests done", M_TABLE),
+                                                     K.proj_m("Total DaysOnQuest", "Days", M_TABLE)]}},
+                   vco={"title": [{"properties": {"show": K.lit("true"), "text": K.lit("'Quest chains - expand a chain'")}}]},
+                   tab=6)
+    K.write(d, "chainMatrix", K.sort_by(chains, K.measure("Total BountyGold", M_TABLE), "Descending"))
+    danger = K.vis("bountyByDanger", "clusteredColumnChart", top, 300,
+                   query={"Category": {"projections": [K.proj_c("DimQuest", "Danger", "Danger")]},
+                          "Y": {"projections": [K.proj_m("Total BountyGold", "Bounty gold", M_TABLE)]}},
+                   objects=_units(False), tab=7)
+    # Danger has sortByColumn DangerOrder in the model: sorting on the column gives Low..Extreme
+    K.write(d, "bountyByDanger", K.sort_by(danger, K.col("DimQuest", "Danger"), "Ascending"))
+    K.write(d, "bountyByYear", _year_drill("bountyByYear", bottom, "Total BountyGold", "Bounty gold", 8, False))
+    _report(("chainMatrix", main), ("bountyByDanger", top), ("bountyByYear", bottom))
+    return d
+
+
+def build_marketlive():
+    """Market Command - the item table, category bars and year chart cross-filter each other."""
+    d, main, top, bottom = _live_scaffold(
+        "marketlive", "Market Command", "Market Live Header HTML",
+        "Market Command totals - gold traded, units traded, gold per unit and legendary drops - for the current filters",
+        [("DimDate", "Year", "year"), ("DimRealm", "Realm", "realm"),
+         ("DimItem", "Category", "category"), ("DimItem", "Rarity", "rarity")])
+    items = K.vis("itemBoard", "tableEx", main, 300,
+                  query={"Values": {"projections": [
+                      K.proj_c("DimItem", "Item", "Item"),
+                      K.proj_c("DimItem", "Category", "Category"),
+                      K.proj_c("DimItem", "Rarity", "Rarity"),
+                      K.proj_m("Total GoldVolume", "Gold traded", M_TABLE),
+                      K.proj_m("Total QuantityTraded", "Units", M_TABLE),
+                      K.proj_m("Gold Bar SVG", "Share", "_HTML")]}},
+                  objects={"grid": [{"properties": {"imageHeight": K.lit("12D"), "imageWidth": K.lit("120D")}}],
+                           "total": [{"properties": {"totals": K.lit("false")}}]},
+                  vco={"title": [{"properties": {"show": K.lit("true"), "text": K.lit("'Items on the exchange'")}}]}, tab=6)
+    K.write(d, "itemBoard", K.sort_by(items, K.measure("Total GoldVolume", M_TABLE), "Descending"))
+    cat = K.vis("goldByCategory", "clusteredBarChart", top, 300,
+                query={"Category": {"projections": [K.proj_c("DimItem", "Category", "Category")]},
+                       "Y": {"projections": [K.proj_m("Total GoldVolume", "Gold traded", M_TABLE)]}},
+                objects=_units(False), tab=7)
+    K.write(d, "goldByCategory", K.sort_by(cat, K.measure("Total GoldVolume", M_TABLE), "Descending"))
+    K.write(d, "goldByYear", _year_drill("goldByYear", bottom, "Total GoldVolume", "Gold traded", 8, False))
+    _report(("itemBoard", main), ("goldByCategory", top), ("goldByYear", bottom))
+    return d
+
+
 def finalize_order():
     """Rebuilding a page re-appends it, so order drifts on every re-run unless it's set last.
     Report pages follow chroniclekit.PAGES; any page not in the registry keeps its place after them."""
@@ -182,11 +314,18 @@ def finalize_order():
 if __name__ == "__main__":
     print("building realm-chronicle")
     retire_pages()
+    K.register_theme(theme.build())
+    print("  theme: Realm Chronicle Dark v1.0")
+    for c in model_tweaks.apply():
+        print("  model: " + c)
     write_measures()
     build_intro()
     build_bestiary()
     build_quests()
     build_exchange()
     build_realms()
+    build_huntlive()
+    build_questlive()
+    build_marketlive()
     finalize_order()
     print("done - validate: pbir validate + 04-review/hooks/lint-report-traps.sh per page")
