@@ -1,0 +1,84 @@
+table DimDate
+	lineageTag: 8e3136bd-5734-4b4f-bc5e-173414f57511
+	dataCategory: Time
+
+	column Date
+		dataType: dateTime
+		isUnique
+		formatString: dd mmm yyyy
+		lineageTag: 8d447d89-e748-4b6b-bc4c-d36102a33bab
+		summarizeBy: none
+		sourceColumn: Date
+
+	column DateKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: d4c14512-3fc8-48c1-96b2-be5c5307dff8
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: a9569121-ae2d-4d48-9462-9f0474fc8e44
+		summarizeBy: none
+		sourceColumn: Year
+
+	column Quarter
+		dataType: string
+		lineageTag: 5668f446-ca54-4452-b847-f93b30a06c24
+		summarizeBy: none
+		sourceColumn: Quarter
+
+	column Month
+		dataType: int64
+		isHidden
+		lineageTag: c05ef5d0-49b7-4f75-bc99-d45fb786bac0
+		summarizeBy: none
+		sourceColumn: Month
+
+	column MonthName
+		dataType: string
+		lineageTag: 57b7e804-8d2c-4f9b-9020-5040177715b6
+		summarizeBy: none
+		sourceColumn: MonthName
+		sortByColumn: Month
+
+	column DayName
+		dataType: string
+		lineageTag: 0abdf07f-8280-4854-9315-ed8afc3ea85c
+		summarizeBy: none
+		sourceColumn: DayName
+		sortByColumn: DayNum
+
+	column DayNum
+		dataType: int64
+		isHidden
+		lineageTag: bb15e4f7-092a-4f12-8820-be95f6974e32
+		summarizeBy: none
+		sourceColumn: DayNum
+
+	column YearMonth
+		dataType: int64
+		isHidden
+		lineageTag: fa0ae2c3-f657-4728-b940-2573acea136e
+		summarizeBy: none
+		sourceColumn: YearMonth
+
+	column MonthYear
+		dataType: string
+		lineageTag: af9f265b-26f5-49d8-a9d4-4247b3b06041
+		summarizeBy: none
+		sourceColumn: MonthYear
+		sortByColumn: YearMonth
+
+	partition DimDate = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(SourceFolder & "DimDate.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"Date", type date}, {"DateKey", Int64.Type}, {"Year", Int64.Type}, {"Quarter", type text}, {"Month", Int64.Type}, {"MonthName", type text}, {"DayName", type text}, {"DayNum", Int64.Type}, {"YearMonth", Int64.Type}, {"MonthYear", type text}})
+				in
+				    Typed

@@ -1,0 +1,56 @@
+table DimRealm
+	lineageTag: bd0aa109-e209-466d-af6e-6f2ec252985d
+
+	column RealmKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: eef5b6a8-968f-4fab-90e8-68d593f661a9
+		summarizeBy: none
+		sourceColumn: RealmKey
+
+	column Realm
+		dataType: string
+		lineageTag: 60227a1c-7893-456a-b86c-9b719486794b
+		summarizeBy: none
+		sourceColumn: Realm
+
+	column Terrain
+		dataType: string
+		lineageTag: e25e1254-f697-437f-ae37-88e07bd9bfc7
+		summarizeBy: none
+		sourceColumn: Terrain
+
+	column ThreatBand
+		dataType: string
+		lineageTag: 4e560aa6-cea8-4b88-957f-8bdc4addb240
+		summarizeBy: none
+		sourceColumn: ThreatBand
+
+	column Region
+		dataType: string
+		lineageTag: 03e9db5d-c9ae-4dc0-bf91-3cf6ed70b6b2
+		summarizeBy: none
+		sourceColumn: Region
+
+	column Latitude
+		dataType: double
+		lineageTag: 5eb4b92e-7ef2-48e8-a158-732e8ca1b2ee
+		summarizeBy: none
+		sourceColumn: Latitude
+
+	column Longitude
+		dataType: double
+		lineageTag: 5b7fb2aa-c0db-42bd-98f8-495104fc025c
+		summarizeBy: none
+		sourceColumn: Longitude
+
+	partition DimRealm = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(SourceFolder & "DimRealm.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"RealmKey", Int64.Type}, {"Realm", type text}, {"Terrain", type text}, {"ThreatBand", type text}, {"Region", type text}, {"Latitude", type number}, {"Longitude", type number}})
+				in
+				    Typed

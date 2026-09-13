@@ -1,0 +1,66 @@
+table FactQuests
+	lineageTag: 4930bbd3-fb7d-4d90-83f0-873291f157ff
+
+	column QuestsKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 8bd2282f-be3d-4540-b2a4-6ac513e27c82
+		summarizeBy: none
+		sourceColumn: QuestsKey
+
+	column BountyGold
+		dataType: double
+		isHidden
+		formatString: #,##0
+		lineageTag: 26a665ea-85fb-4a35-b600-80f4f32d3b6e
+		summarizeBy: sum
+		sourceColumn: BountyGold
+
+	column QuestsCompleted
+		dataType: double
+		isHidden
+		formatString: #,##0
+		lineageTag: 692d73bb-a3be-4a2a-afb8-1cfbce18dcf5
+		summarizeBy: sum
+		sourceColumn: QuestsCompleted
+
+	column DaysOnQuest
+		dataType: double
+		isHidden
+		formatString: #,##0
+		lineageTag: d4cd4611-dca0-49d8-814a-a8d7c5c0511e
+		summarizeBy: sum
+		sourceColumn: DaysOnQuest
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: 51641642-2ec8-403d-b465-4d0078376d7e
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column AdventurerKey
+		dataType: int64
+		isHidden
+		lineageTag: 1038ddca-a540-4e9a-ab39-61c4df625665
+		summarizeBy: none
+		sourceColumn: AdventurerKey
+
+	column QuestKey
+		dataType: int64
+		isHidden
+		lineageTag: 181a5e9d-758d-4c31-9a8d-a345ce33ba77
+		summarizeBy: none
+		sourceColumn: QuestKey
+
+	partition FactQuests = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(SourceFolder & "FactQuests.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"QuestsKey", Int64.Type}, {"BountyGold", type number}, {"QuestsCompleted", type number}, {"DaysOnQuest", type number}, {"DateKey", Int64.Type}, {"AdventurerKey", Int64.Type}, {"QuestKey", Int64.Type}}),
+				    Rounded = Table.TransformColumns(Typed, {{"BountyGold", each Number.Round(_, 2), type number}, {"QuestsCompleted", each Number.Round(_, 2), type number}, {"DaysOnQuest", each Number.Round(_, 2), type number}})
+				in
+				    Rounded

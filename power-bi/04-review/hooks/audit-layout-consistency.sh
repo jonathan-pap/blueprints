@@ -3,7 +3,7 @@
 #
 # Checks every visual.json in a .Report against the project's design tokens:
 #   - sub-pixel positions/sizes (x/y/width/height not whole numbers)   <- the worst symptom
-#   - off-grid positions/sizes (not multiples of grid.snap_to)
+#   - off-grid positions/sizes (not multiples of grid.snap - `snap_to` in older yaml)
 #   - slicer type drift (a slicer-family visual whose type != defaults.slicer.type)
 #   - slicer size drift (configured slicer type whose size != defaults.slicer.size)
 # Visuals named in the yaml `overrides:` block are exempt.
@@ -52,7 +52,11 @@ def find_int(pattern, default=None):
     m = re.search(pattern, text)
     return int(m.group(1)) if m else default
 
-snap = find_int(r"snap_to:\s*(\d+)", 16)
+# The 12x12 template and resolve_layout.py both use `grid.snap` (default 8). Older pre-grid yaml
+# used `snap_to`. Reading only `snap_to` with a fallback of 16 meant the audit never found the key
+# in a 12x12 project and checked every placement against 16 - so the resolver's correct 8px
+# output was reported off-grid. Read both; default to the template's 8.
+snap = find_int(r"(?m)^\s*snap(?:_to)?:\s*(\d+)", 8)
 # defaults.slicer block
 slicer_type = "slicer"
 m = re.search(r"slicer:\s*\n((?:\s+.*\n)+)", text)

@@ -1,0 +1,51 @@
+table DimAdventurer
+	lineageTag: 446c1f1f-730b-4f36-be9a-e8f0a20613f6
+
+	column AdventurerKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 6f3174e7-5ab5-42ae-8902-a16ec855275f
+		summarizeBy: none
+		sourceColumn: AdventurerKey
+
+	column Adventurer
+		dataType: string
+		lineageTag: a66b9ec6-0a14-4fbd-8097-051579ad38ab
+		summarizeBy: none
+		sourceColumn: Adventurer
+
+	column Guild
+		dataType: string
+		lineageTag: 9d57591e-d76e-4180-9b2f-82209736527d
+		summarizeBy: none
+		sourceColumn: Guild
+
+	column Class
+		dataType: string
+		lineageTag: 182d364f-fae4-4c5c-9fab-7e960f2dcf13
+		summarizeBy: none
+		sourceColumn: Class
+
+	column Rank
+		dataType: string
+		lineageTag: 4c8947c9-a7fb-46cf-9af5-ac50ab4ec533
+		summarizeBy: none
+		sourceColumn: Rank
+
+	column RankOrder
+		dataType: int64
+		formatString: 0
+		lineageTag: 580339fc-804d-4107-987b-b07bea1ce724
+		summarizeBy: none
+		sourceColumn: RankOrder
+
+	partition DimAdventurer = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(SourceFolder & "DimAdventurer.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"AdventurerKey", Int64.Type}, {"Adventurer", type text}, {"Guild", type text}, {"Class", type text}, {"Rank", type text}, {"RankOrder", Int64.Type}})
+				in
+				    Typed

@@ -1,0 +1,84 @@
+table DimQuest
+	lineageTag: e8fe378a-87a8-46ba-b1a5-d27365f4f91a
+
+	column QuestKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 008eb4da-6601-4e80-a7a8-a54afefbfb60
+		summarizeBy: none
+		sourceColumn: QuestKey
+
+	column Quest
+		dataType: string
+		lineageTag: cc07fbf3-8ef6-40a0-b77e-fba1c2cd5bfd
+		summarizeBy: none
+		sourceColumn: Quest
+
+	column QuestType
+		dataType: string
+		lineageTag: bdc406f8-747f-4370-bafa-62527860271d
+		summarizeBy: none
+		sourceColumn: QuestType
+
+	column Danger
+		dataType: string
+		lineageTag: db04901a-5347-4f0a-911a-fc08a2d79e60
+		summarizeBy: none
+		sourceColumn: Danger
+
+	column RankRequired
+		dataType: string
+		lineageTag: bfbacda8-6b51-47c9-b038-80b6c99fddc5
+		summarizeBy: none
+		sourceColumn: RankRequired
+
+	column DangerOrder
+		dataType: int64
+		formatString: 0
+		lineageTag: f5753fe6-0e23-4081-8b90-5eae13b120a2
+		summarizeBy: none
+		sourceColumn: DangerOrder
+
+	column RankRequiredOrder
+		dataType: int64
+		formatString: 0
+		lineageTag: 77f84a90-b315-4323-8f6d-a14be51b9086
+		summarizeBy: none
+		sourceColumn: RankRequiredOrder
+
+	column DangerColor
+		dataType: string
+		lineageTag: 1798e89d-901d-4728-8c2d-5373020af2e4
+		summarizeBy: none
+		sourceColumn: DangerColor
+
+	column ChainName
+		dataType: string
+		lineageTag: b22a3e4b-393c-496b-9e94-1369f602cfc9
+		summarizeBy: none
+		sourceColumn: ChainName
+
+	column ChainStep
+		dataType: int64
+		formatString: 0
+		lineageTag: 1b931d03-18c6-4fdb-9d34-88ca5740337d
+		summarizeBy: none
+		sourceColumn: ChainStep
+
+	column PrerequisiteQuestKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 8b208fe9-53a5-491a-9a81-5ba19de86954
+		summarizeBy: none
+		sourceColumn: PrerequisiteQuestKey
+
+	partition DimQuest = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(SourceFolder & "DimQuest.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"QuestKey", Int64.Type}, {"Quest", type text}, {"QuestType", type text}, {"Danger", type text}, {"RankRequired", type text}, {"DangerOrder", Int64.Type}, {"RankRequiredOrder", Int64.Type}, {"DangerColor", type text}, {"ChainName", type text}, {"ChainStep", Int64.Type}, {"PrerequisiteQuestKey", Int64.Type}})
+				in
+				    Typed

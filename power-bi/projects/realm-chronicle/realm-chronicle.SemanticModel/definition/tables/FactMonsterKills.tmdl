@@ -1,0 +1,74 @@
+table FactMonsterKills
+	lineageTag: 1ef3e1c5-609d-46b0-ae65-399da823a826
+
+	column MonsterKillsKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 59125472-ac15-44ef-8798-f7363962926e
+		summarizeBy: none
+		sourceColumn: MonsterKillsKey
+
+	column MonstersSlain
+		dataType: double
+		isHidden
+		formatString: #,##0
+		lineageTag: eb20920a-7a54-4c78-9ab5-2e1b4e3ed903
+		summarizeBy: sum
+		sourceColumn: MonstersSlain
+
+	column PartyWipes
+		dataType: double
+		isHidden
+		formatString: #,##0
+		lineageTag: 5afe6560-70b9-4bea-a672-5709598b9c6b
+		summarizeBy: sum
+		sourceColumn: PartyWipes
+
+	column GoldEarned
+		dataType: double
+		isHidden
+		formatString: #,##0
+		lineageTag: f3345b9c-23cd-4c4e-8c25-4d10e8c570cf
+		summarizeBy: sum
+		sourceColumn: GoldEarned
+
+	column DamageDealt
+		dataType: double
+		isHidden
+		formatString: #,##0
+		lineageTag: a85fb852-8bdf-4a0d-80c9-5a565437ad67
+		summarizeBy: sum
+		sourceColumn: DamageDealt
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: 18699bff-fa11-4351-b314-4e9a19ca7670
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column AdventurerKey
+		dataType: int64
+		isHidden
+		lineageTag: e7010975-2582-4947-84d5-901454fdc7ba
+		summarizeBy: none
+		sourceColumn: AdventurerKey
+
+	column MonsterKey
+		dataType: int64
+		isHidden
+		lineageTag: 63d283b0-07f2-4c2d-bf65-da6b36aabf76
+		summarizeBy: none
+		sourceColumn: MonsterKey
+
+	partition FactMonsterKills = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(SourceFolder & "FactMonsterKills.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"MonsterKillsKey", Int64.Type}, {"MonstersSlain", type number}, {"PartyWipes", type number}, {"GoldEarned", type number}, {"DamageDealt", type number}, {"DateKey", Int64.Type}, {"AdventurerKey", Int64.Type}, {"MonsterKey", Int64.Type}}),
+				    Rounded = Table.TransformColumns(Typed, {{"MonstersSlain", each Number.Round(_, 2), type number}, {"PartyWipes", each Number.Round(_, 2), type number}, {"GoldEarned", each Number.Round(_, 2), type number}, {"DamageDealt", each Number.Round(_, 2), type number}})
+				in
+				    Rounded

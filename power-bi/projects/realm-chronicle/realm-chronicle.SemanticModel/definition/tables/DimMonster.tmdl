@@ -1,0 +1,70 @@
+table DimMonster
+	lineageTag: e0e5da0c-3db0-4bef-ae4c-4fa9a6122dfc
+
+	column MonsterKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 1fda1022-1292-4bd3-9439-1dc274bacc5f
+		summarizeBy: none
+		sourceColumn: MonsterKey
+
+	column Monster
+		dataType: string
+		lineageTag: 578d8794-6fed-4b61-b133-2ff028dd6449
+		summarizeBy: none
+		sourceColumn: Monster
+
+	column Kind
+		dataType: string
+		lineageTag: d0b21a63-4389-4769-a2e7-9fc468843486
+		summarizeBy: none
+		sourceColumn: Kind
+
+	column Family
+		dataType: string
+		lineageTag: 92854bb7-65a5-4710-bbee-ef3a56264ec1
+		summarizeBy: none
+		sourceColumn: Family
+
+	column Tier
+		dataType: int64
+		formatString: 0
+		lineageTag: 0a2af824-61e6-4620-9dca-884aa17e2ed3
+		summarizeBy: none
+		sourceColumn: Tier
+
+	column Habitat
+		dataType: string
+		lineageTag: 123d58e3-a7fc-4670-a4ec-fe6d2713cfdc
+		summarizeBy: none
+		sourceColumn: Habitat
+
+	column KindOrder
+		dataType: int64
+		formatString: 0
+		lineageTag: 89820f5e-3be7-4fba-b5e5-d7bd01e03e9e
+		summarizeBy: none
+		sourceColumn: KindOrder
+
+	column Icon
+		dataType: string
+		lineageTag: 6fbcc5f1-7ec4-43d2-8347-e58d7686d0eb
+		summarizeBy: none
+		sourceColumn: Icon
+
+	column KindColor
+		dataType: string
+		lineageTag: 4b0ca28e-075b-434e-8e53-464df5d5823a
+		summarizeBy: none
+		sourceColumn: KindColor
+
+	partition DimMonster = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(SourceFolder & "DimMonster.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"MonsterKey", Int64.Type}, {"Monster", type text}, {"Kind", type text}, {"Family", type text}, {"Tier", Int64.Type}, {"Habitat", type text}, {"KindOrder", Int64.Type}, {"Icon", type text}, {"KindColor", type text}})
+				in
+				    Typed

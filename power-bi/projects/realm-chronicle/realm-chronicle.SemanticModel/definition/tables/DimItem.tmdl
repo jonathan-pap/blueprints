@@ -1,0 +1,63 @@
+table DimItem
+	lineageTag: a165dab8-8784-4b66-8e05-ff5ef685ece3
+
+	column ItemKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 1f58aa5a-8162-461a-80dd-36c6dcf89ecf
+		summarizeBy: none
+		sourceColumn: ItemKey
+
+	column Item
+		dataType: string
+		lineageTag: ec99a0a8-166b-4da4-9f8e-96514b35be2f
+		summarizeBy: none
+		sourceColumn: Item
+
+	column Category
+		dataType: string
+		lineageTag: e4f072a1-4af5-44b3-a004-b1915f2f923c
+		summarizeBy: none
+		sourceColumn: Category
+
+	column Rarity
+		dataType: string
+		lineageTag: 91c09730-a039-4b75-b304-6fef8f0a4648
+		summarizeBy: none
+		sourceColumn: Rarity
+
+	column Slot
+		dataType: string
+		lineageTag: 0ec80c6a-3575-40b8-b33a-cdba4b5f3a16
+		summarizeBy: none
+		sourceColumn: Slot
+
+	column RarityOrder
+		dataType: int64
+		formatString: 0
+		lineageTag: a1d52838-d93b-4185-82f7-7b284844dddd
+		summarizeBy: none
+		sourceColumn: RarityOrder
+
+	column Icon
+		dataType: string
+		lineageTag: 165fba75-d697-4d37-8b40-7b51e4f36c3c
+		summarizeBy: none
+		sourceColumn: Icon
+
+	column RarityColor
+		dataType: string
+		lineageTag: 77b99b4b-acd1-4359-9afc-1c368b53cc3f
+		summarizeBy: none
+		sourceColumn: RarityColor
+
+	partition DimItem = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(SourceFolder & "DimItem.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"ItemKey", Int64.Type}, {"Item", type text}, {"Category", type text}, {"Rarity", type text}, {"Slot", type text}, {"RarityOrder", Int64.Type}, {"Icon", type text}, {"RarityColor", type text}})
+				in
+				    Typed

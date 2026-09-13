@@ -88,4 +88,19 @@ For an interactive **"show N"** picker feeding a board/list, harvest a disconnec
 
 ## Wire & validate
 
-Renders like any SVG measure — `dataCategory = ImageUrl`, dropped in a `tableEx` cell sized to the component (see `wiring/in-table-matrix.md`). Run the SVG reviewer (`../../../04-review/reviewers/svg-review.md`) before shipping, plus the two extra checks: **no export dependency**, **well-formed XHTML**.
+**Pick the host by what the component is:**
+
+- **A standalone panel** (hero banner, stat strip, leaderboard card) → the **Image visual**, bound
+  with `sourceType: 'imageData'` + `sourceField` = the measure. Template:
+  `../../report/examples/visuals/formatted/image-svg-measure.json`; scripted builds use
+  `pbirkit.image_svg()`. Prefer this for anything panel-sized: `tableEx.columnHeaders` has **no
+  `show` property**, so a table host always draws a header row above the image. Verified
+  2026-09-13 on the Realm Chronicle intro page — full-width 1840×304 foreignObject hero with CSS
+  gradients, `text-shadow`, flex/grid and a SMIL pulse all render in Desktop.
+  Don't guess the binding: it is `imageData` + `sourceField`, not `imageUrl` + `sourceUrl`. A
+  **model** measure takes no `"Schema"` key; the template's `"Schema": "extension"` is only for a
+  report-local measure.
+- **One per row** (a sparkline or pill beside other columns) → a `tableEx` cell, sized to the
+  component (see `wiring/in-table-matrix.md`).
+
+Either way the measure is `dataCategory = ImageUrl`. Run the SVG reviewer (`../../../04-review/reviewers/svg-review.md`) before shipping, plus the two extra checks: **no export dependency**, **well-formed XHTML**.

@@ -1,0 +1,58 @@
+table FactLootDrops
+	lineageTag: f4bafb25-9941-480a-af78-eb0662c5334f
+
+	column LootDropsKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: e89ea39f-d4a2-4fe2-bcd8-eb5ac054194c
+		summarizeBy: none
+		sourceColumn: LootDropsKey
+
+	column DropCount
+		dataType: double
+		isHidden
+		formatString: #,##0
+		lineageTag: 143ea444-9101-4447-9537-9a972b6eba6b
+		summarizeBy: sum
+		sourceColumn: DropCount
+
+	column LootGoldValue
+		dataType: double
+		isHidden
+		formatString: #,##0
+		lineageTag: 9d9d7b6c-bd80-4865-bfdc-763977d3f566
+		summarizeBy: sum
+		sourceColumn: LootGoldValue
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: 7d871878-9a0a-4229-b3d4-2ca5494ea877
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column MonsterKey
+		dataType: int64
+		isHidden
+		lineageTag: 06ab90ca-bdeb-4c30-afce-0963dca580b8
+		summarizeBy: none
+		sourceColumn: MonsterKey
+
+	column ItemKey
+		dataType: int64
+		isHidden
+		lineageTag: 064cc101-ed0d-4276-a2c6-5d9b236bbda9
+		summarizeBy: none
+		sourceColumn: ItemKey
+
+	partition FactLootDrops = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(SourceFolder & "FactLootDrops.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"LootDropsKey", Int64.Type}, {"DropCount", type number}, {"LootGoldValue", type number}, {"DateKey", Int64.Type}, {"MonsterKey", Int64.Type}, {"ItemKey", Int64.Type}}),
+				    Rounded = Table.TransformColumns(Typed, {{"DropCount", each Number.Round(_, 2), type number}, {"LootGoldValue", each Number.Round(_, 2), type number}})
+				in
+				    Rounded

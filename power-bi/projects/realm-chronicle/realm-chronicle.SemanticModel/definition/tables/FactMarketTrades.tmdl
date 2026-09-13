@@ -1,0 +1,66 @@
+table FactMarketTrades
+	lineageTag: 519461af-9ab7-47f5-8390-efffec41aa12
+
+	column MarketTradesKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 94f9f8fd-72ff-4ed4-83c1-56f01ab2e13e
+		summarizeBy: none
+		sourceColumn: MarketTradesKey
+
+	column GoldVolume
+		dataType: double
+		isHidden
+		formatString: #,##0
+		lineageTag: 6fe54ea2-b5a9-49ba-9832-ebafa5380372
+		summarizeBy: sum
+		sourceColumn: GoldVolume
+
+	column QuantityTraded
+		dataType: double
+		isHidden
+		formatString: #,##0
+		lineageTag: efa596d4-610b-4e35-bec8-42e452627492
+		summarizeBy: sum
+		sourceColumn: QuantityTraded
+
+	column AvgUnitPrice
+		dataType: double
+		isHidden
+		formatString: #,##0
+		lineageTag: f48898a3-8d47-4fae-ae51-7d91a52d2420
+		summarizeBy: sum
+		sourceColumn: AvgUnitPrice
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: 1cc9c9c4-dcd7-4d2b-b2ca-2e7ae33c6f6a
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column ItemKey
+		dataType: int64
+		isHidden
+		lineageTag: 1321bb15-ee5c-4768-b263-8722195ae475
+		summarizeBy: none
+		sourceColumn: ItemKey
+
+	column RealmKey
+		dataType: int64
+		isHidden
+		lineageTag: 56b57cbd-d99f-44e9-abe1-193438b883aa
+		summarizeBy: none
+		sourceColumn: RealmKey
+
+	partition FactMarketTrades = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(SourceFolder & "FactMarketTrades.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"MarketTradesKey", Int64.Type}, {"GoldVolume", type number}, {"QuantityTraded", type number}, {"AvgUnitPrice", type number}, {"DateKey", Int64.Type}, {"ItemKey", Int64.Type}, {"RealmKey", Int64.Type}}),
+				    Rounded = Table.TransformColumns(Typed, {{"GoldVolume", each Number.Round(_, 2), type number}, {"QuantityTraded", each Number.Round(_, 2), type number}, {"AvgUnitPrice", each Number.Round(_, 2), type number}})
+				in
+				    Rounded

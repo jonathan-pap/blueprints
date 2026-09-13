@@ -1,0 +1,45 @@
+# Design system — Realm Chronicle (12×12 grid, FHD canvas)
+# Started from ../../02-build/report/layout/design-system-default.yaml. Rules: ../../02-build/report/layout/design-system.md
+
+meta:
+  page: { width: 1920, height: 1080 }         # queried from page.json before placing - not assumed
+  theme: existing theme preserved              # appearance on the intro page comes from HTML-in-SVG, not a theme change
+  units: grid-cells
+
+grid:
+  columns: 12
+  rows: 12
+  gutter: 24                                    # FHD
+  margin: 32                                    # FHD
+  snap: 8
+  # Cell size is DERIVED from the values above, never stored here.
+  # The formula and worked numbers live in ../../02-build/report/layout/layout-guidelines.md#grid-12x12.
+
+bands:
+  summary:  { rows: [1, 4]  }
+  analysis: { rows: [4, 10] }
+  detail:   { rows: [10, 13] }
+
+defaults:
+  title:      { span: [12, 1], band: summary }
+  slicer:     { span: [2, 1],  band: summary }
+  card:       { span: [3, 3],  band: summary }
+  chart:      { span: [6, 5],  band: analysis }
+  chart_wide: { span: [12, 5], band: analysis }
+  table:      { span: [12, 3], band: detail }
+  rail:       { span: [2, 12], band: summary }
+
+layouts:
+  kpi_row_4:      [ [1,1,4,4], [4,1,7,4], [7,1,10,4], [10,1,13,4] ]
+  charts_2up:     [ [1,4,7,10], [7,4,13,10] ]
+  charts_3up:     [ [1,4,5,10], [5,4,9,10], [9,4,13,10] ]
+  hero_plus_rail: [ [1,1,3,13], [3,1,13,9], [3,9,13,13] ]
+
+  # Intro page: a cover, read top to bottom — who we are, what happened, who stood out.
+  #   [0] hero     — title + the saga in one sentence          rows 1-4   full width
+  #   [1] ledgers  — the four ledgers at a glance               rows 5-7   full width
+  #   [2] legends  — Hall of Legends, top slayers               rows 8-12  left half
+  #   [3] bosses   — the boss roll, the four raid targets       rows 8-12  right half
+  intro:          [ [1,1,13,5], [1,5,13,8], [1,8,7,13], [7,8,13,13] ]
+
+overrides: []

@@ -44,7 +44,9 @@ projects/<name>/
 
 Rules:
 
-- **Two file names, not four.** `build/<name>kit.py` and `build/build.py`. Never `_build-report.py`,
+- **Two file names, not four.** `build/<short>kit.py` and `build/build.py`. The kit takes a
+  **short, hyphen-free word** (`churnkit`, `emporiumkit`, `chroniclekit`) — Python can't import a
+  module named `realm-chroniclekit`, so the project folder name can't be used verbatim. Never `_build-report.py`,
   `build_p1.py`, `finish_build.py`, `fix_layout.py` — a build step is a function in `build.py`, not a
   new file. (`build/` may hold extra modules for a genuinely large build; the entry point stays `build.py`.)
 - **The kit holds only what is project-specific.** Anything a second project could use belongs in

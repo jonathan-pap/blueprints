@@ -1,0 +1,47 @@
+relationship FactMonsterKills_DimDate
+	fromColumn: FactMonsterKills.DateKey
+	toColumn: DimDate.DateKey
+
+relationship FactMonsterKills_DimAdventurer
+	fromColumn: FactMonsterKills.AdventurerKey
+	toColumn: DimAdventurer.AdventurerKey
+
+relationship FactMonsterKills_DimMonster
+	fromColumn: FactMonsterKills.MonsterKey
+	toColumn: DimMonster.MonsterKey
+
+relationship FactQuests_DimDate
+	fromColumn: FactQuests.DateKey
+	toColumn: DimDate.DateKey
+
+relationship FactQuests_DimAdventurer
+	fromColumn: FactQuests.AdventurerKey
+	toColumn: DimAdventurer.AdventurerKey
+
+relationship FactQuests_DimQuest
+	fromColumn: FactQuests.QuestKey
+	toColumn: DimQuest.QuestKey
+
+relationship FactLootDrops_DimDate
+	fromColumn: FactLootDrops.DateKey
+	toColumn: DimDate.DateKey
+
+relationship FactLootDrops_DimMonster
+	fromColumn: FactLootDrops.MonsterKey
+	toColumn: DimMonster.MonsterKey
+
+relationship FactLootDrops_DimItem
+	fromColumn: FactLootDrops.ItemKey
+	toColumn: DimItem.ItemKey
+
+relationship FactMarketTrades_DimDate
+	fromColumn: FactMarketTrades.DateKey
+	toColumn: DimDate.DateKey
+
+relationship FactMarketTrades_DimItem
+	fromColumn: FactMarketTrades.ItemKey
+	toColumn: DimItem.ItemKey
+
+relationship FactMarketTrades_DimRealm
+	fromColumn: FactMarketTrades.RealmKey
+	toColumn: DimRealm.RealmKey

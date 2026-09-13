@@ -1,0 +1,147 @@
+/// Measure home - a one-row calculated table so every measure lives in one place.
+table _Measures
+	lineageTag: 2a55ab8d-2be7-4a53-8e62-6f9703208c7c
+
+	measure 'Total MonstersSlain' = SUM ( FactMonsterKills[MonstersSlain] )
+		formatString: #,##0
+		displayFolder: Core
+		lineageTag: 3d0ae8ec-e064-4c87-8390-ebd8e3548d6e
+
+	measure 'Total PartyWipes' = SUM ( FactMonsterKills[PartyWipes] )
+		formatString: #,##0
+		displayFolder: Core
+		lineageTag: c7fe9e9a-5fcc-4c13-9689-a08535cab9c7
+
+	measure 'Total GoldEarned' = SUM ( FactMonsterKills[GoldEarned] )
+		formatString: #,##0
+		displayFolder: Core
+		lineageTag: 8c2dafe3-7d80-46fd-ae31-f3ec88cf0541
+
+	measure 'Total DamageDealt' = SUM ( FactMonsterKills[DamageDealt] )
+		formatString: #,##0
+		displayFolder: Core
+		lineageTag: 07ffea1b-627b-4e3d-8ce4-a38149f46a72
+
+	measure MonsterKills = COUNTROWS ( FactMonsterKills )
+		formatString: #,##0
+		displayFolder: Core
+		lineageTag: 8140ce38-c17b-490a-a988-7a03e7ecf1d8
+
+	measure 'Avg MonstersSlain' = DIVIDE ( [Total MonstersSlain], [MonsterKills] )
+		formatString: #,##0.0
+		displayFolder: Core
+		lineageTag: 26e792e0-7114-4684-ab0a-d9a45a5c04b3
+
+	measure 'Avg PartyWipes' = DIVIDE ( [Total PartyWipes], [MonsterKills] )
+		formatString: #,##0.0
+		displayFolder: Core
+		lineageTag: 642a3a5f-bd5e-41d3-9287-57f2dd6f61bb
+
+	measure 'Avg GoldEarned' = DIVIDE ( [Total GoldEarned], [MonsterKills] )
+		formatString: #,##0.0
+		displayFolder: Core
+		lineageTag: b38525cc-49ec-4beb-a531-090531694d06
+
+	measure 'Avg DamageDealt' = DIVIDE ( [Total DamageDealt], [MonsterKills] )
+		formatString: #,##0.0
+		displayFolder: Core
+		lineageTag: f976702b-2c67-4363-9d9a-32b4f964435d
+
+	measure 'Total BountyGold' = SUM ( FactQuests[BountyGold] )
+		formatString: #,##0
+		displayFolder: Core
+		lineageTag: c7048c29-ac11-42bc-af05-038b08969f35
+
+	measure 'Total QuestsCompleted' = SUM ( FactQuests[QuestsCompleted] )
+		formatString: #,##0
+		displayFolder: Core
+		lineageTag: 8661175c-78f5-4479-b407-1a8e32c89d17
+
+	measure 'Total DaysOnQuest' = SUM ( FactQuests[DaysOnQuest] )
+		formatString: #,##0
+		displayFolder: Core
+		lineageTag: ebc93e7e-27bc-4319-8e32-20df753f9999
+
+	measure Quests = COUNTROWS ( FactQuests )
+		formatString: #,##0
+		displayFolder: Core
+		lineageTag: 35c8a546-667c-4f8f-be36-474fd93aaca7
+
+	measure 'Avg BountyGold' = DIVIDE ( [Total BountyGold], [Quests] )
+		formatString: #,##0.0
+		displayFolder: Core
+		lineageTag: 2501e1ea-dd86-43b6-a142-83c09a324b23
+
+	measure 'Avg QuestsCompleted' = DIVIDE ( [Total QuestsCompleted], [Quests] )
+		formatString: #,##0.0
+		displayFolder: Core
+		lineageTag: b469466e-1d26-4562-a947-e7ca1f1032c8
+
+	measure 'Avg DaysOnQuest' = DIVIDE ( [Total DaysOnQuest], [Quests] )
+		formatString: #,##0.0
+		displayFolder: Core
+		lineageTag: aa2affb3-f28d-4234-b90c-c90d558c4d86
+
+	measure 'Total DropCount' = SUM ( FactLootDrops[DropCount] )
+		formatString: #,##0
+		displayFolder: Core
+		lineageTag: 743e43d0-b48b-4b12-8711-741e44942037
+
+	measure 'Total LootGoldValue' = SUM ( FactLootDrops[LootGoldValue] )
+		formatString: #,##0
+		displayFolder: Core
+		lineageTag: 3e069c62-c5cd-40a1-bbb6-5c31a18a219c
+
+	measure LootDrops = COUNTROWS ( FactLootDrops )
+		formatString: #,##0
+		displayFolder: Core
+		lineageTag: 41e3c0d3-e6d5-4352-b828-578afadc4136
+
+	measure 'Avg DropCount' = DIVIDE ( [Total DropCount], [LootDrops] )
+		formatString: #,##0.0
+		displayFolder: Core
+		lineageTag: 15fccfa2-70b9-4142-ab1a-5d0c37cd683a
+
+	measure 'Avg LootGoldValue' = DIVIDE ( [Total LootGoldValue], [LootDrops] )
+		formatString: #,##0.0
+		displayFolder: Core
+		lineageTag: 57c34f08-4f6c-4780-82f7-e6b5ca13ab9e
+
+	measure 'Total GoldVolume' = SUM ( FactMarketTrades[GoldVolume] )
+		formatString: #,##0
+		displayFolder: Core
+		lineageTag: c04abe57-094b-4e65-a9ae-c3a23be45f33
+
+	measure 'Total QuantityTraded' = SUM ( FactMarketTrades[QuantityTraded] )
+		formatString: #,##0
+		displayFolder: Core
+		lineageTag: bfbc8d69-5a73-47f4-871e-e67cedbc33f4
+
+	measure 'Total AvgUnitPrice' = SUM ( FactMarketTrades[AvgUnitPrice] )
+		formatString: #,##0
+		displayFolder: Core
+		lineageTag: 6e27ca87-861e-4b63-9709-4a3a497344eb
+
+	measure MarketTrades = COUNTROWS ( FactMarketTrades )
+		formatString: #,##0
+		displayFolder: Core
+		lineageTag: cfd04364-f467-4b05-9e03-8bce08360d61
+
+	measure 'Avg GoldVolume' = DIVIDE ( [Total GoldVolume], [MarketTrades] )
+		formatString: #,##0.0
+		displayFolder: Core
+		lineageTag: 833628fd-ab1a-46e3-a93e-983677ebc5ae
+
+	measure 'Avg QuantityTraded' = DIVIDE ( [Total QuantityTraded], [MarketTrades] )
+		formatString: #,##0.0
+		displayFolder: Core
+		lineageTag: 1859c9ca-5c41-4bce-b551-6ed4189dfdac
+
+	measure 'Avg AvgUnitPrice' = DIVIDE ( [Total AvgUnitPrice], [MarketTrades] )
+		formatString: #,##0.0
+		displayFolder: Core
+		lineageTag: bc540ac7-af0a-4945-8de3-450b82ed5932
+
+	partition _Measures = calculated
+		mode: import
+		source = ROW ( "_", "" )

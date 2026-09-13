@@ -1,0 +1,204 @@
+/// HTML-in-SVG presentation measures (foreignObject). Their own table on purpose: the synthetic-data
+/// hand-off rewrites _Measures.tmdl on every run, which would delete anything added there.
+table _HTML
+	lineageTag: cfe6c90c-e8dd-49fa-b44c-d38ccdb6bfc9
+
+	/// HTML-in-SVG hero banner for the Intro page: the title, and the four-year saga in one sentence with inline-coloured figures. ImageUrl measure; host in an Image visual (sourceType imageUrl), 1840x304.
+	measure 'Intro Hero HTML' =
+			VAR _slain = [Total MonstersSlain]
+			VAR _boss = CALCULATE ( [Total MonstersSlain], DimMonster[Kind] = "Boss" )
+			VAR _bounty = [Total BountyGold]
+			VAR _trade = [Total GoldVolume]
+			VAR _realms = COUNTROWS ( DimRealm )
+			VAR _guilds = DISTINCTCOUNT ( DimAdventurer[Guild] )
+			VAR _heroes = COUNTROWS ( DimAdventurer )
+			VAR _y0 = MIN ( DimDate[Year] )
+			VAR _y1 = MAX ( DimDate[Year] )
+			VAR _fSlain = FORMAT ( _slain / 1000000, "0.0" ) & "M"
+			VAR _fBoss = FORMAT ( _boss, "#,0" )
+			VAR _fBounty = FORMAT ( _bounty / 1000000, "0.0" ) & "M"
+			VAR _fTrade = FORMAT ( _trade / 1000000, "0.0" ) & "M"
+			RETURN
+			    "data:image/svg+xml;utf8," &
+			    "<svg xmlns='http://www.w3.org/2000/svg' width='1840' height='304' viewBox='0 0 1840 304'>" &
+			    "<foreignObject x='0' y='0' width='1840' height='304'>" &
+			    "<div xmlns='http://www.w3.org/1999/xhtml' class='h'>" &
+			    "<style>" &
+			    ".h{width:1840px;height:304px;box-sizing:border-box;position:relative;overflow:hidden;font-family:Segoe UI,Arial,sans-serif;color:#e8edf5;border-radius:18px;border:2px solid #c9a227;background:radial-gradient(ellipse at 15% 0%,#3d2c10 0%,transparent 55%),radial-gradient(ellipse at 100% 100%,#1c2e4d 0%,transparent 60%),linear-gradient(180deg,#161f31,#0a0f1a);padding:32px 48px}" &
+			    ".h .ey{font-size:15px;letter-spacing:6px;text-transform:uppercase;color:#c9a227;display:flex;align-items:center;gap:14px}" &
+			    ".h .ey i{display:block;width:64px;height:1px;background:#c9a227}" &
+			    ".h .t{font-family:Georgia,Cambria,serif;font-size:78px;font-weight:700;letter-spacing:10px;line-height:1.05;margin:12px 0 10px;color:#f0cf5e;text-shadow:0 0 28px rgba(232,195,73,0.35),0 3px 0 #5e470f}" &
+			    ".h .n{font-size:22px;line-height:1.55;color:#b9c6da;max-width:1400px}" &
+			    ".h b{font-weight:700}.h .k{color:#f4d770}.h .r{color:#ff7b7b}.h .g{color:#6fd49b}.h .m{color:#c9d6ea}" &
+			    ".h .sw{position:absolute;right:56px;bottom:-54px;font-size:280px;line-height:1;color:#c9a227;opacity:0.07}" &
+			    "</style>" &
+			    "<div class='ey'><i></i>Guilds &#183; Monsters &#183; Quests &#183; Gold<i></i></div>" &
+			    "<div class='t'>THE REALM CHRONICLE</div>" &
+			    "<div class='n'>Across <b class='k'>" & _realms & " realms</b>, <b class='m'>" & _heroes & " adventurers</b> of " & _guilds & " guilds slew <b class='r'>" & _fSlain & " monsters</b> &#8212; <b class='r'>" & _fBoss & "</b> of them bosses &#8212; claimed <b class='k'>" & _fBounty & " gold</b> in bounties, and moved <b class='g'>" & _fTrade & " gold</b> through the Grand Exchange. <span class='m'>" & _y0 & " &#8211; " & _y1 & "</span></div>" &
+			    "<div class='sw'>&#9876;</div>" &
+			    "</div></foreignObject>" &
+			    "<circle cx='1614' cy='46' r='6' fill='#2ecc71'><animate attributeName='r' values='5;8;5' dur='1.6s' repeatCount='indefinite'/><animate attributeName='opacity' values='1;0.45;1' dur='1.6s' repeatCount='indefinite'/></circle>" &
+			    "<text x='1630' y='51' font-family='Segoe UI,Arial,sans-serif' font-size='13' letter-spacing='2' fill='#8aa0c0'>THE REALM ENDURES</text>" &
+			    "</svg>"
+		dataCategory: ImageUrl
+		displayFolder: Intro
+		lineageTag: bbda5642-29c2-4543-8d49-a2c05dfac969
+
+	/// HTML-in-SVG strip of four stat tiles, one per fact table (kills, bounties, loot, exchange), each with a year-over-year chip for the latest year. ImageUrl measure; host in an Image visual, 1840x224.
+	measure 'Intro Ledgers HTML' =
+			VAR _y1 = MAX ( DimDate[Year] )
+			VAR _y0 = _y1 - 1
+			VAR _k = [Total MonstersSlain]
+			VAR _b = [Total BountyGold]
+			VAR _d = [Total DropCount]
+			VAR _t = [Total GoldVolume]
+			VAR _kg = DIVIDE ( CALCULATE ( [Total MonstersSlain], DimDate[Year] = _y1 ) - CALCULATE ( [Total MonstersSlain], DimDate[Year] = _y0 ), CALCULATE ( [Total MonstersSlain], DimDate[Year] = _y0 ) )
+			VAR _bg = DIVIDE ( CALCULATE ( [Total BountyGold], DimDate[Year] = _y1 ) - CALCULATE ( [Total BountyGold], DimDate[Year] = _y0 ), CALCULATE ( [Total BountyGold], DimDate[Year] = _y0 ) )
+			VAR _dg = DIVIDE ( CALCULATE ( [Total DropCount], DimDate[Year] = _y1 ) - CALCULATE ( [Total DropCount], DimDate[Year] = _y0 ), CALCULATE ( [Total DropCount], DimDate[Year] = _y0 ) )
+			VAR _tg = DIVIDE ( CALCULATE ( [Total GoldVolume], DimDate[Year] = _y1 ) - CALCULATE ( [Total GoldVolume], DimDate[Year] = _y0 ), CALCULATE ( [Total GoldVolume], DimDate[Year] = _y0 ) )
+			VAR _kv = IF ( _k >= 1000000, FORMAT ( _k / 1000000, "0.0" ) & "M", IF ( _k >= 1000, FORMAT ( _k / 1000, "0.0" ) & "K", FORMAT ( _k, "#,0" ) ) )
+			VAR _bv = IF ( _b >= 1000000, FORMAT ( _b / 1000000, "0.0" ) & "M", IF ( _b >= 1000, FORMAT ( _b / 1000, "0.0" ) & "K", FORMAT ( _b, "#,0" ) ) )
+			VAR _dv = IF ( _d >= 1000000, FORMAT ( _d / 1000000, "0.0" ) & "M", IF ( _d >= 1000, FORMAT ( _d / 1000, "0.0" ) & "K", FORMAT ( _d, "#,0" ) ) )
+			VAR _tv = IF ( _t >= 1000000, FORMAT ( _t / 1000000, "0.0" ) & "M", IF ( _t >= 1000, FORMAT ( _t / 1000, "0.0" ) & "K", FORMAT ( _t, "#,0" ) ) )
+			VAR _kc = IF ( ISBLANK ( _kg ), "", IF ( _kg >= 0, "<span class='ch'>&#9650; ", "<span class='ch dn'>&#9660; " ) & FORMAT ( ABS ( _kg ), "0.0%" ) & " vs " & _y0 & "</span>" )
+			VAR _bc = IF ( ISBLANK ( _bg ), "", IF ( _bg >= 0, "<span class='ch'>&#9650; ", "<span class='ch dn'>&#9660; " ) & FORMAT ( ABS ( _bg ), "0.0%" ) & " vs " & _y0 & "</span>" )
+			VAR _dc = IF ( ISBLANK ( _dg ), "", IF ( _dg >= 0, "<span class='ch'>&#9650; ", "<span class='ch dn'>&#9660; " ) & FORMAT ( ABS ( _dg ), "0.0%" ) & " vs " & _y0 & "</span>" )
+			VAR _tc = IF ( ISBLANK ( _tg ), "", IF ( _tg >= 0, "<span class='ch'>&#9650; ", "<span class='ch dn'>&#9660; " ) & FORMAT ( ABS ( _tg ), "0.0%" ) & " vs " & _y0 & "</span>" )
+			VAR _leg = CALCULATE ( [Total DropCount], DimItem[Rarity] = "Legendary" )
+			RETURN
+			    "data:image/svg+xml;utf8," &
+			    "<svg xmlns='http://www.w3.org/2000/svg' width='1840' height='224' viewBox='0 0 1840 224'>" &
+			    "<foreignObject x='0' y='0' width='1840' height='224'>" &
+			    "<div xmlns='http://www.w3.org/1999/xhtml' class='l'>" &
+			    "<style>" &
+			    ".l{width:1840px;height:224px;box-sizing:border-box;display:grid;grid-template-columns:repeat(4,1fr);column-gap:24px;font-family:Segoe UI,Arial,sans-serif;color:#e8edf5}" &
+			    ".l .c{position:relative;box-sizing:border-box;height:224px;border-radius:14px;background:linear-gradient(180deg,#172136,#0d1422);border:1px solid #2a3953;padding:22px 26px;overflow:hidden}" &
+			    ".l .bar{position:absolute;left:0;top:0;right:0;height:4px}" &
+			    ".l .top{display:flex;align-items:center;justify-content:space-between;height:34px}" &
+			    ".l .ic{font-size:30px;line-height:1}" &
+			    ".l .ch{font-size:13px;font-weight:600;padding:4px 10px;border-radius:999px;background:#12301f;color:#6fd49b}" &
+			    ".l .dn{background:#3a1616;color:#ff7b7b}" &
+			    ".l .v{font-size:54px;font-weight:700;line-height:1;margin-top:14px;font-variant-numeric:tabular-nums}" &
+			    ".l .lb{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#8aa0c0;margin-top:10px}" &
+			    ".l .sb{font-size:15px;color:#b9c6da;margin-top:6px}" &
+			    "</style>" &
+			    "<div class='c'><div class='bar' style='background:#ff7b7b'></div><div class='top'><span class='ic'>&#9876;</span>" & _kc & "</div><div class='v' style='color:#ff7b7b'>" & _kv & "</div><div class='lb'>Monsters slain</div><div class='sb'>" & FORMAT ( [Total PartyWipes], "#,0" ) & " party wipes" & "</div></div>" &
+			    "<div class='c'><div class='bar' style='background:#f4d770'></div><div class='top'><span class='ic'>&#x1F4DC;</span>" & _bc & "</div><div class='v' style='color:#f4d770'>" & _bv & "</div><div class='lb'>Gold in bounties</div><div class='sb'>" & FORMAT ( [Total QuestsCompleted], "#,0" ) & " quests completed" & "</div></div>" &
+			    "<div class='c'><div class='bar' style='background:#c89bff'></div><div class='top'><span class='ic'>&#x1F48E;</span>" & _dc & "</div><div class='v' style='color:#c89bff'>" & _dv & "</div><div class='lb'>Loot drops</div><div class='sb'>" & FORMAT ( _leg, "#,0" ) & " legendary" & "</div></div>" &
+			    "<div class='c'><div class='bar' style='background:#6fd49b'></div><div class='top'><span class='ic'>&#9878;</span>" & _tc & "</div><div class='v' style='color:#6fd49b'>" & _tv & "</div><div class='lb'>Gold traded</div><div class='sb'>" & FORMAT ( [Total QuantityTraded], "#,0" ) & " units exchanged" & "</div></div>" &
+			    "</div></foreignObject></svg>"
+		dataCategory: ImageUrl
+		displayFolder: Intro
+		lineageTag: 184a574a-8c95-4fd4-8d39-53c6bc552bb0
+
+	/// HTML-in-SVG leaderboard of the top five slayers: rank medal, name, class, guild and rank, kills with a relative bar. Respects outer filters via ALLSELECTED. ImageUrl measure; host in an Image visual, 896x392.
+	measure 'Intro Legends HTML' =
+			VAR _N = 5
+			VAR _A =
+			    ADDCOLUMNS (
+			        SUMMARIZE ( ALLSELECTED ( DimAdventurer ), DimAdventurer[AdventurerKey], DimAdventurer[Adventurer], DimAdventurer[Guild], DimAdventurer[Class], DimAdventurer[Rank] ),
+			        "@kills", [Total MonstersSlain]
+			    )
+			VAR _Top = TOPN ( _N, FILTER ( _A, [@kills] > 0 ), [@kills], DESC )
+			VAR _Max = MAXX ( _Top, [@kills] )
+			VAR _Rows =
+			    CONCATENATEX (
+			        _Top,
+			        VAR _pos = RANKX ( _Top, [@kills], , DESC )
+			        VAR _nm = SUBSTITUTE ( DimAdventurer[Adventurer], "&", "&amp;" )
+			        VAR _gd = SUBSTITUTE ( DimAdventurer[Guild], "&", "&amp;" )
+			        VAR _medal = SWITCH ( _pos, 1, "#f4d770", 2, "#cfd8e3", 3, "#d08a4c", "#3a4a66" )
+			        VAR _ic = SWITCH ( DimAdventurer[Class], "Warrior", "&#9876;", "Mage", "&#10024;", "Rogue", "&#x1F5E1;", "Ranger", "&#x1F3F9;", "Cleric", "&#9877;", "Warden", "&#x1F6E1;", "&#9733;" )
+			        VAR _pct = INT ( DIVIDE ( [@kills], _Max ) * 100 )
+			        RETURN
+			            "<div class='r'>" &
+			            "<div class='md' style='background:" & _medal & "'>" & _pos & "</div>" &
+			            "<div><div class='nm'>" & _nm & "</div><div class='gd'>" & _ic & " " & DimAdventurer[Class] & " &#183; " & _gd & " &#183; " & DimAdventurer[Rank] & "</div></div>" &
+			            "<div><div class='kv'>" & FORMAT ( [@kills], "#,0" ) & "</div><div class='bb'><span style='width:" & _pct & "%'></span></div></div>" &
+			            "</div>",
+			        "",
+			        [@kills], DESC
+			    )
+			RETURN
+			    "data:image/svg+xml;utf8," &
+			    "<svg xmlns='http://www.w3.org/2000/svg' width='896' height='392' viewBox='0 0 896 392'>" &
+			    "<foreignObject x='0' y='0' width='896' height='392'>" &
+			    "<div xmlns='http://www.w3.org/1999/xhtml' class='lg'>" &
+			    "<style>" &
+			    ".lg{width:896px;height:392px;box-sizing:border-box;border-radius:16px;border:2px solid #c9a227;background:linear-gradient(180deg,#1b2436,#0d1422);padding:20px 26px;font-family:Segoe UI,Arial,sans-serif;color:#e8edf5}" &
+			    ".lg .hd{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid #2c3a52;padding-bottom:10px;margin-bottom:4px}" &
+			    ".lg .ttl{font-family:Georgia,Cambria,serif;font-size:24px;font-weight:700;letter-spacing:3px;color:#e8c349}" &
+			    ".lg .sub{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#8aa0c0}" &
+			    ".lg .r{display:grid;grid-template-columns:44px 1fr 250px;align-items:center;column-gap:16px;padding:10px 0;border-bottom:1px solid #1b243a}" &
+			    ".lg .md{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#0d1422}" &
+			    ".lg .nm{font-size:18px;font-weight:600}" &
+			    ".lg .gd{font-size:13px;color:#8aa0c0;margin-top:2px}" &
+			    ".lg .kv{text-align:right;font-size:20px;font-weight:700;color:#ff8a8a;font-variant-numeric:tabular-nums}" &
+			    ".lg .bb{height:6px;background:#1f2a3d;border-radius:4px;overflow:hidden;margin-top:6px}" &
+			    ".lg .bb span{display:block;height:100%;background:linear-gradient(90deg,#b8322f,#ff8a8a)}" &
+			    "</style>" &
+			    "<div class='hd'><div class='ttl'>&#9819; HALL OF LEGENDS</div><div class='sub'>Top slayers &#183; all time</div></div>" &
+			    _Rows &
+			    "</div></foreignObject></svg>"
+		dataCategory: ImageUrl
+		displayFolder: Intro
+		lineageTag: 0ef160a8-3762-4a0d-8b31-cc93d7b8652b
+
+	/// HTML-in-SVG roll of the four raid bosses: kills, and deadliness as party wipes per 1,000 kills with a relative bar, accented by habitat. ImageUrl measure; host in an Image visual, 896x392.
+	measure 'Intro Bosses HTML' =
+			VAR _B =
+			    ADDCOLUMNS (
+			        SUMMARIZE ( FILTER ( ALLSELECTED ( DimMonster ), DimMonster[Kind] = "Boss" ), DimMonster[MonsterKey], DimMonster[Monster], DimMonster[Family], DimMonster[Habitat] ),
+			        "@kills", [Total MonstersSlain],
+			        "@wipes", [Total PartyWipes]
+			    )
+			VAR _MaxRate = MAXX ( _B, DIVIDE ( [@wipes], [@kills] ) )
+			VAR _Rows =
+			    CONCATENATEX (
+			        _B,
+			        VAR _nm = SUBSTITUTE ( DimMonster[Monster], "&", "&amp;" )
+			        VAR _ic = SWITCH ( DimMonster[Monster], "Emberfang the Wyrm", "&#x1F409;", "Vorrak, Hollow Crown", "&#x1F608;", "Glacius Rimeheart", "&#x1F432;", "The Verdant Maw", "&#x1F40A;", "&#9760;" )
+			        VAR _acc = SWITCH ( DimMonster[Habitat], "Emberwaste", "#ff7a45", "Hollowmere", "#b98cff", "Frosthollow", "#7cc8ff", "Verdant Deep", "#5fd48a", "#ff6b6b" )
+			        VAR _rate = DIVIDE ( [@wipes], [@kills] ) * 1000
+			        VAR _pct = INT ( DIVIDE ( DIVIDE ( [@wipes], [@kills] ), _MaxRate ) * 100 )
+			        RETURN
+			            "<div class='b' style='border-left:4px solid " & _acc & "'>" &
+			            "<div class='ic'>" & _ic & "</div>" &
+			            "<div><div class='nm' style='color:" & _acc & "'>" & _nm & "</div><div class='mt'>" & DimMonster[Family] & " &#183; " & DimMonster[Habitat] & "</div></div>" &
+			            "<div><div class='kv'>" & FORMAT ( [@kills], "#,0" ) & "<span class='u'> slain</span></div>" &
+			            "<div class='dl'>" & FORMAT ( _rate, "0.0" ) & " wipes per 1k</div>" &
+			            "<div class='bb'><span style='width:" & _pct & "%;background:" & _acc & "'></span></div></div>" &
+			            "</div>",
+			        "",
+			        [@kills], DESC
+			    )
+			RETURN
+			    "data:image/svg+xml;utf8," &
+			    "<svg xmlns='http://www.w3.org/2000/svg' width='896' height='392' viewBox='0 0 896 392'>" &
+			    "<foreignObject x='0' y='0' width='896' height='392'>" &
+			    "<div xmlns='http://www.w3.org/1999/xhtml' class='bs'>" &
+			    "<style>" &
+			    ".bs{width:896px;height:392px;box-sizing:border-box;border-radius:16px;border:2px solid #7a2a2a;background:linear-gradient(180deg,#221521,#0e0c16);padding:20px 26px;font-family:Segoe UI,Arial,sans-serif;color:#e8edf5}" &
+			    ".bs .hd{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid #3a2436;padding-bottom:10px;margin-bottom:10px}" &
+			    ".bs .ttl{font-family:Georgia,Cambria,serif;font-size:24px;font-weight:700;letter-spacing:3px;color:#ff7a6b}" &
+			    ".bs .sub{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#a58aa0}" &
+			    ".bs .b{display:grid;grid-template-columns:52px 1fr 240px;align-items:center;column-gap:14px;padding:8px 14px;margin-bottom:8px;background:rgba(255,255,255,0.03);border-radius:8px}" &
+			    ".bs .ic{font-size:34px;line-height:1;text-align:center}" &
+			    ".bs .nm{font-size:18px;font-weight:700}" &
+			    ".bs .mt{font-size:13px;color:#a58aa0;margin-top:2px}" &
+			    ".bs .kv{text-align:right;font-size:18px;font-weight:700;font-variant-numeric:tabular-nums}" &
+			    ".bs .kv .u{font-size:12px;font-weight:400;color:#a58aa0}" &
+			    ".bs .dl{text-align:right;font-size:12px;color:#c9a9c4;margin-top:2px}" &
+			    ".bs .bb{height:6px;background:#2a1f2c;border-radius:4px;overflow:hidden;margin-top:5px}" &
+			    ".bs .bb span{display:block;height:100%}" &
+			    "</style>" &
+			    "<div class='hd'><div class='ttl'>&#9760; THE BOSS ROLL</div><div class='sub'>Raid targets &#183; deadliness</div></div>" &
+			    _Rows &
+			    "</div></foreignObject></svg>"
+		dataCategory: ImageUrl
+		displayFolder: Intro
+		lineageTag: 0d2bb0d5-f1d6-4b34-ae0d-61b50a5f5319
+
+	partition _HTML = calculated
+		mode: import
+		source = ROW ( "_", "" )
