@@ -53,9 +53,18 @@ def _svg_open(w, h, rw, rh):
     ]
 
 
+def _tidy(e, pattern_one, pattern_whole):
+    """A number in a unit, without a meaningless trailing '.0': 900 not 900.0, 2.4 stays 2.4.
+    From 100 up in the unit it's whole (137K, not 136.8K) - a decimal there is noise."""
+    return (f'IF ( {e} >= 100, FORMAT ( {e}, "{pattern_whole}" ), '
+            f'IF ( ROUND ( {e}, 1 ) = INT ( ROUND ( {e}, 1 ) ), FORMAT ( ROUND ( {e}, 1 ), "{pattern_whole}" ), '
+            f'FORMAT ( {e}, "{pattern_one}" ) ) )')
+
+
 def _compact(v):
-    return (f'IF ( {v} >= 1000000, FORMAT ( {v} / 1000000, "0.0" ) & "M", '
-            f'IF ( {v} >= 1000, FORMAT ( {v} / 1000, "0.0" ) & "K", FORMAT ( {v}, "#,0" ) ) )')
+    """Compact figure: 2.4M, 18M, 900K, 137K, 950. One home for the rule - every panel uses it."""
+    return (f'IF ( {v} >= 1000000, {_tidy(v + " / 1000000", "0.0", "0")} & "M", '
+            f'IF ( {v} >= 1000, {_tidy(v + " / 1000", "0.0", "0")} & "K", FORMAT ( {v}, "#,0" ) ) )')
 
 
 def _yoy(m):
@@ -65,7 +74,7 @@ def _yoy(m):
 
 def _chip(g):
     return (f'IF ( ISBLANK ( {g} ), "", IF ( {g} >= 0, "<span class=\'ch\'>&#9650; ", '
-            f'"<span class=\'ch dn\'>&#9660; " ) & FORMAT ( ABS ( {g} ), "0.0%" ) & " vs " & _y0 & "</span>" )')
+            f'"<span class=\'ch dn\'>&#9660; " ) & {_tidy("ABS ( " + g + " ) * 100", "0.0", "0")} & "% vs " & _y0 & "</span>" )')
 
 
 def hero(w, h):
@@ -84,10 +93,10 @@ def hero(w, h):
      'VAR _heroes = COUNTROWS ( DimAdventurer )',
      'VAR _y0 = MIN ( DimDate[Year] )',
      'VAR _y1 = MAX ( DimDate[Year] )',
-     'VAR _fSlain = FORMAT ( _slain / 1000000, "0.0" ) & "M"',
+     f'VAR _fSlain = {_compact("_slain")}',
      'VAR _fBoss = FORMAT ( _boss, "#,0" )',
-     'VAR _fBounty = FORMAT ( _bounty / 1000000, "0.0" ) & "M"',
-     'VAR _fTrade = FORMAT ( _trade / 1000000, "0.0" ) & "M"',
+     f'VAR _fBounty = {_compact("_bounty")}',
+     f'VAR _fTrade = {_compact("_trade")}',
      'RETURN',
      *_svg_open(w, h, rw, rh),
      "    \"<div xmlns='http://www.w3.org/1999/xhtml' class='h'>\" &",

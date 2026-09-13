@@ -14,10 +14,10 @@ table _HTML
 			VAR _heroes = COUNTROWS ( DimAdventurer )
 			VAR _y0 = MIN ( DimDate[Year] )
 			VAR _y1 = MAX ( DimDate[Year] )
-			VAR _fSlain = FORMAT ( _slain / 1000000, "0.0" ) & "M"
+			VAR _fSlain = IF ( _slain >= 1000000, IF ( _slain / 1000000 >= 100, FORMAT ( _slain / 1000000, "0" ), IF ( ROUND ( _slain / 1000000, 1 ) = INT ( ROUND ( _slain / 1000000, 1 ) ), FORMAT ( ROUND ( _slain / 1000000, 1 ), "0" ), FORMAT ( _slain / 1000000, "0.0" ) ) ) & "M", IF ( _slain >= 1000, IF ( _slain / 1000 >= 100, FORMAT ( _slain / 1000, "0" ), IF ( ROUND ( _slain / 1000, 1 ) = INT ( ROUND ( _slain / 1000, 1 ) ), FORMAT ( ROUND ( _slain / 1000, 1 ), "0" ), FORMAT ( _slain / 1000, "0.0" ) ) ) & "K", FORMAT ( _slain, "#,0" ) ) )
 			VAR _fBoss = FORMAT ( _boss, "#,0" )
-			VAR _fBounty = FORMAT ( _bounty / 1000000, "0.0" ) & "M"
-			VAR _fTrade = FORMAT ( _trade / 1000000, "0.0" ) & "M"
+			VAR _fBounty = IF ( _bounty >= 1000000, IF ( _bounty / 1000000 >= 100, FORMAT ( _bounty / 1000000, "0" ), IF ( ROUND ( _bounty / 1000000, 1 ) = INT ( ROUND ( _bounty / 1000000, 1 ) ), FORMAT ( ROUND ( _bounty / 1000000, 1 ), "0" ), FORMAT ( _bounty / 1000000, "0.0" ) ) ) & "M", IF ( _bounty >= 1000, IF ( _bounty / 1000 >= 100, FORMAT ( _bounty / 1000, "0" ), IF ( ROUND ( _bounty / 1000, 1 ) = INT ( ROUND ( _bounty / 1000, 1 ) ), FORMAT ( ROUND ( _bounty / 1000, 1 ), "0" ), FORMAT ( _bounty / 1000, "0.0" ) ) ) & "K", FORMAT ( _bounty, "#,0" ) ) )
+			VAR _fTrade = IF ( _trade >= 1000000, IF ( _trade / 1000000 >= 100, FORMAT ( _trade / 1000000, "0" ), IF ( ROUND ( _trade / 1000000, 1 ) = INT ( ROUND ( _trade / 1000000, 1 ) ), FORMAT ( ROUND ( _trade / 1000000, 1 ), "0" ), FORMAT ( _trade / 1000000, "0.0" ) ) ) & "M", IF ( _trade >= 1000, IF ( _trade / 1000 >= 100, FORMAT ( _trade / 1000, "0" ), IF ( ROUND ( _trade / 1000, 1 ) = INT ( ROUND ( _trade / 1000, 1 ) ), FORMAT ( ROUND ( _trade / 1000, 1 ), "0" ), FORMAT ( _trade / 1000, "0.0" ) ) ) & "K", FORMAT ( _trade, "#,0" ) ) )
 			RETURN
 			    "data:image/svg+xml;utf8," &
 			    "<svg xmlns='http://www.w3.org/2000/svg' width='1152' height='216' viewBox='0 0 1840 345'>" &
@@ -56,14 +56,14 @@ table _HTML
 			VAR _bg = DIVIDE ( CALCULATE ( [Total BountyGold], DimDate[Year] = _y1 ) - CALCULATE ( [Total BountyGold], DimDate[Year] = _y0 ), CALCULATE ( [Total BountyGold], DimDate[Year] = _y0 ) )
 			VAR _dg = DIVIDE ( CALCULATE ( [Total DropCount], DimDate[Year] = _y1 ) - CALCULATE ( [Total DropCount], DimDate[Year] = _y0 ), CALCULATE ( [Total DropCount], DimDate[Year] = _y0 ) )
 			VAR _tg = DIVIDE ( CALCULATE ( [Total GoldVolume], DimDate[Year] = _y1 ) - CALCULATE ( [Total GoldVolume], DimDate[Year] = _y0 ), CALCULATE ( [Total GoldVolume], DimDate[Year] = _y0 ) )
-			VAR _kv = IF ( _k >= 1000000, FORMAT ( _k / 1000000, "0.0" ) & "M", IF ( _k >= 1000, FORMAT ( _k / 1000, "0.0" ) & "K", FORMAT ( _k, "#,0" ) ) )
-			VAR _bv = IF ( _b >= 1000000, FORMAT ( _b / 1000000, "0.0" ) & "M", IF ( _b >= 1000, FORMAT ( _b / 1000, "0.0" ) & "K", FORMAT ( _b, "#,0" ) ) )
-			VAR _dv = IF ( _d >= 1000000, FORMAT ( _d / 1000000, "0.0" ) & "M", IF ( _d >= 1000, FORMAT ( _d / 1000, "0.0" ) & "K", FORMAT ( _d, "#,0" ) ) )
-			VAR _tv = IF ( _t >= 1000000, FORMAT ( _t / 1000000, "0.0" ) & "M", IF ( _t >= 1000, FORMAT ( _t / 1000, "0.0" ) & "K", FORMAT ( _t, "#,0" ) ) )
-			VAR _kc = IF ( ISBLANK ( _kg ), "", IF ( _kg >= 0, "<span class='ch'>&#9650; ", "<span class='ch dn'>&#9660; " ) & FORMAT ( ABS ( _kg ), "0.0%" ) & " vs " & _y0 & "</span>" )
-			VAR _bc = IF ( ISBLANK ( _bg ), "", IF ( _bg >= 0, "<span class='ch'>&#9650; ", "<span class='ch dn'>&#9660; " ) & FORMAT ( ABS ( _bg ), "0.0%" ) & " vs " & _y0 & "</span>" )
-			VAR _dc = IF ( ISBLANK ( _dg ), "", IF ( _dg >= 0, "<span class='ch'>&#9650; ", "<span class='ch dn'>&#9660; " ) & FORMAT ( ABS ( _dg ), "0.0%" ) & " vs " & _y0 & "</span>" )
-			VAR _tc = IF ( ISBLANK ( _tg ), "", IF ( _tg >= 0, "<span class='ch'>&#9650; ", "<span class='ch dn'>&#9660; " ) & FORMAT ( ABS ( _tg ), "0.0%" ) & " vs " & _y0 & "</span>" )
+			VAR _kv = IF ( _k >= 1000000, IF ( _k / 1000000 >= 100, FORMAT ( _k / 1000000, "0" ), IF ( ROUND ( _k / 1000000, 1 ) = INT ( ROUND ( _k / 1000000, 1 ) ), FORMAT ( ROUND ( _k / 1000000, 1 ), "0" ), FORMAT ( _k / 1000000, "0.0" ) ) ) & "M", IF ( _k >= 1000, IF ( _k / 1000 >= 100, FORMAT ( _k / 1000, "0" ), IF ( ROUND ( _k / 1000, 1 ) = INT ( ROUND ( _k / 1000, 1 ) ), FORMAT ( ROUND ( _k / 1000, 1 ), "0" ), FORMAT ( _k / 1000, "0.0" ) ) ) & "K", FORMAT ( _k, "#,0" ) ) )
+			VAR _bv = IF ( _b >= 1000000, IF ( _b / 1000000 >= 100, FORMAT ( _b / 1000000, "0" ), IF ( ROUND ( _b / 1000000, 1 ) = INT ( ROUND ( _b / 1000000, 1 ) ), FORMAT ( ROUND ( _b / 1000000, 1 ), "0" ), FORMAT ( _b / 1000000, "0.0" ) ) ) & "M", IF ( _b >= 1000, IF ( _b / 1000 >= 100, FORMAT ( _b / 1000, "0" ), IF ( ROUND ( _b / 1000, 1 ) = INT ( ROUND ( _b / 1000, 1 ) ), FORMAT ( ROUND ( _b / 1000, 1 ), "0" ), FORMAT ( _b / 1000, "0.0" ) ) ) & "K", FORMAT ( _b, "#,0" ) ) )
+			VAR _dv = IF ( _d >= 1000000, IF ( _d / 1000000 >= 100, FORMAT ( _d / 1000000, "0" ), IF ( ROUND ( _d / 1000000, 1 ) = INT ( ROUND ( _d / 1000000, 1 ) ), FORMAT ( ROUND ( _d / 1000000, 1 ), "0" ), FORMAT ( _d / 1000000, "0.0" ) ) ) & "M", IF ( _d >= 1000, IF ( _d / 1000 >= 100, FORMAT ( _d / 1000, "0" ), IF ( ROUND ( _d / 1000, 1 ) = INT ( ROUND ( _d / 1000, 1 ) ), FORMAT ( ROUND ( _d / 1000, 1 ), "0" ), FORMAT ( _d / 1000, "0.0" ) ) ) & "K", FORMAT ( _d, "#,0" ) ) )
+			VAR _tv = IF ( _t >= 1000000, IF ( _t / 1000000 >= 100, FORMAT ( _t / 1000000, "0" ), IF ( ROUND ( _t / 1000000, 1 ) = INT ( ROUND ( _t / 1000000, 1 ) ), FORMAT ( ROUND ( _t / 1000000, 1 ), "0" ), FORMAT ( _t / 1000000, "0.0" ) ) ) & "M", IF ( _t >= 1000, IF ( _t / 1000 >= 100, FORMAT ( _t / 1000, "0" ), IF ( ROUND ( _t / 1000, 1 ) = INT ( ROUND ( _t / 1000, 1 ) ), FORMAT ( ROUND ( _t / 1000, 1 ), "0" ), FORMAT ( _t / 1000, "0.0" ) ) ) & "K", FORMAT ( _t, "#,0" ) ) )
+			VAR _kc = IF ( ISBLANK ( _kg ), "", IF ( _kg >= 0, "<span class='ch'>&#9650; ", "<span class='ch dn'>&#9660; " ) & IF ( ABS ( _kg ) * 100 >= 100, FORMAT ( ABS ( _kg ) * 100, "0" ), IF ( ROUND ( ABS ( _kg ) * 100, 1 ) = INT ( ROUND ( ABS ( _kg ) * 100, 1 ) ), FORMAT ( ROUND ( ABS ( _kg ) * 100, 1 ), "0" ), FORMAT ( ABS ( _kg ) * 100, "0.0" ) ) ) & "% vs " & _y0 & "</span>" )
+			VAR _bc = IF ( ISBLANK ( _bg ), "", IF ( _bg >= 0, "<span class='ch'>&#9650; ", "<span class='ch dn'>&#9660; " ) & IF ( ABS ( _bg ) * 100 >= 100, FORMAT ( ABS ( _bg ) * 100, "0" ), IF ( ROUND ( ABS ( _bg ) * 100, 1 ) = INT ( ROUND ( ABS ( _bg ) * 100, 1 ) ), FORMAT ( ROUND ( ABS ( _bg ) * 100, 1 ), "0" ), FORMAT ( ABS ( _bg ) * 100, "0.0" ) ) ) & "% vs " & _y0 & "</span>" )
+			VAR _dc = IF ( ISBLANK ( _dg ), "", IF ( _dg >= 0, "<span class='ch'>&#9650; ", "<span class='ch dn'>&#9660; " ) & IF ( ABS ( _dg ) * 100 >= 100, FORMAT ( ABS ( _dg ) * 100, "0" ), IF ( ROUND ( ABS ( _dg ) * 100, 1 ) = INT ( ROUND ( ABS ( _dg ) * 100, 1 ) ), FORMAT ( ROUND ( ABS ( _dg ) * 100, 1 ), "0" ), FORMAT ( ABS ( _dg ) * 100, "0.0" ) ) ) & "% vs " & _y0 & "</span>" )
+			VAR _tc = IF ( ISBLANK ( _tg ), "", IF ( _tg >= 0, "<span class='ch'>&#9650; ", "<span class='ch dn'>&#9660; " ) & IF ( ABS ( _tg ) * 100 >= 100, FORMAT ( ABS ( _tg ) * 100, "0" ), IF ( ROUND ( ABS ( _tg ) * 100, 1 ) = INT ( ROUND ( ABS ( _tg ) * 100, 1 ) ), FORMAT ( ROUND ( ABS ( _tg ) * 100, 1 ), "0" ), FORMAT ( ABS ( _tg ) * 100, "0.0" ) ) ) & "% vs " & _y0 & "</span>" )
 			VAR _leg = CALCULATE ( [Total DropCount], DimItem[Rarity] = "Legendary" )
 			RETURN
 			    "data:image/svg+xml;utf8," &
@@ -205,9 +205,9 @@ table _HTML
 			VAR _e = CALCULATE ( [Total MonstersSlain], DimMonster[Kind] = "Elite" )
 			VAR _b = CALCULATE ( [Total MonstersSlain], DimMonster[Kind] = "Boss" )
 			VAR _n = COUNTROWS ( DimMonster )
-			VAR _fv = IF ( _f >= 1000000, FORMAT ( _f / 1000000, "0.0" ) & "M", IF ( _f >= 1000, FORMAT ( _f / 1000, "0.0" ) & "K", FORMAT ( _f, "#,0" ) ) )
-			VAR _ev = IF ( _e >= 1000000, FORMAT ( _e / 1000000, "0.0" ) & "M", IF ( _e >= 1000, FORMAT ( _e / 1000, "0.0" ) & "K", FORMAT ( _e, "#,0" ) ) )
-			VAR _bv = IF ( _b >= 1000000, FORMAT ( _b / 1000000, "0.0" ) & "M", IF ( _b >= 1000, FORMAT ( _b / 1000, "0.0" ) & "K", FORMAT ( _b, "#,0" ) ) )
+			VAR _fv = IF ( _f >= 1000000, IF ( _f / 1000000 >= 100, FORMAT ( _f / 1000000, "0" ), IF ( ROUND ( _f / 1000000, 1 ) = INT ( ROUND ( _f / 1000000, 1 ) ), FORMAT ( ROUND ( _f / 1000000, 1 ), "0" ), FORMAT ( _f / 1000000, "0.0" ) ) ) & "M", IF ( _f >= 1000, IF ( _f / 1000 >= 100, FORMAT ( _f / 1000, "0" ), IF ( ROUND ( _f / 1000, 1 ) = INT ( ROUND ( _f / 1000, 1 ) ), FORMAT ( ROUND ( _f / 1000, 1 ), "0" ), FORMAT ( _f / 1000, "0.0" ) ) ) & "K", FORMAT ( _f, "#,0" ) ) )
+			VAR _ev = IF ( _e >= 1000000, IF ( _e / 1000000 >= 100, FORMAT ( _e / 1000000, "0" ), IF ( ROUND ( _e / 1000000, 1 ) = INT ( ROUND ( _e / 1000000, 1 ) ), FORMAT ( ROUND ( _e / 1000000, 1 ), "0" ), FORMAT ( _e / 1000000, "0.0" ) ) ) & "M", IF ( _e >= 1000, IF ( _e / 1000 >= 100, FORMAT ( _e / 1000, "0" ), IF ( ROUND ( _e / 1000, 1 ) = INT ( ROUND ( _e / 1000, 1 ) ), FORMAT ( ROUND ( _e / 1000, 1 ), "0" ), FORMAT ( _e / 1000, "0.0" ) ) ) & "K", FORMAT ( _e, "#,0" ) ) )
+			VAR _bv = IF ( _b >= 1000000, IF ( _b / 1000000 >= 100, FORMAT ( _b / 1000000, "0" ), IF ( ROUND ( _b / 1000000, 1 ) = INT ( ROUND ( _b / 1000000, 1 ) ), FORMAT ( ROUND ( _b / 1000000, 1 ), "0" ), FORMAT ( _b / 1000000, "0.0" ) ) ) & "M", IF ( _b >= 1000, IF ( _b / 1000 >= 100, FORMAT ( _b / 1000, "0" ), IF ( ROUND ( _b / 1000, 1 ) = INT ( ROUND ( _b / 1000, 1 ) ), FORMAT ( ROUND ( _b / 1000, 1 ), "0" ), FORMAT ( _b / 1000, "0.0" ) ) ) & "K", FORMAT ( _b, "#,0" ) ) )
 			RETURN
 			    "data:image/svg+xml;utf8," &
 			    "<svg xmlns='http://www.w3.org/2000/svg' width='1152' height='96' viewBox='0 0 1840 153'>" &
