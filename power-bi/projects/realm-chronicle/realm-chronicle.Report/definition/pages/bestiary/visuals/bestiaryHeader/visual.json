@@ -1,35 +1,27 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
-  "name": "navRail",
+  "name": "bestiaryHeader",
   "position": {
-    "x": 0,
-    "y": 0,
-    "z": 50,
-    "width": 88,
-    "height": 1080,
-    "tabOrder": 0
+    "x": 104,
+    "y": 24,
+    "z": 100,
+    "width": 1152,
+    "height": 96,
+    "tabOrder": 1
   },
   "visual": {
     "visualType": "image",
     "objects": {
-      "general": [
-        {
-          "properties": {
-            "imageUrl": {
-              "expr": {
-                "ResourcePackageItem": {
-                  "PackageName": "RegisteredResources",
-                  "PackageType": 1,
-                  "ItemName": "navRail-hunt.svg"
-                }
-              }
-            }
-          }
-        }
-      ],
       "image": [
         {
           "properties": {
+            "sourceType": {
+              "expr": {
+                "Literal": {
+                  "Value": "'imageData'"
+                }
+              }
+            },
             "transparency": {
               "expr": {
                 "Literal": {
@@ -41,6 +33,32 @@
               "expr": {
                 "Literal": {
                   "Value": "false"
+                }
+              }
+            },
+            "fit": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Fit'"
+                }
+              }
+            },
+            "sourceField": {
+              "expr": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_HTML"
+                    }
+                  },
+                  "Property": "Bestiary Header HTML"
+                }
+              }
+            },
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'The Bestiary: monster kills by kind - field, elite and boss - and the number of creatures catalogued'"
                 }
               }
             }
@@ -82,19 +100,6 @@
               "expr": {
                 "Literal": {
                   "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "general": [
-        {
-          "properties": {
-            "altText": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Page navigation. You are on The Hunt. Pages: Intro, The Hunt, Quest Board, The Exchange, Realm Map.'"
                 }
               }
             }

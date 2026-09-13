@@ -1,12 +1,12 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
-  "name": "navIntro",
+  "name": "navBestiary",
   "position": {
     "x": 0,
-    "y": 104,
-    "z": 60,
-    "width": 88,
-    "height": 72,
+    "y": 136,
+    "z": 61,
+    "width": 80,
+    "height": 56,
     "tabOrder": 1
   },
   "visual": {
@@ -175,14 +175,14 @@
             "navigationSection": {
               "expr": {
                 "Literal": {
-                  "Value": "'intro'"
+                  "Value": "'bestiary'"
                 }
               }
             },
             "tooltip": {
               "expr": {
                 "Literal": {
-                  "Value": "'Go to Intro'"
+                  "Value": "'Go to The Bestiary'"
                 }
               }
             }

@@ -1,9 +1,9 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
-  "name": "hunt",
-  "displayName": "The Hunt",
-  "width": 1920,
-  "height": 1080,
+  "name": "bestiary",
+  "displayName": "The Bestiary",
+  "width": 1280,
+  "height": 720,
   "displayOption": "FitToPage",
   "objects": {
     "background": [

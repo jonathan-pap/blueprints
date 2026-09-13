@@ -3,7 +3,7 @@
 table _HTML
 	lineageTag: cfe6c90c-e8dd-49fa-b44c-d38ccdb6bfc9
 
-	/// HTML-in-SVG hero banner for the Intro page: the title, and the four-year saga in one sentence with inline-coloured figures. ImageUrl measure; host in an Image visual (sourceType imageUrl), 1840x304.
+	/// HTML-in-SVG hero banner for the Intro page: the title, and the four-year saga in one sentence with inline-coloured figures. ImageUrl measure; host in an Image visual (sourceType imageData).
 	measure 'Intro Hero HTML' =
 			VAR _slain = [Total MonstersSlain]
 			VAR _boss = CALCULATE ( [Total MonstersSlain], DimMonster[Kind] = "Boss" )
@@ -20,31 +20,31 @@ table _HTML
 			VAR _fTrade = FORMAT ( _trade / 1000000, "0.0" ) & "M"
 			RETURN
 			    "data:image/svg+xml;utf8," &
-			    "<svg xmlns='http://www.w3.org/2000/svg' width='1840' height='304' viewBox='0 0 1840 304'>" &
-			    "<foreignObject x='0' y='0' width='1840' height='304'>" &
+			    "<svg xmlns='http://www.w3.org/2000/svg' width='1152' height='216' viewBox='0 0 1840 345'>" &
+			    "<foreignObject x='0' y='0' width='1840' height='345'>" &
 			    "<div xmlns='http://www.w3.org/1999/xhtml' class='h'>" &
 			    "<style>" &
-			    ".h{width:1840px;height:304px;box-sizing:border-box;position:relative;overflow:hidden;font-family:Segoe UI,Arial,sans-serif;color:#e8edf5;border-radius:18px;border:2px solid #c9a227;background:radial-gradient(ellipse at 15% 0%,#3d2c10 0%,transparent 55%),radial-gradient(ellipse at 100% 100%,#1c2e4d 0%,transparent 60%),linear-gradient(180deg,#161f31,#0a0f1a);padding:32px 48px}" &
-			    ".h .ey{font-size:15px;letter-spacing:6px;text-transform:uppercase;color:#c9a227;display:flex;align-items:center;gap:14px}" &
+			    ".h{width:1840px;height:345px;box-sizing:border-box;position:relative;overflow:hidden;font-family:Segoe UI,Arial,sans-serif;color:#e8edf5;border-radius:18px;border:2px solid #c9a227;background:radial-gradient(ellipse at 15% 0%,#3d2c10 0%,transparent 55%),radial-gradient(ellipse at 100% 100%,#1c2e4d 0%,transparent 60%),linear-gradient(180deg,#161f31,#0a0f1a);padding:36px 52px}" &
+			    ".h .ey{font-size:18px;letter-spacing:6px;text-transform:uppercase;color:#c9a227;display:flex;align-items:center;gap:14px}" &
 			    ".h .ey i{display:block;width:64px;height:1px;background:#c9a227}" &
-			    ".h .t{font-family:Georgia,Cambria,serif;font-size:78px;font-weight:700;letter-spacing:10px;line-height:1.05;margin:12px 0 10px;color:#f0cf5e;text-shadow:0 0 28px rgba(232,195,73,0.35),0 3px 0 #5e470f}" &
-			    ".h .n{font-size:22px;line-height:1.55;color:#b9c6da;max-width:1400px}" &
+			    ".h .t{font-family:Georgia,Cambria,serif;font-size:80px;font-weight:700;letter-spacing:10px;line-height:1.05;margin:14px 0 12px;color:#f0cf5e;text-shadow:0 0 28px rgba(232,195,73,0.35),0 3px 0 #5e470f}" &
+			    ".h .n{font-size:26px;line-height:1.5;color:#b9c6da;max-width:1480px}" &
 			    ".h b{font-weight:700}.h .k{color:#f4d770}.h .r{color:#ff7b7b}.h .g{color:#6fd49b}.h .m{color:#c9d6ea}" &
-			    ".h .sw{position:absolute;right:56px;bottom:-54px;font-size:280px;line-height:1;color:#c9a227;opacity:0.07}" &
+			    ".h .sw{position:absolute;right:56px;bottom:-54px;font-size:300px;line-height:1;color:#c9a227;opacity:0.07}" &
 			    "</style>" &
 			    "<div class='ey'><i></i>Guilds &#183; Monsters &#183; Quests &#183; Gold<i></i></div>" &
 			    "<div class='t'>THE REALM CHRONICLE</div>" &
 			    "<div class='n'>Across <b class='k'>" & _realms & " realms</b>, <b class='m'>" & _heroes & " adventurers</b> of " & _guilds & " guilds slew <b class='r'>" & _fSlain & " monsters</b> &#8212; <b class='r'>" & _fBoss & "</b> of them bosses &#8212; claimed <b class='k'>" & _fBounty & " gold</b> in bounties, and moved <b class='g'>" & _fTrade & " gold</b> through the Grand Exchange. <span class='m'>" & _y0 & " &#8211; " & _y1 & "</span></div>" &
 			    "<div class='sw'>&#9876;</div>" &
 			    "</div></foreignObject>" &
-			    "<circle cx='1614' cy='46' r='6' fill='#2ecc71'><animate attributeName='r' values='5;8;5' dur='1.6s' repeatCount='indefinite'/><animate attributeName='opacity' values='1;0.45;1' dur='1.6s' repeatCount='indefinite'/></circle>" &
-			    "<text x='1630' y='51' font-family='Segoe UI,Arial,sans-serif' font-size='13' letter-spacing='2' fill='#8aa0c0'>THE REALM ENDURES</text>" &
+			    "<circle cx='1614' cy='48' r='7' fill='#2ecc71'><animate attributeName='r' values='6;9;6' dur='1.6s' repeatCount='indefinite'/><animate attributeName='opacity' values='1;0.45;1' dur='1.6s' repeatCount='indefinite'/></circle>" &
+			    "<text x='1632' y='54' font-family='Segoe UI,Arial,sans-serif' font-size='16' letter-spacing='2' fill='#8aa0c0'>THE REALM ENDURES</text>" &
 			    "</svg>"
 		displayFolder: Intro
 		lineageTag: bbda5642-29c2-4543-8d49-a2c05dfac969
 		dataCategory: ImageUrl
 
-	/// HTML-in-SVG strip of four stat tiles, one per fact table (kills, bounties, loot, exchange), each with a year-over-year chip for the latest year. ImageUrl measure; host in an Image visual, 1840x224.
+	/// HTML-in-SVG strip of four stat tiles, one per fact table (kills, bounties, loot, exchange), each with a year-over-year chip for the latest year. ImageUrl measure; host in an Image visual.
 	measure 'Intro Ledgers HTML' =
 			VAR _y1 = MAX ( DimDate[Year] )
 			VAR _y0 = _y1 - 1
@@ -67,20 +67,20 @@ table _HTML
 			VAR _leg = CALCULATE ( [Total DropCount], DimItem[Rarity] = "Legendary" )
 			RETURN
 			    "data:image/svg+xml;utf8," &
-			    "<svg xmlns='http://www.w3.org/2000/svg' width='1840' height='224' viewBox='0 0 1840 224'>" &
-			    "<foreignObject x='0' y='0' width='1840' height='224'>" &
+			    "<svg xmlns='http://www.w3.org/2000/svg' width='1152' height='152' viewBox='0 0 1840 243'>" &
+			    "<foreignObject x='0' y='0' width='1840' height='243'>" &
 			    "<div xmlns='http://www.w3.org/1999/xhtml' class='l'>" &
 			    "<style>" &
-			    ".l{width:1840px;height:224px;box-sizing:border-box;display:grid;grid-template-columns:repeat(4,1fr);column-gap:24px;font-family:Segoe UI,Arial,sans-serif;color:#e8edf5}" &
-			    ".l .c{position:relative;box-sizing:border-box;height:224px;border-radius:14px;background:linear-gradient(180deg,#172136,#0d1422);border:1px solid #2a3953;padding:22px 26px;overflow:hidden}" &
-			    ".l .bar{position:absolute;left:0;top:0;right:0;height:4px}" &
-			    ".l .top{display:flex;align-items:center;justify-content:space-between;height:34px}" &
-			    ".l .ic{font-size:30px;line-height:1}" &
-			    ".l .ch{font-size:13px;font-weight:600;padding:4px 10px;border-radius:999px;background:#12301f;color:#6fd49b}" &
+			    ".l{width:1840px;height:243px;box-sizing:border-box;display:grid;grid-template-columns:repeat(4,1fr);column-gap:26px;font-family:Segoe UI,Arial,sans-serif;color:#e8edf5}" &
+			    ".l .c{position:relative;box-sizing:border-box;height:243px;border-radius:14px;background:linear-gradient(180deg,#172136,#0d1422);border:1px solid #2a3953;padding:22px 26px;overflow:hidden}" &
+			    ".l .bar{position:absolute;left:0;top:0;right:0;height:5px}" &
+			    ".l .top{display:flex;align-items:center;justify-content:space-between;height:36px}" &
+			    ".l .ic{font-size:32px;line-height:1}" &
+			    ".l .ch{font-size:16px;font-weight:600;padding:4px 11px;border-radius:999px;background:#12301f;color:#6fd49b}" &
 			    ".l .dn{background:#3a1616;color:#ff7b7b}" &
-			    ".l .v{font-size:54px;font-weight:700;line-height:1;margin-top:14px;font-variant-numeric:tabular-nums}" &
-			    ".l .lb{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#8aa0c0;margin-top:10px}" &
-			    ".l .sb{font-size:15px;color:#b9c6da;margin-top:6px}" &
+			    ".l .v{font-size:58px;font-weight:700;line-height:1;margin-top:14px;font-variant-numeric:tabular-nums}" &
+			    ".l .lb{font-size:16px;letter-spacing:2px;text-transform:uppercase;color:#8aa0c0;margin-top:10px}" &
+			    ".l .sb{font-size:18px;color:#b9c6da;margin-top:6px}" &
 			    "</style>" &
 			    "<div class='c'><div class='bar' style='background:#ff7b7b'></div><div class='top'><span class='ic'>&#9876;</span>" & _kc & "</div><div class='v' style='color:#ff7b7b'>" & _kv & "</div><div class='lb'>Monsters slain</div><div class='sb'>" & FORMAT ( [Total PartyWipes], "#,0" ) & " party wipes" & "</div></div>" &
 			    "<div class='c'><div class='bar' style='background:#f4d770'></div><div class='top'><span class='ic'>&#x1F4DC;</span>" & _bc & "</div><div class='v' style='color:#f4d770'>" & _bv & "</div><div class='lb'>Gold in bounties</div><div class='sb'>" & FORMAT ( [Total QuestsCompleted], "#,0" ) & " quests completed" & "</div></div>" &
@@ -91,7 +91,7 @@ table _HTML
 		lineageTag: 184a574a-8c95-4fd4-8d39-53c6bc552bb0
 		dataCategory: ImageUrl
 
-	/// HTML-in-SVG leaderboard of the top five slayers: rank medal, name, class, guild and rank, kills with a relative bar. Respects outer filters via ALLSELECTED. ImageUrl measure; host in an Image visual, 896x392.
+	/// HTML-in-SVG leaderboard of the top five slayers: rank medal, name, class, guild and rank, kills with a relative bar. Respects outer filters via ALLSELECTED. ImageUrl measure; host in an Image visual.
 	measure 'Intro Legends HTML' =
 			VAR _N = 5
 			VAR _A =
@@ -121,20 +121,20 @@ table _HTML
 			    )
 			RETURN
 			    "data:image/svg+xml;utf8," &
-			    "<svg xmlns='http://www.w3.org/2000/svg' width='896' height='392' viewBox='0 0 896 392'>" &
-			    "<foreignObject x='0' y='0' width='896' height='392'>" &
+			    "<svg xmlns='http://www.w3.org/2000/svg' width='568' height='272' viewBox='0 0 896 429'>" &
+			    "<foreignObject x='0' y='0' width='896' height='429'>" &
 			    "<div xmlns='http://www.w3.org/1999/xhtml' class='lg'>" &
 			    "<style>" &
-			    ".lg{width:896px;height:392px;box-sizing:border-box;border-radius:16px;border:2px solid #c9a227;background:linear-gradient(180deg,#1b2436,#0d1422);padding:20px 26px;font-family:Segoe UI,Arial,sans-serif;color:#e8edf5}" &
-			    ".lg .hd{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid #2c3a52;padding-bottom:10px;margin-bottom:4px}" &
-			    ".lg .ttl{font-family:Georgia,Cambria,serif;font-size:24px;font-weight:700;letter-spacing:3px;color:#e8c349}" &
-			    ".lg .sub{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#8aa0c0}" &
-			    ".lg .r{display:grid;grid-template-columns:44px 1fr 250px;align-items:center;column-gap:16px;padding:10px 0;border-bottom:1px solid #1b243a}" &
-			    ".lg .md{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#0d1422}" &
+			    ".lg{width:896px;height:429px;box-sizing:border-box;border-radius:16px;border:2px solid #c9a227;background:linear-gradient(180deg,#1b2436,#0d1422);padding:20px 28px 24px;font-family:Segoe UI,Arial,sans-serif;color:#e8edf5;display:flex;flex-direction:column}" &
+			    ".lg .hd{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid #2c3a52;padding-bottom:10px;margin-bottom:8px}" &
+			    ".lg .ttl{font-family:Georgia,Cambria,serif;font-size:26px;font-weight:700;letter-spacing:3px;color:#e8c349}" &
+			    ".lg .sub{font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#8aa0c0}" &
+			    ".lg .r{flex:1;display:grid;grid-template-columns:46px 1fr 250px;align-items:center;column-gap:16px;padding:5px 0;border-bottom:1px solid #1b243a}.lg .r:last-child{border-bottom:none}" &
+			    ".lg .md{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;color:#0d1422}" &
 			    ".lg .nm{font-size:18px;font-weight:600}" &
-			    ".lg .gd{font-size:13px;color:#8aa0c0;margin-top:2px}" &
+			    ".lg .gd{font-size:14px;color:#8aa0c0;margin-top:1px}" &
 			    ".lg .kv{text-align:right;font-size:20px;font-weight:700;color:#ff8a8a;font-variant-numeric:tabular-nums}" &
-			    ".lg .bb{height:6px;background:#1f2a3d;border-radius:4px;overflow:hidden;margin-top:6px}" &
+			    ".lg .bb{height:7px;background:#1f2a3d;border-radius:4px;overflow:hidden;margin-top:6px}" &
 			    ".lg .bb span{display:block;height:100%;background:linear-gradient(90deg,#b8322f,#ff8a8a)}" &
 			    "</style>" &
 			    "<div class='hd'><div class='ttl'>&#9819; HALL OF LEGENDS</div><div class='sub'>Top slayers &#183; all time</div></div>" &
@@ -144,7 +144,7 @@ table _HTML
 		lineageTag: 0ef160a8-3762-4a0d-8b31-cc93d7b8652b
 		dataCategory: ImageUrl
 
-	/// HTML-in-SVG roll of the four raid bosses: kills, and deadliness as party wipes per 1,000 kills with a relative bar, accented by habitat. ImageUrl measure; host in an Image visual, 896x392.
+	/// HTML-in-SVG roll of the four raid bosses: kills, and deadliness as party wipes per 1,000 kills with a relative bar, accented by habitat. ImageUrl measure; host in an Image visual.
 	measure 'Intro Bosses HTML' =
 			VAR _B =
 			    ADDCOLUMNS (
@@ -174,22 +174,22 @@ table _HTML
 			    )
 			RETURN
 			    "data:image/svg+xml;utf8," &
-			    "<svg xmlns='http://www.w3.org/2000/svg' width='896' height='392' viewBox='0 0 896 392'>" &
-			    "<foreignObject x='0' y='0' width='896' height='392'>" &
+			    "<svg xmlns='http://www.w3.org/2000/svg' width='568' height='272' viewBox='0 0 896 429'>" &
+			    "<foreignObject x='0' y='0' width='896' height='429'>" &
 			    "<div xmlns='http://www.w3.org/1999/xhtml' class='bs'>" &
 			    "<style>" &
-			    ".bs{width:896px;height:392px;box-sizing:border-box;border-radius:16px;border:2px solid #7a2a2a;background:linear-gradient(180deg,#221521,#0e0c16);padding:20px 26px;font-family:Segoe UI,Arial,sans-serif;color:#e8edf5}" &
-			    ".bs .hd{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid #3a2436;padding-bottom:10px;margin-bottom:10px}" &
-			    ".bs .ttl{font-family:Georgia,Cambria,serif;font-size:24px;font-weight:700;letter-spacing:3px;color:#ff7a6b}" &
-			    ".bs .sub{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#a58aa0}" &
-			    ".bs .b{display:grid;grid-template-columns:52px 1fr 240px;align-items:center;column-gap:14px;padding:8px 14px;margin-bottom:8px;background:rgba(255,255,255,0.03);border-radius:8px}" &
-			    ".bs .ic{font-size:34px;line-height:1;text-align:center}" &
-			    ".bs .nm{font-size:18px;font-weight:700}" &
-			    ".bs .mt{font-size:13px;color:#a58aa0;margin-top:2px}" &
-			    ".bs .kv{text-align:right;font-size:18px;font-weight:700;font-variant-numeric:tabular-nums}" &
-			    ".bs .kv .u{font-size:12px;font-weight:400;color:#a58aa0}" &
-			    ".bs .dl{text-align:right;font-size:12px;color:#c9a9c4;margin-top:2px}" &
-			    ".bs .bb{height:6px;background:#2a1f2c;border-radius:4px;overflow:hidden;margin-top:5px}" &
+			    ".bs{width:896px;height:429px;box-sizing:border-box;border-radius:16px;border:2px solid #7a2a2a;background:linear-gradient(180deg,#221521,#0e0c16);padding:20px 28px 24px;font-family:Segoe UI,Arial,sans-serif;color:#e8edf5;display:flex;flex-direction:column}" &
+			    ".bs .hd{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid #3a2436;padding-bottom:10px;margin-bottom:8px}" &
+			    ".bs .ttl{font-family:Georgia,Cambria,serif;font-size:26px;font-weight:700;letter-spacing:3px;color:#ff7a6b}" &
+			    ".bs .sub{font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#a58aa0}" &
+			    ".bs .b{flex:1;display:grid;grid-template-columns:54px 1fr 240px;align-items:center;column-gap:14px;padding:9px 14px;margin-bottom:9px;background:rgba(255,255,255,0.03);border-radius:8px}" &
+			    ".bs .b:last-child{margin-bottom:0}.bs .ic{font-size:36px;line-height:1;text-align:center}" &
+			    ".bs .nm{font-size:20px;font-weight:700}" &
+			    ".bs .mt{font-size:15px;color:#a58aa0;margin-top:2px}" &
+			    ".bs .kv{text-align:right;font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}" &
+			    ".bs .kv .u{font-size:14px;font-weight:400;color:#a58aa0}" &
+			    ".bs .dl{text-align:right;font-size:14px;color:#c9a9c4;margin-top:2px}" &
+			    ".bs .bb{height:7px;background:#2a1f2c;border-radius:4px;overflow:hidden;margin-top:5px}" &
 			    ".bs .bb span{display:block;height:100%}" &
 			    "</style>" &
 			    "<div class='hd'><div class='ttl'>&#9760; THE BOSS ROLL</div><div class='sub'>Raid targets &#183; deadliness</div></div>" &
@@ -197,6 +197,200 @@ table _HTML
 			    "</div></foreignObject></svg>"
 		displayFolder: Intro
 		lineageTag: 0d2bb0d5-f1d6-4b34-ae0d-61b50a5f5319
+		dataCategory: ImageUrl
+
+	/// HTML-in-SVG header for the Bestiary page: the title, and monster kills split by kind (Field, Elite, Boss) with the number of creatures catalogued. ImageUrl measure; host in an Image visual.
+	measure 'Bestiary Header HTML' =
+			VAR _f = CALCULATE ( [Total MonstersSlain], DimMonster[Kind] = "Field" )
+			VAR _e = CALCULATE ( [Total MonstersSlain], DimMonster[Kind] = "Elite" )
+			VAR _b = CALCULATE ( [Total MonstersSlain], DimMonster[Kind] = "Boss" )
+			VAR _n = COUNTROWS ( DimMonster )
+			VAR _fv = IF ( _f >= 1000000, FORMAT ( _f / 1000000, "0.0" ) & "M", IF ( _f >= 1000, FORMAT ( _f / 1000, "0.0" ) & "K", FORMAT ( _f, "#,0" ) ) )
+			VAR _ev = IF ( _e >= 1000000, FORMAT ( _e / 1000000, "0.0" ) & "M", IF ( _e >= 1000, FORMAT ( _e / 1000, "0.0" ) & "K", FORMAT ( _e, "#,0" ) ) )
+			VAR _bv = IF ( _b >= 1000000, FORMAT ( _b / 1000000, "0.0" ) & "M", IF ( _b >= 1000, FORMAT ( _b / 1000, "0.0" ) & "K", FORMAT ( _b, "#,0" ) ) )
+			RETURN
+			    "data:image/svg+xml;utf8," &
+			    "<svg xmlns='http://www.w3.org/2000/svg' width='1152' height='96' viewBox='0 0 1840 153'>" &
+			    "<foreignObject x='0' y='0' width='1840' height='153'>" &
+			    "<div xmlns='http://www.w3.org/1999/xhtml' class='hb'>" &
+			    "<style>" &
+			    ".hb{width:1840px;height:153px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;padding:0 44px;border-radius:16px;border:2px solid #c9a227;background:radial-gradient(ellipse at 10% 0%,#3d2c10 0%,transparent 60%),linear-gradient(180deg,#161f31,#0a0f1a);font-family:Segoe UI,Arial,sans-serif;color:#e8edf5}" &
+			    ".hb .ey{font-size:16px;letter-spacing:5px;text-transform:uppercase;color:#c9a227}" &
+			    ".hb .t{font-family:Georgia,Cambria,serif;font-size:60px;font-weight:700;letter-spacing:8px;line-height:1.05;color:#f0cf5e;text-shadow:0 0 24px rgba(232,195,73,0.3),0 3px 0 #5e470f;margin-top:4px}" &
+			    ".hb .ks{display:flex;gap:16px}" &
+			    ".hb .k{box-sizing:border-box;min-width:180px;padding:14px 20px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid #2a3953}" &
+			    ".hb .v{font-size:34px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}" &
+			    ".hb .l{font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#8aa0c0;margin-top:7px}" &
+			    ".hb .l i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:8px}" &
+			    "</style>" &
+			    "<div><div class='ey'>The Hunt &#183; a field guide to the realm</div><div class='t'>THE BESTIARY</div></div>" &
+			    "<div class='ks'>" &
+			    "<div class='k'><div class='v' style='color:#8fcf97'>" & _fv & "</div><div class='l'><i style='background:#8fcf97'></i>Field slain</div></div>" &
+			    "<div class='k'><div class='v' style='color:#c89bff'>" & _ev & "</div><div class='l'><i style='background:#c89bff'></i>Elite slain</div></div>" &
+			    "<div class='k'><div class='v' style='color:#ff7b7b'>" & _bv & "</div><div class='l'><i style='background:#ff7b7b'></i>Boss slain</div></div>" &
+			    "<div class='k'><div class='v' style='color:#e8c349'>" & _n & "</div><div class='l'><i style='background:#e8c349'></i>Creatures</div></div>" &
+			    "</div></div></foreignObject></svg>"
+		displayFolder: Bestiary
+		lineageTag: be23df23-8024-5e66-9c24-9d8d2ddbaa38
+		dataCategory: ImageUrl
+
+	/// HTML-in-SVG field guide: all creatures as cards grouped Boss, Elite, Field, each with family, habitat, tier, kills and party wipes per 1,000 kills, ordered by kills. ImageUrl measure; host in an Image visual.
+	measure 'Bestiary Creatures HTML' =
+			VAR _M =
+			    ADDCOLUMNS (
+			        SUMMARIZE ( ALLSELECTED ( DimMonster ), DimMonster[MonsterKey], DimMonster[Monster], DimMonster[Kind], DimMonster[Family], DimMonster[Tier], DimMonster[Habitat] ),
+			        "@kills", [Total MonstersSlain],
+			        "@wipes", [Total PartyWipes]
+			    )
+			VAR _boss =
+			    CONCATENATEX (
+			        FILTER ( _M, DimMonster[Kind] = "Boss" ),
+			        VAR _nm = SUBSTITUTE ( DimMonster[Monster], "&", "&amp;" )
+			        VAR _ic = SWITCH ( DimMonster[Monster], "Mossback Gnoll", "&#x1F43A;", "Cinder Rat", "&#x1F400;", "Grave Tick", "&#x1F577;", "Sparkmite Swarm", "&#x2728;", "Thorn Sprite", "&#x1F33F;", "Gloamrat Pack", "&#x1F401;", "Bog Shambler", "&#x1F9DF;", "Dustwing Harpy", "&#x1F985;", "Rimefang Wolf", "&#x1F43A;", "Brine Lurker", "&#x1F991;", "Glass Scarab", "&#x1FAB2;", "Emberhound", "&#x1F525;", "Verdant Creeper", "&#x1F331;", "Frostgale Imp", "&#x1F47A;", "Hexwisp", "&#x1F47B;", "Ashen Ghoul", "&#x1F9DF;", "Mudlarker Troll", "&#x1F479;", "Salt Wraith", "&#x1F47B;", "Rust Golemling", "&#x1F5FF;", "Spinevine Stalker", "&#x1F335;", "Ironjaw Chimera", "&#x1F981;", "Widow of Hollowmere", "&#x1F578;", "Sunder Elemental", "&#x1F30B;", "Brinelord Serpent", "&#x1F40D;", "Palefrost Revenant", "&#x2744;", "Obsidian Sentinel", "&#x1F5FF;", "Duskmaw Alpha", "&#x1F43A;", "Thornking Dryad", "&#x1F333;", "Emberfang the Wyrm", "&#x1F409;", "Vorrak, Hollow Crown", "&#x1F608;", "Glacius Rimeheart", "&#x1F432;", "The Verdant Maw", "&#x1F40A;", "&#9760;" )
+			        VAR _acc = SWITCH ( DimMonster[Habitat], "Emberwaste", "#ff7a45", "Hollowmere", "#b98cff", "Thornveil", "#7fd08a", "Saltreach", "#5cc8d6", "Gloamspire", "#8f9dff", "Frosthollow", "#7cc8ff", "Ashfall Reach", "#d9a066", "Verdant Deep", "#5fd48a", "#8aa0c0" )
+			        VAR _rate = DIVIDE ( [@wipes], [@kills] ) * 1000
+			        RETURN
+			            "<div class='cd boss' style='border-left-color:" & _acc & "'>" &
+			            "<div class='ic'>" & _ic & "</div>" &
+			            "<div class='bd'><div class='nm' style='color:" & _acc & "'>" & _nm & "</div>" &
+			            "<div class='mt'>" & DimMonster[Family] & " &#183; " & DimMonster[Habitat] & "</div>" &
+			            "<div class='ft'><span class='st'>" & REPT ( "&#9733;", DimMonster[Tier] ) & "</span>" &
+			            "<span class='kv'>" & FORMAT ( [@kills], "#,0" ) & "<span class='u'> slain</span><span class='dl'> &#183; " & FORMAT ( _rate, "0.0" ) & "/1k</span></span></div></div>" &
+			            "</div>",
+			        "",
+			        [@kills], DESC
+			    )
+			VAR _elite =
+			    CONCATENATEX (
+			        FILTER ( _M, DimMonster[Kind] = "Elite" ),
+			        VAR _nm = SUBSTITUTE ( DimMonster[Monster], "&", "&amp;" )
+			        VAR _ic = SWITCH ( DimMonster[Monster], "Mossback Gnoll", "&#x1F43A;", "Cinder Rat", "&#x1F400;", "Grave Tick", "&#x1F577;", "Sparkmite Swarm", "&#x2728;", "Thorn Sprite", "&#x1F33F;", "Gloamrat Pack", "&#x1F401;", "Bog Shambler", "&#x1F9DF;", "Dustwing Harpy", "&#x1F985;", "Rimefang Wolf", "&#x1F43A;", "Brine Lurker", "&#x1F991;", "Glass Scarab", "&#x1FAB2;", "Emberhound", "&#x1F525;", "Verdant Creeper", "&#x1F331;", "Frostgale Imp", "&#x1F47A;", "Hexwisp", "&#x1F47B;", "Ashen Ghoul", "&#x1F9DF;", "Mudlarker Troll", "&#x1F479;", "Salt Wraith", "&#x1F47B;", "Rust Golemling", "&#x1F5FF;", "Spinevine Stalker", "&#x1F335;", "Ironjaw Chimera", "&#x1F981;", "Widow of Hollowmere", "&#x1F578;", "Sunder Elemental", "&#x1F30B;", "Brinelord Serpent", "&#x1F40D;", "Palefrost Revenant", "&#x2744;", "Obsidian Sentinel", "&#x1F5FF;", "Duskmaw Alpha", "&#x1F43A;", "Thornking Dryad", "&#x1F333;", "Emberfang the Wyrm", "&#x1F409;", "Vorrak, Hollow Crown", "&#x1F608;", "Glacius Rimeheart", "&#x1F432;", "The Verdant Maw", "&#x1F40A;", "&#9760;" )
+			        VAR _acc = SWITCH ( DimMonster[Habitat], "Emberwaste", "#ff7a45", "Hollowmere", "#b98cff", "Thornveil", "#7fd08a", "Saltreach", "#5cc8d6", "Gloamspire", "#8f9dff", "Frosthollow", "#7cc8ff", "Ashfall Reach", "#d9a066", "Verdant Deep", "#5fd48a", "#8aa0c0" )
+			        VAR _rate = DIVIDE ( [@wipes], [@kills] ) * 1000
+			        RETURN
+			            "<div class='cd elite' style='border-left-color:" & _acc & "'>" &
+			            "<div class='ic'>" & _ic & "</div>" &
+			            "<div class='bd'><div class='nm' style='color:" & _acc & "'>" & _nm & "</div>" &
+			            "<div class='mt'>" & DimMonster[Family] & " &#183; " & DimMonster[Habitat] & "</div>" &
+			            "<div class='ft'><span class='st'>" & REPT ( "&#9733;", DimMonster[Tier] ) & "</span>" &
+			            "<span class='kv'>" & FORMAT ( [@kills], "#,0" ) & "<span class='u'> slain</span><span class='dl'> &#183; " & FORMAT ( _rate, "0.0" ) & "/1k</span></span></div></div>" &
+			            "</div>",
+			        "",
+			        [@kills], DESC
+			    )
+			VAR _field =
+			    CONCATENATEX (
+			        FILTER ( _M, DimMonster[Kind] = "Field" ),
+			        VAR _nm = SUBSTITUTE ( DimMonster[Monster], "&", "&amp;" )
+			        VAR _ic = SWITCH ( DimMonster[Monster], "Mossback Gnoll", "&#x1F43A;", "Cinder Rat", "&#x1F400;", "Grave Tick", "&#x1F577;", "Sparkmite Swarm", "&#x2728;", "Thorn Sprite", "&#x1F33F;", "Gloamrat Pack", "&#x1F401;", "Bog Shambler", "&#x1F9DF;", "Dustwing Harpy", "&#x1F985;", "Rimefang Wolf", "&#x1F43A;", "Brine Lurker", "&#x1F991;", "Glass Scarab", "&#x1FAB2;", "Emberhound", "&#x1F525;", "Verdant Creeper", "&#x1F331;", "Frostgale Imp", "&#x1F47A;", "Hexwisp", "&#x1F47B;", "Ashen Ghoul", "&#x1F9DF;", "Mudlarker Troll", "&#x1F479;", "Salt Wraith", "&#x1F47B;", "Rust Golemling", "&#x1F5FF;", "Spinevine Stalker", "&#x1F335;", "Ironjaw Chimera", "&#x1F981;", "Widow of Hollowmere", "&#x1F578;", "Sunder Elemental", "&#x1F30B;", "Brinelord Serpent", "&#x1F40D;", "Palefrost Revenant", "&#x2744;", "Obsidian Sentinel", "&#x1F5FF;", "Duskmaw Alpha", "&#x1F43A;", "Thornking Dryad", "&#x1F333;", "Emberfang the Wyrm", "&#x1F409;", "Vorrak, Hollow Crown", "&#x1F608;", "Glacius Rimeheart", "&#x1F432;", "The Verdant Maw", "&#x1F40A;", "&#9760;" )
+			        VAR _acc = SWITCH ( DimMonster[Habitat], "Emberwaste", "#ff7a45", "Hollowmere", "#b98cff", "Thornveil", "#7fd08a", "Saltreach", "#5cc8d6", "Gloamspire", "#8f9dff", "Frosthollow", "#7cc8ff", "Ashfall Reach", "#d9a066", "Verdant Deep", "#5fd48a", "#8aa0c0" )
+			        VAR _rate = DIVIDE ( [@wipes], [@kills] ) * 1000
+			        RETURN
+			            "<div class='cd field' style='border-left-color:" & _acc & "'>" &
+			            "<div class='ic'>" & _ic & "</div>" &
+			            "<div class='bd'><div class='nm' style='color:" & _acc & "'>" & _nm & "</div>" &
+			            "<div class='mt'>" & DimMonster[Family] & " &#183; " & DimMonster[Habitat] & "</div>" &
+			            "<div class='ft'><span class='st'>" & REPT ( "&#9733;", DimMonster[Tier] ) & "</span>" &
+			            "<span class='kv'>" & FORMAT ( [@kills], "#,0" ) & "<span class='u'> slain</span><span class='dl'> &#183; " & FORMAT ( _rate, "0.0" ) & "/1k</span></span></div></div>" &
+			            "</div>",
+			        "",
+			        [@kills], DESC
+			    )
+			RETURN
+			    "data:image/svg+xml;utf8," &
+			    "<svg xmlns='http://www.w3.org/2000/svg' width='856' height='560' viewBox='0 0 1400 916'>" &
+			    "<foreignObject x='0' y='0' width='1400' height='916'>" &
+			    "<div xmlns='http://www.w3.org/1999/xhtml' class='bg'>" &
+			    "<style>" &
+			    ".bg{width:1400px;height:916px;box-sizing:border-box;border-radius:16px;border:1px solid #2a3953;background:linear-gradient(180deg,#141d2f,#0c1220);padding:18px 20px;font-family:Segoe UI,Arial,sans-serif;color:#e8edf5;overflow:hidden}" &
+			    ".bg .sh{display:flex;align-items:center;gap:12px;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:#8aa0c0;margin:2px 0 8px}" &
+			    ".bg .sh i{flex:1;height:1px;background:#2a3953}" &
+			    ".bg .sh b{font-weight:600;color:#c9d6ea;letter-spacing:1px}" &
+			    ".bg .row{display:grid;gap:10px;margin-bottom:12px}" &
+			    ".bg .r4{grid-template-columns:repeat(4,1fr)}.bg .r5{grid-template-columns:repeat(5,1fr)}" &
+			    ".bg .cd{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:12px;box-sizing:border-box;border-radius:10px;background:rgba(255,255,255,0.035);border:1px solid #243149;border-left-width:3px;padding:0 14px;overflow:hidden}" &
+			    ".bg .boss{height:132px}.bg .elite{height:96px}.bg .field{height:84px}" &
+			    ".bg .ic{line-height:1;text-align:center}.bg .boss .ic{font-size:44px}.bg .elite .ic{font-size:32px}.bg .field .ic{font-size:28px}" &
+			    ".bg .bd{min-width:0}" &
+			    ".bg .nm{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" &
+			    ".bg .boss .nm{font-size:19px}.bg .elite .nm{font-size:16px}.bg .field .nm{font-size:15px;font-weight:600}" &
+			    ".bg .mt{font-size:12px;color:#8aa0c0;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" &
+			    ".bg .ft{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-top:5px}" &
+			    ".bg .st{font-size:11px;color:#c9a227;letter-spacing:1px;white-space:nowrap}" &
+			    ".bg .kv{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}.bg .boss .kv{font-size:18px}.bg .elite .kv{font-size:15px}.bg .field .kv{font-size:14px}" &
+			    ".bg .kv .u{font-weight:400;font-size:12px;color:#8aa0c0}.bg .kv .dl{font-weight:400;font-size:12px;color:#c9a9c4}" &
+			    "</style>" &
+			    "<div class='sh'><span>Bosses</span><i></i><b>" & COUNTROWS ( FILTER ( _M, DimMonster[Kind] = "Boss" ) ) & "</b></div>" &
+			    "<div class='row r4'>" & _boss & "</div>" &
+			    "<div class='sh'><span>Elites</span><i></i><b>" & COUNTROWS ( FILTER ( _M, DimMonster[Kind] = "Elite" ) ) & "</b></div>" &
+			    "<div class='row r4'>" & _elite & "</div>" &
+			    "<div class='sh'><span>Field creatures</span><i></i><b>" & COUNTROWS ( FILTER ( _M, DimMonster[Kind] = "Field" ) ) & "</b></div>" &
+			    "<div class='row r5'>" & _field & "</div>" &
+			    "</div></foreignObject></svg>"
+		displayFolder: Bestiary
+		lineageTag: 0d90821d-6d2b-5ed6-8c4c-6e42b1589608
+		dataCategory: ImageUrl
+
+	/// HTML-in-SVG column of the six monster families: share of kills with a relative bar, kills and party wipes per 1,000 kills, then the single deadliest creature. ImageUrl measure; host in an Image visual.
+	measure 'Bestiary Families HTML' =
+			VAR _F =
+			    ADDCOLUMNS (
+			        SUMMARIZE ( ALLSELECTED ( DimMonster ), DimMonster[Family] ),
+			        "@kills", [Total MonstersSlain],
+			        "@wipes", [Total PartyWipes]
+			    )
+			VAR _Tot = SUMX ( _F, [@kills] )
+			VAR _Max = MAXX ( _F, [@kills] )
+			VAR _Rows =
+			    CONCATENATEX (
+			        _F,
+			        VAR _ic = SWITCH ( DimMonster[Family], "Beast", "&#x1F43A;", "Undead", "&#x1F480;", "Dragon", "&#x1F409;", "Elemental", "&#x1F525;", "Demon", "&#x1F608;", "Construct", "&#x1F5FF;", "&#9733;" )
+			        VAR _pct = INT ( DIVIDE ( [@kills], _Max ) * 100 )
+			        VAR _rate = DIVIDE ( [@wipes], [@kills] ) * 1000
+			        RETURN
+			            "<div class='f'><div class='fh'><span class='ic'>" & _ic & "</span><span class='fn'>" & DimMonster[Family] & "</span><span class='sh'>" & FORMAT ( DIVIDE ( [@kills], _Tot ), "0%" ) & "</span></div>" &
+			            "<div class='bb'><span style='width:" & _pct & "%'></span></div>" &
+			            "<div class='fm'>" & FORMAT ( [@kills], "#,0" ) & " slain &#183; " & FORMAT ( _rate, "0.0" ) & " wipes/1k</div></div>",
+			        "",
+			        [@kills], DESC
+			    )
+			VAR _D =
+			    ADDCOLUMNS (
+			        SUMMARIZE ( ALLSELECTED ( DimMonster ), DimMonster[Monster], DimMonster[Kind], DimMonster[Habitat] ),
+			        "@rate", DIVIDE ( [Total PartyWipes], [Total MonstersSlain] ) * 1000
+			    )
+			VAR _Top = TOPN ( 1, _D, [@rate], DESC )
+			VAR _dName = SUBSTITUTE ( MAXX ( _Top, DimMonster[Monster] ), "&", "&amp;" )
+			VAR _dMeta = MAXX ( _Top, DimMonster[Kind] ) & " &#183; " & MAXX ( _Top, DimMonster[Habitat] )
+			VAR _dRate = FORMAT ( MAXX ( _Top, [@rate] ), "0.0" )
+			RETURN
+			    "data:image/svg+xml;utf8," &
+			    "<svg xmlns='http://www.w3.org/2000/svg' width='280' height='560' viewBox='0 0 560 1120'>" &
+			    "<foreignObject x='0' y='0' width='560' height='1120'>" &
+			    "<div xmlns='http://www.w3.org/1999/xhtml' class='fa'>" &
+			    "<style>" &
+			    ".fa{width:560px;height:1120px;box-sizing:border-box;display:flex;flex-direction:column;border-radius:16px;border:1px solid #2a3953;background:linear-gradient(180deg,#141d2f,#0c1220);padding:26px 30px;font-family:Segoe UI,Arial,sans-serif;color:#e8edf5}" &
+			    ".fa .hd{font-family:Georgia,Cambria,serif;font-size:30px;font-weight:700;letter-spacing:3px;color:#e8c349;border-bottom:1px solid #2c3a52;padding-bottom:12px;margin-bottom:6px}" &
+			    ".fa .f{padding:15px 0;border-bottom:1px solid #1b243a}" &
+			    ".fa .fh{display:flex;align-items:center;gap:12px}" &
+			    ".fa .ic{font-size:30px;line-height:1}" &
+			    ".fa .fn{flex:1;font-size:24px;font-weight:600}" &
+			    ".fa .sh{font-size:24px;font-weight:700;color:#f4d770;font-variant-numeric:tabular-nums}" &
+			    ".fa .bb{height:9px;background:#1f2a3d;border-radius:5px;overflow:hidden;margin-top:10px}" &
+			    ".fa .bb span{display:block;height:100%;background:linear-gradient(90deg,#9a7a1c,#f4d770)}" &
+			    ".fa .fm{font-size:18px;color:#8aa0c0;margin-top:8px;font-variant-numeric:tabular-nums}" &
+			    ".fa .dd{margin-top:auto;border-radius:12px;border:1px solid #7a2a2a;background:linear-gradient(180deg,#2a1520,#170d16);padding:20px 22px}" &
+			    ".fa .dd .lb{font-size:15px;letter-spacing:3px;text-transform:uppercase;color:#ff7a6b}" &
+			    ".fa .dd .nm{font-size:28px;font-weight:700;margin-top:8px}" &
+			    ".fa .dd .mt{font-size:18px;color:#a58aa0;margin-top:4px}" &
+			    ".fa .dd .rt{font-size:22px;font-weight:700;color:#ff8a8a;margin-top:10px}" &
+			    "</style>" &
+			    "<div class='hd'>BY FAMILY</div>" &
+			    _Rows &
+			    "<div class='dd'><div class='lb'>&#9760; Deadliest creature</div><div class='nm'>" & _dName & "</div><div class='mt'>" & _dMeta & "</div><div class='rt'>" & _dRate & " wipes per 1k kills</div></div>" &
+			    "</div></foreignObject></svg>"
+		displayFolder: Bestiary
+		lineageTag: d636e082-6148-5458-864e-6b20cd849d89
 		dataCategory: ImageUrl
 
 	column _
@@ -207,4 +401,3 @@ table _HTML
 	partition _HTML = calculated
 		mode: import
 		source = ROW ( "_", "" )
-

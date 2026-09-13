@@ -56,8 +56,13 @@
       "type": "RegisteredResources",
       "items": [
         {
-          "name": "navRail-hunt.svg",
-          "path": "navRail-hunt.svg",
+          "name": "navRail-intro.svg",
+          "path": "navRail-intro.svg",
+          "type": "Image"
+        },
+        {
+          "name": "navRail-bestiary.svg",
+          "path": "navRail-bestiary.svg",
           "type": "Image"
         }
       ]

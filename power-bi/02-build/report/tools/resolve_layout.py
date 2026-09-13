@@ -25,9 +25,17 @@ def load(path=DS):
         return yaml.safe_load(f)
 
 
+def chrome_left(ds):
+    """Width of fixed page chrome on the left edge (a nav rail), from meta.chrome.left.
+    The 12x12 grid is laid out in the space to its right. Absent -> 0, so layouts without chrome
+    resolve exactly as before."""
+    return int((ds["meta"].get("chrome") or {}).get("left", 0))
+
+
 def cells(ds):
     g, p = ds["grid"], ds["meta"]["page"]
-    colW = (p["width"] - 2 * g["margin"] - g["gutter"] * (g["columns"] - 1)) / g["columns"]
+    avail_w = p["width"] - chrome_left(ds)
+    colW = (avail_w - 2 * g["margin"] - g["gutter"] * (g["columns"] - 1)) / g["columns"]
     rowH = (p["height"] - 2 * g["margin"] - g["gutter"] * (g["rows"] - 1)) / g["rows"]
     return colW, rowH
 
@@ -40,9 +48,10 @@ def region_px(ds, region):
     g = ds["grid"]
     colW, rowH = cells(ds)
     m, gut, snap = g["margin"], g["gutter"], g["snap"]
+    ox = chrome_left(ds) + m          # content starts after the chrome, then the margin
     c1, r1, c2, r2 = region
-    x1 = _snap(m + (c1 - 1) * (colW + gut), snap)
-    x2 = _snap(m + (c2 - 1) * (colW + gut) - gut, snap)
+    x1 = _snap(ox + (c1 - 1) * (colW + gut), snap)
+    x2 = _snap(ox + (c2 - 1) * (colW + gut) - gut, snap)
     y1 = _snap(m + (r1 - 1) * (rowH + gut), snap)
     y2 = _snap(m + (r2 - 1) * (rowH + gut) - gut, snap)
     return {"x": x1, "y": y1, "width": x2 - x1, "height": y2 - y1}

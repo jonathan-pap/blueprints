@@ -244,6 +244,22 @@ def register_image(item_name, content):
         json.dump(rep, open(rp, "w", encoding="utf-8", newline="\n"), indent=2)
 
 
+def unregister_image(item_name):
+    """Remove a registered image - the file and its report.json entry. Idempotent. Use when a page
+    is retired, or the resource lingers and ships with the report."""
+    rr = os.path.join(REPORT, "StaticResources", "RegisteredResources", item_name)
+    if os.path.isfile(rr):
+        os.remove(rr)
+    rp = os.path.join(REPORT, "definition", "report.json")
+    rep = json.load(open(rp, encoding="utf-8"))
+    for pkg in rep.get("resourcePackages", []):
+        if pkg.get("name") == "RegisteredResources":
+            kept = [i for i in pkg["items"] if i.get("name") != item_name]
+            if len(kept) != len(pkg["items"]):
+                pkg["items"] = kept
+                json.dump(rep, open(rp, "w", encoding="utf-8", newline="\n"), indent=2)
+
+
 def image_resource(name, rect, item_name, alt, z=100, tab=1):
     """Image visual showing a registered resource (see register_image). Binding shape from the
     room template ../examples/visuals/default/image.json. Data-driven images use image_svg()."""

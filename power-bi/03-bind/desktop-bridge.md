@@ -56,6 +56,13 @@ powerbi-desktop screenshot <pageId> --pid <pid> --wait-seconds 120 --output page
 powerbi-desktop screenshot-all --pid <pid> --wait-seconds 120 --settle 1500 --output-dir shots   # --settle ms before first capture
 ```
 
+> **`reload` refreshes the report, not changed measure DAX.** Verified 2026-09-13 on Realm Chronicle: after
+> editing an HTML-in-SVG measure body in TMDL, `reload` re-read the pages and visuals but kept rendering the
+> old DAX. When a build changes measure expressions, close Desktop and `open` it again. Two related
+> observations from the same session: `hasUnsavedChanges` turns `true` after a Modeling MCP data refresh —
+> that is the refresh, not user edits; and a `taskkill` on the pid `status` reports can miss the real
+> `PBIDesktop.exe` — list the process by image name to confirm it closed.
+
 Flags (v0.1.2): `open --timeout <s>` · `status|manifest --pid --wait-seconds` · `reload --pid --wait-seconds` ·
 `screenshot --pid --output --scale --wait-seconds` · `screenshot-all --pid --output-dir --scale --settle --wait-seconds`.
 **In the build workflow** this loop is step **B9a** (activate) → **B10** (render after each page) → **B12**

@@ -51,6 +51,7 @@ request, and the same contract renders on 720p or 1080p.
 |---|---|
 | `meta.page` | page size; **cell size derives from it** (query before placing — [page-dimensions.md](page-dimensions.md)) |
 | `meta.theme` | the theme that owns appearance (this file owns only dimensions) |
+| `meta.chrome.left` | optional — width of fixed page chrome on the left edge (a nav rail). The grid lays out to its right: content starts at `chrome.left + margin`. Absent = 0, so existing layouts resolve unchanged. Pick a width that keeps halves on the snap: on 1280 wide with margin 24 / gutter 16, `80` gives 1152px of content and two exact 568px halves (72 gives 576 + 568) |
 | `grid` | the **12×12 grid**: `columns`/`rows`/`gutter`/`margin`/`snap` — cell math in [layout-guidelines.md](layout-guidelines.md) |
 | `bands` | detail-gradient **row bands** ([detail-gradient.md](detail-gradient.md)) — a semantic label on rows, not geometry |
 | `defaults.<type>` | per-type default **span** `[cols,rows]` (+ `band:` hint, `type:` pin for slicers) |

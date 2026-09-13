@@ -51,14 +51,17 @@ def dark_canvas(page_dir):
 # page onward without a single dead link.
 PAGES = [
     {"id": "intro",    "display": "Intro",        "label": "INTRO",    "icon": "intro", "built": True},
-    {"id": "hunt",     "display": "The Hunt",     "label": "THE HUNT", "icon": "hunt",  "built": True},
+    {"id": "bestiary", "display": "The Bestiary", "label": "BESTIARY", "icon": "claw",  "built": True},
     {"id": "quests",   "display": "Quest Board",  "label": "QUESTS",   "icon": "quest", "built": False},
     {"id": "exchange", "display": "The Exchange", "label": "EXCHANGE", "icon": "trade", "built": False},
     {"id": "realms",   "display": "Realm Map",    "label": "REALMS",   "icon": "map",   "built": False},
 ]
 
-RAIL_W, RAIL_H = 88, 1080            # fixed chrome, outside the content grid (recorded in overrides:)
-ITEM_TOP, ITEM_STEP, ITEM_H = 104, 88, 72   # every edge a multiple of the 8px snap
+# Rail size comes FROM design-system.yaml - width is meta.chrome.left (the same number the grid resolver
+# offsets content by), height is the page. One source, so the rail and the grid can't drift apart.
+RAIL_W = int(K.DS["meta"]["chrome"]["left"])
+RAIL_H = int(K.DS["meta"]["page"]["height"])
+ITEM_TOP, ITEM_STEP, ITEM_H = 72, 64, 56    # sized for 720 high; every edge a multiple of the 8px snap
 GOLD, MUTED, DIM = "#e8c349", "#8aa0c0", "#3a4a66"
 
 # 24-unit line icons - the same set as the approved mockup.
@@ -66,6 +69,7 @@ ICONS = {
     "crest": ["M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z", "M8.5 12.5l2.5 2.5 4.5-5"],
     "intro": ["M3 18h18", "M4 18L3 8l5 4 4-6 4 6 5-4-1 10"],
     "hunt":  ["M5 3l12 12", "M19 3L7 15", "M4 16l4 4", "M16 20l4-4"],
+    "claw":  ["M9 3c1.5 6 0 12-4 18", "M14.5 3c1.5 6 0 12-4 18", "M20 3c1.5 6 0 12-4 18"],
     "quest": ["M7 4h11a2 2 0 010 4H9", "M7 4a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V8", "M9 12h6M9 15.5h6"],
     "trade": ["M12 4v16M8 20h8M5 7h14", "M5 7l-3 6a3 3 0 006 0z", "M19 7l-3 6a3 3 0 006 0z"],
     "map":   ["M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z", "M9 4v14M15 6v14"],
@@ -89,22 +93,23 @@ def rail_svg(active_id):
          "</defs>",
          "<rect width='%d' height='%d' fill='url(#bg)'/>" % (RAIL_W, RAIL_H),
          "<rect x='%d' y='0' width='1' height='%d' fill='#2a3953'/>" % (RAIL_W - 1, RAIL_H),
-         _icon("crest", 30, 30, 28, GOLD),
-         "<rect x='26' y='80' width='36' height='1' fill='#2a3953'/>"]
+         _icon("crest", (RAIL_W - 24) // 2, 18, 24, GOLD),
+         "<rect x='%d' y='58' width='32' height='1' fill='#2a3953'/>" % ((RAIL_W - 32) // 2)]
+    cx = RAIL_W // 2
     for i, pg in enumerate(PAGES):
         y = ITEM_TOP + i * ITEM_STEP
         active = pg["id"] == active_id
         colour = GOLD if active else (MUTED if pg["built"] else DIM)
         if active:
             p += ["<rect x='0' y='%d' width='%d' height='%d' fill='url(#wash)'/>" % (y, RAIL_W, ITEM_H),
-                  "<rect x='0' y='%d' width='8' height='%d' fill='#e8c349' opacity='0.16'/>" % (y + 6, ITEM_H - 12),
-                  "<rect x='0' y='%d' width='3' height='%d' rx='1.5' fill='#e8c349'/>" % (y + 10, ITEM_H - 20)]
-        p.append(_icon(pg["icon"], 33, y + 13, 22, colour))
-        p.append("<text x='44' y='%d' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='9.5' "
-                 "font-weight='600' letter-spacing='1' fill='%s'>%s</text>" % (y + 57, colour, pg["label"]))
+                  "<rect x='0' y='%d' width='6' height='%d' fill='#e8c349' opacity='0.16'/>" % (y + 5, ITEM_H - 10),
+                  "<rect x='0' y='%d' width='3' height='%d' rx='1.5' fill='#e8c349'/>" % (y + 8, ITEM_H - 16)]
+        p.append(_icon(pg["icon"], cx - 9, y + 8, 18, colour))
+        p.append("<text x='%d' y='%d' text-anchor='middle' font-family='Segoe UI,Arial,sans-serif' font-size='8' "
+                 "font-weight='600' letter-spacing='0.8' fill='%s'>%s</text>" % (cx, y + 43, colour, pg["label"]))
     # the chronicle's span, set like a date on a manuscript spine
-    p.append("<text transform='translate(48,1048) rotate(-90)' font-family='Georgia,serif' font-size='10' "
-             "letter-spacing='3' fill='#9a7a1c'>MMXXIII &#8211; MMXXVI</text>")
+    p.append("<text transform='translate(%d,%d) rotate(-90)' font-family='Georgia,serif' font-size='8' "
+             "letter-spacing='2.5' fill='#9a7a1c'>MMXXIII &#8211; MMXXVI</text>" % (cx + 3, RAIL_H - 24))
     p.append("</svg>")
     return "".join(p)
 

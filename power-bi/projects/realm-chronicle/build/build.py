@@ -1,15 +1,17 @@
 """Realm Chronicle - build entry point. Re-runnable: running it twice gives the same report.
 
-Run with Power BI Desktop CLOSED - Desktop overwrites files that change on disk while it's open.
+Run with Power BI Desktop CLOSED. A bridge `reload` refreshes the report pages but does NOT pick up
+changed measure DAX (observed 2026-09-13) - after a build that touches _HTML.tmdl, reopen Desktop.
 
     python power-bi/projects/realm-chronicle/build/build.py
 
 Pages (rail order lives in chroniclekit.PAGES)
-  intro  THE REALM CHRONICLE cover - four HTML-in-SVG components on the `intro` grid layout
-         (design-system.yaml): hero, the four ledgers, hall of legends, the boss roll.
-         Doctrine: ../../../02-build/visuals/svg/html-in-svg.md. Measures: model table _HTML.
-         No rail - it's the cover.
-  hunt   THE HUNT - carries the navigation rail (design A). Content not built yet.
+  intro     THE REALM CHRONICLE cover - hero, the four ledgers, hall of legends, the boss roll.
+  bestiary  THE BESTIARY - a field guide: header with kills by kind, every creature as a card grouped
+            Boss > Elite > Field, and the families they add up to (with the deadliest creature).
+All panels are HTML-in-SVG (../../../02-build/visuals/svg/html-in-svg.md); their measures live in the
+model table _HTML, generated to the resolved region sizes by html_measures.py. Every page carries the
+navigation rail (design A); the grid lays out to its right via meta.chrome.left. Canvas: 1280x720.
 """
 import json
 import os
@@ -18,6 +20,15 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from chroniclekit import K, PAGES, dark_canvas, nav_rail, svg_panel  # noqa: E402
+import html_measures  # noqa: E402
+
+PAGE_W = int(K.DS["meta"]["page"]["width"])
+PAGE_H = int(K.DS["meta"]["page"]["height"])
+HTML_TMDL = os.path.join(K.ROOT, "realm-chronicle.SemanticModel", "definition", "tables", "_HTML.tmdl")
+
+# Pages that once existed and have been replaced. Their folders and rail images are removed on build,
+# so a rename never leaves a stray page or a dead registered resource shipping with the report.
+RETIRED = ["hunt"]            # The Hunt -> The Bestiary, 2026-09-13
 
 
 def _pages_meta():
@@ -52,13 +63,33 @@ def clear_page(pid, placeholder_names=("Page 1",)):
     json.dump(meta, open(_pages_meta(), "w", encoding="utf-8", newline="\n"), indent=2)
 
 
+def retire_pages():
+    for pid in RETIRED:
+        if os.path.isdir(os.path.join(K.PAGES, pid)):
+            clear_page(pid)
+        K.unregister_image("navRail-%s.svg" % pid)
+
+
+def write_measures():
+    groups = [html_measures.intro_group(K.rects("intro")),
+              html_measures.bestiary_group(K.rects("bestiary"))]
+    for folder, name in html_measures.write_measures(HTML_TMDL, groups):
+        print("  measure %-9s %s" % (folder, name))
+
+
+def place(d, panels):
+    for tab, (name, rect, measure_name, alt) in enumerate(panels, start=1):
+        K.write(d, name, svg_panel(name, rect, measure_name, alt, z=100 * tab, tab=tab))
+        print("  %-18s %4dx%-4d at (%d,%d)" % (name, rect["width"], rect["height"], rect["x"], rect["y"]))
+
+
 def build_intro():
     clear_page("intro")
-    d = K.add_page("intro", "Intro", w=1920, h=1080)
+    d = K.add_page("intro", "Intro", w=PAGE_W, h=PAGE_H)
     dark_canvas(d)
-
+    nav_rail(d, "intro")
     hero, ledgers, legends, bosses = K.rects("intro")
-    panels = [
+    place(d, [
         ("introHero",    hero,    "Intro Hero HTML",
          "The Realm Chronicle: guilds, monsters, quests and gold across four years"),
         ("introLedgers", ledgers, "Intro Ledgers HTML",
@@ -67,20 +98,24 @@ def build_intro():
          "Hall of Legends: the five adventurers with the most monster kills"),
         ("introBosses",  bosses,  "Intro Bosses HTML",
          "The Boss Roll: the four raid bosses by kills and party wipes per thousand kills"),
-    ]
-    for tab, (name, rect, measure_name, alt) in enumerate(panels, start=1):
-        K.write(d, name, svg_panel(name, rect, measure_name, alt, z=100 * tab, tab=tab))
-        print("  %-13s %4dx%-4d at (%d,%d)  <- %s"
-              % (name, rect["width"], rect["height"], rect["x"], rect["y"], measure_name))
+    ])
     return d
 
 
-def build_hunt():
-    clear_page("hunt")
-    d = K.add_page("hunt", "The Hunt", w=1920, h=1080)
+def build_bestiary():
+    clear_page("bestiary")
+    d = K.add_page("bestiary", "The Bestiary", w=PAGE_W, h=PAGE_H)
     dark_canvas(d)
-    nav_rail(d, "hunt")
-    print("  navRail + buttons for %s" % ", ".join(p["id"] for p in PAGES if p["built"] and p["id"] != "hunt"))
+    nav_rail(d, "bestiary")
+    header, creatures, families = K.rects("bestiary")
+    place(d, [
+        ("bestiaryHeader",    header,    "Bestiary Header HTML",
+         "The Bestiary: monster kills by kind - field, elite and boss - and the number of creatures catalogued"),
+        ("bestiaryCreatures", creatures, "Bestiary Creatures HTML",
+         "Every creature as a card, grouped boss, elite and field, with family, habitat, tier, kills and party wipes per thousand kills"),
+        ("bestiaryFamilies",  families,  "Bestiary Families HTML",
+         "Kills by monster family with share and party wipes per thousand kills, and the single deadliest creature"),
+    ])
     return d
 
 
@@ -98,7 +133,9 @@ def finalize_order():
 
 if __name__ == "__main__":
     print("building realm-chronicle")
+    retire_pages()
+    write_measures()
     build_intro()
-    build_hunt()
+    build_bestiary()
     finalize_order()
     print("done - validate: pbir validate + 04-review/hooks/lint-report-traps.sh per page")

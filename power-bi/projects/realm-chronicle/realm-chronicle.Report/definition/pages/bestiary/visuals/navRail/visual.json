@@ -1,27 +1,35 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
-  "name": "introBosses",
+  "name": "navRail",
   "position": {
-    "x": 688,
-    "y": 424,
-    "z": 400,
-    "width": 568,
-    "height": 272,
-    "tabOrder": 4
+    "x": 0,
+    "y": 0,
+    "z": 50,
+    "width": 80,
+    "height": 720,
+    "tabOrder": 0
   },
   "visual": {
     "visualType": "image",
     "objects": {
+      "general": [
+        {
+          "properties": {
+            "imageUrl": {
+              "expr": {
+                "ResourcePackageItem": {
+                  "PackageName": "RegisteredResources",
+                  "PackageType": 1,
+                  "ItemName": "navRail-bestiary.svg"
+                }
+              }
+            }
+          }
+        }
+      ],
       "image": [
         {
           "properties": {
-            "sourceType": {
-              "expr": {
-                "Literal": {
-                  "Value": "'imageData'"
-                }
-              }
-            },
             "transparency": {
               "expr": {
                 "Literal": {
@@ -33,32 +41,6 @@
               "expr": {
                 "Literal": {
                   "Value": "false"
-                }
-              }
-            },
-            "fit": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Fit'"
-                }
-              }
-            },
-            "sourceField": {
-              "expr": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_HTML"
-                    }
-                  },
-                  "Property": "Intro Bosses HTML"
-                }
-              }
-            },
-            "altText": {
-              "expr": {
-                "Literal": {
-                  "Value": "'The Boss Roll: the four raid bosses by kills and party wipes per thousand kills'"
                 }
               }
             }
@@ -100,6 +82,19 @@
               "expr": {
                 "Literal": {
                   "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Page navigation. You are on The Bestiary. Pages: Intro, The Bestiary, Quest Board, The Exchange, Realm Map.'"
                 }
               }
             }
